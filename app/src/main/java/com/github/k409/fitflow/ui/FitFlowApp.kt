@@ -33,7 +33,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
@@ -57,7 +56,6 @@ fun FitFlowApp() {
         Scaffold(
             topBar = {
                 FitFlowTopBar(
-                    navController = navController,
                     topBarState = topBarState.value,
                     currentRoute = currentScreen,
                     canNavigateBack = navController.previousBackStackEntry != null &&
@@ -85,7 +83,6 @@ fun FitFlowApp() {
 @Composable
 fun FitFlowTopBar(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
     topBarState: Boolean,
     currentRoute: NavRoutes,
     canNavigateBack: Boolean,
