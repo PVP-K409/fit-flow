@@ -55,6 +55,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.5"
     }
+    buildToolsVersion = "34.0.0"
     androidComponents {
         onVariants(selector().withBuildType("release")) {
             it.packaging.resources.excludes.add("META-INF/**")
@@ -64,10 +65,13 @@ android {
 
 dependencies {
     implementation(libs.hilt.android)
+    implementation(libs.firebase.firestore.ktx)
     ksp(libs.hilt.android.compiler)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
