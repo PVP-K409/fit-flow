@@ -16,58 +16,44 @@ class StepCounter(context: Context) : SensorEventListener {
     private val sensorManager: SensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("StepCounterPrefs", Context.MODE_PRIVATE)
     val todayStepsLiveData = MutableLiveData<Int>()
-
-    // Holds the total step count at the start of the app or day.
-    private var initialSensorValue = sharedPreferences.getFloat("initialSensorValue", 0f)
-    private var hasInitializedSensorValue = sharedPreferences.getBoolean("hasInitializedSensorValue", false)
+    private var todaySteps = 0 // Today's steps, resets every new day
 
     init {
-        val stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-        if (stepSensor != null) {
-            sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI)
+        val stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
+        if (stepDetectorSensor != null) {
+            sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_UI)
         } else {
-            Toast.makeText(context,"No sensor detected on this device", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Step detector sensor not detected on this device.", Toast.LENGTH_SHORT).show()
         }
-        InitializeAndCheckEdge()
-    }
-
-    private fun InitializeAndCheckEdge() {
         checkForNewDay()
     }
 
     private fun checkForNewDay() {
-        val currentDayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
         val savedDayOfYear = sharedPreferences.getInt("savedDayOfYear", -1)
+        val currentDayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
 
         if (currentDayOfYear != savedDayOfYear) {
-            // It's a new day or app first launch, reset initial sensor value flag
-            hasInitializedSensorValue = false
+            // It's a new day
+            todaySteps = 0 // Reset the step count for the new day
             sharedPreferences.edit().apply {
                 putInt("savedDayOfYear", currentDayOfYear)
-                putBoolean("hasInitializedSensorValue", false)
+                putInt("todaySteps", todaySteps)
                 apply()
             }
+        } else {
+            // It's the same day, load the saved step count
+            todaySteps = sharedPreferences.getInt("todaySteps", 0)
         }
+        todayStepsLiveData.postValue(todaySteps) // Update LiveData with the current or 0
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
-            if (!hasInitializedSensorValue) {
-                // Initialize with the current total step count from the sensor
-                initialSensorValue = event.values[0]
-                hasInitializedSensorValue = true
-                sharedPreferences.edit().apply {
-                    putFloat("initialSensorValue", initialSensorValue)
-                    putBoolean("hasInitializedSensorValue", true)
-                    apply()
-                }
-            }
-            checkForNewDay()
+        if (event?.sensor?.type == Sensor.TYPE_STEP_DETECTOR) {
+            checkForNewDay() // We check for new day
 
-            val totalSteps = event.values[0]
-            val todaySteps = (totalSteps - initialSensorValue).toInt()
+            todaySteps++ // Increment and save the step count for each detected step
             todayStepsLiveData.postValue(todaySteps)
-
+            sharedPreferences.edit().putInt("todaySteps", todaySteps).apply()
         }
     }
 
