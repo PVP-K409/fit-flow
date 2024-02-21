@@ -1,7 +1,6 @@
 package com.github.k409.fitflow.di
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.github.k409.fitflow.ui.step_counter.StepCounter
 import dagger.Module
 import dagger.Provides
