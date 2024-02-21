@@ -3,6 +3,7 @@ agp = "8.2.2"
 hilt = "2.50"
 hilt-android = "2.50"
 hilt-android-compiler = "2.50"
+hilt-navigation-compose = "1.1.0"
 kotlin = "1.9.20"
 ksp = "1.9.20-1.0.14"
 core-ktx = "1.12.0"
@@ -14,7 +15,10 @@ activity-compose = "1.8.2"
 compose-bom = "2024.02.00"
 navigation-runtime-ktx = "2.7.7"
 navigation-compose = "2.7.7"
+runtime-livedata = "1.6.1"
 ui = "1.6.1"
+
+accompanist = "0.32.0"
 
 firebase-bom = "32.7.2"
 firebase-firestore-ktx = "24.10.2"
@@ -22,6 +26,8 @@ firebase-firestore-ktx = "24.10.2"
 
 
 [libraries]
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
+androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtime-livedata" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-android" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-android-compiler" }
@@ -41,6 +47,7 @@ material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "ui" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigation-runtime-ktx" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose" }
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }

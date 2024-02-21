@@ -70,8 +70,11 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    implementation(libs.accompanist.permissions)
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
