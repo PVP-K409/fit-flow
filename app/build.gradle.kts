@@ -1,9 +1,18 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.daggerHilt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.gms)
 }
+
+val keystorePropertiesFile: File = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
     namespace = "com.github.k409.fitflow"
@@ -22,11 +31,27 @@ android {
         }
     }
 
+    signingConfigs {
+        create("fitflow-debug") {
+            storeFile = rootProject.file(keystoreProperties["debug.storeFile"] as String)
+            storePassword = keystoreProperties["debug.storePassword"] as String
+            keyAlias = keystoreProperties["debug.keyAlias"] as String
+            keyPassword = keystoreProperties["debug.keyPassword"] as String
+        }
+        create("fitflow-release") {
+            storeFile = rootProject.file(keystoreProperties["release.storeFile"] as String)
+            storePassword = keystoreProperties["release.storePassword"] as String
+            keyAlias = keystoreProperties["release.keyAlias"] as String
+            keyPassword = keystoreProperties["release.keyPassword"] as String
+        }
+    }
+
     buildTypes {
         getByName("debug") {
             manifestPlaceholders += mapOf()
             applicationIdSuffix = ".debug"
             manifestPlaceholders["appName"] = "FitFlow Debug"
+            signingConfig = signingConfigs.getByName("fitflow-debug")
         }
 
         getByName("release") {
@@ -35,6 +60,7 @@ android {
             isShrinkResources = true
             isDebuggable = false
             manifestPlaceholders["appName"] = "FitFlow"
+            signingConfig = signingConfigs.getByName("fitflow-release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
