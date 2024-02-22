@@ -91,9 +91,12 @@ android {
 dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
-
+    implementation(libs.androidx.hilt.work)
+    implementation (libs.androidx.runtime.livedata)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.work.runtime)
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
