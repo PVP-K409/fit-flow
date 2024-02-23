@@ -24,16 +24,20 @@ class FitFlowApplication : Application(), Configuration.Provider {
         super.onCreate()
 
         val myWork = PeriodicWorkRequestBuilder<StepCounterWorker>(
-            15, TimeUnit.MINUTES).build()
+            15, TimeUnit.MINUTES
+        ).build()
+
         WorkManager.getInstance(this)
-            .enqueueUniquePeriodicWork("UpdateSteps",
-                ExistingPeriodicWorkPolicy.UPDATE, myWork)
+            .enqueueUniquePeriodicWork(
+                "UpdateStepsWorker",
+                ExistingPeriodicWorkPolicy.UPDATE, myWork
+            )
     }
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
-            .setWorkerFactory(workerFactory)
             .setMinimumLoggingLevel(android.util.Log.DEBUG)
+            .setWorkerFactory(workerFactory)
             .build()
 
 }

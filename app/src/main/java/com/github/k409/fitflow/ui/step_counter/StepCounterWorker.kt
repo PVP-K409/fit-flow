@@ -10,18 +10,23 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.time.LocalDate
 
+private const val TAG = "StepCounterWorker"
 
 @HiltWorker
 class StepCounterWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    val repository: StepRepository,
-    val stepCounter: StepCounter
-) : CoroutineWorker(appContext, workerParams){
+    private val repository: StepRepository,
+    private val stepCounter: StepCounter
+) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
+        Log.d(TAG, "Starting work...")
+        // TODO: Remove this
+        return Result.success()
+
         val today = LocalDate.now().toString()
-        Log.d("STEP_COUNTER_WORKER", "INITIALIZED")
+
         try {
             val currentSteps = stepCounter.steps()
             val step: Step? = repository.loadTodaySteps(today)
@@ -43,9 +48,11 @@ class StepCounterWorker @AssistedInject constructor(
             }
 
             repository.updateSteps(newStep)
+            Log.d(TAG, "Updated steps: $newStep")
+
             return Result.success()
         } catch (e: Exception) {
-            Log.e("StepCounterWorker", "Error updating steps", e)
+            Log.e(TAG, "Error updating steps", e)
             return Result.retry()
         }
 
