@@ -10,6 +10,8 @@ import com.github.k409.fitflow.ui.screens.activity.ActivityScreen
 import com.github.k409.fitflow.ui.screens.goals.GoalsScreen
 import com.github.k409.fitflow.ui.screens.home.HomeScreen
 import com.github.k409.fitflow.ui.screens.market.MarketScreen
+import com.github.k409.fitflow.ui.screens.profile.ProfileCreationScreen
+import com.github.k409.fitflow.ui.screens.profile.ProfileSettingsScreen
 
 @Composable
 fun FitFlowNavGraph(
@@ -33,6 +35,12 @@ fun FitFlowNavGraph(
         }
         composable(NavRoutes.Marketplace.route) {
             MarketScreen()
+        }
+        composable(NavRoutes.ProfileCreation.route) {
+            ProfileCreationScreen()
+        }
+        composable(NavRoutes.ProfileSettings.route) {
+            ProfileSettingsScreen()
         }
     }
 

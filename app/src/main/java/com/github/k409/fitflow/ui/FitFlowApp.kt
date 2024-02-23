@@ -6,11 +6,16 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,6 +42,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
+import com.github.k409.fitflow.ui.screens.profile.ProfileSettingsScreen
 import com.github.k409.fitflow.ui.theme.FitFlowTheme
 
 @Composable
@@ -60,8 +66,8 @@ fun FitFlowApp() {
                     currentRoute = currentScreen,
                     canNavigateBack = navController.previousBackStackEntry != null &&
                             !NavRoutes.bottomNavBarItems.contains(currentScreen),
-                    navigateUp = { navController.navigateUp() },
-                )
+                    navController = navController,
+                navigateUp =  { navController.navigateUp() } )
             },
             bottomBar = {
                 FitFlowBottomBar(
@@ -86,7 +92,8 @@ fun FitFlowTopBar(
     topBarState: Boolean,
     currentRoute: NavRoutes,
     canNavigateBack: Boolean,
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    navController: NavController,
 ) {
     Surface {
         AnimatedVisibility(
@@ -112,7 +119,25 @@ fun FitFlowTopBar(
                     }
                 },
                 actions = {
-
+                    IconButton(onClick = { navController.navigate(NavRoutes.ProfileSettings.route)  {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }} ) {
+                        Image(
+                            // replace with proper user image later
+                            imageVector = Icons.Outlined.PersonOutline,
+                            contentDescription = "Profile settings",
+                            modifier = Modifier
+                                .size(160.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.secondaryContainer,
+                                    shape = CircleShape
+                                )
+                        )
+                    }
                 })
         }
     }
