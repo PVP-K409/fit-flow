@@ -97,6 +97,7 @@ dependencies {
     implementation(libs.bundles.firebase)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.work.runtime)
+    implementation(libs.accompanist.permissions)
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
