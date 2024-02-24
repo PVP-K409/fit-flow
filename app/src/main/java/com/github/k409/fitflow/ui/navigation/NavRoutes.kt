@@ -17,7 +17,7 @@ sealed class NavRoutes(
     val icon: ImageVector
 ) {
     companion object {
-        val navRoutes = listOf(Home, Activity, Goals, Marketplace)
+        val navRoutes = listOf(Home, Activity, Goals, Marketplace, ProfileSettings, ProfileCreation)
         val bottomNavBarItems = listOf(Home, Activity, Goals, Marketplace)
     }
 

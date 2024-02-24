@@ -30,7 +30,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -42,6 +44,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
+import com.github.k409.fitflow.ui.screens.profile.NavigateToProfileSettingsScreen
 import com.github.k409.fitflow.ui.screens.profile.ProfileSettingsScreen
 import com.github.k409.fitflow.ui.theme.FitFlowTheme
 
@@ -73,7 +76,8 @@ fun FitFlowApp() {
                 FitFlowBottomBar(
                     navController = navController,
                     currentDestination = currentDestination,
-                    visible = bottomBarState.value
+                    visible = !(navController.previousBackStackEntry != null &&
+                            !NavRoutes.bottomNavBarItems.contains(currentScreen)) // bottomBarState.value
                 )
             }
         ) { innerPadding ->
@@ -119,13 +123,8 @@ fun FitFlowTopBar(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { navController.navigate(NavRoutes.ProfileSettings.route)  {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }} ) {
+                    var isClicked by remember { mutableStateOf(false) }
+                    IconButton(onClick = { isClicked = true }) {
                         Image(
                             // replace with proper user image later
                             imageVector = Icons.Outlined.PersonOutline,
@@ -137,6 +136,10 @@ fun FitFlowTopBar(
                                     shape = CircleShape
                                 )
                         )
+                    }
+                    if (isClicked) {
+                        isClicked = false
+                        NavigateToProfileSettingsScreen(navController = navController)
                     }
                 })
         }

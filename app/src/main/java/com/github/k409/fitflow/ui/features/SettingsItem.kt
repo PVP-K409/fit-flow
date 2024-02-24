@@ -1,11 +1,10 @@
 package com.github.k409.fitflow.ui.features
 
 import DCodeIcon
-import com.github.k409.fitflow.ui.navigation.NavRoutes
 
-data class FeatureList(
+data class SettingsItem(
     val name: String,
     val listIcon: DCodeIcon,
-    val route: NavRoutes?,
+    val route: String,
 )
 

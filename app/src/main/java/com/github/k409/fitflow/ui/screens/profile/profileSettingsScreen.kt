@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.screens.profile
 
-import android.widget.ImageButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,20 +17,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import com.github.k409.fitflow.ui.features.FeatureList
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.rememberNavController
+import com.github.k409.fitflow.ui.features.SettingsItem
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 
 const val username = "user1" // use db later
+var hostNavController: NavController? = null
 
 val moreOptionsList = listOf(
-    FeatureList("Edit Profile", DCodeIcon.ImageVectorIcon(MyIcons.Edit), NavRoutes.ProfileCreation),
-    //FeatureList("Manage Account", ImageVectorIcon(MyIcons.AccountBox), ""),
-    //FeatureList("Privacy Policy", DrawableResourceIcon(MyIcons.Policy), ""),
-    //FeatureList("About", ImageVectorIcon(MyIcons.Info), ""),
-    //FeatureList("Help & Feedback", DrawableResourceIcon(MyIcons.Android_Head), ""),
+    SettingsItem("Edit Profile", DCodeIcon.ImageVectorIcon(MyIcons.Edit), NavRoutes.ProfileCreation.route),
 )
 
+@Composable
+fun NavigateToProfileSettingsScreen(navController: NavController) {
+    hostNavController = navController
+    navController.navigate(NavRoutes.ProfileSettings.route) {
+        popUpTo(navController.graph.findStartDestination().id) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
+}
+fun NavigateToFeatureScreen(settingsItem: SettingsItem, navController: NavController) {
+    navController.navigate(settingsItem.route) {
+        popUpTo(navController.graph.findStartDestination().id) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
+}
 @Composable
 fun ProfileSettingsScreen() {
     Column(
@@ -50,15 +67,16 @@ fun ProfileSettingsScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreOptionsComp(
-    featureList: FeatureList,
+    settingsItem: SettingsItem,
+    navController: NavController = rememberNavController(),
 ) {
     Row(
         modifier = Modifier.padding(5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        when (featureList.listIcon) {
+        when (settingsItem.listIcon) {
             is DCodeIcon.ImageVectorIcon -> Image(
-                imageVector = featureList.listIcon.imageVector,
+                imageVector = settingsItem.listIcon.imageVector,
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
@@ -66,7 +84,7 @@ fun MoreOptionsComp(
             )
 
             is DCodeIcon.DrawableResourceIcon -> Image(
-                painter = painterResource(id = featureList.listIcon.id),
+                painter = painterResource(id = settingsItem.listIcon.id),
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
@@ -81,11 +99,11 @@ fun MoreOptionsComp(
                 .weight(1f)
         ) {
             Text(
-                text = featureList.name,
+                text = settingsItem.name,
                 style = MaterialTheme.typography.labelLarge
             )
         }
-        IconButton(onClick = {/**/ }) {
+        IconButton(onClick = { hostNavController?.let { NavigateToFeatureScreen(settingsItem, it) } }) {
             Image(
                 imageVector = MyIcons.KeyboardArrowRight,
                 contentDescription = null,
