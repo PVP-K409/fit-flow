@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.components.aquarium
 
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -16,12 +15,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -31,11 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.R
-import com.github.k409.fitflow.ui.common.noRippleClickable
-import kotlinx.coroutines.launch
 import kotlin.math.sin
 
 @Composable
@@ -71,53 +65,10 @@ fun Aquarium(
                     .height(150.dp)
             )
 
-            AnimatedPrimaryFish(modifier = Modifier.align(Alignment.Center))
+            AnimatedPrimaryFish(modifier = Modifier.align(Alignment.TopCenter))
+            CircularPrimaryFish(modifier = Modifier.align(Alignment.Center))
         }
     }
-}
-
-@Composable
-fun AnimatedPrimaryFish(
-    modifier: Modifier = Modifier,
-    maxFishSize: Dp = 500.dp,
-    initialFishSize: Dp = 100.dp
-) {
-    val coroutineScope = rememberCoroutineScope()
-
-    val primaryFishPainter = painterResource(id = R.drawable.primary_fish)
-    val currentFishSize = remember { Animatable(initialFishSize.value) }
-
-    /* Animation for Fish
-    val infiniteTransition = rememberInfiniteTransition(label = "")
-    val xPosition by infiniteTransition.animateFloat(
-        initialValue = 0f, targetValue = 200f, animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 2000), repeatMode = RepeatMode.Reverse
-        ), label = ""
-    )*/
-
-    Image(
-        painter = primaryFishPainter,
-        contentDescription = "Fish",
-        modifier = modifier
-            .size(currentFishSize.value.dp)
-            .noRippleClickable(onClick = {
-                coroutineScope.launch {
-                    if (currentFishSize.value < maxFishSize.value) {
-                        currentFishSize.animateTo(currentFishSize.value + 30)
-                    } else {
-                        currentFishSize.animateTo(initialFishSize.value)
-                    }
-                }
-            }, onLongClick = {
-                coroutineScope.launch {
-                    if (currentFishSize.value == maxFishSize.value) {
-                        currentFishSize.animateTo(initialFishSize.value)
-                    } else {
-                        currentFishSize.animateTo(maxFishSize.value)
-                    }
-                }
-            })
-    )
 }
 
 

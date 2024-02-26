@@ -156,6 +156,8 @@ fun FitFlowBottomBar(
         ) {
             NavRoutes.bottomNavBarItems.forEach { screen ->
                 NavigationBarItem(
+                    modifier = Modifier
+                        .padding(top = 10.dp),
                     icon = {
                         Icon(
                             imageVector = screen.icon,
