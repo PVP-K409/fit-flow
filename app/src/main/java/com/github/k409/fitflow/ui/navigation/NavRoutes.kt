@@ -16,8 +16,8 @@ sealed class NavRoutes(
     val icon: ImageVector
 ) {
     companion object {
-        val navRoutes = listOf(Home, Activity, Goals, Marketplace)
-        val bottomNavBarItems = listOf(Home, Activity, Goals, Marketplace)
+        val navRoutes = listOf(Home, Activity, Goals, Marketplace, Registration)
+        val bottomNavBarItems = listOf(Home, Activity, Goals, Marketplace, Registration)
     }
 
     data object Home : NavRoutes("home", R.string.home, Icons.Outlined.Home)
