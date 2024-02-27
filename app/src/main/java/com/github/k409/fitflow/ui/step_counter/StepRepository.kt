@@ -13,33 +13,29 @@ class StepRepository {
     private val db = FirebaseFirestore.getInstance()
 
     suspend fun updateSteps(newSteps: Step){
-
         val userDocRef = db.collection("users").document(userid)
-        try{
+        try {
             val snapshot = userDocRef.get().await()
-            val user = snapshot.toObject(User::class.java)?: return
-
-            val existingStepIndex = user.steps.indexOfFirst { it.date == newSteps.date }
-            if (existingStepIndex != -1) {
-                // update existing day
-                user.steps[existingStepIndex] = newSteps
-            } else {
-                // new day
-                user.steps.add(newSteps)
-            }
-            val updatedStepsList = user.steps.map { step ->
-                mapOf(
-                    "current" to step.current,
-                    "initial" to step.initial,
-                    "date" to step.date
+            if (snapshot.exists()) {
+                val stepsList = snapshot.data?.get("steps") as? List<Map<String, Any>> ?: mutableListOf()
+                val existingStepMap = stepsList.firstOrNull { it["date"] == newSteps.date }
+                val updatedStepMap = mapOf(
+                    "current" to newSteps.current,
+                    "initial" to newSteps.initial,
+                    "date" to newSteps.date
                 )
+                val updatedStepsList = if (existingStepMap != null) {
+                    stepsList.map { if (it["date"] == newSteps.date) updatedStepMap else it }
+                } else {
+                    stepsList + updatedStepMap // new day
+                }
+                userDocRef.update("steps", updatedStepsList).await()
+                Log.d("Step Repository", "Updated steps")
+            } else {
+                Log.d("Step Repository", "No such document")
             }
-            // Update the steps field in Firestore
-            userDocRef.update("steps", updatedStepsList).await()
-            Log.d("Step Repository", "Updated steps")
-
-        }catch (e: Exception){
-            e.printStackTrace()
+        } catch (e: Exception) {
+            Log.e("Step Repository", "Error updating steps", e)
         }
 
 
