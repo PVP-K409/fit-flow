@@ -4,4 +4,5 @@
     <string name="activity">Activity</string>
     <string name="goals">Goals</string>
     <string name="marketplace">Market</string>
+    <string name="user" />
 </resources>

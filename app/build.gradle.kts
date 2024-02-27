@@ -29,6 +29,14 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "CLIENT_ID", "\"${keystoreProperties["github.clientId"]}\"")
+        buildConfigField("String", "CLIENT_SECRET", "\"${keystoreProperties["github.clientSecret"]}\"")
+        buildConfigField("String", "REDIRECT_URI", "\"${keystoreProperties["github.redirectUri"]}\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     signingConfigs {
@@ -113,4 +121,9 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.firebaseui:firebase-ui-auth:8.0.0")
+    implementation("com.google.firebase:firebase-auth:22.3.1")
 }
