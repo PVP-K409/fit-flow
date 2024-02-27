@@ -48,12 +48,19 @@ class StepRepository {
     suspend fun loadTodaySteps(day : String): Step? {
         val userDocRef = db.collection("users").document(userid)
         val snapshot = userDocRef.get().await()
-        val user = snapshot.toObject(User::class.java)?: return null
-        val existingStepIndex = user.steps.indexOfFirst { it.date == day }
-        if(existingStepIndex != -1){
-            return user.steps[existingStepIndex]
+        if (snapshot.exists()) {
+            val stepsList = snapshot.data?.get("steps") as? List<Map<String, Any>> ?: return null
+            val stepMap = stepsList.firstOrNull { it["date"] == day }
+            return stepMap?.let {
+                Step(
+                    current = it["current"] as? Long ?: 0,
+                    initial = it["initial"] as? Long ?: 0,
+                    date = it["date"] as? String ?: day
+                )
+            }
+        } else {
+            return null
         }
-        return null
 
     }
 
