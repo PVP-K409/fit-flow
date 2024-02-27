@@ -109,7 +109,7 @@ fun FitFlowTopBar(
         Surface {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors().copy(
-                    containerColor = containerColor
+//                    containerColor = containerColor
                 ),
                 title = {
                     Text(
@@ -149,9 +149,9 @@ fun FitFlowBottomBar(
         NavigationBar(
             modifier = Modifier
                 .background(containerColor)
-                .padding(12.dp)
-                .clip(RoundedCornerShape(30.dp))
-                .height(62.dp),
+                .padding(8.dp)
+                .clip(RoundedCornerShape(50))
+                .height(60.dp),
             windowInsets = NavigationBarDefaults.windowInsets.exclude(WindowInsets(bottom = 12.dp))
         ) {
             NavRoutes.bottomNavBarItems.forEach { screen ->
