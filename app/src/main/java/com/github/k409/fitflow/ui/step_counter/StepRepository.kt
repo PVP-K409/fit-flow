@@ -2,7 +2,6 @@ package com.github.k409.fitflow.ui.step_counter
 
 import android.util.Log
 import com.github.k409.fitflow.DataModels.Step
-import com.github.k409.fitflow.DataModels.User
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
