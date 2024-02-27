@@ -1,10 +1,8 @@
 package com.github.k409.fitflow.ui.screens.registration
 
 import android.app.Activity
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -126,18 +124,7 @@ fun RegistrationScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = {if (isEmailValid && passwordsMatch &&
-                            email.isNotBlank() && password.isNotBlank() &&
-                            confirmPassword.isNotBlank()) {
-                                registerWithEmailPassword(email, password, firebaseAuth) { success ->
-                                    if (success){
-                                        Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        Toast.makeText(context, "Registration failed", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            }
-                         },
+        Button(onClick = { registerWithEmailPassword(context, email, password, firebaseAuth) },
             enabled = isEmailValid
                     && passwordsMatch
                     && email.isNotBlank()
@@ -154,20 +141,17 @@ fun RegistrationScreen() {
         }
 
         Button(
-            onClick = { //signInWithGitHub(signInLauncher)
-                        //setupGithubWebviewDialog(context, githubAuthURLFull)
-                        signInWithGitHub(email, context, firebaseAuth)
-                 },
+            onClick = { signInWithGitHub(context, firebaseAuth) },
         ) {
             Text(text = "Sign in with GitHub")
         }
     }
 }
 
-private fun signInWithGitHub(email: String, context: Context, mAuth: FirebaseAuth){
+private fun signInWithGitHub(context: Context, mAuth: FirebaseAuth){
     val provider = OAuthProvider.newBuilder("github.com")
     // Target specific email with login hint.
-    provider.addCustomParameter("login", email)
+    provider.addCustomParameter("login", "")
     // Request read access to a user's email addresses.
     // This must be preconfigured in the app's API permissions.
     provider.scopes = listOf("user:email")
@@ -209,18 +193,13 @@ private fun signInWithGitHub(email: String, context: Context, mAuth: FirebaseAut
     }
 }
 
-private fun registerWithEmailPassword(
-    email: String,
-    password: String,
-    firebaseAuth: FirebaseAuth,
-    callback: (Boolean) -> Unit
-){
+private fun registerWithEmailPassword(context: Context, email: String, password: String, firebaseAuth: FirebaseAuth){
     firebaseAuth.createUserWithEmailAndPassword(email, password)
         .addOnCompleteListener{ task ->
             if (task.isSuccessful){
-                callback.invoke(true)
+                Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show()
             } else {
-                callback.invoke(false)
+                Toast.makeText(context, "Registration failed", Toast.LENGTH_SHORT).show()
             }
         }
 }
