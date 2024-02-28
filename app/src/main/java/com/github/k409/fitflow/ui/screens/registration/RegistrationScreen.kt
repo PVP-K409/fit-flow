@@ -3,22 +3,17 @@ package com.github.k409.fitflow.ui.screens.registration
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Patterns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,30 +21,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.OAuthProvider
+import com.google.firebase.auth.auth
 
 @Composable
 fun RegistrationScreen() {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var passwordsMatch by remember { mutableStateOf(true) }
-    var isEmailValid by remember { mutableStateOf(false) }
     val firebaseAuth = FirebaseAuth.getInstance()
+//    var userSignedIn by remember { mutableStateOf(false) }
+//
+//    val user = Firebase.auth.currentUser
+//    if (user != null) {
+//        userSignedIn = true
+//    }
 
     val context = LocalContext.current
 
@@ -84,57 +77,6 @@ fun RegistrationScreen() {
     ) {
         Text(text = "Registration and sign in")
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        TextField(
-            value = email,
-            onValueChange = {
-                email = it
-                isEmailValid = Patterns.EMAIL_ADDRESS.matcher(email).matches()},
-            label = { Text("Email")}
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        TextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password")},
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        TextField(
-            value = confirmPassword,
-            onValueChange = {
-                confirmPassword = it
-                passwordsMatch = it == password
-            },
-            label = { Text("Confirm password")},
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
-        )
-
-        if (!passwordsMatch) {
-            Text(
-                text = "Passwords do not match",
-                color = Color.Red
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(onClick = { registerWithEmailPassword(context, email, password, firebaseAuth) },
-            enabled = isEmailValid
-                    && passwordsMatch
-                    && email.isNotBlank()
-                    && password.isNotBlank()
-                    && confirmPassword.isNotBlank()) {
-            Text(text = "Register")
-        }
-
         // Call signInWithGoogle passing signInLauncher as a parameter
         Button(
             onClick = { signInWithGoogle(signInLauncher, googleSignInClient, firebaseAuth) },
@@ -147,6 +89,13 @@ fun RegistrationScreen() {
         ) {
             Text(text = "Sign in with GitHub")
         }
+
+//        Button(
+//            onClick = { Firebase.auth.signOut()},
+//            enabled = userSignedIn
+//        ) {
+//            Text(text = "Sign out")
+//        }
     }
 }
 
@@ -193,23 +142,6 @@ private fun signInWithGitHub(context: Context, mAuth: FirebaseAuth){
                 Toast.makeText(context, "Github sign in failed", Toast.LENGTH_SHORT).show()
             }
     }
-}
-
-private fun registerWithEmailPassword(context: Context, email: String, password: String, firebaseAuth: FirebaseAuth){
-    firebaseAuth.createUserWithEmailAndPassword(email, password)
-        .addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show()
-            } else {
-                if (task.exception is FirebaseAuthUserCollisionException) {
-                    Toast.makeText(context, "Email is already in use", Toast.LENGTH_SHORT).show()
-                } else if (task.exception is FirebaseAuthWeakPasswordException){
-                    Toast.makeText(context, "Password to weak", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, "Registration failed", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
 }
 
 
