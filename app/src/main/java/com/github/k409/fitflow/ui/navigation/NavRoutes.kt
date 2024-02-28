@@ -7,6 +7,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Store
+import androidx.compose.material.icons.outlined.VerifiedUser
 import androidx.compose.material.icons.outlined.ViewTimeline
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.k409.fitflow.R
@@ -17,8 +18,8 @@ sealed class NavRoutes(
     val icon: ImageVector
 ) {
     companion object {
-        val navRoutes = listOf(Home, Activity, Goals, Marketplace, ProfileSettings, ProfileCreation)
-        val bottomNavBarItems = listOf(Home, Activity, Goals, Marketplace)
+        val navRoutes = listOf(Home, Activity, Goals, Marketplace, Registration, ProfileSettings, ProfileCreation)
+        val bottomNavBarItems = listOf(Home, Activity, Goals, Marketplace, Registration)
     }
 
     data object Home : NavRoutes("home", R.string.home, Icons.Outlined.Home)
@@ -32,4 +33,6 @@ sealed class NavRoutes(
     data object ProfileCreation : NavRoutes("profileCreation", R.string.profileCreation, Icons.Outlined.PersonOutline)
 
     data object ProfileSettings : NavRoutes("profileSettings", R.string.profileSettings, Icons.Outlined.Settings)
+
+    data object Registration : NavRoutes("registration", R.string.user, Icons.Outlined.VerifiedUser)
 }

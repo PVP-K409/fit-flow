@@ -18,4 +18,5 @@
     <string name="weight_kg">Weight (kg)</string>
     <string name="height_cm">Height (cm)</string>
     <string name="save">Save</string>
+    <string name="user">User</string>
 </resources>
