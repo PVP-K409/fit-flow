@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -23,23 +24,16 @@ fun ActivityScreen() {
     val todaySteps = activityViewModel.todaySteps.observeAsState().value
     val coroutineScope = rememberCoroutineScope()
 
+
+    LaunchedEffect(key1 = Unit) {
+        activityViewModel.updateTodayStepsManually()
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = stringResource(R.string.steps, todaySteps?.current ?: stringResource(R.string.loading)))
-
-        // Adding padding for better spacing
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    activityViewModel.updateTodayStepsManually()
-                }
-            },
-            modifier = Modifier.padding(top = 16.dp)
-        ) {
-            Text(text = stringResource(R.string.refresh))
-        }
+        Text(text = stringResource(R.string.steps, todaySteps?.current ?: "..."))
     }
 }
