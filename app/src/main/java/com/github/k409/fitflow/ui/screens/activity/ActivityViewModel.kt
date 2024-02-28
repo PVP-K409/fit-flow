@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.DataModels.Step
 import com.github.k409.fitflow.ui.step_counter.StepCounter
-import com.github.k409.fitflow.ui.step_counter.StepRepository
+import com.github.k409.fitflow.Database.StepRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -28,7 +28,15 @@ class  ActivityViewModel @Inject constructor(
         viewModelScope.launch {
             val today = LocalDate.now().toString()
             val step = stepRepository.loadTodaySteps(today)
-            _todaySteps.value = step
+            if(step == null){ // new day
+                viewModelScope.launch {
+                    updateTodayStepsManually()
+                    _todaySteps.value = stepRepository.loadTodaySteps(today) // Update step after the suspend function completes
+                }
+            }
+            else{
+                _todaySteps.value = step
+            }
         }
     }
     suspend fun updateTodayStepsManually() {
