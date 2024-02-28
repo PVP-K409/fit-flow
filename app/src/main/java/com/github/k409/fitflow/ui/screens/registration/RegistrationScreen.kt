@@ -37,6 +37,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.OAuthProvider
 
@@ -195,14 +197,21 @@ private fun signInWithGitHub(context: Context, mAuth: FirebaseAuth){
 
 private fun registerWithEmailPassword(context: Context, email: String, password: String, firebaseAuth: FirebaseAuth){
     firebaseAuth.createUserWithEmailAndPassword(email, password)
-        .addOnCompleteListener{ task ->
-            if (task.isSuccessful){
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
                 Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(context, "Registration failed", Toast.LENGTH_SHORT).show()
+                if (task.exception is FirebaseAuthUserCollisionException) {
+                    Toast.makeText(context, "Email is already in use", Toast.LENGTH_SHORT).show()
+                } else if (task.exception is FirebaseAuthWeakPasswordException){
+                    Toast.makeText(context, "Password to weak", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Registration failed", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 }
+
 
 private fun signInWithGoogle(signInLauncher: ActivityResultLauncher<Intent>,googleSignInClient: GoogleSignInClient, firebaseAuth: FirebaseAuth){
     googleSignInClient.signOut().addOnCompleteListener {
