@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.step_counter
+package com.github.k409.fitflow.Database
 
 import android.util.Log
 import com.github.k409.fitflow.DataModels.Step
@@ -30,9 +30,8 @@ class StepRepository {
                     stepsList + updatedStepMap // new day
                 }
                 userDocRef.update("steps", updatedStepsList).await()
-                Log.d("Step Repository", "Updated steps")
             } else {
-                Log.d("Step Repository", "No such document")
+                Log.e("Step Repository", "No such document")
             }
         } catch (e: Exception) {
             Log.e("Step Repository", "Error updating steps", e)
