@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,7 +26,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -108,6 +106,7 @@ fun FitFlowTopBar(
     if (topBarState) {
         Surface {
             TopAppBar(
+                modifier = modifier,
                 colors = TopAppBarDefaults.topAppBarColors().copy(
 //                    containerColor = containerColor
                 ),
@@ -117,7 +116,6 @@ fun FitFlowTopBar(
                         style = MaterialTheme.typography.titleLarge,
                     )
                 },
-                modifier = modifier,
                 navigationIcon = {
                     if (canNavigateBack) {
                         IconButton(onClick = navigateUp) {
@@ -149,15 +147,15 @@ fun FitFlowBottomBar(
         NavigationBar(
             modifier = Modifier
                 .background(containerColor)
-                .padding(8.dp)
-                .clip(RoundedCornerShape(50))
-                .height(60.dp),
+//                .padding(8.dp)
+//                .clip(RoundedCornerShape(50))
+                .height(70.dp),
             windowInsets = NavigationBarDefaults.windowInsets.exclude(WindowInsets(bottom = 12.dp))
         ) {
             NavRoutes.bottomNavBarItems.forEach { screen ->
                 NavigationBarItem(
-                    modifier = Modifier
-                        .padding(top = 10.dp),
+                    modifier = Modifier,
+//                        .padding(top = 10.dp),
                     icon = {
                         Icon(
                             imageVector = screen.icon,

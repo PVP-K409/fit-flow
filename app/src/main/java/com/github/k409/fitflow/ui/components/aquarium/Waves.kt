@@ -22,10 +22,13 @@ import kotlin.math.sin
 @Composable
 fun AnimatedWaves(
     modifier: Modifier = Modifier,
-    waveCount: Int = 3,
+    waveCount: Int = 1,
     verticalWavesStart: Float = 0.3f,
     waveAmplitude: Float = 50f,
-    waveFrequency: Float = 0.03f
+    waveFrequency: Float = 0.03f,
+    brush: Brush = Brush.linearGradient(
+        colors = listOf(Color(0xFF7FABC0), Color(0x1A3C726A)),
+    )
 ) {
     val waveAmplitudeState = remember { mutableFloatStateOf(waveAmplitude) }
     val waveFrequencyState = remember { mutableFloatStateOf(waveFrequency) }
@@ -36,7 +39,7 @@ fun AnimatedWaves(
         initialValue = waveAmplitudeState.floatValue,
         targetValue = waveAmplitudeState.floatValue * 1.2f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1500, easing = LinearEasing),
+            animation = tween(durationMillis = 1500 * 4, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = ""
@@ -46,7 +49,7 @@ fun AnimatedWaves(
         initialValue = waveFrequencyState.floatValue,
         targetValue = waveFrequencyState.floatValue * 1.2f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1500, easing = LinearEasing),
+            animation = tween(durationMillis = 1500 * 4, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = ""
@@ -57,10 +60,19 @@ fun AnimatedWaves(
     ) {
         drawWave(
             waveCount = waveCount,
-            verticalWavesStart = verticalWavesStart,
-            amplitudeAnimation = amplitudeAnimation,
-            frequencyAnimation = frequencyAnimation
+            verticalStart = verticalWavesStart,
+            amplitude = amplitudeAnimation,
+            frequency = frequencyAnimation,
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    Color(0x1A3C726A),
+                    Color(0xFF7FB1C0),
+                    Color(0x80838BC0),
+                    Color(0x6383FD6F),
+                ),
+            )
         )
+
 
     }
 }
@@ -68,26 +80,26 @@ fun AnimatedWaves(
 
 fun DrawScope.drawWave(
     waveCount: Int,
-    verticalWavesStart: Float,
-    amplitudeAnimation: Float,
-    frequencyAnimation: Float,
-    waveBrush: Brush = Brush.linearGradient(
+    verticalStart: Float,
+    amplitude: Float,
+    frequency: Float,
+    brush: Brush = Brush.linearGradient(
         colors = listOf(Color(0xFF7FABC0), Color(0x1A3C726A)),
     ),
 ) {
     val wavePath = Path()
 
-    val startY = size.height * verticalWavesStart
+    val startY = size.height * verticalStart
     wavePath.moveTo(0f, startY)
 
     for (i in 0 until waveCount) {
         val x1 = (i * size.width) / waveCount
         val y1 =
-            startY + amplitudeAnimation * sin((i * size.width / waveCount) * frequencyAnimation)
+            startY + amplitude * sin((i * size.width / waveCount) * frequency)
 
         val x2 = ((i + 1) * size.width) / waveCount
         val y2 =
-            startY + amplitudeAnimation * sin(((i + 1) * size.width / waveCount) * frequencyAnimation)
+            startY + amplitude * sin(((i + 1) * size.width / waveCount) * frequency)
 
         wavePath.cubicTo(
             x1 + size.width / (2 * waveCount), y1, x1 + size.width / (2 * waveCount), y2, x2, y2
@@ -100,6 +112,6 @@ fun DrawScope.drawWave(
 
     drawPath(
         path = wavePath,
-        brush = waveBrush,
+        brush = brush,
     )
 }
