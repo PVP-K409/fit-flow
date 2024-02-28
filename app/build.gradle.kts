@@ -101,6 +101,8 @@ dependencies {
     ksp(libs.hilt.android.compiler)
 
     implementation(platform(libs.firebase.bom))
+    implementation(platform(libs.firebase.analytics))
+    implementation(platform(libs.firebase.auth))
     implementation(libs.bundles.firebase)
 
     implementation(libs.core.ktx)
@@ -121,10 +123,7 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
-    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.android.gms:play-services-auth:21.0.0")
-    implementation("com.firebaseui:firebase-ui-auth:8.0.0")
-    implementation("com.google.firebase:firebase-auth:22.3.1")
-    implementation("androidx.activity:activity:1.6.0-alpha05")
+    implementation(libs.play.services.auth)
+    implementation(libs.firebase.ui.auth)
+    implementation(libs.androidx.activity)
 }
