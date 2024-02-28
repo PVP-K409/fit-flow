@@ -11,8 +11,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.k409.fitflow.R
 import kotlinx.coroutines.launch
 
 @Composable
@@ -26,7 +28,7 @@ fun ActivityScreen() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Steps: ${todaySteps?.current ?: "Loading"}")
+        Text(text = stringResource(R.string.steps, todaySteps?.current ?: stringResource(R.string.loading)))
 
         // Adding padding for better spacing
         Button(
@@ -37,7 +39,7 @@ fun ActivityScreen() {
             },
             modifier = Modifier.padding(top = 16.dp)
         ) {
-            Text(text = "Refresh")
+            Text(text = stringResource(R.string.refresh))
         }
     }
 }
