@@ -31,25 +31,27 @@ class StepCounterWorker @AssistedInject constructor(
         try {
             val currentSteps = stepCounter.steps()
             val step: Step? = repository.loadTodaySteps(today)
-
-            val newStep = if (step == null) { // if new day
-                Step(
+            val newStep: Step
+            if (step == null) { // if new day
+                newStep = Step(
                     current = 0,
                     initial = currentSteps,
                     date = today,
                     temp = 0
                 )
-            } else if(hasRebooted || currentSteps <=1) { //if current day and reboot has happened
-                Step(
+            }
+            else if(hasRebooted || currentSteps <=1) { //if current day and reboot has happened
+                newStep = Step(
                     current = step.current + currentSteps,
                     initial = 0,
                     date = today,
                     temp = step.current
                 )
+                prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
             }
             else{
                 // if current day and no reboot
-                Step(
+                newStep = Step(
                     current = currentSteps - step.initial + step.temp,
                     initial = step.initial,
                     date = today,
@@ -57,10 +59,6 @@ class StepCounterWorker @AssistedInject constructor(
                 )
             }
             repository.updateSteps(newStep)
-            if (hasRebooted) { // we have handled the reboot
-                prefs.edit().putBoolean("rebooted", false).apply()
-            }
-
             return Result.success()
         } catch (e: Exception) {
             Log.e(TAG, "Error updating steps", e)

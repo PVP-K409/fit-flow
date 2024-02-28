@@ -24,14 +24,19 @@ class StepCounter(context: Context){
                     if (event == null) return
 
                     val stepsSinceLastReboot = event.values[0].toLong() // Steps since last reboot
+
                     if(stepsSinceLastReboot.toInt() <= 1){ // if reboot has happened
                         val editor = prefs.edit()
                         editor.putBoolean("rebooted", true)
                         val wasSuccessful = editor.commit()
                     }
+
+                    sensorManager.unregisterListener(this)
+
                     if (continuation.isActive) {
                         continuation.resume(stepsSinceLastReboot)
                     }
+
                 }
 
                 override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {

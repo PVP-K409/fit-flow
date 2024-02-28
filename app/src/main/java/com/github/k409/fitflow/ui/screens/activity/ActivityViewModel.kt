@@ -52,23 +52,23 @@ class  ActivityViewModel @Inject constructor(
                 date = today,
                 temp = 0
             )
-        } else if (hasRebooted || currentSteps <=1){ // we update current day step log
+        }
+        else if (hasRebooted || currentSteps <=1){ // we update current day step log
             newStep = Step(
                 current = step.current + currentSteps,
                 initial = 0,
                 date = today,
                 temp = step.current
             )
-        }else{
+            prefs.edit().putBoolean("rebooted", false).apply()
+        }
+        else{
             newStep = Step(
                 current = currentSteps - step.initial + step.temp,
                 initial = step.initial,
                 date = today,
                 temp = step.temp
             )
-        }
-        if (hasRebooted) { // we have handled the reboot
-            prefs.edit().putBoolean("rebooted", false).apply()
         }
         stepRepository.updateSteps(newStep)
         _todaySteps.value = newStep
