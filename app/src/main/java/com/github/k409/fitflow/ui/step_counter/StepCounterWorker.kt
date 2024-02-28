@@ -57,7 +57,7 @@ class StepCounterWorker @AssistedInject constructor(
             }
             repository.updateSteps(newStep)
             if (hasRebooted) { // we have handled the reboot
-                prefs.edit().putBoolean("rebooted", false).apply();
+                prefs.edit().putBoolean("rebooted", false).apply()
             }
 
             return Result.success()

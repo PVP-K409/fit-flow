@@ -1,7 +1,6 @@
 package com.github.k409.fitflow.ui.screens.activity
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -47,7 +46,7 @@ class  ActivityViewModel @Inject constructor(
             )
         } else if (hasRebooted || currentSteps <=1){ // we update current day step log
             newStep = Step(
-                current = (step.current + currentSteps).toLong(),
+                current = step.current + currentSteps,
                 initial = 0,
                 date = today,
                 temp = step.current
@@ -61,7 +60,7 @@ class  ActivityViewModel @Inject constructor(
             )
         }
         if (hasRebooted) { // we have handled the reboot
-            prefs.edit().putBoolean("rebooted", false).apply();
+            prefs.edit().putBoolean("rebooted", false).apply()
         }
         stepRepository.updateSteps(newStep)
         _todaySteps.value = newStep
