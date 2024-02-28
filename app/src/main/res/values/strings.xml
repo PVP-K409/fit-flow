@@ -6,4 +6,6 @@
     <string name="marketplace">Market</string>
     <string name="refresh">Refresh</string>
     <string name="steps">Steps: %1$s</string>
+    <string name="distance">Distance: %1$s</string>
+    <string name="calories">Calories: %1$s</string>
 </resources>

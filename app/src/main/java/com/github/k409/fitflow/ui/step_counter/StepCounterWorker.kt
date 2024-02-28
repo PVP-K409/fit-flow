@@ -7,7 +7,8 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.github.k409.fitflow.DataModels.Step
-import com.github.k409.fitflow.Database.StepRepository
+import com.github.k409.fitflow.DataModels.User
+import com.github.k409.fitflow.Database.UserRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.time.LocalDate
@@ -19,14 +20,16 @@ private const val TAG = "StepCounterWorker"
 class StepCounterWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    private val repository: StepRepository,
+    private val repository: UserRepository,
     private val stepCounter: StepCounter,
     private val prefs: SharedPreferences
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
         val hasRebooted = prefs.getBoolean("rebooted", false) // boolean if reboot has happened
+        val distanceAndCaloriesUtil = DistanceAndCaloriesUtil()
         val today = LocalDate.now().toString()
+        val user: User? = repository.getUser()
 
         try {
             val currentSteps = stepCounter.steps()
@@ -37,7 +40,9 @@ class StepCounterWorker @AssistedInject constructor(
                     current = 0,
                     initial = currentSteps,
                     date = today,
-                    temp = 0
+                    temp = 0,
+                    calories = 0,
+                    distance = 0.0
                 )
             }
             else if(hasRebooted || currentSteps <=1) { //if current day and reboot has happened
@@ -45,7 +50,9 @@ class StepCounterWorker @AssistedInject constructor(
                     current = step.current + currentSteps,
                     initial = 0,
                     date = today,
-                    temp = step.current
+                    temp = step.current,
+                    calories = distanceAndCaloriesUtil.calculateCaloriesFromSteps((step.current+currentSteps), user),
+                    distance = distanceAndCaloriesUtil.calculateDistanceFromSteps((step.current+currentSteps), user)
                 )
                 prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
             }
@@ -55,7 +62,9 @@ class StepCounterWorker @AssistedInject constructor(
                     current = currentSteps - step.initial + step.temp,
                     initial = step.initial,
                     date = today,
-                    temp = step.temp
+                    temp = step.temp,
+                    calories = distanceAndCaloriesUtil.calculateCaloriesFromSteps((currentSteps - step.initial + step.temp), user),
+                    distance = distanceAndCaloriesUtil.calculateDistanceFromSteps((currentSteps - step.initial + step.temp), user)
                 )
             }
             repository.updateSteps(newStep)
