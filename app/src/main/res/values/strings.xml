@@ -8,4 +8,14 @@
     <string name="user_name">Name</string>
     <string name="profileSettings">Settings</string>
     <string name="profileCreation">Create profile</string>
+    <string name="required_field">*Required field</string>
+    <string name="please_select_your_gender">Please select your gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="profile_saved">Profile saved</string>
+    <string name="age">Age</string>
+    <string name="gender">Gender</string>
+    <string name="weight_kg">Weight (kg)</string>
+    <string name="height_cm">Height (cm)</string>
+    <string name="save">Save</string>
 </resources>

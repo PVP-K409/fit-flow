@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.profile
+package com.github.k409.fitflow.ui.profile_db
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore

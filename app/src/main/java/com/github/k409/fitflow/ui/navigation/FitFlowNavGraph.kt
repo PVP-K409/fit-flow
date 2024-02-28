@@ -41,7 +41,7 @@ fun FitFlowNavGraph(
             ProfileCreationScreen(navController)
         }
         composable(NavRoutes.ProfileSettings.route) {
-            ProfileSettingsScreen()
+            ProfileSettingsScreen(navController)
         }
     }
 

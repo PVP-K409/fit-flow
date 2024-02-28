@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,12 +17,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.features.SettingsItem
 import com.github.k409.fitflow.ui.navigation.NavRoutes
-
-const val username = "user1" // use db later
-var hostNavController: NavController? = null
 
 val moreOptionsList = listOf(
     SettingsItem("Edit Profile", DCodeIcon.ImageVectorIcon(MyIcons.Edit), NavRoutes.ProfileCreation.route),
@@ -31,7 +26,6 @@ val moreOptionsList = listOf(
 
 @Composable
 fun NavigateToProfileSettingsScreen(navController: NavController) {
-    hostNavController = navController
     navController.navigate(NavRoutes.ProfileSettings.route) {
         popUpTo(navController.graph.findStartDestination().id) {
             saveState = true
@@ -50,7 +44,7 @@ fun NavigateToFeatureScreen(settingsItem: SettingsItem, navController: NavContro
     }
 }
 @Composable
-fun ProfileSettingsScreen() {
+fun ProfileSettingsScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -60,15 +54,14 @@ fun ProfileSettingsScreen() {
         Text(text = "")
     }
     moreOptionsList.forEach {
-        MoreOptionsComp(it)
+        MoreOptionsComp(it, navController)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreOptionsComp(
     settingsItem: SettingsItem,
-    navController: NavController = rememberNavController(),
+    navController: NavController
 ) {
     Row(
         modifier = Modifier.padding(5.dp),
@@ -103,7 +96,7 @@ fun MoreOptionsComp(
                 style = MaterialTheme.typography.labelLarge
             )
         }
-        IconButton(onClick = { hostNavController?.let { NavigateToFeatureScreen(settingsItem, it) } }) {
+        IconButton(onClick = { NavigateToFeatureScreen(settingsItem, navController) }) {
             Image(
                 imageVector = MyIcons.KeyboardArrowRight,
                 contentDescription = null,

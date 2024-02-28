@@ -35,15 +35,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.github.k409.fitflow.R
-import com.github.k409.fitflow.ui.profile.ProfileRepository
+import com.github.k409.fitflow.ui.profile_db.ProfileRepository
 import kotlinx.coroutines.launch
-
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileCreationScreen(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
-    val repository : ProfileRepository = ProfileRepository()
+    val repository = ProfileRepository()
+    val context = LocalContext.current
 
     var name by rememberSaveable { mutableStateOf("") }
     var age by rememberSaveable { mutableStateOf("") }
@@ -59,12 +59,13 @@ fun ProfileCreationScreen(navController: NavController) {
     var heightError by remember { mutableStateOf<String?>(null) }
 
     // Function to validate and update error messages
+    @Composable
     fun validate(): Boolean {
-        nameError = if (name.isEmpty()) "*Required field" else null
-        ageError = if (age.isEmpty()) "*Required field" else null
-        genderError = if (gender.isEmpty()) "*Required field" else null
-        weightError = if (weight.isEmpty()) "*Required field" else null
-        heightError = if (height.isEmpty()) "*Required field" else null
+        nameError = if (name.isEmpty()) stringResource(R.string.required_field) else null
+        ageError = if (age.isEmpty()) stringResource(R.string.required_field) else null
+        genderError = if (gender.isEmpty()) stringResource(R.string.required_field) else null
+        weightError = if (weight.isEmpty()) stringResource(R.string.required_field) else null
+        heightError = if (height.isEmpty()) stringResource(R.string.required_field) else null
 
         // Return true if there are no errors, indicating that the form is valid
         return nameError == null && ageError == null && genderError == null && weightError == null
@@ -93,7 +94,7 @@ fun ProfileCreationScreen(navController: NavController) {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
                 },
                 placeholder = {
-                    Text(text = "Please select your gender")
+                    Text(text = stringResource(R.string.please_select_your_gender))
                 },
                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
                 modifier = Modifier
@@ -109,22 +110,22 @@ fun ProfileCreationScreen(navController: NavController) {
             ) {
                 DropdownMenuItem(
                     text = {
-                        Text(text = "Male")
+                        Text(text = stringResource(R.string.male))
                     },
                     onClick = {
-                        gender = "Male"
+                        gender = context.getString(R.string.male)
                         isExpanded = false
-                        genderError = if (gender.isEmpty()) "*Required field" else null
+                        genderError = if (gender.isEmpty()) context.getString(R.string.required_field) else null
                     }
                 )
                 DropdownMenuItem(
                     text = {
-                        Text(text = "Female")
+                        Text(text = stringResource(R.string.female))
                     },
                     onClick = {
-                        gender = "Female"
+                        gender = context.getString(R.string.female)
                         isExpanded = false
-                        genderError = if (gender.isEmpty()) "*Required field" else null
+                        genderError = if (gender.isEmpty()) context.getString(R.string.required_field) else null
                     }
                 ) }
         }
@@ -138,10 +139,9 @@ fun ProfileCreationScreen(navController: NavController) {
         }
     }
     @Composable
-    fun displayMessage() {
-        val context = LocalContext.current
+    fun displayMessage(message : String) {
         Column {
-            Toast.makeText(context, "Profile saved", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
     Column(
@@ -161,7 +161,7 @@ fun ProfileCreationScreen(navController: NavController) {
             value = name,
             onValueChange = {
                 name = it
-                nameError = if (name.isEmpty()) "*Required field" else null},
+                nameError = if (name.isEmpty()) context.getString(R.string.required_field) else null},
             //placeholder = { Text(text = "e.g. Bob") },
             isError = nameError != null,
         )
@@ -178,7 +178,7 @@ fun ProfileCreationScreen(navController: NavController) {
         val pattern = remember { Regex("^\\d+\$") }
         // Age input
         Text(
-            text = "Age",
+            text = stringResource(R.string.age),
             style = MaterialTheme.typography.bodyLarge
         )
 
@@ -187,7 +187,7 @@ fun ProfileCreationScreen(navController: NavController) {
             value = age,
             onValueChange = { if (it.isEmpty() || it.matches(pattern)) {
                 age = it
-                ageError = if (age.isEmpty()) "*Required field" else null
+                ageError = if (age.isEmpty()) context.getString(R.string.required_field) else null
             } },
             //placeholder = { Text(text = "e.g. 18") },
             isError = ageError != null,
@@ -204,7 +204,7 @@ fun ProfileCreationScreen(navController: NavController) {
         Spacer(modifier = Modifier.padding(8.dp))
         // Gender input
         Text(
-            text = "Gender",
+            text = stringResource(R.string.gender),
             style = MaterialTheme.typography.bodyLarge
         )
 
@@ -213,7 +213,7 @@ fun ProfileCreationScreen(navController: NavController) {
         Spacer(modifier = Modifier.padding(8.dp))
         // Weight input - replace with dropdown
         Text(
-            text = "Weight (kg)",
+            text = stringResource(R.string.weight_kg),
             style = MaterialTheme.typography.bodyLarge
         )
 
@@ -222,7 +222,7 @@ fun ProfileCreationScreen(navController: NavController) {
             value = weight,
             onValueChange = { if (it.isEmpty() || it.matches(pattern)) {
                 weight = it
-                weightError = if (weight.isEmpty()) "*Required field" else null
+                weightError = if (weight.isEmpty()) context.getString(R.string.required_field) else null
             } },
             //placeholder = { Text(text = "e.g. 80") },
             isError = weightError != null,
@@ -239,7 +239,7 @@ fun ProfileCreationScreen(navController: NavController) {
         Spacer(modifier = Modifier.padding(8.dp))
         // Height input - replace with dropdown
         Text(
-            text = "Height (cm)",
+            text = stringResource(R.string.height_cm),
             style = MaterialTheme.typography.bodyLarge
         )
 
@@ -248,7 +248,7 @@ fun ProfileCreationScreen(navController: NavController) {
             value = height,
             onValueChange = { if (it.isEmpty() || it.matches(pattern)) {
                 height = it
-                heightError = if (height.isEmpty()) "*Required field" else null} },
+                heightError = if (height.isEmpty()) context.getString(R.string.required_field) else null} },
             //placeholder = { Text(text = "e.g. Bob") },
             isError = heightError != null,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -268,8 +268,9 @@ fun ProfileCreationScreen(navController: NavController) {
             horizontalAlignment = Alignment.End
         ) {
             var isClicked by remember { mutableStateOf(false) }
+
             Button(onClick = { isClicked = true }) {
-                Text("Save")
+                Text(stringResource(R.string.save))
             }
             if (isClicked) {
                 isClicked = false
@@ -277,7 +278,7 @@ fun ProfileCreationScreen(navController: NavController) {
                     coroutineScope.launch {
                         repository.SubmitProfile(name, age.toInt(), gender, weight.toInt(), height.toInt())
                     }
-                    displayMessage()
+                    displayMessage(stringResource(R.string.profile_saved))
                     NavigateToProfileSettingsScreen(navController = navController)
                 }
             }
