@@ -1,5 +1,7 @@
 package com.github.k409.fitflow.ui.screens.activity
 
+import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class  ActivityViewModel @Inject constructor(
     private val stepRepository: StepRepository,
-    private val stepCounter: StepCounter
+    private val stepCounter: StepCounter,
+    private val prefs : SharedPreferences
 ): ViewModel(){
     private val _todaySteps = MutableLiveData<Step?>()
     val todaySteps: LiveData<Step?> = _todaySteps
@@ -30,24 +33,37 @@ class  ActivityViewModel @Inject constructor(
         }
     }
     suspend fun updateTodayStepsManually() {
+        val hasRebooted = prefs.getBoolean("rebooted", false) // boolean if reboot has happened
         val today = LocalDate.now().toString()
         val step: Step? = stepRepository.loadTodaySteps(today)
+        val currentSteps = stepCounter.steps()
         val newStep: Step
-        if (step == null) { // new day
+        if (step == null) { // if new day
             newStep = Step(
                 current = 0,
-                initial = stepCounter.steps(),
-                date = today
+                initial = currentSteps,
+                date = today,
+                temp = 0
             )
-            stepRepository.updateSteps(newStep) // create new day step log
-        } else { // we update current day step log
+        } else if (hasRebooted || currentSteps <=1){ // we update current day step log
             newStep = Step(
-                current = (stepCounter.steps().toInt() - step.initial.toInt()).toLong(),
-                initial = step.initial,
-                date = today
+                current = (step.current + currentSteps).toLong(),
+                initial = 0,
+                date = today,
+                temp = step.current
             )
-            stepRepository.updateSteps(newStep)
+        }else{
+            newStep = Step(
+                current = currentSteps - step.initial + step.temp,
+                initial = step.initial,
+                date = today,
+                temp = step.temp
+            )
         }
+        if (hasRebooted) { // we have handled the reboot
+            prefs.edit().putBoolean("rebooted", false).apply();
+        }
+        stepRepository.updateSteps(newStep)
         _todaySteps.value = newStep
     }
 

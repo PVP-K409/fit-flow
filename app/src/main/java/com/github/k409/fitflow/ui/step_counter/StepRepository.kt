@@ -21,7 +21,8 @@ class StepRepository {
                 val updatedStepMap = mapOf(
                     "current" to newSteps.current,
                     "initial" to newSteps.initial,
-                    "date" to newSteps.date
+                    "date" to newSteps.date,
+                    "temp" to newSteps.temp
                 )
                 val updatedStepsList = if (existingStepMap != null) {
                     stepsList.map { if (it["date"] == newSteps.date) updatedStepMap else it }
@@ -50,7 +51,8 @@ class StepRepository {
                 Step(
                     current = it["current"] as? Long ?: 0,
                     initial = it["initial"] as? Long ?: 0,
-                    date = it["date"] as? String ?: day
+                    date = it["date"] as? String ?: day,
+                    temp =  it["temp"] as? Long ?: 0
                 )
             }
         } else {

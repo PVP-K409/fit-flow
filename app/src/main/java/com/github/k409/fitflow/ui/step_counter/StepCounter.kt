@@ -4,8 +4,8 @@ import android.hardware.Sensor
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.hardware.SensorEvent
-import android.util.Log
 import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -14,6 +14,7 @@ import kotlin.coroutines.resume
 class StepCounter(context: Context){
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val sensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+    private val prefs: SharedPreferences = context.getSharedPreferences("MyAppPrefs",Context.MODE_PRIVATE)
 
     suspend fun steps() = suspendCancellableCoroutine { continuation ->
 
@@ -23,9 +24,11 @@ class StepCounter(context: Context){
                     if (event == null) return
 
                     val stepsSinceLastReboot = event.values[0].toLong() // Steps since last reboot
-                    Log.d("Step Detected", "Step count - $stepsSinceLastReboot")
-
-
+                    if(stepsSinceLastReboot.toInt() <= 1){ // if reboot has happened
+                        val editor = prefs.edit()
+                        editor.putBoolean("rebooted", true)
+                        val wasSuccessful = editor.commit()
+                    }
                     if (continuation.isActive) {
                         continuation.resume(stepsSinceLastReboot)
                     }

@@ -1,6 +1,7 @@
 package com.github.k409.fitflow.ui.step_counter
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
@@ -10,45 +11,54 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.time.LocalDate
 
+
 private const val TAG = "StepCounterWorker"
 
 @HiltWorker
 class StepCounterWorker @AssistedInject constructor(
-    @Assisted appContext: Context,
+    @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val repository: StepRepository,
-    private val stepCounter: StepCounter
+    private val stepCounter: StepCounter,
+    private val prefs: SharedPreferences
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        Log.d(TAG, "Starting work...")
-        // TODO: Remove this
-        return Result.success()
-
+        val hasRebooted = prefs.getBoolean("rebooted", false) // boolean if reboot has happened
         val today = LocalDate.now().toString()
 
         try {
             val currentSteps = stepCounter.steps()
             val step: Step? = repository.loadTodaySteps(today)
 
-            val newStep = if (step == null) {
-                // new day
+            val newStep = if (step == null) { // if new day
                 Step(
                     current = 0,
                     initial = currentSteps,
-                    date = today
+                    date = today,
+                    temp = 0
                 )
-            } else {
-                // we update current day step log
+            } else if(hasRebooted || currentSteps <=1) { //if current day and reboot has happened
                 Step(
-                    current = currentSteps - step.initial,
-                    initial = step.initial,
-                    date = today
+                    current = step.current + currentSteps,
+                    initial = 0,
+                    date = today,
+                    temp = step.current
                 )
             }
-
+            else{
+                // if current day and no reboot
+                Step(
+                    current = currentSteps - step.initial + step.temp,
+                    initial = step.initial,
+                    date = today,
+                    temp = step.temp
+                )
+            }
             repository.updateSteps(newStep)
-            Log.d(TAG, "Updated steps: $newStep")
+            if (hasRebooted) { // we have handled the reboot
+                prefs.edit().putBoolean("rebooted", false).apply();
+            }
 
             return Result.success()
         } catch (e: Exception) {
