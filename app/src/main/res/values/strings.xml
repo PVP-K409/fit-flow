@@ -4,6 +4,9 @@
     <string name="activity">Activity</string>
     <string name="goals">Goals</string>
     <string name="marketplace">Market</string>
+    <string name="distance">Distance</string>
+    <string name="calories">Calories</string>
+    <string name="steps">Steps</string>
     <string name="profile_prompt">Profile creation</string>
     <string name="user_name">Name</string>
     <string name="profile_settings">Settings</string>

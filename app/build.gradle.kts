@@ -97,13 +97,20 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.work.runtime)
 
+    implementation (libs.androidx.runtime.livedata)
     implementation(platform(libs.firebase.bom))
     implementation(platform(libs.firebase.analytics))
     implementation(platform(libs.firebase.auth))
     implementation(libs.bundles.firebase)
+    implementation(libs.androidx.work.runtime)
+    implementation(libs.accompanist.permissions)
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
