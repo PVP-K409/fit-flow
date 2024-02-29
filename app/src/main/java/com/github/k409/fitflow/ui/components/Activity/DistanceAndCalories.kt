@@ -10,11 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.k409.fitflow.R
 
 @Composable
 fun DistanceAndCalories(
@@ -31,7 +33,7 @@ fun DistanceAndCalories(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text("Distance", fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.distance), fontWeight = FontWeight.Bold)
             Text(
                 "$distance m",
                 textAlign = TextAlign.Center,
@@ -42,7 +44,7 @@ fun DistanceAndCalories(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text("Calories", fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.calories), fontWeight = FontWeight.Bold)
             Text(
                 "$calories kcal",
                 textAlign = TextAlign.Center,
