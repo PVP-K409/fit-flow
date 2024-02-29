@@ -52,19 +52,6 @@ fun FitFlowApp() {
         val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
         val topBarState = rememberSaveable { (mutableStateOf(true)) }
 
-        when (currentScreen) {
-            NavRoutes.Home -> {
-                bottomBarState.value = true
-                topBarState.value = true
-            }
-
-            else -> {
-                bottomBarState.value = true
-                topBarState.value = true
-            }
-        }
-
-
         Scaffold(
             topBar = {
                 FitFlowTopBar(
