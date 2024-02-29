@@ -25,66 +25,61 @@ import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
+import kotlin.random.Random
 
 @Composable
 fun CircularPrimaryFish(
     modifier: Modifier = Modifier,
-    maxFishSize: Dp = 500.dp,
-    initialFishSize: Dp = 100.dp
+    initialFishSize: Dp = 100.dp,
+    maxFishSize: Dp = 300.dp,
+    movementRadius: Dp = 100.dp
 ) {
     val coroutineScope = rememberCoroutineScope()
 
     val primaryFishPainter = painterResource(id = R.drawable.primary_fish)
+
     val currentFishSize = remember { Animatable(initialFishSize.value) }
+    val currentRotationAngle = remember { Animatable(0f) }
 
-    val infiniteTransition = rememberInfiniteTransition(label = "")
-
+    val infiniteTransition = rememberInfiniteTransition(label = "InfiniteTransition")
     val animationValue by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 2 * Math.PI.toFloat(),
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 4000),
-            repeatMode = RepeatMode.Restart
-        ), label = ""
+        initialValue = 0f, targetValue = 2 * Math.PI.toFloat(), animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 4000), repeatMode = RepeatMode.Restart
+        ), label = "RotationAnimation"
     )
 
-    val radius = 100.dp
-
     val xPosition = remember(animationValue) {
-        (cos(animationValue.toDouble()) * radius.value).toFloat()
+        (cos(animationValue.toDouble()) * movementRadius.value).toFloat()
     }
 
     val yPosition = remember(animationValue) {
-        (sin(animationValue.toDouble()) * radius.value).toFloat()
+        (sin(animationValue.toDouble()) * movementRadius.value).toFloat()
     }
 
-    Image(
-        painter = primaryFishPainter,
+    Image(painter = primaryFishPainter,
         contentDescription = "Fish",
         modifier = modifier
             .size(currentFishSize.value.dp)
             .offset {
                 IntOffset(
-                    xPosition.roundToInt(),
-                    yPosition.roundToInt()
+                    xPosition.roundToInt(), yPosition.roundToInt()
                 )
             }
-            .graphicsLayer(rotationZ = (animationValue * 180 / Math.PI).toFloat())
+            .graphicsLayer(rotationZ = currentRotationAngle.value)
             .noRippleClickable(onClick = {
                 coroutineScope.launch {
-                    if (currentFishSize.value < maxFishSize.value) {
-                        currentFishSize.animateTo(currentFishSize.value + 30)
-                    } else {
-                        currentFishSize.animateTo(initialFishSize.value)
-                    }
+                    currentRotationAngle.animateTo(
+                        currentRotationAngle.value + 360f,
+                        animationSpec = tween(durationMillis = 2000)
+                    )
                 }
             }, onLongClick = {
                 coroutineScope.launch {
-                    if (currentFishSize.value == maxFishSize.value) {
-                        currentFishSize.animateTo(initialFishSize.value)
-                    } else {
-                        currentFishSize.animateTo(maxFishSize.value)
-                    }
+                    val newFishSize = Random.nextLong(
+                        initialFishSize.value.toLong(), maxFishSize.value.toLong()
+                    )
+
+                    currentFishSize.animateTo(newFishSize.toFloat())
                 }
             })
     )
@@ -94,8 +89,8 @@ fun CircularPrimaryFish(
 @Composable
 fun AnimatedPrimaryFish(
     modifier: Modifier = Modifier,
-    maxFishSize: Dp = 500.dp,
-    initialFishSize: Dp = 100.dp
+    initialFishSize: Dp = 100.dp,
+    maxFishSize: Dp = 300.dp,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -106,7 +101,7 @@ fun AnimatedPrimaryFish(
     val xPosition by infiniteTransition.animateFloat(
         initialValue = 0f, targetValue = 200f, animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 2000), repeatMode = RepeatMode.Reverse
-        ), label = ""
+        ), label = "FishXPositionAnimation"
     )
 
     Image(
