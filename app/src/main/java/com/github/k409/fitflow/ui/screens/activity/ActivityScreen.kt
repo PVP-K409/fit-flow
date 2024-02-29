@@ -17,7 +17,7 @@ import com.github.k409.fitflow.ui.components.Activity.DistanceAndCalories
 fun ActivityScreen() {
     val activityViewModel: ActivityViewModel = hiltViewModel()
     val todaySteps by activityViewModel.todaySteps.observeAsState()
-    val todayGoal : Long = 6000 // TODO goal setter
+    val todayGoal: Long = 6000 // TODO goal setter
 
     LaunchedEffect(key1 = Unit) {
         activityViewModel.updateTodayStepsManually()
@@ -26,15 +26,19 @@ fun ActivityScreen() {
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-    ){
-        todaySteps?.let { CircularProgressBar(
-            taken = it.current,
-            goal = todayGoal,
-        ) }
-        todaySteps?.let { DistanceAndCalories(
-            calories = it.calories,
-            distance = it.distance
-        ) }
+    ) {
+        todaySteps?.let {
+            CircularProgressBar(
+                taken = it.current,
+                goal = todayGoal,
+            )
+        }
+        todaySteps?.let {
+            DistanceAndCalories(
+                calories = it.calories,
+                distance = it.distance
+            )
+        }
     }
 
 }

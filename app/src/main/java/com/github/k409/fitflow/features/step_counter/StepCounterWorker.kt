@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.step_counter
+package com.github.k409.fitflow.features.step_counter
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -6,9 +6,9 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.github.k409.fitflow.DataModels.Step
-import com.github.k409.fitflow.DataModels.User
-import com.github.k409.fitflow.Database.UserRepository
+import com.github.k409.fitflow.data.UserRepository
+import com.github.k409.fitflow.model.Step
+import com.github.k409.fitflow.model.User
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.time.LocalDate
@@ -44,27 +44,37 @@ class StepCounterWorker @AssistedInject constructor(
                     calories = 0,
                     distance = 0.0
                 )
-            }
-            else if(hasRebooted || currentSteps <=1) { //if current day and reboot has happened
+            } else if (hasRebooted || currentSteps <= 1) { //if current day and reboot has happened
                 newStep = Step(
                     current = step.current + currentSteps,
                     initial = 0,
                     date = today,
                     temp = step.current,
-                    calories = distanceAndCaloriesUtil.calculateCaloriesFromSteps((step.current+currentSteps), user),
-                    distance = distanceAndCaloriesUtil.calculateDistanceFromSteps((step.current+currentSteps), user)
+                    calories = distanceAndCaloriesUtil.calculateCaloriesFromSteps(
+                        (step.current + currentSteps),
+                        user
+                    ),
+                    distance = distanceAndCaloriesUtil.calculateDistanceFromSteps(
+                        (step.current + currentSteps),
+                        user
+                    )
                 )
                 prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
-            }
-            else{
+            } else {
                 // if current day and no reboot
                 newStep = Step(
                     current = currentSteps - step.initial + step.temp,
                     initial = step.initial,
                     date = today,
                     temp = step.temp,
-                    calories = distanceAndCaloriesUtil.calculateCaloriesFromSteps((currentSteps - step.initial + step.temp), user),
-                    distance = distanceAndCaloriesUtil.calculateDistanceFromSteps((currentSteps - step.initial + step.temp), user)
+                    calories = distanceAndCaloriesUtil.calculateCaloriesFromSteps(
+                        (currentSteps - step.initial + step.temp),
+                        user
+                    ),
+                    distance = distanceAndCaloriesUtil.calculateDistanceFromSteps(
+                        (currentSteps - step.initial + step.temp),
+                        user
+                    )
                 )
             }
             repository.updateSteps(newStep)

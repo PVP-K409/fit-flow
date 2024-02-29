@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.DataModels
+package com.github.k409.fitflow.model
 
 data class User(
     var name: String = "",

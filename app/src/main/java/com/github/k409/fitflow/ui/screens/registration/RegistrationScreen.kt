@@ -40,11 +40,13 @@ fun RegistrationScreen() {
 
     val context = LocalContext.current
 
-    val signInLauncher = rememberLauncherForActivityResult(ActivityResultContracts
-        .StartActivityForResult()) { result ->
+    val signInLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts
+            .StartActivityForResult()
+    ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            try{
+            try {
                 val account = task.getResult(ApiException::class.java)!!
                 firebaseAuthWithGoogle(context, account.idToken!!)
             } catch (e: Exception) {
@@ -93,7 +95,10 @@ fun RegistrationScreen() {
     }
 }
 
-private fun signInWithGitHub(context: Context, mAuth: FirebaseAuth){
+private fun signInWithGitHub(
+    context: Context,
+    mAuth: FirebaseAuth
+) {
     val provider = OAuthProvider.newBuilder("github.com")
     provider.addCustomParameter("login", "")
     // Request read access to a user's email addresses.
@@ -121,18 +126,25 @@ private fun signInWithGitHub(context: Context, mAuth: FirebaseAuth){
 }
 
 
-private fun signInWithGoogle(signInLauncher: ActivityResultLauncher<Intent>,googleSignInClient: GoogleSignInClient, firebaseAuth: FirebaseAuth){
+private fun signInWithGoogle(
+    signInLauncher: ActivityResultLauncher<Intent>,
+    googleSignInClient: GoogleSignInClient,
+    firebaseAuth: FirebaseAuth
+) {
     googleSignInClient.signOut().addOnCompleteListener {
         val signInIntent = googleSignInClient.signInIntent
         signInLauncher.launch(signInIntent)
     }
 }
 
-private fun firebaseAuthWithGoogle(context: Context, idToken: String) {
+private fun firebaseAuthWithGoogle(
+    context: Context,
+    idToken: String
+) {
     val credential = GoogleAuthProvider.getCredential(idToken, null)
     FirebaseAuth.getInstance().signInWithCredential(credential)
         .addOnCompleteListener { task ->
-            if(task.isSuccessful){
+            if (task.isSuccessful) {
                 Toast.makeText(context, "Google sign in successful", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "Google sign in failed", Toast.LENGTH_SHORT).show()

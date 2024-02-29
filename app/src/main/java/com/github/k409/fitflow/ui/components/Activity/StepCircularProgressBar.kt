@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,20 +36,20 @@ fun CircularProgressBar(
     strokeWidth: Dp = 12.dp,
     animDuration: Int = 1000,
     animDelay: Int = 0
-    ){
+) {
     var animationPlayed by remember {
         mutableStateOf(false)
     }
-    val percentage = (taken.toFloat()/goal)
+    val percentage = (taken.toFloat() / goal)
 
     val curPercentage = animateFloatAsState(
         targetValue = if (animationPlayed) percentage else 0f,
         animationSpec = tween(
             durationMillis = animDuration,
-            delayMillis =  animDelay
+            delayMillis = animDelay
         ), label = ""
     )
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = true) {
         animationPlayed = true
     }
     Box(
@@ -84,7 +84,6 @@ fun CircularProgressBar(
             )
         }
     }
-
 
 
 }

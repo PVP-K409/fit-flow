@@ -1,8 +1,8 @@
-package com.github.k409.fitflow.Database
+package com.github.k409.fitflow.data
 
 import android.util.Log
-import com.github.k409.fitflow.DataModels.Step
-import com.github.k409.fitflow.DataModels.User
+import com.github.k409.fitflow.model.Step
+import com.github.k409.fitflow.model.User
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 

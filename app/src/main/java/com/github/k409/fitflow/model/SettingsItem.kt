@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.features
+package com.github.k409.fitflow.model
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

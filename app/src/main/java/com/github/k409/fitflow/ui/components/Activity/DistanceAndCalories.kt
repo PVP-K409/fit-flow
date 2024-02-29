@@ -23,7 +23,7 @@ fun DistanceAndCalories(
     calories: Long?,
     distance: Double?,
     fontSize: TextUnit = 20.sp
-){
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.github.k409.fitflow.ui.features.SettingsItem
+import com.github.k409.fitflow.model.SettingsItem
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 
 val moreOptionsList = listOf(
@@ -35,7 +35,11 @@ fun navigateToProfileSettingsScreen(navController: NavController) {
         restoreState = true
     }
 }
-fun navigateToFeatureScreen(settingsItem: SettingsItem, navController: NavController) {
+
+fun navigateToFeatureScreen(
+    settingsItem: SettingsItem,
+    navController: NavController
+) {
     navController.navigate(settingsItem.route) {
         popUpTo(navController.graph.findStartDestination().id) {
             saveState = true
@@ -44,6 +48,7 @@ fun navigateToFeatureScreen(settingsItem: SettingsItem, navController: NavContro
         restoreState = true
     }
 }
+
 @Composable
 fun ProfileSettingsScreen(navController: NavController) {
     Column(

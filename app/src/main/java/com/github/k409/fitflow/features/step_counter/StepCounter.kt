@@ -1,20 +1,21 @@
-package com.github.k409.fitflow.ui.step_counter
+package com.github.k409.fitflow.features.step_counter
 
-import android.hardware.Sensor
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.content.Context
 import android.content.SharedPreferences
+import android.hardware.Sensor
 import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Singleton
 import kotlin.coroutines.resume
 
 @Singleton
-class StepCounter(context: Context){
+class StepCounter(context: Context) {
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val sensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-    private val prefs: SharedPreferences = context.getSharedPreferences("MyAppPrefs",Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
 
     suspend fun steps() = suspendCancellableCoroutine { continuation ->
 
@@ -25,7 +26,7 @@ class StepCounter(context: Context){
 
                     val stepsSinceLastReboot = event.values[0].toLong() // Steps since last reboot
 
-                    if(stepsSinceLastReboot.toInt() <= 1){ // if reboot has happened
+                    if (stepsSinceLastReboot.toInt() <= 1) { // if reboot has happened
                         val editor = prefs.edit()
                         editor.putBoolean("rebooted", true)
                         val wasSuccessful = editor.commit()
@@ -39,14 +40,19 @@ class StepCounter(context: Context){
 
                 }
 
-                override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+                override fun onAccuracyChanged(
+                    sensor: Sensor?,
+                    accuracy: Int
+                ) {
                     //not needed
                 }
             }
         }
 
-        val supportedAndEnabled = sensorManager.registerListener(listener,
-            sensor, SensorManager.SENSOR_DELAY_NORMAL) // registered sensor listener
+        val supportedAndEnabled = sensorManager.registerListener(
+            listener,
+            sensor, SensorManager.SENSOR_DELAY_NORMAL
+        ) // registered sensor listener
     }
 
 }
