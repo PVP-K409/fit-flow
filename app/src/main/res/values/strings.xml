@@ -7,4 +7,5 @@
     <string name="distance">Distance</string>
     <string name="calories">Calories</string>
     <string name="steps">Steps</string>
+    <string name="user">User</string>
 </resources>

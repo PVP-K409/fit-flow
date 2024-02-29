@@ -29,6 +29,14 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "CLIENT_ID", "\"${keystoreProperties["github.clientId"]}\"")
+        buildConfigField("String", "CLIENT_SECRET", "\"${keystoreProperties["github.clientSecret"]}\"")
+        buildConfigField("String", "REDIRECT_URI", "\"${keystoreProperties["github.redirectUri"]}\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     signingConfigs {
@@ -98,6 +106,8 @@ dependencies {
 
     implementation (libs.androidx.runtime.livedata)
     implementation(platform(libs.firebase.bom))
+    implementation(platform(libs.firebase.analytics))
+    implementation(platform(libs.firebase.auth))
     implementation(libs.bundles.firebase)
     implementation(libs.androidx.work.runtime)
     implementation(libs.accompanist.permissions)
@@ -120,4 +130,7 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+    implementation(libs.play.services.auth)
+    implementation(libs.firebase.ui.auth)
+    implementation(libs.androidx.activity)
 }
