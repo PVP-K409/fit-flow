@@ -44,6 +44,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
+import com.github.k409.fitflow.ui.screens.profile.navigateToProfileSettingsScreen
 import com.github.k409.fitflow.ui.theme.FitFlowTheme
 
 @Composable
@@ -69,7 +70,7 @@ fun FitFlowApp() {
                     navigateUp = { navController.navigateUp() },
                     navController = navController,
                     containerColor = if (currentScreen == NavRoutes.Home) Color(0xffb5c8e8) else MaterialTheme.colorScheme.surface
-                    )
+                )
             },
             bottomBar = {
                 FitFlowBottomBar(

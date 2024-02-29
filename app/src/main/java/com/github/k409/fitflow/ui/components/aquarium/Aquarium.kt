@@ -55,7 +55,7 @@ fun Aquarium(
             Sand()
             Plant()
 
-            /*AnimatedPrimaryFish(modifier = Modifier.align(Alignment.TopCenter))*/
+//            AnimatedPrimaryFish(modifier = Modifier.align(Alignment.TopCenter))
             CircularPrimaryFish(modifier = Modifier.align(Alignment.Center))
         }
     }
