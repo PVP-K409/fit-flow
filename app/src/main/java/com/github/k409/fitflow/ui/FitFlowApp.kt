@@ -2,13 +2,18 @@
 
 package com.github.k409.fitflow.ui
 
+
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,7 +29,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -60,14 +67,16 @@ fun FitFlowApp() {
                     canNavigateBack = navController.previousBackStackEntry != null &&
                             !NavRoutes.bottomNavBarItems.contains(currentScreen),
                     navigateUp = { navController.navigateUp() },
+                    navController = navController,
                     containerColor = if (currentScreen == NavRoutes.Home) Color(0xffb5c8e8) else MaterialTheme.colorScheme.surface
-                )
+                    )
             },
             bottomBar = {
                 FitFlowBottomBar(
                     navController = navController,
                     currentDestination = currentDestination,
-                    visible = bottomBarState.value,
+                    visible = !(navController.previousBackStackEntry != null &&
+                            !NavRoutes.bottomNavBarItems.contains(currentScreen)), // bottomBarState.value,
                     containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface
                 )
             }
@@ -88,7 +97,8 @@ fun FitFlowTopBar(
     currentRoute: NavRoutes,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
-    containerColor: Color
+    containerColor: Color,
+    navController: NavController,
 ) {
     if (topBarState) {
         Surface {
@@ -114,7 +124,24 @@ fun FitFlowTopBar(
                     }
                 },
                 actions = {
-
+                    var isClicked by remember { mutableStateOf(false) }
+                    IconButton(onClick = { isClicked = true }) {
+                        Image(
+                            // replace with proper user image later
+                            imageVector = Icons.Outlined.PersonOutline,
+                            contentDescription = "Profile settings",
+                            modifier = Modifier
+                                .size(160.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.secondaryContainer,
+                                    shape = CircleShape
+                                )
+                        )
+                    }
+                    if (isClicked) {
+                        isClicked = false
+                        navigateToProfileSettingsScreen(navController = navController)
+                    }
                 })
 
         }

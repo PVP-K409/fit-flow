@@ -4,6 +4,8 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Adjust
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.PersonOutline
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Store
 import androidx.compose.material.icons.outlined.VerifiedUser
 import androidx.compose.material.icons.outlined.ViewTimeline
@@ -16,7 +18,7 @@ sealed class NavRoutes(
     val icon: ImageVector
 ) {
     companion object {
-        val navRoutes = listOf(Home, Activity, Goals, Marketplace, Registration)
+        val navRoutes = listOf(Home, Activity, Goals, Marketplace, Registration, ProfileSettings, ProfileCreation)
         val bottomNavBarItems = listOf(Home, Activity, Goals, Marketplace, Registration)
     }
 
@@ -27,6 +29,10 @@ sealed class NavRoutes(
     data object Goals : NavRoutes("goals", R.string.goals, Icons.Outlined.Adjust)
 
     data object Marketplace : NavRoutes("marketplace", R.string.marketplace, Icons.Outlined.Store)
+
+    data object ProfileCreation : NavRoutes("profileCreation", R.string.profile_creation, Icons.Outlined.PersonOutline)
+
+    data object ProfileSettings : NavRoutes("profileSettings", R.string.profile_settings, Icons.Outlined.Settings)
 
     data object Registration : NavRoutes("registration", R.string.user, Icons.Outlined.VerifiedUser)
 }
