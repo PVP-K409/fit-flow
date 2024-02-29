@@ -14,8 +14,10 @@ class UserRepository {
 
     suspend fun updateSteps(newSteps: Step){
         val userDocRef = db.collection("users").document(userid)
+
         try {
             val snapshot = userDocRef.get().await()
+
             if (snapshot.exists()) {
                 val stepsList = snapshot.data?.get("steps") as? List<Map<String, Any>> ?: mutableListOf()
                 val existingStepMap = stepsList.firstOrNull { it["date"] == newSteps.date }
@@ -46,6 +48,7 @@ class UserRepository {
     suspend fun loadTodaySteps(day : String): Step? {
         val userDocRef = db.collection("users").document(userid)
         val snapshot = userDocRef.get().await()
+
         if (snapshot.exists()) {
             val stepsList = snapshot.data?.get("steps") as? List<Map<String, Any>> ?: return null
             val stepMap = stepsList.firstOrNull { it["date"] == day }
