@@ -38,7 +38,6 @@ core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "activity-compose" }
-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 firebase-ui-auth = { module = "com.firebaseui:firebase-ui-auth", version.ref = "firebaseUiAuth" }
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
