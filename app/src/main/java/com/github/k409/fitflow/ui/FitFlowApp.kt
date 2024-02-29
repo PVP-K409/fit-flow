@@ -44,8 +44,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
-import com.github.k409.fitflow.ui.screens.profile.NavigateToProfileSettingsScreen
-import com.github.k409.fitflow.ui.screens.profile.ProfileSettingsScreen
+import com.github.k409.fitflow.ui.screens.profile.navigateToProfileSettingsScreen
 import com.github.k409.fitflow.ui.theme.FitFlowTheme
 
 @Composable
@@ -139,7 +138,7 @@ fun FitFlowTopBar(
                     }
                     if (isClicked) {
                         isClicked = false
-                        NavigateToProfileSettingsScreen(navController = navController)
+                        navigateToProfileSettingsScreen(navController = navController)
                     }
                 })
         }

@@ -279,7 +279,7 @@ fun ProfileCreationScreen(navController: NavController) {
                         repository.SubmitProfile(name, age.toInt(), gender, weight.toInt(), height.toInt())
                     }
                     displayMessage(stringResource(R.string.profile_saved))
-                    NavigateToProfileSettingsScreen(navController = navController)
+                    navigateToProfileSettingsScreen(navController = navController)
                 }
             }
         }

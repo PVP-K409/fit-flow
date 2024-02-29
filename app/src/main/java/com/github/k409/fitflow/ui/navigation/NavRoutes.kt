@@ -30,9 +30,9 @@ sealed class NavRoutes(
 
     data object Marketplace : NavRoutes("marketplace", R.string.marketplace, Icons.Outlined.Store)
 
-    data object ProfileCreation : NavRoutes("profileCreation", R.string.profileCreation, Icons.Outlined.PersonOutline)
+    data object ProfileCreation : NavRoutes("profileCreation", R.string.profile_creation, Icons.Outlined.PersonOutline)
 
-    data object ProfileSettings : NavRoutes("profileSettings", R.string.profileSettings, Icons.Outlined.Settings)
+    data object ProfileSettings : NavRoutes("profileSettings", R.string.profile_settings, Icons.Outlined.Settings)
 
     data object Registration : NavRoutes("registration", R.string.user, Icons.Outlined.VerifiedUser)
 }

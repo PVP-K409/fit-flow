@@ -1,10 +1,10 @@
 package com.github.k409.fitflow.ui.features
 
-import DCodeIcon
+import androidx.compose.ui.graphics.vector.ImageVector
 
 data class SettingsItem(
     val name: String,
-    val listIcon: DCodeIcon,
+    val listIcon: ImageVector,
     val route: String,
 )
 
