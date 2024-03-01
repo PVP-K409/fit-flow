@@ -104,11 +104,10 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.work.runtime)
 
-    implementation (libs.androidx.runtime.livedata)
     implementation(platform(libs.firebase.bom))
-    implementation(platform(libs.firebase.analytics))
-    implementation(platform(libs.firebase.auth))
     implementation(libs.bundles.firebase)
+
+    implementation (libs.androidx.runtime.livedata)
     implementation(libs.androidx.work.runtime)
     implementation(libs.accompanist.permissions)
 
