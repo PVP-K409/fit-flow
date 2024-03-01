@@ -23,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,17 +32,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.github.k409.fitflow.R
-import com.github.k409.fitflow.data.ProfileRepository
-import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileCreationScreen(navController: NavController) {
-    val coroutineScope = rememberCoroutineScope()
-    val repository = ProfileRepository()
+fun ProfileCreationScreen(
+    navController: NavController,
+    profileViewModel: ProfileViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
 
     var name by rememberSaveable { mutableStateOf("") }
@@ -293,16 +292,16 @@ fun ProfileCreationScreen(navController: NavController) {
             }
             if (isClicked) {
                 isClicked = false
+
                 if (validate()) {
-                    coroutineScope.launch {
-                        repository.submitProfile(
-                            name,
-                            age.toInt(),
-                            gender,
-                            weight.toInt(),
-                            height.toInt()
-                        )
-                    }
+                    profileViewModel.submitProfile(
+                        name,
+                        age.toInt(),
+                        gender,
+                        weight.toInt(),
+                        height.toInt()
+                    )
+
                     displayMessage(stringResource(R.string.profile_saved))
                     navigateToProfileSettingsScreen(navController = navController)
                 }
