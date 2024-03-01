@@ -34,7 +34,7 @@ fun DistanceAndCalories(
         ) {
             Text(text = stringResource(R.string.distance), fontWeight = FontWeight.Bold)
             Text(
-                text = "$distance m", textAlign = TextAlign.Center, fontSize = fontSize
+                text = "$distance km", textAlign = TextAlign.Center, fontSize = fontSize
             )
         }
 
