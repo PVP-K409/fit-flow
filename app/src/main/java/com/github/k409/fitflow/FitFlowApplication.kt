@@ -33,11 +33,13 @@ class FitFlowApplication : Application(), Configuration.Provider {
                 "UpdateStepsWorker",
                 ExistingPeriodicWorkPolicy.UPDATE, myWork
             )
-        val midnightWorkRequest = PeriodicWorkRequestBuilder<StepCounterWorker>(  // Repeat every 24 hours at midnight
-            24, TimeUnit.HOURS,
-            1, TimeUnit.MINUTES
-        ).setInitialDelay(calculateInitialDelayUntilMidnight(), TimeUnit.MILLISECONDS)
-            .build()
+
+        val midnightWorkRequest =
+            PeriodicWorkRequestBuilder<StepCounterWorker>(
+                24, TimeUnit.HOURS,
+                1, TimeUnit.MINUTES
+            ).setInitialDelay(calculateInitialDelayUntilMidnight(), TimeUnit.MILLISECONDS)
+                .build()
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "MidnightWorker",
@@ -45,14 +47,17 @@ class FitFlowApplication : Application(), Configuration.Provider {
             midnightWorkRequest
         )
     }
+
     private fun calculateInitialDelayUntilMidnight(): Long {
         val calendar = Calendar.getInstance()
         val now = calendar.timeInMillis
+
         calendar.add(Calendar.DAY_OF_YEAR, 1)
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
+
         return calendar.timeInMillis - now
     }
 
@@ -61,5 +66,4 @@ class FitFlowApplication : Application(), Configuration.Provider {
             .setMinimumLoggingLevel(android.util.Log.DEBUG)
             .setWorkerFactory(workerFactory)
             .build()
-
 }

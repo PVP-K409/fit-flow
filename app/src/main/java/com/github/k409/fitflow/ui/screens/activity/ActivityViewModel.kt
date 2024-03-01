@@ -6,10 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.UserRepository
-import com.github.k409.fitflow.model.Step
-import com.github.k409.fitflow.model.User
-import com.github.k409.fitflow.features.step_counter.DistanceAndCaloriesUtil
 import com.github.k409.fitflow.features.step_counter.StepCounter
+import com.github.k409.fitflow.features.step_counter.calculateCaloriesFromSteps
+import com.github.k409.fitflow.features.step_counter.calculateDistanceFromSteps
+import com.github.k409.fitflow.model.DailyStepRecord
+import com.github.k409.fitflow.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -21,18 +22,17 @@ class ActivityViewModel @Inject constructor(
     private val stepCounter: StepCounter,
     private val prefs: SharedPreferences,
 ) : ViewModel() {
-    private val distanceAndCaloriesUtil = DistanceAndCaloriesUtil()
-    private val _todaySteps = MutableLiveData<Step?>()
-    val todaySteps: LiveData<Step?> = _todaySteps
+    private val _todaySteps = MutableLiveData<DailyStepRecord?>()
+    val todaySteps: LiveData<DailyStepRecord?> = _todaySteps
 
     init {
-        _todaySteps.value = Step(
-            current = 0,
-            initial = 0,
-            date = LocalDate.now().toString(),
-            temp = 0,
-            calories = 0,
-            distance = 0.0
+        _todaySteps.value = DailyStepRecord(
+            totalSteps = 0,
+            initialSteps = 0,
+            recordDate = LocalDate.now().toString(),
+            stepsBeforeReboot = 0,
+            caloriesBurned = 0,
+            totalDistance = 0.0
         )
         loadTodaySteps()
     }
@@ -41,6 +41,7 @@ class ActivityViewModel @Inject constructor(
         viewModelScope.launch {
             val today = LocalDate.now().toString()
             val step = userRepository.loadTodaySteps(today)
+
             if (step == null) { // new day
                 viewModelScope.launch {
                     updateTodayStepsManually()
@@ -57,53 +58,55 @@ class ActivityViewModel @Inject constructor(
         val hasRebooted = prefs.getBoolean("rebooted", false) // boolean if reboot has happened
         val today = LocalDate.now().toString()
         val user: User? = userRepository.getUser()
-        val step: Step? = userRepository.loadTodaySteps(today)
+        val dailyStepRecord: DailyStepRecord? = userRepository.loadTodaySteps(today)
         val currentSteps = stepCounter.steps()
-        val newStep: Step
-        if (step == null) { // if new day
-            newStep = Step(
-                current = 0,
-                initial = currentSteps,
-                date = today,
-                temp = 0,
-                calories = 0,
-                distance = 0.0
+        val newDailyStepRecord: DailyStepRecord
+
+        if (dailyStepRecord == null) { // if new day
+            newDailyStepRecord = DailyStepRecord(
+                totalSteps = 0,
+                initialSteps = currentSteps,
+                recordDate = today,
+                stepsBeforeReboot = 0,
+                caloriesBurned = 0,
+                totalDistance = 0.0
 
             )
         } else if (hasRebooted || currentSteps <= 1) { //if current day and reboot has happened
-            newStep = Step(
-                current = step.current + currentSteps,
-                initial = 0,
-                date = today,
-                temp = step.current,
-                calories = distanceAndCaloriesUtil.calculateCaloriesFromSteps(
-                    (step.current + currentSteps),
-                    user
+            newDailyStepRecord = DailyStepRecord(
+                totalSteps = dailyStepRecord.totalSteps + currentSteps,
+                initialSteps = 0,
+                recordDate = today,
+                stepsBeforeReboot = dailyStepRecord.totalSteps,
+                caloriesBurned = calculateCaloriesFromSteps(
+                    (dailyStepRecord.totalSteps + currentSteps), user
                 ),
-                distance = distanceAndCaloriesUtil.calculateDistanceFromSteps(
-                    (step.current + currentSteps),
-                    user
+                totalDistance = calculateDistanceFromSteps(
+                    (dailyStepRecord.totalSteps + currentSteps), user
                 )
             )
+
             prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
         } else {
             // if current day and no reboot
-            newStep = Step(
-                current = currentSteps - step.initial + step.temp,
-                initial = step.initial,
-                date = today,
-                temp = step.temp,
-                calories = distanceAndCaloriesUtil.calculateCaloriesFromSteps(
-                    (currentSteps - step.initial + step.temp),
+            newDailyStepRecord = DailyStepRecord(
+                totalSteps = currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot,
+                initialSteps = dailyStepRecord.initialSteps,
+                recordDate = today,
+                stepsBeforeReboot = dailyStepRecord.stepsBeforeReboot,
+                caloriesBurned = calculateCaloriesFromSteps(
+                    (currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot),
                     user
                 ),
-                distance = distanceAndCaloriesUtil.calculateDistanceFromSteps(
-                    (currentSteps - step.initial + step.temp),
+                totalDistance = calculateDistanceFromSteps(
+                    (currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot),
                     user
                 )
             )
         }
-        userRepository.updateSteps(newStep)
-        _todaySteps.value = newStep
+
+        userRepository.updateSteps(newDailyStepRecord)
+
+        _todaySteps.value = newDailyStepRecord
     }
 }

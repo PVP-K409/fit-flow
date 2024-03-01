@@ -7,7 +7,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.github.k409.fitflow.data.UserRepository
-import com.github.k409.fitflow.model.Step
+import com.github.k409.fitflow.model.DailyStepRecord
 import com.github.k409.fitflow.model.User
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -26,61 +26,63 @@ class StepCounterWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        val hasRebooted = prefs.getBoolean("rebooted", false) // boolean if reboot has happened
-        val distanceAndCaloriesUtil = DistanceAndCaloriesUtil()
+        val hasRebooted = prefs.getBoolean("rebooted", false)
         val today = LocalDate.now().toString()
         val user: User? = repository.getUser()
 
         try {
             val currentSteps = stepCounter.steps()
-            val step: Step? = repository.loadTodaySteps(today)
-            val newStep: Step
-            if (step == null) { // if new day
-                newStep = Step(
-                    current = 0,
-                    initial = currentSteps,
-                    date = today,
-                    temp = 0,
-                    calories = 0,
-                    distance = 0.0
+            val dailyStepRecord: DailyStepRecord? = repository.loadTodaySteps(today)
+            val newDailyStepRecord: DailyStepRecord
+
+            if (dailyStepRecord == null) { // if new day
+                newDailyStepRecord = DailyStepRecord(
+                    totalSteps = 0,
+                    initialSteps = currentSteps,
+                    recordDate = today,
+                    stepsBeforeReboot = 0,
+                    caloriesBurned = 0,
+                    totalDistance = 0.0
                 )
             } else if (hasRebooted || currentSteps <= 1) { //if current day and reboot has happened
-                newStep = Step(
-                    current = step.current + currentSteps,
-                    initial = 0,
-                    date = today,
-                    temp = step.current,
-                    calories = distanceAndCaloriesUtil.calculateCaloriesFromSteps(
-                        (step.current + currentSteps),
-                        user
+                newDailyStepRecord = DailyStepRecord(
+                    totalSteps = dailyStepRecord.totalSteps + currentSteps,
+                    initialSteps = 0,
+                    recordDate = today,
+                    stepsBeforeReboot = dailyStepRecord.totalSteps,
+                    caloriesBurned = calculateCaloriesFromSteps(
+                        (dailyStepRecord.totalSteps + currentSteps), user
                     ),
-                    distance = distanceAndCaloriesUtil.calculateDistanceFromSteps(
-                        (step.current + currentSteps),
-                        user
+                    totalDistance = calculateDistanceFromSteps(
+                        (dailyStepRecord.totalSteps + currentSteps), user
                     )
                 )
+
                 prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
             } else {
                 // if current day and no reboot
-                newStep = Step(
-                    current = currentSteps - step.initial + step.temp,
-                    initial = step.initial,
-                    date = today,
-                    temp = step.temp,
-                    calories = distanceAndCaloriesUtil.calculateCaloriesFromSteps(
-                        (currentSteps - step.initial + step.temp),
+                newDailyStepRecord = DailyStepRecord(
+                    totalSteps = currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot,
+                    initialSteps = dailyStepRecord.initialSteps,
+                    recordDate = today,
+                    stepsBeforeReboot = dailyStepRecord.stepsBeforeReboot,
+                    caloriesBurned = calculateCaloriesFromSteps(
+                        (currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot),
                         user
                     ),
-                    distance = distanceAndCaloriesUtil.calculateDistanceFromSteps(
-                        (currentSteps - step.initial + step.temp),
+                    totalDistance = calculateDistanceFromSteps(
+                        (currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot),
                         user
                     )
                 )
             }
-            repository.updateSteps(newStep)
+
+            repository.updateSteps(newDailyStepRecord)
+
             return Result.success()
         } catch (e: Exception) {
             Log.e(TAG, "Error updating steps", e)
+
             return Result.retry()
         }
 

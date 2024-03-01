@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.components.Activity
+package com.github.k409.fitflow.ui.components.activity
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -6,6 +6,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,7 +33,7 @@ fun CircularProgressBar(
     goal: Long,
     fontSize: TextUnit = 26.sp,
     radius: Dp = 100.dp,
-    color: Color = Color.Green,
+    color: Color = MaterialTheme.colorScheme.primary,
     strokeWidth: Dp = 12.dp,
     animDuration: Int = 1000,
     animDelay: Int = 0
@@ -49,9 +50,11 @@ fun CircularProgressBar(
             delayMillis = animDelay
         ), label = ""
     )
+
     LaunchedEffect(key1 = true) {
         animationPlayed = true
     }
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.size(radius * 2f)
@@ -72,6 +75,7 @@ fun CircularProgressBar(
                 style = Stroke(strokeWidth.toPx(), cap = StrokeCap.Round)
             )
         }
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {

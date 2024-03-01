@@ -77,7 +77,8 @@ fun FitFlowApp() {
                     navController = navController,
                     currentDestination = currentDestination,
                     visible = !(navController.previousBackStackEntry != null &&
-                            !NavRoutes.bottomNavBarItems.contains(currentScreen)), // bottomBarState.value,
+                            !NavRoutes.bottomNavBarItems.contains(currentScreen)) &&
+                            bottomBarState.value,
                     containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface
                 )
             }
@@ -126,17 +127,18 @@ fun FitFlowTopBar(
                 },
                 actions = {
                     var isClicked by remember { mutableStateOf(false) }
+
                     IconButton(onClick = { isClicked = true }) {
                         Image(
-                            // replace with proper user image later
                             imageVector = Icons.Outlined.PersonOutline,
                             contentDescription = "Profile settings",
                             modifier = Modifier
-                                .size(160.dp)
+                                .size(100.dp)
                                 .background(
                                     color = MaterialTheme.colorScheme.secondaryContainer,
                                     shape = CircleShape
                                 )
+                                .padding(3.dp)
                         )
                     }
                     if (isClicked) {

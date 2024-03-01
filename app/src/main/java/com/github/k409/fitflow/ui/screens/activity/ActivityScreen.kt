@@ -10,8 +10,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.github.k409.fitflow.ui.components.Activity.CircularProgressBar
-import com.github.k409.fitflow.ui.components.Activity.DistanceAndCalories
+import com.github.k409.fitflow.ui.components.activity.CircularProgressBar
+import com.github.k409.fitflow.ui.components.activity.DistanceAndCalories
 
 @Composable
 fun ActivityScreen() {
@@ -29,14 +29,14 @@ fun ActivityScreen() {
     ) {
         todaySteps?.let {
             CircularProgressBar(
-                taken = it.current,
+                taken = it.totalSteps,
                 goal = todayGoal,
             )
         }
         todaySteps?.let {
             DistanceAndCalories(
-                calories = it.calories,
-                distance = it.distance
+                calories = it.caloriesBurned,
+                distance = it.totalDistance
             )
         }
     }

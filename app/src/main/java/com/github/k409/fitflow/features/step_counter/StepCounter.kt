@@ -28,7 +28,9 @@ class StepCounter(context: Context) {
 
                     if (stepsSinceLastReboot.toInt() <= 1) { // if reboot has happened
                         val editor = prefs.edit()
+
                         editor.putBoolean("rebooted", true)
+
                         val wasSuccessful = editor.commit()
                     }
 
@@ -49,10 +51,10 @@ class StepCounter(context: Context) {
             }
         }
 
-        val supportedAndEnabled = sensorManager.registerListener(
+        sensorManager.registerListener(
             listener,
             sensor, SensorManager.SENSOR_DELAY_NORMAL
-        ) // registered sensor listener
+        )
     }
 
 }
