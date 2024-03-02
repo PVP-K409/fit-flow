@@ -19,9 +19,10 @@ navigation-runtime-ktx = "2.7.7"
 navigation-compose = "2.7.7"
 runtimeLivedata = "1.6.2"
 playServicesAuth = "21.0.0"
+spotlessPluginGradle = "6.19.0"
 ui = "1.6.2"
 gmsPlugin = "4.4.1"
-firebase-bom = "32.7.2"
+firebase-bom = "32.7.3"
 workRuntimeKtx = "2.9.0"
 accompanist = "0.32.0"
 
@@ -47,6 +48,7 @@ lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtim
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+spotless-plugin-gradle = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotlessPluginGradle" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -80,4 +82,4 @@ kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 daggerHilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
-
+spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPluginGradle" }
