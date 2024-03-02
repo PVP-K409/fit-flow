@@ -23,7 +23,7 @@ fun FitFlowNavGraph(
     NavHost(
         navController = navController,
         startDestination = startDestination,
-        modifier = modifier
+        modifier = modifier,
     ) {
         composable(NavRoutes.Home.route) {
             HomeScreen()
@@ -47,5 +47,4 @@ fun FitFlowNavGraph(
             ProfileSettingsScreen(navController)
         }
     }
-
 }

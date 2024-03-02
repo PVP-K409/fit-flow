@@ -15,7 +15,7 @@ import com.github.k409.fitflow.R
 sealed class NavRoutes(
     val route: String,
     @StringRes val stringRes: Int,
-    val icon: ImageVector
+    val icon: ImageVector,
 ) {
     companion object {
         val navRoutes = listOf(
@@ -25,7 +25,7 @@ sealed class NavRoutes(
             Marketplace,
             Registration,
             ProfileSettings,
-            ProfileCreation
+            ProfileCreation,
         )
         val bottomNavBarItems = listOf(Home, Activity, Goals, Marketplace, Registration)
     }

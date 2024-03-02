@@ -7,17 +7,17 @@ import java.math.RoundingMode
 import kotlin.math.pow
 import kotlin.math.round
 
-
 fun calculateDistanceFromSteps(
     steps: Long,
-    user: User?
+    user: User?,
 ): Double? {
     if (user == null) return 0.0
     return try {
         val stepFactor = if (toLowerCase(user.gender) == "male") 0.415 else 0.413
 
         BigDecimal(steps * (user.height * stepFactor) / 10.0.pow(5.0)).setScale(
-            2, RoundingMode.CEILING
+            2,
+            RoundingMode.CEILING,
         ).toDouble()
     } catch (e: Exception) {
         null
@@ -26,7 +26,7 @@ fun calculateDistanceFromSteps(
 
 fun calculateCaloriesFromSteps(
     steps: Long,
-    user: User?
+    user: User?,
 ): Long? {
     if (user == null) return 0
 

@@ -21,20 +21,22 @@ import com.github.k409.fitflow.R
 fun DistanceAndCalories(
     calories: Long?,
     distance: Double?,
-    fontSize: TextUnit = 20.sp
+    fontSize: TextUnit = 20.sp,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 24.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(text = stringResource(R.string.distance), fontWeight = FontWeight.Bold)
             Text(
-                text = "$distance km", textAlign = TextAlign.Center, fontSize = fontSize
+                text = "$distance km",
+                textAlign = TextAlign.Center,
+                fontSize = fontSize,
             )
         }
 
@@ -43,7 +45,9 @@ fun DistanceAndCalories(
         ) {
             Text(text = stringResource(R.string.calories), fontWeight = FontWeight.Bold)
             Text(
-                text = "$calories kcal", textAlign = TextAlign.Center, fontSize = fontSize
+                text = "$calories kcal",
+                textAlign = TextAlign.Center,
+                fontSize = fontSize,
             )
         }
     }

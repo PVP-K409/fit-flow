@@ -15,7 +15,7 @@ import com.github.k409.fitflow.R
 
 @Composable
 fun BoxScope.Sand(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val sandPainter = painterResource(id = R.drawable.sand)
 
@@ -26,13 +26,13 @@ fun BoxScope.Sand(
             .align(Alignment.BottomCenter)
             .fillMaxWidth()
             .fillMaxHeight(0.2f),
-        contentScale = ContentScale.FillBounds
+        contentScale = ContentScale.FillBounds,
     )
 }
 
 @Composable
 fun BoxScope.Plant(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val plantPainter = painterResource(id = R.drawable.plant)
 
@@ -41,6 +41,6 @@ fun BoxScope.Plant(
         contentDescription = "Plant",
         modifier = Modifier
             .align(Alignment.BottomEnd)
-            .height(150.dp)
+            .height(150.dp),
     )
 }

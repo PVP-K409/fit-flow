@@ -16,9 +16,9 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideProfileRepository(
-        db: FirebaseFirestore
+        db: FirebaseFirestore,
     ): ProfileRepository = ProfileRepository(
-        db
+        db,
     )
 
     @Provides

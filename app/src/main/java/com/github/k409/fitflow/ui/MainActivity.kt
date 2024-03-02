@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import com.github.k409.fitflow.ui.common.PermissionsHandler
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,4 +19,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

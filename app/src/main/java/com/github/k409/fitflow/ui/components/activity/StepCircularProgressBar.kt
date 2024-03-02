@@ -36,7 +36,7 @@ fun CircularProgressBar(
     color: Color = MaterialTheme.colorScheme.primary,
     strokeWidth: Dp = 12.dp,
     animDuration: Int = 1000,
-    animDelay: Int = 0
+    animDelay: Int = 0,
 ) {
     var animationPlayed by remember {
         mutableStateOf(false)
@@ -47,8 +47,9 @@ fun CircularProgressBar(
         targetValue = if (animationPlayed) percentage else 0f,
         animationSpec = tween(
             durationMillis = animDuration,
-            delayMillis = animDelay
-        ), label = ""
+            delayMillis = animDelay,
+        ),
+        label = "",
     )
 
     LaunchedEffect(key1 = true) {
@@ -57,7 +58,7 @@ fun CircularProgressBar(
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.size(radius * 2f)
+        modifier = Modifier.size(radius * 2f),
     ) {
         Canvas(Modifier.size(radius * 2f)) {
             drawArc(
@@ -65,14 +66,14 @@ fun CircularProgressBar(
                 startAngle = -90f,
                 sweepAngle = 360f,
                 useCenter = false,
-                style = Stroke((strokeWidth).toPx())
+                style = Stroke((strokeWidth).toPx()),
             )
             drawArc(
                 color = color,
                 startAngle = -90f,
                 sweepAngle = 360 * curPercentage.value,
                 useCenter = false,
-                style = Stroke(strokeWidth.toPx(), cap = StrokeCap.Round)
+                style = Stroke(strokeWidth.toPx(), cap = StrokeCap.Round),
             )
         }
 
@@ -84,11 +85,8 @@ fun CircularProgressBar(
                 text = "$taken",
                 color = Color.Black,
                 fontSize = fontSize,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
     }
-
-
 }
-

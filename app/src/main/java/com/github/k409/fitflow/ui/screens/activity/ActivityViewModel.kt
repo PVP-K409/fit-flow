@@ -32,7 +32,7 @@ class ActivityViewModel @Inject constructor(
             recordDate = LocalDate.now().toString(),
             stepsBeforeReboot = 0,
             caloriesBurned = 0,
-            totalDistance = 0.0
+            totalDistance = 0.0,
         )
         loadTodaySteps()
     }
@@ -69,21 +69,23 @@ class ActivityViewModel @Inject constructor(
                 recordDate = today,
                 stepsBeforeReboot = 0,
                 caloriesBurned = 0,
-                totalDistance = 0.0
+                totalDistance = 0.0,
 
             )
-        } else if (hasRebooted || currentSteps <= 1) { //if current day and reboot has happened
+        } else if (hasRebooted || currentSteps <= 1) { // if current day and reboot has happened
             newDailyStepRecord = DailyStepRecord(
                 totalSteps = dailyStepRecord.totalSteps + currentSteps,
                 initialSteps = 0,
                 recordDate = today,
                 stepsBeforeReboot = dailyStepRecord.totalSteps,
                 caloriesBurned = calculateCaloriesFromSteps(
-                    (dailyStepRecord.totalSteps + currentSteps), user
+                    (dailyStepRecord.totalSteps + currentSteps),
+                    user,
                 ),
                 totalDistance = calculateDistanceFromSteps(
-                    (dailyStepRecord.totalSteps + currentSteps), user
-                )
+                    (dailyStepRecord.totalSteps + currentSteps),
+                    user,
+                ),
             )
 
             prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
@@ -96,12 +98,12 @@ class ActivityViewModel @Inject constructor(
                 stepsBeforeReboot = dailyStepRecord.stepsBeforeReboot,
                 caloriesBurned = calculateCaloriesFromSteps(
                     (currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot),
-                    user
+                    user,
                 ),
                 totalDistance = calculateDistanceFromSteps(
                     (currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot),
-                    user
-                )
+                    user,
+                ),
             )
         }
 

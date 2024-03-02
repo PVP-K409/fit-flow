@@ -25,13 +25,13 @@ import com.google.android.gms.common.api.ApiException
 
 @Composable
 fun RegistrationScreen(
-    registrationViewModel: RegistrationViewModel = hiltViewModel()
+    registrationViewModel: RegistrationViewModel = hiltViewModel(),
 ) {
     val firebaseAuth = registrationViewModel.firebaseAuth
     val context = LocalContext.current
 
     val signInLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
+        ActivityResultContracts.StartActivityForResult(),
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -57,7 +57,7 @@ fun RegistrationScreen(
             .fillMaxSize()
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
 
     ) {
         Text(text = "Registration and sign in")

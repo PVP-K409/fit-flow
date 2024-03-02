@@ -25,7 +25,7 @@ fun ActivityScreen() {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         todaySteps?.let {
             CircularProgressBar(
@@ -36,10 +36,8 @@ fun ActivityScreen() {
         todaySteps?.let {
             DistanceAndCalories(
                 calories = it.caloriesBurned,
-                distance = it.totalDistance
+                distance = it.totalDistance,
             )
         }
     }
-
 }
-
