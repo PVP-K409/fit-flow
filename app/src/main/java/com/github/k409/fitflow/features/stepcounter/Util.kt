@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.features.step_counter
+package com.github.k409.fitflow.features.stepcounter
 
 import android.icu.lang.UCharacter.toLowerCase
 import com.github.k409.fitflow.model.User

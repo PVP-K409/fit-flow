@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.UserRepository
-import com.github.k409.fitflow.features.step_counter.StepCounter
-import com.github.k409.fitflow.features.step_counter.calculateCaloriesFromSteps
-import com.github.k409.fitflow.features.step_counter.calculateDistanceFromSteps
+import com.github.k409.fitflow.features.stepcounter.StepCounter
+import com.github.k409.fitflow.features.stepcounter.calculateCaloriesFromSteps
+import com.github.k409.fitflow.features.stepcounter.calculateDistanceFromSteps
 import com.github.k409.fitflow.model.DailyStepRecord
 import com.github.k409.fitflow.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
