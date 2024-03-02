@@ -18,6 +18,9 @@ jobs:
           distribution: 'zulu'
           java-version: 20
 
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
       - name: Apply spotless formatting
         run: ./gradlew spotlessApply
 
