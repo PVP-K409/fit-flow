@@ -24,7 +24,7 @@ jobs:
       - name: Create keystore.properties from secrets
         env:
           KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
-        run: echo $KEYSTORE_PROPERTIES > keystore.properties
+        run: echo $KEYSTORE_PROPERTIES | base64 -di > ./keystore.properties
 
       - name: Create Keystore files
         env:
