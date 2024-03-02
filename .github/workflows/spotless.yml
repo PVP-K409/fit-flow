@@ -21,6 +21,25 @@ jobs:
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
 
+      - name: Create keystore.properties from secrets
+        env:
+          KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
+        run: echo $KEYSTORE_PROPERTIES > keystore.properties
+
+      - name: Create Keystore files
+        env:
+          SIGN_KEY: ${{ secrets.SIGN_KEY }}
+          SIGN_KEY_DEBUG: ${{ secrets.SIGN_KEY_DEBUG }}
+        run: |
+          echo $SIGN_KEY | base64 -di > ./fitflow-release.jks
+          echo $SIGN_KEY_DEBUG | base64 -di > ./fitflow-debug.jks
+
+      - name: Create Google Services JSON File
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          echo $GOOGLE_SERVICES_JSON | base64 -di > ./app/google-services.json
+
       - name: Apply spotless formatting
         run: ./gradlew spotlessApply
 
