@@ -23,7 +23,7 @@ fun PermissionsHandler() {
     }
 
     val permissionState = rememberMultiplePermissionsState(
-        permissions = permissions
+        permissions = permissions,
     )
 
     DisposableEffect(key1 = lifecycleOwner, effect = {

@@ -7,4 +7,3 @@ data class SettingsItem(
     val listIcon: ImageVector,
     val route: String,
 )
-

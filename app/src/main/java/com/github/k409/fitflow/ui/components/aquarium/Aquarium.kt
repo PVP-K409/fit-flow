@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun Aquarium(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val aquariumBackground = Brush.linearGradient(
         colors = listOf(Color(0xFFA7B9D3), Color(0xFF9CED96), Color(0xffd0e7cf)),
@@ -25,15 +25,15 @@ fun Aquarium(
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
 
     ) {
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = aquariumBackground
-                )
+                    brush = aquariumBackground,
+                ),
         ) {
             val height = constraints.maxHeight
             val width = constraints.maxWidth
@@ -49,7 +49,7 @@ fun Aquarium(
                 colors = listOf(Color.Blue, Color.Green),
                 bubbleCount = 6,
                 offsetX = width.toFloat(),
-                offsetY = height.toFloat()
+                offsetY = height.toFloat(),
             )
 
             Sand()
@@ -60,9 +60,3 @@ fun Aquarium(
         }
     }
 }
-
-
-
-
-
-

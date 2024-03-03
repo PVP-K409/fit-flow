@@ -14,10 +14,14 @@ class ProfileViewModel @Inject constructor(
         age: Int,
         gender: String,
         weight: Int,
-        height: Int
+        height: Int,
     ) {
         profileRepository.submitProfile(
-            name, age, gender, weight, height
+            name,
+            age,
+            gender,
+            weight,
+            height,
         )
     }
 }

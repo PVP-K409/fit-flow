@@ -8,8 +8,5 @@ data class User(
     var age: Int = 0,
     var height: Double = 0.0,
     var weight: Double = 0.0,
-    var gender: String = ""
+    var gender: String = "",
 )
-
-
-

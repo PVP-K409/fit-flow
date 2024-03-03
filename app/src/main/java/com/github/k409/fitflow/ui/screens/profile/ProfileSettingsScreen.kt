@@ -38,7 +38,7 @@ fun navigateToProfileSettingsScreen(navController: NavController) {
 
 fun navigateToFeatureScreen(
     settingsItem: SettingsItem,
-    navController: NavController
+    navController: NavController,
 ) {
     navController.navigate(settingsItem.route) {
         popUpTo(navController.graph.findStartDestination().id) {
@@ -54,7 +54,7 @@ fun ProfileSettingsScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
 
     ) {
         Text(text = "")
@@ -67,7 +67,7 @@ fun ProfileSettingsScreen(navController: NavController) {
 @Composable
 fun MoreOptionsComp(
     settingsItem: SettingsItem,
-    navController: NavController
+    navController: NavController,
 ) {
     Row(
         modifier = Modifier.padding(5.dp),
@@ -78,23 +78,23 @@ fun MoreOptionsComp(
             contentDescription = null,
             modifier = Modifier
                 .size(40.dp)
-                .padding(6.dp)
+                .padding(6.dp),
         )
         Column(
             modifier = Modifier
                 .padding(horizontal = 4.dp)
-                .weight(1f)
+                .weight(1f),
         ) {
             Text(
                 text = settingsItem.name,
-                style = MaterialTheme.typography.labelLarge
+                style = MaterialTheme.typography.labelLarge,
             )
         }
         IconButton(onClick = { navigateToFeatureScreen(settingsItem, navController) }) {
             Image(
                 imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
                 contentDescription = null,
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(4.dp),
             )
         }
     }

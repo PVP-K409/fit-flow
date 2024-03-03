@@ -6,5 +6,5 @@ data class DailyStepRecord(
     var recordDate: String = "",
     var stepsBeforeReboot: Long = 0,
     var caloriesBurned: Long? = 0,
-    var totalDistance: Double? = 0.0
+    var totalDistance: Double? = 0.0,
 )

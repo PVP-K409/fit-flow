@@ -41,7 +41,7 @@ import com.github.k409.fitflow.R
 @Composable
 fun ProfileCreationScreen(
     navController: NavController,
-    profileViewModel: ProfileViewModel = hiltViewModel()
+    profileViewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
 
@@ -68,8 +68,8 @@ fun ProfileCreationScreen(
         heightError = if (height.isEmpty()) stringResource(R.string.required_field) else null
 
         // Return true if there are no errors, indicating that the form is valid
-        return nameError == null && ageError == null && genderError == null && weightError == null
-                && heightError == null
+        return nameError == null && ageError == null && genderError == null && weightError == null &&
+            heightError == null
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -83,7 +83,7 @@ fun ProfileCreationScreen(
             expanded = isExpanded,
             onExpandedChange = { newValue ->
                 isExpanded = newValue
-            }
+            },
         ) {
             TextField(
                 value = gender,
@@ -101,14 +101,14 @@ fun ProfileCreationScreen(
                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .menuAnchor()
+                    .menuAnchor(),
             )
 
             ExposedDropdownMenu(
                 expanded = isExpanded,
                 onDismissRequest = {
                     isExpanded = false
-                }
+                },
             ) {
                 DropdownMenuItem(
                     text = {
@@ -119,7 +119,7 @@ fun ProfileCreationScreen(
                         isExpanded = false
                         genderError =
                             if (gender.isEmpty()) context.getString(R.string.required_field) else null
-                    }
+                    },
                 )
                 DropdownMenuItem(
                     text = {
@@ -130,7 +130,7 @@ fun ProfileCreationScreen(
                         isExpanded = false
                         genderError =
                             if (gender.isEmpty()) context.getString(R.string.required_field) else null
-                    }
+                    },
                 )
             }
         }
@@ -139,7 +139,7 @@ fun ProfileCreationScreen(
             Text(
                 text = it,
                 color = Color.Red,
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(start = 8.dp),
             )
         }
     }
@@ -154,12 +154,12 @@ fun ProfileCreationScreen(
         modifier = Modifier
             .padding(16.dp, 16.dp)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         // Name input
         Text(
             text = stringResource(id = R.string.user_name),
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
 
         TextField(
@@ -169,7 +169,7 @@ fun ProfileCreationScreen(
                 name = it
                 nameError = if (name.isEmpty()) context.getString(R.string.required_field) else null
             },
-            //placeholder = { Text(text = "e.g. Bob") },
+            // placeholder = { Text(text = "e.g. Bob") },
             isError = nameError != null,
         )
         // Display error message for Name
@@ -177,7 +177,7 @@ fun ProfileCreationScreen(
             Text(
                 text = it,
                 color = Color.Red,
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(start = 8.dp),
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))
@@ -186,7 +186,7 @@ fun ProfileCreationScreen(
         // Age input
         Text(
             text = stringResource(R.string.age),
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
 
         TextField(
@@ -199,23 +199,23 @@ fun ProfileCreationScreen(
                         if (age.isEmpty()) context.getString(R.string.required_field) else null
                 }
             },
-            //placeholder = { Text(text = "e.g. 18") },
+            // placeholder = { Text(text = "e.g. 18") },
             isError = ageError != null,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
         // Display error message for Age
         ageError?.let {
             Text(
                 text = it,
                 color = Color.Red,
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(start = 8.dp),
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))
         // Gender input
         Text(
             text = stringResource(R.string.gender),
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
 
         GenderDropdownMenu()
@@ -224,7 +224,7 @@ fun ProfileCreationScreen(
         // Weight input - replace with dropdown
         Text(
             text = stringResource(R.string.weight_kg),
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
 
         TextField(
@@ -237,23 +237,23 @@ fun ProfileCreationScreen(
                         if (weight.isEmpty()) context.getString(R.string.required_field) else null
                 }
             },
-            //placeholder = { Text(text = "e.g. 80") },
+            // placeholder = { Text(text = "e.g. 80") },
             isError = weightError != null,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
         // Display error message for Weight
         weightError?.let {
             Text(
                 text = it,
                 color = Color.Red,
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(start = 8.dp),
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))
         // Height input - replace with dropdown
         Text(
             text = stringResource(R.string.height_cm),
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
 
         TextField(
@@ -266,16 +266,16 @@ fun ProfileCreationScreen(
                         if (height.isEmpty()) context.getString(R.string.required_field) else null
                 }
             },
-            //placeholder = { Text(text = "e.g. Bob") },
+            // placeholder = { Text(text = "e.g. Bob") },
             isError = heightError != null,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
         // Display error message for Height
         heightError?.let {
             Text(
                 text = it,
                 color = Color.Red,
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(start = 8.dp),
             )
         }
         Column(
@@ -283,7 +283,7 @@ fun ProfileCreationScreen(
                 .fillMaxWidth()
                 .fillMaxHeight(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.End
+            horizontalAlignment = Alignment.End,
         ) {
             var isClicked by remember { mutableStateOf(false) }
 
@@ -299,7 +299,7 @@ fun ProfileCreationScreen(
                         age.toInt(),
                         gender,
                         weight.toInt(),
-                        height.toInt()
+                        height.toInt(),
                     )
 
                     displayMessage(stringResource(R.string.profile_saved))

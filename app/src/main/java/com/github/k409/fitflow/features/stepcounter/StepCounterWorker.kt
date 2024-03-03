@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.features.step_counter
+package com.github.k409.fitflow.features.stepcounter
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -13,7 +13,6 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.time.LocalDate
 
-
 private const val TAG = "StepCounterWorker"
 
 @HiltWorker
@@ -22,7 +21,7 @@ class StepCounterWorker @AssistedInject constructor(
     @Assisted workerParams: WorkerParameters,
     private val repository: UserRepository,
     private val stepCounter: StepCounter,
-    private val prefs: SharedPreferences
+    private val prefs: SharedPreferences,
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -42,20 +41,22 @@ class StepCounterWorker @AssistedInject constructor(
                     recordDate = today,
                     stepsBeforeReboot = 0,
                     caloriesBurned = 0,
-                    totalDistance = 0.0
+                    totalDistance = 0.0,
                 )
-            } else if (hasRebooted || currentSteps <= 1) { //if current day and reboot has happened
+            } else if (hasRebooted || currentSteps <= 1) { // if current day and reboot has happened
                 newDailyStepRecord = DailyStepRecord(
                     totalSteps = dailyStepRecord.totalSteps + currentSteps,
                     initialSteps = 0,
                     recordDate = today,
                     stepsBeforeReboot = dailyStepRecord.totalSteps,
                     caloriesBurned = calculateCaloriesFromSteps(
-                        (dailyStepRecord.totalSteps + currentSteps), user
+                        (dailyStepRecord.totalSteps + currentSteps),
+                        user,
                     ),
                     totalDistance = calculateDistanceFromSteps(
-                        (dailyStepRecord.totalSteps + currentSteps), user
-                    )
+                        (dailyStepRecord.totalSteps + currentSteps),
+                        user,
+                    ),
                 )
 
                 prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
@@ -68,12 +69,12 @@ class StepCounterWorker @AssistedInject constructor(
                     stepsBeforeReboot = dailyStepRecord.stepsBeforeReboot,
                     caloriesBurned = calculateCaloriesFromSteps(
                         (currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot),
-                        user
+                        user,
                     ),
                     totalDistance = calculateDistanceFromSteps(
                         (currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot),
-                        user
-                    )
+                        user,
+                    ),
                 )
             }
 
@@ -85,6 +86,5 @@ class StepCounterWorker @AssistedInject constructor(
 
             return Result.retry()
         }
-
     }
 }

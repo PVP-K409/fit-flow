@@ -8,7 +8,7 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
-    private val db: FirebaseFirestore
+    private val db: FirebaseFirestore,
 ) {
     private val userid = "ohxyZCvlrIt0JaQQH5RF"
 
@@ -28,7 +28,7 @@ class UserRepository @Inject constructor(
                     "date" to newSteps.recordDate,
                     "temp" to newSteps.stepsBeforeReboot,
                     "distance" to newSteps.totalDistance,
-                    "calories" to newSteps.caloriesBurned
+                    "calories" to newSteps.caloriesBurned,
                 )
 
                 val updatedStepsList = if (existingStepMap != null) {
@@ -41,12 +41,9 @@ class UserRepository @Inject constructor(
             } else {
                 Log.e("Step Repository", "No such document")
             }
-
         } catch (e: Exception) {
             Log.e("Step Repository", "Error updating steps", e)
         }
-
-
     }
 
     suspend fun loadTodaySteps(day: String): DailyStepRecord? {
@@ -64,13 +61,12 @@ class UserRepository @Inject constructor(
                     recordDate = it["date"] as? String ?: day,
                     stepsBeforeReboot = it["temp"] as? Long ?: 0,
                     caloriesBurned = it["calories"] as? Long ?: 0,
-                    totalDistance = it["distance"] as? Double ?: 0.0
+                    totalDistance = it["distance"] as? Double ?: 0.0,
                 )
             }
         } else {
             return null
         }
-
     }
 
     suspend fun getUser(): User? {
@@ -82,5 +78,4 @@ class UserRepository @Inject constructor(
             null
         }
     }
-
 }

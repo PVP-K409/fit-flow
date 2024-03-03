@@ -29,7 +29,7 @@ data class Bubble(
     val end: Offset,
     val radius: Float,
     val duration: Long,
-    val easing: Easing
+    val easing: Easing,
 )
 
 private const val minAnimationDuration = 3000L
@@ -49,7 +49,7 @@ fun WaterBubbles(
     val infiniteTransition = rememberInfiniteTransition(label = "")
 
     Box(
-        modifier = modifier
+        modifier = modifier,
     ) {
         val bubbles = remember {
             List(bubbleCount) {
@@ -57,11 +57,12 @@ fun WaterBubbles(
 
                 Bubble(
                     start = Offset(
-                        x = Random.nextFloat() * offsetX, y = offsetX
+                        x = Random.nextFloat() * offsetX,
+                        y = offsetX,
                     ),
                     end = Offset(
                         x = Random.nextFloat() * offsetX,
-                        y = 0f + radius + (Random.nextFloat() * offsetY / 2f)
+                        y = 0f + radius + (Random.nextFloat() * offsetY / 2f),
                     ),
                     duration = Random.nextLong(minAnimationDuration, maxAnimationDuration),
                     easing = when (Random.nextInt(3)) {
@@ -69,7 +70,7 @@ fun WaterBubbles(
                         1 -> FastOutSlowInEasing
                         else -> CubicBezierEasing(0.23f, 0.12f, 0.25f, 1.0f)
                     },
-                    radius = radius
+                    radius = radius,
                 )
             }
         }
@@ -80,9 +81,9 @@ fun WaterBubbles(
                 targetValue = bubble.end.x,
                 animationSpec = infiniteRepeatable(
                     animation = tween(bubble.duration.toInt(), easing = bubble.easing),
-                    repeatMode = RepeatMode.Restart
+                    repeatMode = RepeatMode.Restart,
                 ),
-                label = ""
+                label = "",
             )
 
             val yValue by infiniteTransition.animateFloat(
@@ -90,25 +91,29 @@ fun WaterBubbles(
                 targetValue = bubble.end.y,
                 animationSpec = infiniteRepeatable(
                     animation = tween(bubble.duration.toInt(), easing = bubble.easing),
-                    repeatMode = RepeatMode.Restart
+                    repeatMode = RepeatMode.Restart,
                 ),
-                label = ""
+                label = "",
             )
 
             val alpha by infiniteTransition.animateFloat(
-                initialValue = 1f, targetValue = 0f, animationSpec = infiniteRepeatable(
+                initialValue = 1f,
+                targetValue = 0f,
+                animationSpec = infiniteRepeatable(
                     animation = keyframes {
                         durationMillis = bubble.duration.toInt()
                         0.5f at 0 using LinearOutSlowInEasing
                         1f at bubble.duration.toInt() using LinearOutSlowInEasing
-                    }, repeatMode = RepeatMode.Restart
-                ), label = ""
+                    },
+                    repeatMode = RepeatMode.Restart,
+                ),
+                label = "",
             )
 
             Canvas(
                 modifier = Modifier
                     .fillMaxSize()
-                    .alpha(alpha)
+                    .alpha(alpha),
             ) {
                 drawCircle(
                     color = Color.Blue,
@@ -120,7 +125,7 @@ fun WaterBubbles(
                     brush = Brush.linearGradient(
                         colors = colors,
                         start = Offset(xValue - 90, yValue),
-                        end = Offset(xValue + 90, yValue)
+                        end = Offset(xValue + 90, yValue),
                     ),
                     radius = bubble.radius,
                     center = Offset(xValue, yValue),

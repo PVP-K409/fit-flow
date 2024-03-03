@@ -9,7 +9,7 @@ import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.github.k409.fitflow.features.step_counter.StepCounterWorker
+import com.github.k409.fitflow.features.stepcounter.StepCounterWorker
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -25,26 +25,30 @@ class FitFlowApplication : Application(), Configuration.Provider {
         super.onCreate()
 
         val myWork = PeriodicWorkRequestBuilder<StepCounterWorker>(
-            15, TimeUnit.MINUTES
+            15,
+            TimeUnit.MINUTES,
         ).build()
 
         WorkManager.getInstance(this)
             .enqueueUniquePeriodicWork(
                 "UpdateStepsWorker",
-                ExistingPeriodicWorkPolicy.UPDATE, myWork
+                ExistingPeriodicWorkPolicy.UPDATE,
+                myWork,
             )
 
         val midnightWorkRequest =
             PeriodicWorkRequestBuilder<StepCounterWorker>(
-                24, TimeUnit.HOURS,
-                1, TimeUnit.MINUTES
+                24,
+                TimeUnit.HOURS,
+                1,
+                TimeUnit.MINUTES,
             ).setInitialDelay(calculateInitialDelayUntilMidnight(), TimeUnit.MILLISECONDS)
                 .build()
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "MidnightWorker",
             ExistingPeriodicWorkPolicy.UPDATE,
-            midnightWorkRequest
+            midnightWorkRequest,
         )
     }
 

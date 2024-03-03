@@ -22,7 +22,7 @@ fun signInWithGoogle(
 
 fun firebaseAuthWithGoogle(
     context: Context,
-    idToken: String
+    idToken: String,
 ) {
     val credential = GoogleAuthProvider.getCredential(idToken, null)
     FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener { task ->
@@ -36,7 +36,7 @@ fun firebaseAuthWithGoogle(
 
 fun signInWithGitHub(
     context: Context,
-    mAuth: FirebaseAuth
+    mAuth: FirebaseAuth,
 ) {
     val provider = OAuthProvider.newBuilder("github.com")
 

@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.features.step_counter
+package com.github.k409.fitflow.features.stepcounter
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -39,22 +39,21 @@ class StepCounter(context: Context) {
                     if (continuation.isActive) {
                         continuation.resume(stepsSinceLastReboot)
                     }
-
                 }
 
                 override fun onAccuracyChanged(
                     sensor: Sensor?,
-                    accuracy: Int
+                    accuracy: Int,
                 ) {
-                    //not needed
+                    // not needed
                 }
             }
         }
 
         sensorManager.registerListener(
             listener,
-            sensor, SensorManager.SENSOR_DELAY_NORMAL
+            sensor,
+            SensorManager.SENSOR_DELAY_NORMAL,
         )
     }
-
 }

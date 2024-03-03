@@ -2,7 +2,6 @@
 
 package com.github.k409.fitflow.ui
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
@@ -66,26 +65,28 @@ fun FitFlowApp() {
                     topBarState = topBarState.value,
                     currentRoute = currentScreen,
                     canNavigateBack = navController.previousBackStackEntry != null &&
-                            !NavRoutes.bottomNavBarItems.contains(currentScreen),
+                        !NavRoutes.bottomNavBarItems.contains(currentScreen),
                     navigateUp = { navController.navigateUp() },
                     navController = navController,
-                    containerColor = if (currentScreen == NavRoutes.Home) Color(0xffb5c8e8) else MaterialTheme.colorScheme.surface
+                    containerColor = if (currentScreen == NavRoutes.Home) Color(0xffb5c8e8) else MaterialTheme.colorScheme.surface,
                 )
             },
             bottomBar = {
                 FitFlowBottomBar(
                     navController = navController,
                     currentDestination = currentDestination,
-                    visible = !(navController.previousBackStackEntry != null &&
-                            !NavRoutes.bottomNavBarItems.contains(currentScreen)) &&
-                            bottomBarState.value,
-                    containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface
+                    visible = !(
+                        navController.previousBackStackEntry != null &&
+                            !NavRoutes.bottomNavBarItems.contains(currentScreen)
+                        ) &&
+                        bottomBarState.value,
+                    containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
                 )
-            }
+            },
         ) { innerPadding ->
             FitFlowNavGraph(
                 modifier = Modifier.padding(innerPadding),
-                navController = navController
+                navController = navController,
             )
         }
     }
@@ -120,7 +121,7 @@ fun FitFlowTopBar(
                         IconButton(onClick = navigateUp) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
                     }
@@ -136,21 +137,19 @@ fun FitFlowTopBar(
                                 .size(100.dp)
                                 .background(
                                     color = MaterialTheme.colorScheme.secondaryContainer,
-                                    shape = CircleShape
+                                    shape = CircleShape,
                                 )
-                                .padding(3.dp)
+                                .padding(3.dp),
                         )
                     }
                     if (isClicked) {
                         isClicked = false
                         navigateToProfileSettingsScreen(navController = navController)
                     }
-                })
-
+                },
+            )
         }
     }
-
-
 }
 
 @Composable
@@ -158,7 +157,7 @@ fun FitFlowBottomBar(
     navController: NavController,
     currentDestination: NavDestination?,
     visible: Boolean,
-    containerColor: Color = MaterialTheme.colorScheme.surface
+    containerColor: Color = MaterialTheme.colorScheme.surface,
 ) {
     if (visible) {
         NavigationBar(
@@ -167,7 +166,7 @@ fun FitFlowBottomBar(
 //                .padding(8.dp)
 //                .clip(RoundedCornerShape(50))
                 .height(70.dp),
-            windowInsets = NavigationBarDefaults.windowInsets.exclude(WindowInsets(bottom = 12.dp))
+            windowInsets = NavigationBarDefaults.windowInsets.exclude(WindowInsets(bottom = 12.dp)),
         ) {
             NavRoutes.bottomNavBarItems.forEach { screen ->
                 NavigationBarItem(
@@ -176,7 +175,7 @@ fun FitFlowBottomBar(
                     icon = {
                         Icon(
                             imageVector = screen.icon,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     },
                     selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
@@ -188,7 +187,8 @@ fun FitFlowBottomBar(
                             launchSingleTop = true
                             restoreState = true
                         }
-                    })
+                    },
+                )
             }
         }
     }
