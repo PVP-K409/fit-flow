@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.di
 
+import com.github.k409.fitflow.data.AuthRepository
 import com.github.k409.fitflow.data.ProfileRepository
 import com.github.k409.fitflow.data.UserRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -25,9 +26,18 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideUserRepository(
-        firestoreFirestore: FirebaseFirestore,
+        db: FirebaseFirestore,
         auth: FirebaseAuth,
     ): UserRepository {
-        return UserRepository(firestoreFirestore, auth)
+        return UserRepository(db, auth)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(
+        auth: FirebaseAuth,
+        userRepository: UserRepository,
+    ): AuthRepository {
+        return AuthRepository(auth, userRepository)
     }
 }

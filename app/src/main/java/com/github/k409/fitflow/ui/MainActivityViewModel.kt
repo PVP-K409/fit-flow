@@ -25,11 +25,6 @@ class MainActivityViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = SharedUiState.Loading
     )
-
-
-    fun isLoading(): Boolean {
-        return sharedUiState.value is SharedUiState.Loading
-    }
 }
 
 

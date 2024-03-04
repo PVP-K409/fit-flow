@@ -3,7 +3,9 @@ package com.github.k409.fitflow.data
 import android.util.Log
 import com.github.k409.fitflow.model.DailyStepRecord
 import com.github.k409.fitflow.model.User
+import com.github.k409.fitflow.model.toUser
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
@@ -50,6 +52,12 @@ class UserRepository @Inject constructor(
 
     fun getUser(uid: String): Flow<User> = db.collection(USERS_COLLECTION).document(uid).snapshots()
         .map { it.toObject<User>() ?: User() }
+
+    fun createUser(firebaseUser: FirebaseUser) {
+        val user = firebaseUser.toUser()
+
+        db.collection(USERS_COLLECTION).document(user.uid).set(user)
+    }
 
     suspend fun updateSteps(newSteps: DailyStepRecord) {
         val userDocRef = db.collection(USERS_COLLECTION).document(userid)
