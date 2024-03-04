@@ -57,7 +57,7 @@ fun FitFlowApp(
     val currentScreen = NavRoutes.navRoutes.find { it.route == currentDestination?.route }
         ?: NavRoutes.Home
     val startDestination = if (user.uid.isEmpty()) {
-        NavRoutes.Registration.route
+        NavRoutes.Login.route
     } else {
         NavRoutes.Home.route
     }
@@ -66,7 +66,7 @@ fun FitFlowApp(
     val topBarState = rememberSaveable { (mutableStateOf(false)) }
 
     when (currentScreen) {
-        NavRoutes.Registration -> {
+        NavRoutes.Login -> {
             bottomBarState.value = false
             topBarState.value = false
         }

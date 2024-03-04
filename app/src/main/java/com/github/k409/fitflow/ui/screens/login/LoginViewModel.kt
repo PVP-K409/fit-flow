@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.screens.registration
+package com.github.k409.fitflow.ui.screens.login
 
 import android.app.Activity
 import android.content.Context
@@ -18,7 +18,7 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
-class RegistrationViewModel @Inject constructor(
+class LoginViewModel @Inject constructor(
     val auth: FirebaseAuth,
     val db: FirebaseFirestore
 ) : ViewModel() {

@@ -3,11 +3,11 @@ package com.github.k409.fitflow.ui.navigation
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Adjust
+import androidx.compose.material.icons.outlined.BrokenImage
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Store
-import androidx.compose.material.icons.outlined.VerifiedUser
 import androidx.compose.material.icons.outlined.ViewTimeline
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.k409.fitflow.R
@@ -15,7 +15,7 @@ import com.github.k409.fitflow.R
 sealed class NavRoutes(
     val route: String,
     @StringRes val stringRes: Int,
-    val icon: ImageVector,
+    val icon: ImageVector = Icons.Outlined.BrokenImage,
 ) {
     companion object {
         val navRoutes = listOf(
@@ -23,11 +23,11 @@ sealed class NavRoutes(
             Activity,
             Goals,
             Marketplace,
-            Registration,
+            Login,
             ProfileSettings,
             ProfileCreation,
         )
-        val bottomNavBarItems = listOf(Home, Activity, Goals, Marketplace, Registration)
+        val bottomNavBarItems = listOf(Home, Activity, Goals, Marketplace)
     }
 
     data object Home : NavRoutes("home", R.string.home, Icons.Outlined.Home)
@@ -44,5 +44,5 @@ sealed class NavRoutes(
     data object ProfileSettings :
         NavRoutes("profileSettings", R.string.profile_settings, Icons.Outlined.Settings)
 
-    data object Registration : NavRoutes("registration", R.string.user, Icons.Outlined.VerifiedUser)
+    data object Login : NavRoutes("login", R.string.user)
 }
