@@ -56,6 +56,10 @@ class UserRepository @Inject constructor(
     fun createUser(firebaseUser: FirebaseUser) {
         val user = firebaseUser.toUser()
 
+        if (user.name.isEmpty()) {
+            user.name = user.email
+        }
+
         db.collection(USERS_COLLECTION).document(user.uid).set(user)
     }
 

@@ -3,7 +3,7 @@ package com.github.k409.fitflow.model
 import com.google.firebase.auth.FirebaseUser
 
 data class User(
-    var uid : String = "",
+    var uid: String = "",
     var name: String = "",
     val photoUrl: String = "",
     var email: String = "",
@@ -15,9 +15,17 @@ data class User(
     var gender: String = "",
 )
 
-fun FirebaseUser.toUser() = User(
-    uid = uid,
-    name = displayName ?: "",
-    email = email ?: "",
-    photoUrl = photoUrl.toString(),
-)
+fun FirebaseUser.toUser(): User {
+    val name = (if (displayName.isNullOrEmpty()) {
+        email
+    } else {
+        displayName
+    }) ?: ""
+
+    return User(
+        uid = uid,
+        name = name,
+        email = email ?: "",
+        photoUrl = photoUrl.toString(),
+    )
+}
