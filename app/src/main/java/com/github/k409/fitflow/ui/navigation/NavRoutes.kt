@@ -26,9 +26,12 @@ sealed class NavRoutes(
             Login,
             ProfileSettings,
             ProfileCreation,
+            Settings,
         )
         val bottomNavBarItems = listOf(Home, Activity, Goals, Marketplace)
     }
+
+    data object Default : NavRoutes("default", R.string.app_name)
 
     data object Home : NavRoutes("home", R.string.home, Icons.Outlined.Home)
 
@@ -45,4 +48,6 @@ sealed class NavRoutes(
         NavRoutes("profileSettings", R.string.profile_settings, Icons.Outlined.Settings)
 
     data object Login : NavRoutes("login", R.string.user)
+
+    data object Settings : NavRoutes("settings", R.string.settings, Icons.Outlined.Settings)
 }
