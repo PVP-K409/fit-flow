@@ -38,7 +38,15 @@ fun FitFlowNavGraph(
             MarketScreen()
         }
         composable(NavRoutes.Registration.route) {
-            RegistrationScreen()
+            RegistrationScreen(
+                onSuccessfulSignIn = {
+                    navController.navigate(NavRoutes.Home.route) {
+                        popUpTo(NavRoutes.Home.route) {
+                            inclusive = false
+                        }
+                    }
+                }
+            )
         }
         composable(NavRoutes.ProfileCreation.route) {
             ProfileCreationScreen(navController)

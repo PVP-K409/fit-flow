@@ -2,6 +2,7 @@ package com.github.k409.fitflow.di
 
 import com.github.k409.fitflow.data.ProfileRepository
 import com.github.k409.fitflow.data.UserRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -25,7 +26,8 @@ object RepositoryModule {
     @Singleton
     fun provideUserRepository(
         firestoreFirestore: FirebaseFirestore,
+        auth: FirebaseAuth,
     ): UserRepository {
-        return UserRepository(firestoreFirestore)
+        return UserRepository(firestoreFirestore, auth)
     }
 }

@@ -44,52 +44,70 @@ import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screens.profile.navigateToProfileSettingsScreen
-import com.github.k409.fitflow.ui.theme.FitFlowTheme
 
 @Composable
-fun FitFlowApp() {
-    FitFlowTheme(dynamicColor = false) {
-        val navController = rememberNavController()
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
+fun FitFlowApp(
+    sharedUiState: SharedUiState.Success,
+) {
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val user = sharedUiState.user
 
-        val currentScreen = NavRoutes.navRoutes.find { it.route == currentDestination?.route }
-            ?: NavRoutes.Home
+    val currentScreen = NavRoutes.navRoutes.find { it.route == currentDestination?.route }
+        ?: NavRoutes.Home
+    val startDestination = if (user.uid.isEmpty()) {
+        NavRoutes.Registration.route
+    } else {
+        NavRoutes.Home.route
+    }
 
-        val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
-        val topBarState = rememberSaveable { (mutableStateOf(true)) }
+    val bottomBarState = rememberSaveable { (mutableStateOf(false)) }
+    val topBarState = rememberSaveable { (mutableStateOf(false)) }
 
-        Scaffold(
-            topBar = {
-                FitFlowTopBar(
-                    topBarState = topBarState.value,
-                    currentRoute = currentScreen,
-                    canNavigateBack = navController.previousBackStackEntry != null &&
-                        !NavRoutes.bottomNavBarItems.contains(currentScreen),
-                    navigateUp = { navController.navigateUp() },
-                    navController = navController,
-                    containerColor = if (currentScreen == NavRoutes.Home) Color(0xffb5c8e8) else MaterialTheme.colorScheme.surface,
-                )
-            },
-            bottomBar = {
-                FitFlowBottomBar(
-                    navController = navController,
-                    currentDestination = currentDestination,
-                    visible = !(
-                        navController.previousBackStackEntry != null &&
-                            !NavRoutes.bottomNavBarItems.contains(currentScreen)
-                        ) &&
-                        bottomBarState.value,
-                    containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
-                )
-            },
-        ) { innerPadding ->
-            FitFlowNavGraph(
-                modifier = Modifier.padding(innerPadding),
-                navController = navController,
-            )
+    when (currentScreen) {
+        NavRoutes.Registration -> {
+            bottomBarState.value = false
+            topBarState.value = false
+        }
+        else -> {
+            bottomBarState.value = true
+            topBarState.value = true
         }
     }
+
+    Scaffold(
+        topBar = {
+            FitFlowTopBar(
+                topBarState = topBarState.value,
+                currentRoute = currentScreen,
+                canNavigateBack = navController.previousBackStackEntry != null &&
+                        !NavRoutes.bottomNavBarItems.contains(currentScreen),
+                navigateUp = { navController.navigateUp() },
+                navController = navController,
+                containerColor = if (currentScreen == NavRoutes.Home) Color(0xffb5c8e8) else MaterialTheme.colorScheme.surface,
+            )
+        },
+        bottomBar = {
+            FitFlowBottomBar(
+                navController = navController,
+                currentDestination = currentDestination,
+                visible = !(
+                        navController.previousBackStackEntry != null &&
+                                !NavRoutes.bottomNavBarItems.contains(currentScreen)
+                        ) &&
+                        bottomBarState.value,
+                containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
+            )
+        },
+    ) { innerPadding ->
+        FitFlowNavGraph(
+            modifier = Modifier.padding(innerPadding),
+            navController = navController,
+            startDestination = startDestination,
+        )
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
