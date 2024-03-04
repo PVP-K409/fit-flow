@@ -86,7 +86,7 @@ fun FitFlowApp(
                 topBarState = topBarState.value,
                 currentRoute = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                    currentScreen
+                    currentScreen,
                 ),
                 navigateUp = { navController.navigateUp() },
                 navController = navController,
@@ -97,9 +97,11 @@ fun FitFlowApp(
             FitFlowBottomBar(
                 navController = navController,
                 currentDestination = currentDestination,
-                visible = !(navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                    currentScreen
-                )) && bottomBarState.value,
+                visible = !(
+                    navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                        currentScreen,
+                    )
+                    ) && bottomBarState.value,
                 containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
             )
         },
@@ -110,7 +112,6 @@ fun FitFlowApp(
             startDestination = startDestination,
         )
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

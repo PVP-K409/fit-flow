@@ -18,7 +18,7 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
     suspend fun firebaseAuthWithGoogle(
         context: Context,
-        idToken: String
+        idToken: String,
     ) {
         val signInResult = authRepository.firebaseAuthWithGoogle(idToken)
 
@@ -33,14 +33,14 @@ class LoginViewModel @Inject constructor(
 
     fun signInWithGoogle(
         signInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
-        googleSignInClient: GoogleSignInClient
+        googleSignInClient: GoogleSignInClient,
     ) {
         authRepository.signInWithGoogle(signInLauncher, googleSignInClient)
     }
 
     private fun showSignInStateToast(
         context: Context,
-        signInResult: SignInResult
+        signInResult: SignInResult,
     ) {
         if (signInResult.user != null) {
             Toast.makeText(context, "Welcome, ${signInResult.user.name}", Toast.LENGTH_SHORT)

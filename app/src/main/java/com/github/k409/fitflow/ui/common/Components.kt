@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun FitFlowCircularProgressIndicator(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -23,13 +23,13 @@ fun FitFlowCircularProgressIndicator(
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(bottom = 22.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         CircularProgressIndicator(
             modifier = Modifier.width(45.dp),
             color = MaterialTheme.colorScheme.primary,
             trackColor = MaterialTheme.colorScheme.surfaceContainer,
-            strokeWidth = 5.dp
+            strokeWidth = 5.dp,
         )
     }
 }

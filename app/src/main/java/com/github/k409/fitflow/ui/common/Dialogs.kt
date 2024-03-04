@@ -19,13 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
-
 @Composable
 fun ConfirmDialog(
     onConfirm: () -> Unit = {},
-    onDismiss: () -> Unit = {}
+    onDismiss: () -> Unit = {},
 ) {
-    AlertDialog(onDismissRequest = onDismiss,
+    AlertDialog(
+        onDismissRequest = onDismiss,
         title = {
             Text(text = "Are you sure?")
         },
@@ -41,7 +41,8 @@ fun ConfirmDialog(
             TextButton(onClick = onDismiss) {
                 Text(text = "Cancel")
             }
-        })
+        },
+    )
 }
 
 @Composable
@@ -50,7 +51,7 @@ fun Dialog(
     onSaveClick: () -> Unit,
     onDismiss: () -> Unit,
     buttonsVisible: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Dialog(
         title = title,
@@ -70,16 +71,16 @@ fun <T> Dialog(
     selectedValue: T,
     onSaveClick: (T) -> Unit,
     onDismiss: () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     androidx.compose.ui.window.Dialog(
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
     ) {
         Surface(
             color = MaterialTheme.colorScheme.background,
             shape = MaterialTheme.shapes.medium,
             shadowElevation = 8.dp,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -87,15 +88,15 @@ fun <T> Dialog(
                 modifier = Modifier.padding(
                     top = 16.dp,
                     start = 16.dp,
-                    end = 16.dp
-                )
+                    end = 16.dp,
+                ),
             ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
@@ -106,10 +107,10 @@ fun <T> Dialog(
                     Row(
                         horizontalArrangement = Arrangement.End,
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         TextButton(
-                            onClick = onDismiss
+                            onClick = onDismiss,
                         ) {
                             Text(text = "Cancel")
                         }

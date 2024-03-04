@@ -16,7 +16,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 data class SignInResult(
     val user: User?,
-    val errorMessage: String?
+    val errorMessage: String?,
 )
 
 class AuthRepository @Inject constructor(
@@ -50,7 +50,7 @@ class AuthRepository @Inject constructor(
     }
 
     suspend fun signInWithGitHub(
-        context: Context
+        context: Context,
     ): SignInResult {
         val provider = OAuthProvider.newBuilder("github.com")
 

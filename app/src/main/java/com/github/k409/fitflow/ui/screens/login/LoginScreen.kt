@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    onSuccessfulSignIn: () -> Unit = {}
+    onSuccessfulSignIn: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -68,14 +68,15 @@ fun LoginScreen(
     SignInContent(
         onGoogleSignInClick = {
             viewModel.signInWithGoogle(
-                signInLauncher, googleSignInClient
+                signInLauncher,
+                googleSignInClient,
             )
         },
         onGitHubSignInClick = {
             coroutineScope.launch {
                 viewModel.signInWithGitHub(context)
             }
-        }
+        },
     )
 }
 
@@ -94,14 +95,14 @@ fun SignInContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(top = 80.dp)
-                    .align(Alignment.TopCenter)
+                    .align(Alignment.TopCenter),
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Password,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
-                        .size(120.dp)
+                        .size(120.dp),
 
                 )
                 Text(
@@ -114,13 +115,13 @@ fun SignInContent(
             Column(
                 modifier = Modifier.align(Alignment.Center),
                 verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Button(
                     onClick = onGoogleSignInClick,
                     shape = RoundedCornerShape(4.dp),
 
-                    ) {
+                ) {
                     Text(text = "Sign in with Google")
                 }
 
@@ -136,7 +137,7 @@ fun SignInContent(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     text = "FitFlow Corporation",
@@ -150,7 +151,6 @@ fun SignInContent(
                     textAlign = TextAlign.Center,
                 )
             }
-
         }
     }
 }

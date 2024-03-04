@@ -16,11 +16,13 @@ data class User(
 )
 
 fun FirebaseUser.toUser(): User {
-    val name = (if (displayName.isNullOrEmpty()) {
-        email
-    } else {
-        displayName
-    }) ?: ""
+    val name = (
+        if (displayName.isNullOrEmpty()) {
+            email
+        } else {
+            displayName
+        }
+        ) ?: ""
 
     return User(
         uid = uid,

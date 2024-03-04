@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
                         Log.d("MainActivity", (sharedUiState as SharedUiState.Success).user.toString())
                         PermissionsHandler()
                         FitFlowApp(
-                            sharedUiState = sharedUiState as SharedUiState.Success
+                            sharedUiState = sharedUiState as SharedUiState.Success,
                         )
                     }
                 }

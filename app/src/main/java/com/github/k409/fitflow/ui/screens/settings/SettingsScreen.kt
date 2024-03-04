@@ -28,11 +28,12 @@ fun SettingsScreen(
         modifier = Modifier.fillMaxSize(),
     ) {
         SettingsEntryGroupText(title = "Profile")
-        SettingsEntry(title = "Edit profile",
+        SettingsEntry(
+            title = "Edit profile",
             text = "Edit your profile",
             onClick = {
                 navController.navigate(NavRoutes.ProfileCreation.route)
-            }
+            },
         )
 
         SettingsGroupSpacer()
@@ -49,7 +50,7 @@ fun SettingsScreen(
                 coroutineScope.launch {
                     settingsViewModel.signOut()
                 }
-            }
+            },
         )
     }
 }

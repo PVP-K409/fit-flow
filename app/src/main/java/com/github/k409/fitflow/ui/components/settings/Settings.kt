@@ -29,7 +29,7 @@ fun SwitchSettingEntry(
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    isEnabled: Boolean = true
+    isEnabled: Boolean = true,
 ) {
     SettingsEntry(
         title = title,
@@ -37,11 +37,13 @@ fun SwitchSettingEntry(
         isEnabled = isEnabled,
         onClick = { onCheckedChange(!isChecked) },
         trailingContent = {
-            Switch(enabled = isEnabled,
+            Switch(
+                enabled = isEnabled,
                 checked = isChecked,
-                onCheckedChange = { onCheckedChange(!isChecked) })
+                onCheckedChange = { onCheckedChange(!isChecked) },
+            )
         },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -53,7 +55,7 @@ fun SettingsEntry(
     onClick: () -> Unit = {},
     confirmClick: Boolean = false,
     isEnabled: Boolean = true,
-    trailingContent: (@Composable () -> Unit)? = null
+    trailingContent: (@Composable () -> Unit)? = null,
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
@@ -61,24 +63,26 @@ fun SettingsEntry(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .clickable(enabled = isEnabled,
+            .clickable(
+                enabled = isEnabled,
                 onClick = {
                     if (confirmClick) {
                         showDialog = true
                     } else {
                         onClick()
                     }
-                })
+                },
+            )
             .alpha(if (isEnabled) 1f else 0.5f)
             .padding(
                 start = 16.dp,
-                end = 16.dp
+                end = 16.dp,
             )
             .padding(all = 16.dp)
-            .fillMaxWidth()
+            .fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         ) {
             Text(
                 text = title,
@@ -93,12 +97,13 @@ fun SettingsEntry(
     }
 
     if (showDialog) {
-        ConfirmDialog(onConfirm = {
-            showDialog = false
-            onClick()
-        },
-            onDismiss = { showDialog = false })
-
+        ConfirmDialog(
+            onConfirm = {
+                showDialog = false
+                onClick()
+            },
+            onDismiss = { showDialog = false },
+        )
     }
 }
 
@@ -114,8 +119,8 @@ fun SettingsDescription(
             .padding(start = 16.dp)
             .padding(
                 horizontal = 16.dp,
-                vertical = 8.dp
-            )
+                vertical = 8.dp,
+            ),
     )
 }
 
@@ -130,7 +135,7 @@ fun SettingsEntryGroupText(
         style = MaterialTheme.typography.bodyMedium,
         modifier = modifier
             .padding(start = 16.dp)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp),
     )
 }
 
@@ -139,7 +144,7 @@ fun SettingsGroupSpacer(
     modifier: Modifier = Modifier,
 ) {
     Spacer(
-        modifier = modifier.height(24.dp)
+        modifier = modifier.height(24.dp),
     )
 }
 
@@ -155,7 +160,7 @@ fun ImportantSettingsDescription(
             .padding(start = 16.dp)
             .padding(
                 horizontal = 16.dp,
-                vertical = 8.dp
-            )
+                vertical = 8.dp,
+            ),
     )
 }

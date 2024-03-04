@@ -55,7 +55,7 @@ fun FitFlowNavGraph(
                             inclusive = false
                         }
                     }
-                }
+                },
             )
         }
     }

@@ -13,24 +13,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    userRepository: UserRepository
+    userRepository: UserRepository,
 ) : ViewModel() {
 
     val sharedUiState: StateFlow<SharedUiState> = userRepository.getCurrentUser.map { currentUser ->
         SharedUiState.Success(
-            user = currentUser
+            user = currentUser,
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = SharedUiState.Loading
+        initialValue = SharedUiState.Loading,
     )
 }
-
 
 sealed interface SharedUiState {
     data object Loading : SharedUiState
     data class Success(
-        val user: User
+        val user: User,
     ) : SharedUiState
 }
