@@ -42,6 +42,7 @@ import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 
+@Suppress("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FitFlowApp(
     sharedUiState: SharedUiState.Success,
@@ -74,6 +75,11 @@ fun FitFlowApp(
             topBarState.value = true
         }
 
+        NavRoutes.Home -> {
+            bottomBarState.value = true
+            topBarState.value = false
+        }
+
         else -> {
             bottomBarState.value = true
             topBarState.value = true
@@ -98,16 +104,25 @@ fun FitFlowApp(
                 navController = navController,
                 currentDestination = currentDestination,
                 visible = !(
-                    navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                        currentScreen,
-                    )
-                    ) && bottomBarState.value,
+                        navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                            currentScreen,
+                        )
+                        ) && bottomBarState.value,
                 containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
             )
         },
     ) { innerPadding ->
+        val topPadding =
+            if (currentScreen == NavRoutes.Home) 0.dp else innerPadding.calculateTopPadding()
+        val bottomPadding = innerPadding.calculateBottomPadding()
+
         FitFlowNavGraph(
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(
+                bottom = bottomPadding,
+                top = topPadding,
+//                start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
+//                end = innerPadding.calculateRightPadding(LayoutDirection.Ltr),
+            ),
             navController = navController,
             startDestination = startDestination,
         )
@@ -151,9 +166,6 @@ fun FitFlowTopBar(
                 actions = {
                     IconButton(onClick = {
                         navController.navigate(NavRoutes.Settings.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
                             launchSingleTop = true
                             restoreState = true
                         }

@@ -39,7 +39,7 @@ fun BoxScope.Plant(
     Image(
         painter = plantPainter,
         contentDescription = "Plant",
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.BottomEnd)
             .height(150.dp),
     )

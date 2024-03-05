@@ -23,17 +23,19 @@ fun Aquarium(
     )
 
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                brush = aquariumBackground,
+            ),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+        ) {
         BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = aquariumBackground,
-                ),
+            modifier = Modifier.fillMaxSize()/*.background(
+                brush = aquariumBackground,
+            ),*/
         ) {
             val height = constraints.maxHeight
             val width = constraints.maxWidth
