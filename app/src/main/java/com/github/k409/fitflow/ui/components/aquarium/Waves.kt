@@ -28,7 +28,7 @@ fun AnimatedWaves(
     waveFrequency: Float = 0.03f,
     brush: Brush = Brush.linearGradient(
         colors = listOf(Color(0xFF7FABC0), Color(0x1A3C726A)),
-        ),
+    ),
 ) {
     val waveAmplitudeState = remember { mutableFloatStateOf(waveAmplitude) }
     val waveFrequencyState = remember { mutableFloatStateOf(waveFrequency) }
