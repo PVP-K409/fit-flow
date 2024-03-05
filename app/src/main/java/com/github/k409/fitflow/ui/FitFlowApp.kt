@@ -24,8 +24,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -64,8 +64,58 @@ fun FitFlowApp(
     val bottomBarState = rememberSaveable { (mutableStateOf(false)) }
     val topBarState = rememberSaveable { (mutableStateOf(false)) }
 
+    UpdateTopAndBottomBarVisibility(
+        currentScreen = currentScreen,
+        bottomBarState = bottomBarState,
+        topBarState = topBarState
+    )
+
+    Scaffold(
+        topBar = {
+            FitFlowTopBar(
+                topBarState = topBarState.value,
+                currentRoute = currentScreen,
+                canNavigateBack = navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                    currentScreen,
+                ),
+                navigateUp = { navController.navigateUp() },
+                navController = navController,
+            )
+        },
+        bottomBar = {
+            FitFlowBottomBar(
+                navController = navController,
+                currentDestination = currentDestination,
+                visible = !(navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                    currentScreen,
+                )) && bottomBarState.value,
+                containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
+            )
+        },
+    ) { innerPadding ->
+        val topPadding =
+            if (currentScreen == NavRoutes.Home) 0.dp else innerPadding.calculateTopPadding()
+        val bottomPadding = innerPadding.calculateBottomPadding()
+
+        FitFlowNavGraph(
+            modifier = Modifier.padding(
+                bottom = bottomPadding,
+                top = topPadding
+            ),
+            navController = navController,
+            startDestination = startDestination,
+        )
+    }
+}
+
+@Composable
+private fun UpdateTopAndBottomBarVisibility(
+    currentScreen: NavRoutes,
+    bottomBarState: MutableState<Boolean>,
+    topBarState: MutableState<Boolean>
+) {
     when (currentScreen) {
-        NavRoutes.Login -> {
+        NavRoutes.Login, NavRoutes.Default -> {
             bottomBarState.value = false
             topBarState.value = false
         }
@@ -85,48 +135,6 @@ fun FitFlowApp(
             topBarState.value = true
         }
     }
-
-    Scaffold(
-        topBar = {
-            FitFlowTopBar(
-                topBarState = topBarState.value,
-                currentRoute = currentScreen,
-                canNavigateBack = navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                    currentScreen,
-                ),
-                navigateUp = { navController.navigateUp() },
-                navController = navController,
-                containerColor = if (currentScreen == NavRoutes.Home) Color(0xffb5c8e8) else MaterialTheme.colorScheme.surface,
-            )
-        },
-        bottomBar = {
-            FitFlowBottomBar(
-                navController = navController,
-                currentDestination = currentDestination,
-                visible = !(
-                        navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                            currentScreen,
-                        )
-                        ) && bottomBarState.value,
-                containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
-            )
-        },
-    ) { innerPadding ->
-        val topPadding =
-            if (currentScreen == NavRoutes.Home) 0.dp else innerPadding.calculateTopPadding()
-        val bottomPadding = innerPadding.calculateBottomPadding()
-
-        FitFlowNavGraph(
-            modifier = Modifier.padding(
-                bottom = bottomPadding,
-                top = topPadding,
-//                start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
-//                end = innerPadding.calculateRightPadding(LayoutDirection.Ltr),
-            ),
-            navController = navController,
-            startDestination = startDestination,
-        )
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -137,16 +145,12 @@ fun FitFlowTopBar(
     currentRoute: NavRoutes,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
-    containerColor: Color,
     navController: NavController,
 ) {
     if (topBarState) {
         Surface {
             TopAppBar(
                 modifier = modifier,
-                colors = TopAppBarDefaults.topAppBarColors().copy(
-//                    containerColor = containerColor
-                ),
                 title = {
                     Text(
                         text = stringResource(id = currentRoute.stringRes),
@@ -199,8 +203,6 @@ fun FitFlowBottomBar(
         NavigationBar(
             modifier = Modifier
                 .background(containerColor)
-//                .padding(8.dp)
-//                .clip(RoundedCornerShape(50))
                 .height(70.dp),
             windowInsets = NavigationBarDefaults.windowInsets.exclude(WindowInsets(bottom = 12.dp)),
         ) {

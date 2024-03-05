@@ -33,9 +33,7 @@ fun Aquarium(
 
         ) {
         BoxWithConstraints(
-            modifier = Modifier.fillMaxSize()/*.background(
-                brush = aquariumBackground,
-            ),*/
+            modifier = Modifier.fillMaxSize(),
         ) {
             val height = constraints.maxHeight
             val width = constraints.maxWidth
@@ -57,7 +55,6 @@ fun Aquarium(
             Sand()
             Plant()
 
-//            AnimatedPrimaryFish(modifier = Modifier.align(Alignment.TopCenter))
             CircularPrimaryFish(modifier = Modifier.align(Alignment.Center))
         }
     }
