@@ -15,7 +15,7 @@ class ProfileViewModel @Inject constructor(
         gender: String,
         weight: Int,
         height: Int,
-    ) {
+    ) : Boolean {
         profileRepository.submitProfile(
             name,
             age,
@@ -23,5 +23,6 @@ class ProfileViewModel @Inject constructor(
             weight,
             height,
         )
+        return profileRepository.success
     }
 }

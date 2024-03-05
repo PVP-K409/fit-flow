@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class ProfileRepository @Inject constructor(
     private val db: FirebaseFirestore,
-
+    var success: Boolean = false
 ) {
     fun submitProfile(
         name: String,
@@ -14,7 +14,7 @@ class ProfileRepository @Inject constructor(
         gender: String,
         weight: Int,
         height: Int,
-    ) {
+    ) : Boolean {
         try {
             val updatedData = hashMapOf<String, Any>(
                 "name" to name,
@@ -29,11 +29,12 @@ class ProfileRepository @Inject constructor(
             userDocRef.update(updatedData).addOnSuccessListener {
             }.addOnFailureListener { e ->
                 Log.e("FirestoreUpdate", "Error updating document", e)
+            }.addOnSuccessListener {
+                success = true
             }
-
-            Log.d("profileRepository", "DB stuff")
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        return success
     }
 }
