@@ -87,13 +87,13 @@ class UserRepository @Inject constructor(
 
         val initialStepRecordList = mutableListOf(initialStepRecordMap)
 
-        db.collection(USERS_COLLECTION).document(uid).update(USER_STEPS_ARRAY,initialStepRecordList)
+        db.collection(USERS_COLLECTION).document(uid).update(USER_STEPS_ARRAY, initialStepRecordList)
     }
 
     suspend fun updateSteps(newSteps: DailyStepRecord) {
         val currentUser = FirebaseAuth.getInstance().currentUser
 
-        if(currentUser != null){
+        if (currentUser != null) {
             val uid = currentUser.uid
             val userDocRef = db.collection(USERS_COLLECTION).document(uid)
 
@@ -126,16 +126,15 @@ class UserRepository @Inject constructor(
             } catch (e: Exception) {
                 Log.e("User Repository", "Error updating steps", e)
             }
-        }else{
+        } else {
             Log.e("User Repository", "No signed-in user")
         }
-
     }
 
     suspend fun loadTodaySteps(day: String): DailyStepRecord? {
         val currentUser = FirebaseAuth.getInstance().currentUser
 
-        if(currentUser!=null){
+        if (currentUser != null) {
             val uid = currentUser.uid
             val userDocRef = db.collection(USERS_COLLECTION).document(uid)
             val snapshot = userDocRef.get().await()
@@ -157,23 +156,21 @@ class UserRepository @Inject constructor(
             } else {
                 return null
             }
-        }else{
+        } else {
             return null
         }
-
     }
 
     suspend fun getUser(): User? {
         return try {
             val currentUser = FirebaseAuth.getInstance().currentUser
-            if( currentUser!= null){
+            if (currentUser != null) {
                 val uid = currentUser.uid
                 val documentSnapshot = db.collection(USERS_COLLECTION).document(uid).get().await()
                 documentSnapshot.toObject(User::class.java)
-            }else{
+            } else {
                 null
             }
-
         } catch (e: Exception) {
             null
         }

@@ -29,7 +29,7 @@ object RepositoryModule {
     fun provideUserRepository(
         db: FirebaseFirestore,
         auth: FirebaseAuth,
-        stepCounter: StepCounter
+        stepCounter: StepCounter,
     ): UserRepository {
         return UserRepository(db, auth, stepCounter)
     }
