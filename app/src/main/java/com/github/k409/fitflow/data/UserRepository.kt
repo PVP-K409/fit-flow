@@ -73,7 +73,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    private suspend fun setInitialSteps(uid: String){
+    private suspend fun setInitialSteps(uid: String) {
         val initialSteps = stepCounter.steps()
 
         val initialStepRecordMap = mapOf(
