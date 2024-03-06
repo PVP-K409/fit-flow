@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,6 +45,7 @@ import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screens.settings.SettingsViewModel
+import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -54,6 +56,7 @@ fun ProfileCreationScreen(
     settingsViewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val currentUser by settingsViewModel.currentUser.collectAsState(initial = User())
 
     var name by rememberSaveable(currentUser.name) { mutableStateOf(currentUser.name) }
@@ -80,6 +83,7 @@ fun ProfileCreationScreen(
     // State variables for error messages
     var nameError by remember { mutableStateOf<String?>(null) }
     var wasValidated by remember { mutableStateOf(false) }
+    var success by remember { mutableStateOf<Boolean?>(null) }
 
     // Function to validate and update error messages
     @Composable
@@ -90,7 +94,7 @@ fun ProfileCreationScreen(
         return profileDictionary.containsKey("age") && profileDictionary.containsKey("weight") && profileDictionary.containsKey(
             "gender",
         ) &&
-            profileDictionary.containsKey("height") && name.isNotEmpty()
+                profileDictionary.containsKey("height") && name.isNotEmpty()
     }
 
     @Composable
@@ -296,7 +300,14 @@ fun ProfileCreationScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(4.dp),
                 )
-                DropdownMenu(stringResource(R.string.select_your_gender), stringResource(R.string.select), 0, 1, "gender", genders)
+                DropdownMenu(
+                    stringResource(R.string.select_your_gender),
+                    stringResource(R.string.select),
+                    0,
+                    1,
+                    "gender",
+                    genders
+                )
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
@@ -313,7 +324,14 @@ fun ProfileCreationScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(4.dp),
                 )
-                DropdownMenu(stringResource(R.string.select_your_weight), stringResource(R.string.select), 10, 250, "weight", null)
+                DropdownMenu(
+                    stringResource(R.string.select_your_weight),
+                    stringResource(R.string.select),
+                    10,
+                    250,
+                    "weight",
+                    null
+                )
             }
             Column {
                 Text(
@@ -321,7 +339,14 @@ fun ProfileCreationScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(4.dp),
                 )
-                DropdownMenu(stringResource(R.string.select_your_height), stringResource(R.string.select), 30, 250, "height", null)
+                DropdownMenu(
+                    stringResource(R.string.select_your_height),
+                    stringResource(R.string.select),
+                    30,
+                    250,
+                    "height",
+                    null
+                )
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
@@ -340,23 +365,26 @@ fun ProfileCreationScreen(
             }
             if (isClicked) {
                 isClicked = false
-
                 if (validate()) {
-                    val success: Boolean = profileViewModel.submitProfile(
-                        currentUser.uid,
-                        name,
-                        profileDictionary["age"]!!.toInt(),
-                        genders[profileDictionary["gender"]!!],
-                        profileDictionary["weight"]!!.toInt(),
-                        profileDictionary["height"]!!.toInt(),
-                    )
-                    if (success) {
-                        displayMessage(stringResource(R.string.profile_saved))
-                        navController.navigate(NavRoutes.Settings.route)
-                    } else {
-                        displayMessage(stringResource(R.string.something_went_wrong_try_again))
+                    coroutineScope.launch {
+                        success = profileViewModel.submitProfile(
+                            currentUser.uid,
+                            name,
+                            profileDictionary["age"]!!.toInt(),
+                            genders[profileDictionary["gender"]!!],
+                            profileDictionary["weight"]!!.toInt(),
+                            profileDictionary["height"]!!.toInt(),
+                        )
                     }
                 }
+            }
+            if (success == true) {
+                success = null
+                displayMessage(stringResource(R.string.profile_saved))
+                navController.navigate(NavRoutes.Settings.route)
+            } else if (success == false) {
+                displayMessage(stringResource(R.string.something_went_wrong_try_again))
+                success = null
             }
         }
     }

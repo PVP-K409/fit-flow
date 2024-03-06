@@ -9,7 +9,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
 ) : ViewModel() {
-    fun submitProfile(
+    suspend fun submitProfile(
         uid: String,
         name: String,
         age: Int,
