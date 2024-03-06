@@ -31,7 +31,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,6 +59,7 @@ fun ProfileCreationScreen(
     var name by rememberSaveable(currentUser.name) { mutableStateOf(currentUser.name) }
     val genders = arrayOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
 
+    val profileDictionary = remember { mutableStateMapOf<String, Int>() }
     val profileFields = listOf("gender", "age", "weight", "height")
     val currentValues: List<Int> = listOf(
         genders.indexOf(currentUser.gender),
@@ -67,12 +67,8 @@ fun ProfileCreationScreen(
         currentUser.weight.toInt(),
         currentUser.height.toInt()
     )
-
-    val profileDictionary: SnapshotStateMap<String, Int> = remember {
-        mutableStateMapOf()
-    }
-    // If gender is selected, then other required profile values are filled as well
-    if (currentValues[0] != -1) {
+    // If gender value is set, then other required profile values are already filled as well
+    if (currentValues[0] != -1 && profileDictionary.isEmpty()) {
         for (i in profileFields.indices) {
             profileDictionary[profileFields[i]] = currentValues[i]
         }
