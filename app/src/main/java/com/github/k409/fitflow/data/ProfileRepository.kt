@@ -15,7 +15,7 @@ class ProfileRepository @Inject constructor(
         gender: String,
         weight: Int,
         height: Int,
-    ) : Boolean {
+    ): Boolean {
         try {
             val updatedData = hashMapOf<String, Any>(
                 "name" to name,
