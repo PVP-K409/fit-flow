@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +42,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.model.User
+import com.github.k409.fitflow.ui.navigation.NavRoutes
+import com.github.k409.fitflow.ui.screens.settings.SettingsViewModel
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -49,13 +52,34 @@ import com.github.k409.fitflow.R
 fun ProfileCreationScreen(
     navController: NavController,
     profileViewModel: ProfileViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    var name by rememberSaveable { mutableStateOf("") }
+    val currentUser by settingsViewModel.currentUser.collectAsState(initial = User())
+
+    var name by rememberSaveable(currentUser.name) { mutableStateOf(currentUser.name) }
+    val genders = arrayOf("Male", "Female")
+
+    val profileFields = listOf("gender", "age", "weight", "height")
+    val currentValues: List<Int> = listOf(
+        genders.indexOf(currentUser.gender),
+        currentUser.age,
+        currentUser.weight.toInt(),
+        currentUser.height.toInt()
+    )
+
     val profileDictionary: SnapshotStateMap<String, Int> = remember {
         mutableStateMapOf()
     }
-    val genders = arrayOf("Male", "Female")
+    // If gender is selected, then other required profile values are filled as well
+    if (currentValues[0] != -1) {
+        for (i in profileFields.indices) {
+            profileDictionary[profileFields[i]] = currentValues[i]
+        }
+    }
+
+    //Log.d("ProfileCreationScreen", currentUser.name)
+    //Log.d("ProfileCreationScreen2", genders.indexOf(currentUser.gender).toString())
 
     // State variables for error messages
     var nameError by remember { mutableStateOf<String?>(null) }
@@ -67,7 +91,9 @@ fun ProfileCreationScreen(
         wasValidated = true
         nameError = if (name.isEmpty()) stringResource(R.string.required_field) else null
         // Return true if there are no errors, indicating that the form is valid
-        return profileDictionary.containsKey("age") && profileDictionary.containsKey("weight") && profileDictionary.containsKey("gender")
+        return profileDictionary.containsKey("age") && profileDictionary.containsKey("weight") && profileDictionary.containsKey(
+            "gender"
+        )
                 && profileDictionary.containsKey("height") && name.isNotEmpty()
     }
 
@@ -150,24 +176,25 @@ fun ProfileCreationScreen(
         var currentValue = ""
         var error = !(profileDictionary.containsKey(valueKey))
         if (profileDictionary.containsKey(valueKey)) {
-            currentValue = if (displayedValues != null) {
+            if (displayedValues != null) {
                 // Int value should be mapped to its existing String counterpart
-                displayedValues[profileDictionary[valueKey]!!]
-            } else {
+                currentValue = displayedValues[profileDictionary[valueKey]!!]
+            } else if (profileDictionary[valueKey] != 0) {
                 // Does not have String counterpart
-                profileDictionary[valueKey]!!.toString()
+                currentValue = profileDictionary[valueKey]!!.toString()
             }
         }
         ExposedDropdownMenuBox(
             expanded = isExpanded,
             modifier = Modifier
-                .fillMaxWidth(0.4f),
+                .fillMaxWidth(0.45f),
             onExpandedChange = { newValue ->
                 isExpanded = newValue
             },
         ) {
             TextField(
                 value = currentValue,
+
                 onValueChange = {
                     error = !(profileDictionary.containsKey(valueKey))
                 },
@@ -244,60 +271,58 @@ fun ProfileCreationScreen(
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(200.dp),
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.age),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            Text(
-                text = stringResource(R.string.gender),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        }
+
         FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(75.dp),
-            //modifier = Modifier.fillMaxWidth().padding(8.dp)
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+            //.padding(2.dp)
         ) {
             Column {
-                // Age input
+                Text(
+                    text = stringResource(R.string.age),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(4.dp)
+                )
                 DropdownMenu("Select your age", "Select", 5, 125, "age", null)
             }
             Column {
-                // Gender input
+                Text(
+                    text = stringResource(R.string.gender),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(4.dp)
+                )
                 DropdownMenu("Select your gender", "Select", 0, 1, "gender", genders)
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(140.dp),
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.weight_kg),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            Text(
-                text = stringResource(R.string.height_cm),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        }
+
         FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(75.dp),
-            //modifier = Modifier.fillMaxWidth().padding(8.dp)
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                //.padding(8.dp)
         ) {
             Column {
-                // Weight input
+                Text(
+                    text = stringResource(R.string.weight_kg),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(4.dp)
+                )
                 DropdownMenu("Select your weight", "Select", 10, 250, "weight", null)
+
             }
             Column {
-                // Height input
+                Text(
+                    text = stringResource(R.string.height_cm),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(4.dp)
+                )
                 DropdownMenu("Select your height", "Select", 30, 250, "height", null)
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -315,6 +340,7 @@ fun ProfileCreationScreen(
 
                 if (validate()) {
                     val success: Boolean = profileViewModel.submitProfile(
+                        currentUser.uid,
                         name,
                         profileDictionary["age"]!!.toInt(),
                         genders[profileDictionary["gender"]!!],
@@ -323,7 +349,7 @@ fun ProfileCreationScreen(
                     )
                     if (success) {
                         displayMessage(stringResource(R.string.profile_saved))
-                        navigateToProfileSettingsScreen(navController = navController)
+                        navController.navigate(NavRoutes.Settings.route)
                     } else {
                         displayMessage("Something went wrong. Try again")
                     }

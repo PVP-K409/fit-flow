@@ -6,9 +6,10 @@ import javax.inject.Inject
 
 class ProfileRepository @Inject constructor(
     private val db: FirebaseFirestore,
-    var success: Boolean = false
+    var success: Boolean = true,
 ) {
     fun submitProfile(
+        uid: String,
         name: String,
         age: Int,
         gender: String,
@@ -23,12 +24,13 @@ class ProfileRepository @Inject constructor(
                 "weight" to weight,
                 "height" to height,
             )
-            val userid = "ohxyZCvlrIt0JaQQH5RF"
-            val userDocRef = db.collection("users").document(userid)
+
+            val userDocRef = db.collection("users").document(uid)
 
             userDocRef.update(updatedData).addOnSuccessListener {
             }.addOnFailureListener { e ->
                 Log.e("FirestoreUpdate", "Error updating document", e)
+                success = false
             }.addOnSuccessListener {
                 success = true
             }

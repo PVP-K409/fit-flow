@@ -10,6 +10,7 @@ class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
 ) : ViewModel() {
     fun submitProfile(
+        uid: String,
         name: String,
         age: Int,
         gender: String,
@@ -17,6 +18,7 @@ class ProfileViewModel @Inject constructor(
         height: Int,
     ) : Boolean {
         profileRepository.submitProfile(
+            uid,
             name,
             age,
             gender,

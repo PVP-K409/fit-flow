@@ -24,7 +24,6 @@ sealed class NavRoutes(
             Goals,
             Marketplace,
             Login,
-            ProfileSettings,
             ProfileCreation,
             Settings,
         )
@@ -43,9 +42,6 @@ sealed class NavRoutes(
 
     data object ProfileCreation :
         NavRoutes("profileCreation", R.string.profile_creation, Icons.Outlined.PersonOutline)
-
-    data object ProfileSettings :
-        NavRoutes("profileSettings", R.string.profile_settings, Icons.Outlined.Settings)
 
     data object Login : NavRoutes("login", R.string.user)
 
