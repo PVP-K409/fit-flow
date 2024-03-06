@@ -41,7 +41,7 @@ sealed class NavRoutes(
         "activity",
         R.string.activity,
         Icons.Outlined.ViewTimeline,
-        R.drawable.view_timeline_24px
+        R.drawable.view_timeline_24px,
     )
 
     data object Goals :

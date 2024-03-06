@@ -74,7 +74,9 @@ fun FitFlowApp(
     val topBarState = rememberSaveable { (mutableStateOf(false)) }
 
     UpdateTopAndBottomBarVisibility(
-        currentScreen = currentScreen, bottomBarState = bottomBarState, topBarState = topBarState
+        currentScreen = currentScreen,
+        bottomBarState = bottomBarState,
+        topBarState = topBarState,
     )
 
     Scaffold(
@@ -93,9 +95,11 @@ fun FitFlowApp(
             FitFlowBottomBar(
                 navController = navController,
                 currentDestination = currentDestination,
-                visible = !(navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                    currentScreen,
-                )) && bottomBarState.value,
+                visible = !(
+                    navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                        currentScreen,
+                    )
+                    ) && bottomBarState.value,
                 containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
             )
         },
@@ -106,7 +110,8 @@ fun FitFlowApp(
 
         FitFlowNavGraph(
             modifier = Modifier.padding(
-                bottom = bottomPadding, top = topPadding
+                bottom = bottomPadding,
+                top = topPadding,
             ),
             navController = navController,
             startDestination = startDestination,
@@ -118,7 +123,7 @@ fun FitFlowApp(
 private fun UpdateTopAndBottomBarVisibility(
     currentScreen: NavRoutes,
     bottomBarState: MutableState<Boolean>,
-    topBarState: MutableState<Boolean>
+    topBarState: MutableState<Boolean>,
 ) {
     when (currentScreen) {
         NavRoutes.Login, NavRoutes.Default -> {
@@ -204,7 +209,7 @@ fun FitFlowBottomBar(
     currentDestination: NavDestination?,
     visible: Boolean,
     containerColor: Color = MaterialTheme.colorScheme.surface,
-    style: BottomBarStyle = BottomBarStyle.Animated
+    style: BottomBarStyle = BottomBarStyle.Animated,
 ) {
     val onNavigate: (String) -> Unit = { route ->
         navController.navigate(route) {
@@ -219,7 +224,7 @@ fun FitFlowBottomBar(
     if (style == BottomBarStyle.Animated) {
         AnimatedBottomBar(
             visible = visible,
-            onNavigate = onNavigate
+            onNavigate = onNavigate,
         )
     } else if (style == BottomBarStyle.Material) {
         MaterialNavigationBar(
@@ -294,7 +299,7 @@ private fun AnimatedBottomBar(
                     dropletColor = MaterialTheme.colorScheme.primary,
                     isSelected = selectedIndex == index,
                     onClick = { onBottomBarItemSelected(index) },
-                    icon = item.iconRes
+                    icon = item.iconRes,
                 )
             }
         }

@@ -99,7 +99,6 @@ fun FitFlowTheme(
         else -> LightColors
     }
 
-
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
