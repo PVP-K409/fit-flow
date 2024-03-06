@@ -2,33 +2,39 @@
 
 package com.github.k409.fitflow.ui
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.exclude
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.PersonOutline
+import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -39,9 +45,13 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.exyte.animatednavbar.AnimatedNavigationBar
+import com.exyte.animatednavbar.animation.balltrajectory.Teleport
+import com.exyte.animatednavbar.items.dropletbutton.DropletButton
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 
+@Suppress("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FitFlowApp(
     sharedUiState: SharedUiState.Success,
@@ -63,22 +73,11 @@ fun FitFlowApp(
     val bottomBarState = rememberSaveable { (mutableStateOf(false)) }
     val topBarState = rememberSaveable { (mutableStateOf(false)) }
 
-    when (currentScreen) {
-        NavRoutes.Login -> {
-            bottomBarState.value = false
-            topBarState.value = false
-        }
-
-        NavRoutes.Settings -> {
-            bottomBarState.value = false
-            topBarState.value = true
-        }
-
-        else -> {
-            bottomBarState.value = true
-            topBarState.value = true
-        }
-    }
+    UpdateTopAndBottomBarVisibility(
+        currentScreen = currentScreen,
+        bottomBarState = bottomBarState,
+        topBarState = topBarState,
+    )
 
     Scaffold(
         topBar = {
@@ -90,7 +89,6 @@ fun FitFlowApp(
                 ),
                 navigateUp = { navController.navigateUp() },
                 navController = navController,
-                containerColor = if (currentScreen == NavRoutes.Home) Color(0xffb5c8e8) else MaterialTheme.colorScheme.surface,
             )
         },
         bottomBar = {
@@ -106,11 +104,47 @@ fun FitFlowApp(
             )
         },
     ) { innerPadding ->
+        val topPadding =
+            if (currentScreen == NavRoutes.Home) 0.dp else innerPadding.calculateTopPadding()
+        val bottomPadding = innerPadding.calculateBottomPadding().minus(10.dp).coerceAtLeast(0.dp)
+
         FitFlowNavGraph(
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(
+                bottom = bottomPadding,
+                top = topPadding,
+            ),
             navController = navController,
             startDestination = startDestination,
         )
+    }
+}
+
+@Composable
+private fun UpdateTopAndBottomBarVisibility(
+    currentScreen: NavRoutes,
+    bottomBarState: MutableState<Boolean>,
+    topBarState: MutableState<Boolean>,
+) {
+    when (currentScreen) {
+        NavRoutes.Login, NavRoutes.Default -> {
+            bottomBarState.value = false
+            topBarState.value = false
+        }
+
+        NavRoutes.Settings -> {
+            bottomBarState.value = false
+            topBarState.value = true
+        }
+
+        NavRoutes.Home -> {
+            bottomBarState.value = true
+            topBarState.value = false
+        }
+
+        else -> {
+            bottomBarState.value = true
+            topBarState.value = true
+        }
     }
 }
 
@@ -122,16 +156,12 @@ fun FitFlowTopBar(
     currentRoute: NavRoutes,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
-    containerColor: Color,
     navController: NavController,
 ) {
     if (topBarState) {
         Surface {
             TopAppBar(
                 modifier = modifier,
-                colors = TopAppBarDefaults.topAppBarColors().copy(
-//                    containerColor = containerColor
-                ),
                 title = {
                     Text(
                         text = stringResource(id = currentRoute.stringRes),
@@ -151,9 +181,6 @@ fun FitFlowTopBar(
                 actions = {
                     IconButton(onClick = {
                         navController.navigate(NavRoutes.Settings.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
                             launchSingleTop = true
                             restoreState = true
                         }
@@ -182,20 +209,49 @@ fun FitFlowBottomBar(
     currentDestination: NavDestination?,
     visible: Boolean,
     containerColor: Color = MaterialTheme.colorScheme.surface,
+    style: BottomBarStyle = BottomBarStyle.Animated,
+) {
+    val onNavigate: (String) -> Unit = { route ->
+        navController.navigate(route) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    if (style == BottomBarStyle.Animated) {
+        AnimatedBottomBar(
+            visible = visible,
+            onNavigate = onNavigate,
+        )
+    } else if (style == BottomBarStyle.Material) {
+        MaterialNavigationBar(
+            visible = visible,
+            containerColor = containerColor,
+            currentDestination = currentDestination,
+            onNavigate = onNavigate,
+        )
+    }
+}
+
+@Composable
+private fun MaterialNavigationBar(
+    visible: Boolean,
+    containerColor: Color,
+    currentDestination: NavDestination?,
+    onNavigate: (String) -> Unit,
 ) {
     if (visible) {
         NavigationBar(
             modifier = Modifier
                 .background(containerColor)
-//                .padding(8.dp)
-//                .clip(RoundedCornerShape(50))
-                .height(70.dp),
-            windowInsets = NavigationBarDefaults.windowInsets.exclude(WindowInsets(bottom = 12.dp)),
+                .windowInsetsPadding(BottomAppBarDefaults.windowInsets)
+                .height(60.dp),
         ) {
             NavRoutes.bottomNavBarItems.forEach { screen ->
                 NavigationBarItem(
-                    modifier = Modifier,
-//                        .padding(top = 10.dp),
                     icon = {
                         Icon(
                             imageVector = screen.icon,
@@ -204,16 +260,52 @@ fun FitFlowBottomBar(
                     },
                     selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                     onClick = {
-                        navController.navigate(screen.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+                        onNavigate(screen.route)
                     },
                 )
             }
         }
     }
+}
+
+@Composable
+private fun AnimatedBottomBar(
+    visible: Boolean,
+    onNavigate: (String) -> Unit,
+) {
+    var selectedIndex by remember { mutableIntStateOf(0) }
+    val onBottomBarItemSelected: (Int) -> Unit = {
+        selectedIndex = it
+
+        val route = NavRoutes.bottomNavBarItems[selectedIndex].route
+        onNavigate(route)
+    }
+
+    if (visible) {
+        AnimatedNavigationBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsPadding(BottomAppBarDefaults.windowInsets)
+                .height(64.dp),
+            selectedIndex = selectedIndex,
+            barColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp),
+            ballColor = MaterialTheme.colorScheme.primary,
+            ballAnimation = Teleport(tween(300)),
+        ) {
+            NavRoutes.bottomNavBarItems.forEachIndexed { index, item ->
+                DropletButton(
+                    modifier = Modifier.fillMaxSize(),
+                    size = 26.dp,
+                    dropletColor = MaterialTheme.colorScheme.primary,
+                    isSelected = selectedIndex == index,
+                    onClick = { onBottomBarItemSelected(index) },
+                    icon = item.iconRes,
+                )
+            }
+        }
+    }
+}
+
+enum class BottomBarStyle {
+    Animated, Material
 }
