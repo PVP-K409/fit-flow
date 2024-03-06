@@ -89,7 +89,7 @@ fun ProfileCreationScreen(
         // Return true if there are no errors, indicating that the form is valid
         return profileDictionary.containsKey("age") && profileDictionary.containsKey("weight") && profileDictionary.containsKey(
             "gender",
-            ) &&
+        ) &&
             profileDictionary.containsKey("height") && name.isNotEmpty()
     }
 
