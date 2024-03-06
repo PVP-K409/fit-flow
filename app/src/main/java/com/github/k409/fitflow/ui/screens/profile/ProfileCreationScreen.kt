@@ -58,7 +58,7 @@ fun ProfileCreationScreen(
     val currentUser by settingsViewModel.currentUser.collectAsState(initial = User())
 
     var name by rememberSaveable(currentUser.name) { mutableStateOf(currentUser.name) }
-    val genders = arrayOf("Male", "Female")
+    val genders = arrayOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
 
     val profileFields = listOf("gender", "age", "weight", "height")
     val currentValues: List<Int> = listOf(
@@ -145,7 +145,7 @@ fun ProfileCreationScreen(
                         onConfirmation()
                     }
                 ) {
-                    Text("Confirm")
+                    Text(stringResource(R.string.confirm))
                 }
             },
             dismissButton = {
@@ -154,7 +154,7 @@ fun ProfileCreationScreen(
                         onDismissRequest()
                     }
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -259,7 +259,7 @@ fun ProfileCreationScreen(
                 name = it
                 nameError = if (name.isEmpty()) context.getString(R.string.required_field) else null
             },
-            placeholder = { Text(text = "Enter your name here") },
+            placeholder = { Text(text = stringResource(R.string.enter_your_name_here)) },
             isError = nameError != null,
         )
         // Display error message for Name
@@ -284,7 +284,8 @@ fun ProfileCreationScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(4.dp)
                 )
-                DropdownMenu("Select your age", "Select", 5, 125, "age", null)
+                DropdownMenu(stringResource(R.string.select_your_age),
+                    stringResource(R.string.select), 5, 125, "age", null)
             }
             Column {
                 Text(
@@ -292,7 +293,7 @@ fun ProfileCreationScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(4.dp)
                 )
-                DropdownMenu("Select your gender", "Select", 0, 1, "gender", genders)
+                DropdownMenu(stringResource(R.string.select_your_gender), stringResource(R.string.select), 0, 1, "gender", genders)
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
@@ -309,7 +310,7 @@ fun ProfileCreationScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(4.dp)
                 )
-                DropdownMenu("Select your weight", "Select", 10, 250, "weight", null)
+                DropdownMenu(stringResource(R.string.select_your_weight), stringResource(R.string.select), 10, 250, "weight", null)
 
             }
             Column {
@@ -318,7 +319,7 @@ fun ProfileCreationScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(4.dp)
                 )
-                DropdownMenu("Select your height", "Select", 30, 250, "height", null)
+                DropdownMenu(stringResource(R.string.select_your_height), stringResource(R.string.select), 30, 250, "height", null)
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
@@ -351,7 +352,7 @@ fun ProfileCreationScreen(
                         displayMessage(stringResource(R.string.profile_saved))
                         navController.navigate(NavRoutes.Settings.route)
                     } else {
-                        displayMessage("Something went wrong. Try again")
+                        displayMessage(stringResource(R.string.something_went_wrong_try_again))
                     }
                 }
             }
