@@ -16,7 +16,7 @@ class ProfileViewModel @Inject constructor(
         gender: String,
         weight: Int,
         height: Int,
-    ) : Boolean {
+    ): Boolean {
         profileRepository.submitProfile(
             uid,
             name,

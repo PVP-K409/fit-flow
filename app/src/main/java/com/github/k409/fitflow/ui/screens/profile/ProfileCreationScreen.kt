@@ -65,7 +65,7 @@ fun ProfileCreationScreen(
         genders.indexOf(currentUser.gender),
         currentUser.age,
         currentUser.weight.toInt(),
-        currentUser.height.toInt()
+        currentUser.height.toInt(),
     )
 
     val profileDictionary: SnapshotStateMap<String, Int> = remember {
@@ -78,8 +78,8 @@ fun ProfileCreationScreen(
         }
     }
 
-    //Log.d("ProfileCreationScreen", currentUser.name)
-    //Log.d("ProfileCreationScreen2", genders.indexOf(currentUser.gender).toString())
+    // Log.d("ProfileCreationScreen", currentUser.name)
+    // Log.d("ProfileCreationScreen2", genders.indexOf(currentUser.gender).toString())
 
     // State variables for error messages
     var nameError by remember { mutableStateOf<String?>(null) }
@@ -92,9 +92,9 @@ fun ProfileCreationScreen(
         nameError = if (name.isEmpty()) stringResource(R.string.required_field) else null
         // Return true if there are no errors, indicating that the form is valid
         return profileDictionary.containsKey("age") && profileDictionary.containsKey("weight") && profileDictionary.containsKey(
-            "gender"
-        )
-                && profileDictionary.containsKey("height") && name.isNotEmpty()
+            "gender",
+            ) &&
+            profileDictionary.containsKey("height") && name.isNotEmpty()
     }
 
     @Composable
@@ -106,7 +106,7 @@ fun ProfileCreationScreen(
         minValue: Int,
         maxValue: Int,
         valueKey: String,
-        displayedValues: Array<String>?
+        displayedValues: Array<String>?,
     ) {
         var currentValue =
             if (profileDictionary.containsKey(valueKey)) profileDictionary[valueKey]!! else minValue
@@ -128,11 +128,12 @@ fun ProfileCreationScreen(
                             this.maxValue = maxValue
                             this.value =
                                 if (profileDictionary.containsKey(valueKey)) profileDictionary[valueKey]!! else minValue
-                            if (displayedValues != null)
+                            if (displayedValues != null) {
                                 this.displayedValues = displayedValues
+                            }
                         }
                     },
-                    update = {}
+                    update = {},
                 )
             },
             onDismissRequest = {
@@ -143,7 +144,7 @@ fun ProfileCreationScreen(
                     onClick = {
                         profileDictionary[valueKey] = currentValue
                         onConfirmation()
-                    }
+                    },
                 ) {
                     Text(stringResource(R.string.confirm))
                 }
@@ -152,11 +153,11 @@ fun ProfileCreationScreen(
                 TextButton(
                     onClick = {
                         onDismissRequest()
-                    }
+                    },
                 ) {
                     Text(stringResource(R.string.cancel))
                 }
-            }
+            },
         )
     }
 
@@ -168,7 +169,7 @@ fun ProfileCreationScreen(
         minValue: Int,
         maxValue: Int,
         valueKey: String,
-        displayedValues: Array<String>?
+        displayedValues: Array<String>?,
     ) {
         var isExpanded by remember {
             mutableStateOf(false)
@@ -223,7 +224,7 @@ fun ProfileCreationScreen(
                 minValue = minValue,
                 maxValue = maxValue,
                 valueKey = valueKey,
-                displayedValues = displayedValues
+                displayedValues = displayedValues,
             )
         }
         // Display error message
@@ -275,23 +276,29 @@ fun ProfileCreationScreen(
         FlowRow(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .fillMaxWidth()
-            //.padding(2.dp)
+                .fillMaxWidth(),
+            // .padding(2.dp)
         ) {
             Column {
                 Text(
                     text = stringResource(R.string.age),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier.padding(4.dp),
                 )
-                DropdownMenu(stringResource(R.string.select_your_age),
-                    stringResource(R.string.select), 5, 125, "age", null)
+                DropdownMenu(
+                    stringResource(R.string.select_your_age),
+                    stringResource(R.string.select),
+                    5,
+                    125,
+                    "age",
+                    null,
+                )
             }
             Column {
                 Text(
                     text = stringResource(R.string.gender),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier.padding(4.dp),
                 )
                 DropdownMenu(stringResource(R.string.select_your_gender), stringResource(R.string.select), 0, 1, "gender", genders)
             }
@@ -301,23 +308,22 @@ fun ProfileCreationScreen(
         FlowRow(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .fillMaxWidth()
-                //.padding(8.dp)
+                .fillMaxWidth(),
+            // .padding(8.dp)
         ) {
             Column {
                 Text(
                     text = stringResource(R.string.weight_kg),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier.padding(4.dp),
                 )
                 DropdownMenu(stringResource(R.string.select_your_weight), stringResource(R.string.select), 10, 250, "weight", null)
-
             }
             Column {
                 Text(
                     text = stringResource(R.string.height_cm),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier.padding(4.dp),
                 )
                 DropdownMenu(stringResource(R.string.select_your_height), stringResource(R.string.select), 30, 250, "height", null)
             }
