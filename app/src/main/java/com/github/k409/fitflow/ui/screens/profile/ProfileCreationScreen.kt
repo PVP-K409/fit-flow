@@ -94,7 +94,7 @@ fun ProfileCreationScreen(
         return profileDictionary.containsKey("age") && profileDictionary.containsKey("weight") && profileDictionary.containsKey(
             "gender",
         ) &&
-                profileDictionary.containsKey("height") && name.isNotEmpty()
+            profileDictionary.containsKey("height") && name.isNotEmpty()
     }
 
     @Composable
@@ -306,7 +306,7 @@ fun ProfileCreationScreen(
                     0,
                     1,
                     "gender",
-                    genders
+                    genders,
                 )
             }
         }
@@ -330,7 +330,7 @@ fun ProfileCreationScreen(
                     10,
                     250,
                     "weight",
-                    null
+                    null,
                 )
             }
             Column {
@@ -345,7 +345,7 @@ fun ProfileCreationScreen(
                     30,
                     250,
                     "height",
-                    null
+                    null,
                 )
             }
         }
