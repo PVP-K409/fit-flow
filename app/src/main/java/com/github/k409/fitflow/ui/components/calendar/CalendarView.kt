@@ -14,10 +14,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Today
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.ui.common.noRippleClickable
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -40,6 +46,8 @@ fun CalendarView(
     val today = LocalDate.now()
     val weeks = getWeeksFromToday(today, weeksCount)
 
+    val coroutineScope = rememberCoroutineScope()
+
     val pagerState = rememberPagerState(
         initialPage = weeks.lastIndex,
         initialPageOffsetFraction = 0f
@@ -49,15 +57,35 @@ fun CalendarView(
         val dateName =
             selectedDate.value.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
 
-        Text(
-            text = dateName,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Light),
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp)
-        )
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = dateName,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Light),
+                modifier = Modifier.align(Alignment.Center)
+
+            )
+            IconButton(
+                modifier = Modifier.align(Alignment.CenterEnd),
+                onClick = {
+                    selectedDate.value = today
+                    onSelectedDateChanged(today)
+
+                    coroutineScope.launch {
+                        pagerState.scrollToPage(weeks.lastIndex)
+                    }
+                }) {
+                Icon(
+                    imageVector = Icons.Outlined.Today,
+                    contentDescription = "Today"
+                )
+            }
+        }
 
         Row(
             modifier = Modifier
