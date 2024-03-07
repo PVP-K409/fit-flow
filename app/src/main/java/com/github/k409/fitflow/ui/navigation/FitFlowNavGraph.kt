@@ -13,6 +13,7 @@ import com.github.k409.fitflow.ui.screens.login.LoginScreen
 import com.github.k409.fitflow.ui.screens.market.MarketScreen
 import com.github.k409.fitflow.ui.screens.profile.ProfileCreationScreen
 import com.github.k409.fitflow.ui.screens.settings.SettingsScreen
+import com.github.k409.fitflow.ui.screens.waterLogging.GetWeight
 
 @Composable
 fun FitFlowNavGraph(
@@ -37,6 +38,11 @@ fun FitFlowNavGraph(
         composable(NavRoutes.Marketplace.route) {
             MarketScreen()
         }
+
+        composable(NavRoutes.WaterLogging.route) {
+            GetWeight()
+        }
+
         composable(NavRoutes.ProfileCreation.route) {
             ProfileCreationScreen(navController)
         }

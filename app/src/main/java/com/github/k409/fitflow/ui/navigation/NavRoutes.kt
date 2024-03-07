@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Store
 import androidx.compose.material.icons.outlined.ViewTimeline
+import androidx.compose.material.icons.outlined.WaterDrop
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.k409.fitflow.R
 
@@ -25,11 +26,12 @@ sealed class NavRoutes(
             Activity,
             Goals,
             Marketplace,
+            WaterLogging,
             Login,
             ProfileCreation,
             Settings,
         )
-        val bottomNavBarItems = listOf(Home, Activity, Goals, Marketplace)
+        val bottomNavBarItems = listOf(Home, Activity, Goals, Marketplace, WaterLogging)
     }
 
     data object Default : NavRoutes("default", R.string.app_name)
@@ -48,6 +50,9 @@ sealed class NavRoutes(
 
     data object Marketplace :
         NavRoutes("marketplace", R.string.marketplace, Icons.Outlined.Store, R.drawable.store_24px)
+
+    data object WaterLogging :
+        NavRoutes("waterLogging", R.string.waterLogging, Icons.Outlined.WaterDrop)
 
     data object ProfileCreation :
         NavRoutes("profileCreation", R.string.profile_creation, Icons.Outlined.PersonOutline)
