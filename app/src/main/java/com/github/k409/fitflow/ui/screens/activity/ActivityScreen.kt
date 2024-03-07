@@ -52,6 +52,7 @@ fun ActivityScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(vertical = 16.dp),
     ) {
         Column(
             modifier = Modifier

@@ -2,6 +2,7 @@ package com.github.k409.fitflow.ui.components.calendar
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -105,6 +106,11 @@ fun CalendarView(
                                     if (date == selectedDate.value)
                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                                     else Color.Transparent
+                                )
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                                    shape = CircleShape
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
