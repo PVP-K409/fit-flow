@@ -7,11 +7,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,7 +26,6 @@ import com.github.k409.fitflow.ui.components.activity.DistanceAndCalories
 import com.github.k409.fitflow.ui.components.calendar.CalendarView
 import java.time.LocalDate
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActivityScreen() {
     val activityViewModel: ActivityViewModel = hiltViewModel()
@@ -42,6 +37,9 @@ fun ActivityScreen() {
 
     LaunchedEffect(key1 = Unit) {
         activityViewModel.updateTodayStepsManually()
+        if (selectedDate.value == LocalDate.now()) {
+            selectedDateRecord = todaySteps
+        }
     }
 
     LaunchedEffect(key1 = selectedDate.value) {
@@ -57,7 +55,7 @@ fun ActivityScreen() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.4f),
+                .fillMaxHeight(0.6f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -76,7 +74,7 @@ fun ActivityScreen() {
             }
         }
 
-        ElevatedCard(
+        OutlinedCard(
             modifier = Modifier
                 .padding(16.dp)
         ) {
@@ -102,26 +100,15 @@ fun ActivityScreen() {
                     ) {
                         val options = listOf(
                             "Steps" to it.totalSteps,
-                            "Calories" to it.caloriesBurned,
-                            "Distance" to it.totalDistance
+                            "Calories" to "${it.caloriesBurned} kcal",
+                            "Distance" to "${it.totalDistance} km",
                         )
 
-                        SingleChoiceSegmentedButtonRow {
-                            options.forEachIndexed { index, label ->
-                                SegmentedButton(
-                                    shape = SegmentedButtonDefaults.itemShape(
-                                        index = index,
-                                        count = options.size
-                                    ),
-                                    onClick = { },
-                                    selected = false,
-                                ) {
-                                    TextWithLabel(
-                                        label = label.first,
-                                        text = label.second.toString()
-                                    )
-                                }
-                            }
+                        options.forEachIndexed { _, option ->
+                            TextWithLabel(
+                                label = option.first,
+                                text = option.second.toString()
+                            )
                         }
                     }
                 }
