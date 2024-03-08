@@ -51,11 +51,13 @@ class ActivityViewModel @Inject constructor(
             } else {
                 _todaySteps.value = step
             }
+
         }
     }
 
     suspend fun updateTodayStepsManually() {
         val hasRebooted = prefs.getBoolean("rebooted", false) // boolean if reboot has happened
+        val lastDate = prefs.getString("lastDate", "") // last update day
         val today = LocalDate.now().toString()
         val user: User? = userRepository.getUser()
         val dailyStepRecord: DailyStepRecord? = userRepository.loadTodaySteps(today)
@@ -75,9 +77,9 @@ class ActivityViewModel @Inject constructor(
         } else if (hasRebooted || currentSteps <= 1) { // if current day and reboot has happened
             newDailyStepRecord = DailyStepRecord(
                 totalSteps = dailyStepRecord.totalSteps + currentSteps,
-                initialSteps = 0,
+                initialSteps = currentSteps,
                 recordDate = today,
-                stepsBeforeReboot = dailyStepRecord.totalSteps,
+                stepsBeforeReboot = dailyStepRecord.totalSteps + currentSteps,
                 caloriesBurned = calculateCaloriesFromSteps(
                     (dailyStepRecord.totalSteps + currentSteps),
                     user,
@@ -89,6 +91,22 @@ class ActivityViewModel @Inject constructor(
             )
 
             prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
+
+        } else if (today != lastDate ) {
+            newDailyStepRecord = DailyStepRecord(
+                totalSteps = dailyStepRecord.totalSteps,
+                initialSteps = currentSteps,
+                recordDate = today,
+                stepsBeforeReboot = dailyStepRecord.totalSteps,
+                caloriesBurned = calculateCaloriesFromSteps(
+                    (dailyStepRecord.totalSteps),
+                    user,
+                ),
+                totalDistance = calculateDistanceFromSteps(
+                    (dailyStepRecord.totalSteps),
+                    user,
+                ),
+            )
         } else {
             // if current day and no reboot
             newDailyStepRecord = DailyStepRecord(
@@ -106,6 +124,8 @@ class ActivityViewModel @Inject constructor(
                 ),
             )
         }
+
+        prefs.edit().putString("lastDate", today).apply() // saving last update day
 
         userRepository.updateSteps(newDailyStepRecord)
 

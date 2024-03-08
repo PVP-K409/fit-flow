@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.data
 
+import android.content.SharedPreferences
 import android.util.Log
 import com.github.k409.fitflow.features.stepcounter.StepCounter
 import com.github.k409.fitflow.model.DailyStepRecord
@@ -30,6 +31,7 @@ class UserRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
     private val stepCounter: StepCounter,
+    private val prefs: SharedPreferences,
 ) {
 
     private fun getAuthState() = callbackFlow {
@@ -75,11 +77,14 @@ class UserRepository @Inject constructor(
 
     private suspend fun setInitialSteps(uid: String) {
         val initialSteps = stepCounter.steps()
+        val today = LocalDate.now().toString()
+
+        prefs.edit().putString("lastDate", today).apply()
 
         val initialStepRecordMap = mapOf(
             "current" to 0L,
             "initial" to initialSteps,
-            "date" to LocalDate.now().toString(),
+            "date" to today,
             "temp" to 0L,
             "distance" to 0.0,
             "calories" to 0L,
@@ -167,7 +172,19 @@ class UserRepository @Inject constructor(
             if (currentUser != null) {
                 val uid = currentUser.uid
                 val documentSnapshot = db.collection(USERS_COLLECTION).document(uid).get().await()
-                documentSnapshot.toObject(User::class.java)
+
+                User(
+                    uid = documentSnapshot.getLong("age")?.toString() ?: "",
+                    name = documentSnapshot.getString("name") ?: "",
+                    photoUrl = documentSnapshot.getString("photoUrl") ?: "",
+                    email = documentSnapshot.getString("email") ?: "",
+                    points = documentSnapshot.getLong("points")?.toInt() ?: 0,
+                    xp = documentSnapshot.getLong("xp")?.toInt() ?: 0,
+                    age = documentSnapshot.getLong("age")?.toInt() ?: 0,
+                    height = documentSnapshot.getDouble("height") ?: 0.0,
+                    weight = documentSnapshot.getDouble("weight") ?: 0.0,
+                    gender = documentSnapshot.getString("gender") ?: ""
+                )
             } else {
                 null
             }
