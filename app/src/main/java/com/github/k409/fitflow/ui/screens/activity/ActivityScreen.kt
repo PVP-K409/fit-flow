@@ -82,7 +82,7 @@ fun ActivityScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .padding(top = 16.dp)
+                    .padding(top = 8.dp)
             ) {
                 CalendarView(
                     selectedDate = selectedDate,
