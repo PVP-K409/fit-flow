@@ -56,13 +56,13 @@ class FitFlowApplication : Application(), Configuration.Provider {
                 24,
                 TimeUnit.HOURS,
                 1,
-                TimeUnit.MINUTES
-            ).setInitialDelay(calculateInitialDelayBeforeMidnight(),TimeUnit.MILLISECONDS).build()
+                TimeUnit.MINUTES,
+            ).setInitialDelay(calculateInitialDelayBeforeMidnight(), TimeUnit.MILLISECONDS).build()
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "BeforeMidnightWorker",
             ExistingPeriodicWorkPolicy.UPDATE,
-            beforeMidnightWorkRequest
+            beforeMidnightWorkRequest,
         )
     }
 
@@ -92,7 +92,6 @@ class FitFlowApplication : Application(), Configuration.Provider {
 
         return calendar.timeInMillis - now
     }
-
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()

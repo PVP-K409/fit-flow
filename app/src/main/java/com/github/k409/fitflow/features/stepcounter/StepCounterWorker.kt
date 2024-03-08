@@ -61,7 +61,6 @@ class StepCounterWorker @AssistedInject constructor(
                 )
 
                 prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
-
             } else if (today != lastDate) {
                 newDailyStepRecord = DailyStepRecord(
                     totalSteps = dailyStepRecord.totalSteps,

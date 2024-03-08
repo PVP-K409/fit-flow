@@ -51,7 +51,6 @@ class ActivityViewModel @Inject constructor(
             } else {
                 _todaySteps.value = step
             }
-
         }
     }
 
@@ -91,8 +90,7 @@ class ActivityViewModel @Inject constructor(
             )
 
             prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
-
-        } else if (today != lastDate ) {
+        } else if (today != lastDate) {
             newDailyStepRecord = DailyStepRecord(
                 totalSteps = dailyStepRecord.totalSteps,
                 initialSteps = currentSteps,

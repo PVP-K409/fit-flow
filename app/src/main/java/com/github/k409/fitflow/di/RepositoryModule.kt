@@ -31,7 +31,7 @@ object RepositoryModule {
         db: FirebaseFirestore,
         auth: FirebaseAuth,
         stepCounter: StepCounter,
-        prefs: SharedPreferences
+        prefs: SharedPreferences,
     ): UserRepository {
         return UserRepository(db, auth, stepCounter, prefs)
     }
