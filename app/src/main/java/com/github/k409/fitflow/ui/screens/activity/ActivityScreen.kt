@@ -78,13 +78,13 @@ fun ActivityScreen() {
 
         OutlinedCard(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .padding(top = 8.dp)
+                    .padding(top = 8.dp),
             ) {
                 CalendarView(
                     selectedDate = selectedDate,
@@ -109,7 +109,7 @@ fun ActivityScreen() {
                         options.forEachIndexed { _, option ->
                             TextWithLabel(
                                 label = option.first,
-                                text = option.second.toString()
+                                text = option.second.toString(),
                             )
                         }
                     }

@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 
-
 @Composable
 fun TextWithLabel(
     modifier: Modifier = Modifier,
@@ -18,7 +17,7 @@ fun TextWithLabel(
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
     labelStyle: TextStyle = MaterialTheme.typography.labelMedium,
 
-    ) {
+) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,

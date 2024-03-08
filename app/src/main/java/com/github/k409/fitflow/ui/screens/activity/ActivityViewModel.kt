@@ -71,7 +71,7 @@ class ActivityViewModel @Inject constructor(
                 caloriesBurned = 0,
                 totalDistance = 0.0,
 
-                )
+            )
         } else if (hasRebooted || currentSteps <= 1) { // if current day and reboot has happened
             newDailyStepRecord = DailyStepRecord(
                 totalSteps = dailyStepRecord.totalSteps + currentSteps,

@@ -59,7 +59,8 @@ fun CalendarView(
     val coroutineScope = rememberCoroutineScope()
 
     val pagerState = rememberPagerState(
-        initialPage = weeks.lastIndex, initialPageOffsetFraction = 0f
+        initialPage = weeks.lastIndex,
+        initialPageOffsetFraction = 0f,
     ) { weeks.size }
 
     LaunchedEffect(pagerState) {
@@ -79,13 +80,13 @@ fun CalendarView(
             coroutineScope = coroutineScope,
             pagerState = pagerState,
             today = today,
-            weeks = weeks
+            weeks = weeks,
         )
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = 8.dp),
         ) {
             DayOfWeek.entries.forEach { dayOfWeek ->
                 val dayName = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
@@ -94,27 +95,28 @@ fun CalendarView(
                     text = dayName,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light),
                 )
             }
         }
 
         HorizontalPager(
-            state = pagerState, modifier = Modifier.fillMaxWidth()
+            state = pagerState,
+            modifier = Modifier.fillMaxWidth(),
         ) { page ->
             val weekDates = weeks[page]
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = 8.dp),
             ) {
                 weekDates.forEach { date ->
                     Box(
                         modifier = Modifier
                             .weight(1f)
                             .height(32.dp),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Box(
                             modifier = Modifier
@@ -124,25 +126,28 @@ fun CalendarView(
                                     selectedDate.value = date
                                 })
                                 .background(
-                                    if (date == selectedDate.value) MaterialTheme.colorScheme.primary.copy(
-                                        alpha = 0.1f
-                                    )
-                                    else Color.Transparent
+                                    if (date == selectedDate.value) {
+                                        MaterialTheme.colorScheme.primary.copy(
+                                            alpha = 0.1f,
+                                        )
+                                    } else Color.Transparent,
                                 )
                                 .border(
                                     width = 1.dp,
-                                    color = if (date == selectedDate.value) MaterialTheme.colorScheme.primary.copy(
-                                        alpha = 0.2f
-                                    )
-                                    else Color.Transparent,
-                                    shape = CircleShape
-                                ), contentAlignment = Alignment.Center
+                                    color = if (date == selectedDate.value) {
+                                        MaterialTheme.colorScheme.primary.copy(
+                                            alpha = 0.2f,
+                                        )
+                                    } else Color.Transparent,
+                                    shape = CircleShape,
+                                ),
+                            contentAlignment = Alignment.Center,
                         ) {
                             Text(
-                                text = date.dayOfMonth.toString(), textAlign = TextAlign.Center
+                                text = date.dayOfMonth.toString(),
+                                textAlign = TextAlign.Center,
                             )
                         }
-
                     }
                 }
             }
@@ -157,7 +162,7 @@ private fun CalendarHeader(
     coroutineScope: CoroutineScope,
     pagerState: PagerState,
     today: LocalDate,
-    weeks: List<List<LocalDate>>
+    weeks: List<List<LocalDate>>,
 ) {
     val dateName =
         selectedDate.value.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
@@ -166,7 +171,7 @@ private fun CalendarHeader(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 8.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         if (pagerState.currentPage != 0) {
             Icon(
@@ -187,7 +192,7 @@ private fun CalendarHeader(
         Row(
             modifier = Modifier.align(Alignment.Center),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
         ) {
             Icon(
                 modifier = Modifier
@@ -199,9 +204,10 @@ private fun CalendarHeader(
                             coroutineScope.launch {
                                 pagerState.scrollToPage(weeks.lastIndex)
                             }
-                        }),
+                        },
+                    ),
                 imageVector = Icons.Outlined.Today,
-                contentDescription = null
+                contentDescription = null,
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
@@ -211,7 +217,6 @@ private fun CalendarHeader(
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Light),
             )
         }
-
 
         if (pagerState.currentPage != weeks.lastIndex) {
             Icon(
@@ -224,7 +229,8 @@ private fun CalendarHeader(
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         }
                     }),
-                imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos, contentDescription = null
+                imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
+                contentDescription = null,
             )
         }
     }
@@ -232,7 +238,7 @@ private fun CalendarHeader(
 
 fun getWeeksFromToday(
     today: LocalDate,
-    weeksCount: Int
+    weeksCount: Int,
 ): List<List<LocalDate>> {
     val weeks = mutableListOf<List<LocalDate>>()
     var currentStartOfWeek = today.minusDays(today.dayOfWeek.value.toLong() - 1)
