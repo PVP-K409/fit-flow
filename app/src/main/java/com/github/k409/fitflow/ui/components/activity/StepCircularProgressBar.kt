@@ -83,7 +83,6 @@ fun CircularProgressBar(
             Text(text = stringResource(R.string.steps))
             Text(
                 text = "$taken",
-                color = Color.Black,
                 fontSize = fontSize,
                 fontWeight = FontWeight.Bold,
             )
