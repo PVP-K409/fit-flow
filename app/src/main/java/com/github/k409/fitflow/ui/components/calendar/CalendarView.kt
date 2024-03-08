@@ -40,9 +40,12 @@ import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.ui.common.noRippleClickable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.format.TextStyle
+import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -84,9 +87,11 @@ fun CalendarView(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
         ) {
-            listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun").forEach { day ->
+            DayOfWeek.entries.forEach { dayOfWeek ->
+                val dayName = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+
                 Text(
-                    text = day,
+                    text = dayName,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
@@ -219,7 +224,7 @@ private fun CalendarHeader(
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         }
                     }),
-                imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos, contentDescription = ""
+                imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos, contentDescription = null
             )
         }
     }

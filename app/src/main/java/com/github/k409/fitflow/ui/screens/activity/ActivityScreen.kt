@@ -17,8 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.DailyStepRecord
 import com.github.k409.fitflow.ui.common.TextWithLabel
 import com.github.k409.fitflow.ui.components.activity.CircularProgressBar
@@ -99,9 +101,9 @@ fun ActivityScreen() {
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         val options = listOf(
-                            "Steps" to it.totalSteps,
-                            "Calories" to "${it.caloriesBurned} kcal",
-                            "Distance" to "${it.totalDistance} km",
+                            stringResource(R.string.steps) to it.totalSteps,
+                            stringResource(R.string.calories) to "${it.caloriesBurned} kcal",
+                            stringResource(R.string.distance) to "${it.totalDistance} km",
                         )
 
                         options.forEachIndexed { _, option ->
