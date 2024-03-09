@@ -111,4 +111,8 @@ class ActivityViewModel @Inject constructor(
 
         _todaySteps.value = newDailyStepRecord
     }
+
+    suspend fun getStepRecord(date: LocalDate): DailyStepRecord? {
+        return userRepository.loadTodaySteps(date.toString())
+    }
 }
