@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -48,6 +47,7 @@ import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.launch
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -63,11 +63,11 @@ fun ProfileCreationScreen(
     val currentUser by settingsViewModel.currentUser.collectAsState(initial = User())
 
     var name by rememberSaveable(currentUser.name) { mutableStateOf(currentUser.name) }
-    var birthDate by remember { mutableStateOf("") } // currentUser.birthDate + rememberSaveable
+    var dateOfBirth by rememberSaveable(currentUser.dateOfBirth) { mutableStateOf(currentUser.dateOfBirth) }
     var gender by rememberSaveable(currentUser.gender) { mutableStateOf(currentUser.gender) }
     var weight by rememberSaveable(currentUser.weight) { mutableIntStateOf(currentUser.weight.toInt()) }
     var height by rememberSaveable(currentUser.height) { mutableIntStateOf(currentUser.height.toInt()) }
-    var fitnessLevel by remember { mutableStateOf("") } // currentUser.fitnessLevel  + rememberSaveable
+    var fitnessLevel by rememberSaveable(currentUser.fitnessLevel) { mutableStateOf(currentUser.fitnessLevel) }
 
     val genders = arrayOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
     val fitnessLevels = arrayOf("Beginner", "Intermediate", "Advanced", "Professional")
@@ -82,9 +82,9 @@ fun ProfileCreationScreen(
     fun validate(): Boolean {
         wasValidated = true
         nameError = if (name.isEmpty()) stringResource(R.string.required_field) else null
-        // Return true if there are no errors, indicating that the form is valid
-        return birthDate != "" && weight != 0 && gender != "" &&
-                height != 0 && name.isNotEmpty()
+        // Return true if all required field are filled
+        return name.isNotEmpty() && dateOfBirth.isNotEmpty() && gender.isNotEmpty() && weight != 0 &&
+                height != 0
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -140,7 +140,6 @@ fun ProfileCreationScreen(
                 NumberPickerDialog(
                     onDismissRequest = { isExpanded = false },
                     onConfirmation = {
-                        //Log.d("ProfileCreationScreen", profileDictionary[valueKey].toString())
                         onConfirmation(it)
                         isExpanded = false
                     },
@@ -152,7 +151,7 @@ fun ProfileCreationScreen(
                     displayedValues = displayedValues,
                 )
             } else {
-                val datePickerState = rememberDatePickerState()
+                val datePickerState = rememberDatePickerState(yearRange = LocalDate.now().year-120..<LocalDate.now().year)
                 DatePickerDialog(
                     onDismissRequest = {
                         isExpanded = false
@@ -242,17 +241,17 @@ fun ProfileCreationScreen(
         ) {
             Column {
                 Text(
-                    text = "Date of birth",
+                    text = stringResource(R.string.date_of_birth),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(4.dp),
                 )
                 DropdownMenu(
                     stringResource(R.string.select_your_age),
                     stringResource(R.string.select),
-                    { birthDate = it },
+                    { dateOfBirth = it },
                     5,
                     125,
-                    birthDate,
+                    dateOfBirth,
                     null,
                     isRequired = true,
                     false,
@@ -330,12 +329,12 @@ fun ProfileCreationScreen(
         ) {
             Column {
                 Text(
-                    text = "Fitness level",
+                    text = stringResource(R.string.fitness_level),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(4.dp),
                 )
                 DropdownMenu(
-                    "Select your fitness level",
+                    stringResource(R.string.select_your_fitness_level),
                     stringResource(R.string.select),
                     { fitnessLevel = fitnessLevels[it.toInt()] },
                     0,
@@ -345,45 +344,45 @@ fun ProfileCreationScreen(
                     false,
                 )
             }
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Bottom),
+                verticalArrangement = Arrangement.Center,
+                //horizontalAlignment = Alignment.End,
+            ) {
+                var isClicked by remember { mutableStateOf(false) }
+
+                Button(onClick = { isClicked = true }) {
+                    Text(stringResource(R.string.save))
+                }
+                if (isClicked) {
+                    isClicked = false
+                    if (validate()) {
+                        coroutineScope.launch {
+                            success = profileViewModel.submitProfile(
+                                currentUser.uid,
+                                name,
+                                dateOfBirth,
+                                gender,
+                                weight,
+                                height,
+                                fitnessLevel,
+                            )
+                        }
+                    }
+                }
+                if (success == true) {
+                    success = null
+                    displayMessage(stringResource(R.string.profile_saved))
+                    navController.navigate(NavRoutes.Settings.route)
+                } else if (success == false) {
+                    displayMessage(stringResource(R.string.something_went_wrong_try_again))
+                    success = null
+                }
+            }
         }
         Spacer(modifier = Modifier.padding(8.dp))
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.End,
-        ) {
-            var isClicked by remember { mutableStateOf(false) }
 
-            Button(onClick = { isClicked = true }) {
-                Text(stringResource(R.string.save))
-            }
-            if (isClicked) {
-                isClicked = false
-                if (validate()) {
-                    coroutineScope.launch {
-                        success = profileViewModel.submitProfile(
-                            currentUser.uid,
-                            name,
-                            18, // temporary
-                            gender,
-                            weight,
-                            height,
-                            // add fitness level
-                        )
-                    }
-                }
-            }
-            if (success == true) {
-                success = null
-                displayMessage(stringResource(R.string.profile_saved))
-                navController.navigate(NavRoutes.Settings.route)
-            } else if (success == false) {
-                displayMessage(stringResource(R.string.something_went_wrong_try_again))
-                success = null
-            }
-        }
     }
 }
