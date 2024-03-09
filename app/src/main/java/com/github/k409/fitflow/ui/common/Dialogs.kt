@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.common
 
+import android.widget.NumberPicker
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,8 +17,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import com.github.k409.fitflow.R
 
 @Composable
 fun ConfirmDialog(
@@ -123,4 +127,64 @@ fun <T> Dialog(
             }
         }
     }
+}
+@Composable
+fun NumberPickerDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: (String) -> Unit,
+    dialogTitle: String,
+    dialogText: String,
+    minValue: Int,
+    maxValue: Int,
+    initialValue: Int,
+    displayedValues: Array<String>?,
+) {
+    var currentValue = 0
+    AlertDialog(
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+            // initialize number picker widget
+            AndroidView(
+                modifier = Modifier.fillMaxWidth(),
+                factory = { context ->
+                    NumberPicker(context).apply {
+                        setOnValueChangedListener { _, _, newValue ->
+                            currentValue = newValue
+                        }
+                        this.minValue = minValue
+                        this.maxValue = maxValue
+                        this.value = initialValue
+                        if (displayedValues != null) {
+                            this.displayedValues = displayedValues
+                        }
+                    }
+                },
+                update = {},
+            )
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation(currentValue.toString())
+                },
+            ) {
+                Text(stringResource(R.string.confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                },
+            ) {
+                Text(stringResource(R.string.cancel))
+            }
+        },
+    )
 }
