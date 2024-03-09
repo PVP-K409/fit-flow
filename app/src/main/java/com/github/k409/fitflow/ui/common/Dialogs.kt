@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.common
 
+import android.util.Log
 import android.widget.NumberPicker
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -139,7 +140,7 @@ fun NumberPickerDialog(
     initialValue: Int,
     displayedValues: Array<String>?,
 ) {
-    var currentValue = 0
+    var currentValue = initialValue
     AlertDialog(
         title = {
             Text(text = dialogTitle)

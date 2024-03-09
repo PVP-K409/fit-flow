@@ -70,7 +70,10 @@ fun ProfileCreationScreen(
     var fitnessLevel by rememberSaveable(currentUser.fitnessLevel) { mutableStateOf(currentUser.fitnessLevel) }
 
     val genders = arrayOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
-    val fitnessLevels = arrayOf("Beginner", "Intermediate", "Advanced", "Professional")
+    val fitnessLevels = arrayOf(stringResource(R.string.beginner),
+        stringResource(R.string.intermediate), stringResource(R.string.advanced),
+        stringResource(R.string.professional)
+    )
 
     // State variables for error messages
     var nameError by remember { mutableStateOf<String?>(null) }
@@ -104,10 +107,8 @@ fun ProfileCreationScreen(
             mutableStateOf(false)
         }
         var error = initialValue.isEmpty() && isRequired
-        val currentValue : String = // Int value should be mapped to its existing String counterpart
-            displayedValues?.indexOf(initialValue)?.toString()
-                ?: // Does not have String counterpart
-                initialValue
+        val currentValue = if (displayedValues != null && initialValue.isNotEmpty()) displayedValues.indexOf(initialValue).toString() else initialValue
+
         ExposedDropdownMenuBox(
             expanded = isExpanded,
             modifier = Modifier
