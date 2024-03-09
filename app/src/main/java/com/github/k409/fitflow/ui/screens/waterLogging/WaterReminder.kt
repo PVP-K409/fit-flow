@@ -38,13 +38,13 @@ class WaterReminder : BroadcastReceiver() {
 
         val calendar: Calendar = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
-            add(Calendar.MINUTE, 1) // Set the initial alarm 1 minute later
+            add(Calendar.HOUR, 3) // Set the initial alarm 1 minute later
         }
 
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
-            60000,
+            AlarmManager.INTERVAL_HOUR * 3,
             pendingIntent
         )
     }
@@ -65,7 +65,7 @@ class WaterReminder : BroadcastReceiver() {
 
         val builder = Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setContentTitle("Don't forget to stay hydrated!")
-            .setContentText("It's been 1 hour since you last drank water," +
+            .setContentText("It's been 3 hour since you last drank water," +
                     " don't forget to stay hydrated")
             .setSmallIcon(R.drawable.primary_fish)
             .setAutoCancel(true)
