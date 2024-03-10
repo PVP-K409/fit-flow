@@ -31,4 +31,11 @@
     <string name="select_your_weight">Select your weight</string>
     <string name="select_your_height">Select your height</string>
     <string name="something_went_wrong_try_again">Something went wrong. Try again</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="fitness_level">Fitness level</string>
+    <string name="select_your_fitness_level">Select your fitness level</string>
+    <string name="beginner">Beginner</string>
+    <string name="intermediate">Intermediate</string>
+    <string name="advanced">Advanced</string>
+    <string name="professional">Professional</string>
 </resources>

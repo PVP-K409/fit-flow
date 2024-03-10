@@ -2,20 +2,19 @@ package com.github.k409.fitflow.ui.screens.profile
 
 import android.annotation.SuppressLint
 import android.util.Log
-import android.widget.NumberPicker
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -23,10 +22,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,14 +38,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
+import com.github.k409.fitflow.ui.common.NumberPickerDialog
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -60,25 +63,17 @@ fun ProfileCreationScreen(
     val currentUser by settingsViewModel.currentUser.collectAsState(initial = User())
 
     var name by rememberSaveable(currentUser.name) { mutableStateOf(currentUser.name) }
+    var dateOfBirth by rememberSaveable(currentUser.dateOfBirth) { mutableStateOf(currentUser.dateOfBirth) }
+    var gender by rememberSaveable(currentUser.gender) { mutableStateOf(currentUser.gender) }
+    var weight by rememberSaveable(currentUser.weight) { mutableIntStateOf(currentUser.weight.toInt()) }
+    var height by rememberSaveable(currentUser.height) { mutableIntStateOf(currentUser.height.toInt()) }
+    var fitnessLevel by rememberSaveable(currentUser.fitnessLevel) { mutableStateOf(currentUser.fitnessLevel) }
+
     val genders = arrayOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
-
-    val profileDictionary = remember { mutableStateMapOf<String, Int>() }
-    val profileFields = listOf("gender", "age", "weight", "height")
-    val currentValues: List<Int> = listOf(
-        genders.indexOf(currentUser.gender),
-        currentUser.age,
-        currentUser.weight.toInt(),
-        currentUser.height.toInt(),
+    val fitnessLevels = arrayOf(stringResource(R.string.beginner),
+        stringResource(R.string.intermediate), stringResource(R.string.advanced),
+        stringResource(R.string.professional)
     )
-    // If gender value is set, then other required profile values are already filled as well
-    if (currentValues[0] != -1 && profileDictionary.isEmpty()) {
-        for (i in profileFields.indices) {
-            profileDictionary[profileFields[i]] = currentValues[i]
-        }
-    }
-
-    // Log.d("ProfileCreationScreen", currentUser.name)
-    // Log.d("ProfileCreationScreen2", genders.indexOf(currentUser.gender).toString())
 
     // State variables for error messages
     var nameError by remember { mutableStateOf<String?>(null) }
@@ -90,75 +85,9 @@ fun ProfileCreationScreen(
     fun validate(): Boolean {
         wasValidated = true
         nameError = if (name.isEmpty()) stringResource(R.string.required_field) else null
-        // Return true if there are no errors, indicating that the form is valid
-        return profileDictionary.containsKey("age") && profileDictionary.containsKey("weight") && profileDictionary.containsKey(
-            "gender",
-        ) &&
-            profileDictionary.containsKey("height") && name.isNotEmpty()
-    }
-
-    @Composable
-    fun NumberPickerDialog(
-        onDismissRequest: () -> Unit,
-        onConfirmation: () -> Unit,
-        dialogTitle: String,
-        dialogText: String,
-        minValue: Int,
-        maxValue: Int,
-        valueKey: String,
-        displayedValues: Array<String>?,
-    ) {
-        var currentValue =
-            if (profileDictionary.containsKey(valueKey)) profileDictionary[valueKey]!! else minValue
-        AlertDialog(
-            title = {
-                Text(text = dialogTitle)
-            },
-            text = {
-                Text(text = dialogText)
-                // initialize number picker widget
-                AndroidView(
-                    modifier = Modifier.fillMaxWidth(),
-                    factory = { context ->
-                        NumberPicker(context).apply {
-                            setOnValueChangedListener { _, _, newValue ->
-                                currentValue = newValue
-                            }
-                            this.minValue = minValue
-                            this.maxValue = maxValue
-                            this.value =
-                                if (profileDictionary.containsKey(valueKey)) profileDictionary[valueKey]!! else minValue
-                            if (displayedValues != null) {
-                                this.displayedValues = displayedValues
-                            }
-                        }
-                    },
-                    update = {},
-                )
-            },
-            onDismissRequest = {
-                onDismissRequest()
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        profileDictionary[valueKey] = currentValue
-                        onConfirmation()
-                    },
-                ) {
-                    Text(stringResource(R.string.confirm))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        onDismissRequest()
-                    },
-                ) {
-                    Text(stringResource(R.string.cancel))
-                }
-            },
-        )
+        // Return true if all required field are filled
+        return name.isNotEmpty() && dateOfBirth.isNotEmpty() && gender.isNotEmpty() && weight != 0 &&
+                height != 0
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -166,25 +95,20 @@ fun ProfileCreationScreen(
     fun DropdownMenu(
         dialogTitle: String,
         placeholderText: String,
+        onConfirmation: (String) -> Unit,
         minValue: Int,
         maxValue: Int,
-        valueKey: String,
+        initialValue: String,
         displayedValues: Array<String>?,
+        isRequired: Boolean,
+        isNumberPicker: Boolean = true,
     ) {
         var isExpanded by remember {
             mutableStateOf(false)
         }
-        var currentValue = ""
-        var error = !(profileDictionary.containsKey(valueKey))
-        if (profileDictionary.containsKey(valueKey)) {
-            if (displayedValues != null) {
-                // Int value should be mapped to its existing String counterpart
-                currentValue = displayedValues[profileDictionary[valueKey]!!]
-            } else if (profileDictionary[valueKey] != 0) {
-                // Does not have String counterpart
-                currentValue = profileDictionary[valueKey]!!.toString()
-            }
-        }
+        var error = initialValue.isEmpty() && isRequired
+        val currentValue = if (displayedValues != null && initialValue.isNotEmpty()) displayedValues.indexOf(initialValue).toString() else initialValue
+
         ExposedDropdownMenuBox(
             expanded = isExpanded,
             modifier = Modifier
@@ -194,10 +118,10 @@ fun ProfileCreationScreen(
             },
         ) {
             TextField(
-                value = currentValue,
+                value = initialValue,
 
                 onValueChange = {
-                    error = !(profileDictionary.containsKey(valueKey))
+                    error = currentValue.isEmpty()
                 },
                 isError = error && wasValidated,
                 readOnly = true,
@@ -213,22 +137,58 @@ fun ProfileCreationScreen(
             )
         }
         if (isExpanded) {
-            NumberPickerDialog(
-                onDismissRequest = { isExpanded = false },
-                onConfirmation = {
-                    Log.d("ProfileCreationScreen", profileDictionary[valueKey].toString())
-                    isExpanded = false
-                },
-                dialogTitle = dialogTitle,
-                dialogText = "",
-                minValue = minValue,
-                maxValue = maxValue,
-                valueKey = valueKey,
-                displayedValues = displayedValues,
-            )
+            if (isNumberPicker) {
+                NumberPickerDialog(
+                    onDismissRequest = { isExpanded = false },
+                    onConfirmation = {
+                        onConfirmation(it)
+                        isExpanded = false
+                    },
+                    dialogTitle = dialogTitle,
+                    dialogText = "",
+                    minValue = minValue,
+                    maxValue = maxValue,
+                    initialValue = if (currentValue.isEmpty()) minValue else currentValue.toInt(),
+                    displayedValues = displayedValues,
+                )
+            } else {
+                val datePickerState = rememberDatePickerState(yearRange = LocalDate.now().year-120..<LocalDate.now().year)
+                DatePickerDialog(
+                    onDismissRequest = {
+                        isExpanded = false
+                    },
+                    confirmButton = {
+                        TextButton(
+                            enabled = datePickerState.selectedDateMillis != null,
+                            onClick = {
+                                isExpanded = false
+                                datePickerState.selectedDateMillis?.let {
+                                    Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate().toString()
+                                }?.let {
+                                    Log.d("ProfileScreen", it)
+                                    onConfirmation(it)
+                                }
+                            },
+                        ) {
+                            Text("Confirm")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                isExpanded = false
+                            }
+                        ) {
+                            Text("Cancel")
+                        }
+                    }
+                ) {
+                    DatePicker(state = datePickerState)
+                }
+            }
         }
         // Display error message
-        if (error && wasValidated) {
+        if (error && wasValidated && isRequired) {
             Text(
                 text = stringResource(id = R.string.required_field),
                 color = Color.Red,
@@ -255,6 +215,7 @@ fun ProfileCreationScreen(
         )
         TextField(
             modifier = Modifier.fillMaxWidth(),
+            maxLines = 20,
             value = name,
             onValueChange = {
                 name = it
@@ -281,17 +242,20 @@ fun ProfileCreationScreen(
         ) {
             Column {
                 Text(
-                    text = stringResource(R.string.age),
+                    text = stringResource(R.string.date_of_birth),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(4.dp),
                 )
                 DropdownMenu(
                     stringResource(R.string.select_your_age),
                     stringResource(R.string.select),
+                    { dateOfBirth = it },
                     5,
                     125,
-                    "age",
+                    dateOfBirth,
                     null,
+                    isRequired = true,
+                    false,
                 )
             }
             Column {
@@ -303,10 +267,12 @@ fun ProfileCreationScreen(
                 DropdownMenu(
                     stringResource(R.string.select_your_gender),
                     stringResource(R.string.select),
+                    { gender = genders[it.toInt()] },
                     0,
                     1,
-                    "gender",
+                    gender,
                     genders,
+                    true,
                 )
             }
         }
@@ -327,10 +293,12 @@ fun ProfileCreationScreen(
                 DropdownMenu(
                     stringResource(R.string.select_your_weight),
                     stringResource(R.string.select),
+                    { weight = it.toInt() },
                     10,
                     250,
-                    "weight",
+                    if (weight != 0) weight.toString() else "",
                     null,
+                    true,
                 )
             }
             Column {
@@ -342,50 +310,80 @@ fun ProfileCreationScreen(
                 DropdownMenu(
                     stringResource(R.string.select_your_height),
                     stringResource(R.string.select),
+                    { height = it.toInt() },
                     30,
                     250,
-                    "height",
+                    if (height != 0) height.toString() else "",
                     null,
+                    true,
                 )
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
+        //HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.tertiary)
 
-        Column(
+        FlowRow(
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.End,
+                .fillMaxWidth(),
+            // .padding(8.dp)
         ) {
-            var isClicked by remember { mutableStateOf(false) }
-
-            Button(onClick = { isClicked = true }) {
-                Text(stringResource(R.string.save))
+            Column {
+                Text(
+                    text = stringResource(R.string.fitness_level),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(4.dp),
+                )
+                DropdownMenu(
+                    stringResource(R.string.select_your_fitness_level),
+                    stringResource(R.string.select),
+                    { fitnessLevel = fitnessLevels[it.toInt()] },
+                    0,
+                    3,
+                    fitnessLevel,
+                    fitnessLevels,
+                    false,
+                )
             }
-            if (isClicked) {
-                isClicked = false
-                if (validate()) {
-                    coroutineScope.launch {
-                        success = profileViewModel.submitProfile(
-                            currentUser.uid,
-                            name,
-                            profileDictionary["age"]!!.toInt(),
-                            genders[profileDictionary["gender"]!!],
-                            profileDictionary["weight"]!!.toInt(),
-                            profileDictionary["height"]!!.toInt(),
-                        )
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Bottom),
+                verticalArrangement = Arrangement.Center,
+                //horizontalAlignment = Alignment.End,
+            ) {
+                var isClicked by remember { mutableStateOf(false) }
+
+                Button(onClick = { isClicked = true }) {
+                    Text(stringResource(R.string.save))
+                }
+                if (isClicked) {
+                    isClicked = false
+                    if (validate()) {
+                        coroutineScope.launch {
+                            success = profileViewModel.submitProfile(
+                                currentUser.uid,
+                                name,
+                                dateOfBirth,
+                                gender,
+                                weight,
+                                height,
+                                fitnessLevel,
+                            )
+                        }
                     }
                 }
-            }
-            if (success == true) {
-                success = null
-                displayMessage(stringResource(R.string.profile_saved))
-                navController.navigate(NavRoutes.Settings.route)
-            } else if (success == false) {
-                displayMessage(stringResource(R.string.something_went_wrong_try_again))
-                success = null
+                if (success == true) {
+                    success = null
+                    displayMessage(stringResource(R.string.profile_saved))
+                    navController.navigate(NavRoutes.Settings.route)
+                } else if (success == false) {
+                    displayMessage(stringResource(R.string.something_went_wrong_try_again))
+                    success = null
+                }
             }
         }
+        Spacer(modifier = Modifier.padding(8.dp))
+
+
     }
 }
