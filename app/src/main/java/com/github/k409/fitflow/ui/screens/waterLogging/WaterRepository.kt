@@ -6,21 +6,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 private const val USERS_COLLECTION = "users"
-private const val UUID_DOC = "user-uid"
-private const val JOURNAL_COLLECTION = "journal"
-private const val HYDRATION_COLLECTION = "hydration"
 private const val USER_WEIGHT = "weight"
-private const val TAG_Hydration = "FirebaseHydration"
 private const val TAG_Goal = "DailyGoal"
 private const val TAG_Retrieve_Amount = "RetrieveAmount"
 private val currentUser = FirebaseAuth.getInstance().currentUser
@@ -54,51 +49,61 @@ fun getWaterIntakeGoal(): Int {
     return userWeight * 30
 }
 
-// Function to add water intake data to Firestore
 fun addWaterIntake(waterIntake: Int) {
 
     val uid = currentUser!!.uid
     val db = FirebaseFirestore.getInstance()
 
-    val documentPath = "$JOURNAL_COLLECTION/$UUID_DOC/$HYDRATION_COLLECTION/$uid"
+    val documentPath = "$USERS_COLLECTION/$uid"
 
     val todayDate = Calendar.getInstance().time
     val todayDateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(todayDate)
 
-    // Get the existing array for today's date
+    // Get the existing "Water intake" array
     db.document(documentPath).get()
         .addOnSuccessListener { documentSnapshot ->
             val data = documentSnapshot.data
-            val todayArray = data?.get(todayDateString) as? List<Map<String, Any>> ?: emptyList()
+            val waterIntakeArray = data?.get("Water intake") as? List<Map<String, Any>> ?: emptyList()
 
-            // Calculate the total water intake for today
-            val totalWaterIntake = todayArray.sumOf { (it["amount"] as? Long ?: 0).toInt() } + waterIntake
+            // Check if an entry for today already exists
+            val existingEntry = waterIntakeArray.firstOrNull { it["date"] == todayDateString }
 
-            // Update or create the array field for today's date with the new total
-            val newData = mapOf(todayDateString to listOf(mapOf("date" to todayDateString, "amount" to totalWaterIntake)))
-            db.document(documentPath).update(newData)
+            // If entry for today doesn't exist, create a new entry
+            if (existingEntry == null) {
+                val newEntry = mapOf("date" to todayDateString, "amount" to waterIntake)
+                val newData = mapOf("Water intake" to waterIntakeArray + newEntry)
+                db.document(documentPath).set(newData, SetOptions.merge())
+            } else {
+                // Entry for today exists, update its amount
+                val totalWaterIntake = (existingEntry["amount"] as? Long ?: 0).toInt() + waterIntake
+                val updatedEntry = mapOf("date" to todayDateString, "amount" to totalWaterIntake)
+                val updatedArray = waterIntakeArray.map { if (it["date"] == todayDateString) updatedEntry else it }
+                val newData = mapOf("Water intake" to updatedArray)
+                db.document(documentPath).set(newData, SetOptions.merge())
+            }
         }
 }
 
 suspend fun retrieveTotalWaterIntake(): Int {
     val uid = currentUser!!.uid
     val db = FirebaseFirestore.getInstance()
-    val documentPath = "$JOURNAL_COLLECTION/$UUID_DOC/$HYDRATION_COLLECTION/$uid"
+    val documentPath = "$USERS_COLLECTION/$uid"
 
     return try {
         val documentSnapshot = db.document(documentPath).get().await()
         val data = documentSnapshot.data
+        val waterIntakeArray = data?.get("Water intake") as? List<Map<String, Any>> ?: emptyList()
+
         val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
-        val todayArray = data?.get(todayDate) as? List<Map<String, Any>> ?: emptyList()
 
-        // Check if the date in the array is today's date
-        val isToday = todayArray.any { it["date"] == todayDate }
+        // Find today's entry in the "Water intake" array
+        val todayEntry = waterIntakeArray.firstOrNull { it["date"] == todayDate }
 
-        if (isToday) {
-            val totalWaterIntake = todayArray.sumOf { (it["amount"] as? Long ?: 0).toInt() }
+        if (todayEntry != null) {
+            val totalWaterIntake = (todayEntry["amount"] as? Long ?: 0).toInt()
             totalWaterIntake
         } else {
-            0// If the date in the array is not today's date, return 0
+            0 // If today's entry doesn't exist, return 0
         }
     } catch (e: Exception) {
         Log.e(TAG_Retrieve_Amount, "Error retrieving total water intake", e)
@@ -106,30 +111,99 @@ suspend fun retrieveTotalWaterIntake(): Int {
     }
 }
 
+suspend fun retrieveWaterIntakeYesterday(): Int {
+    val uid = currentUser!!.uid
+    val db = FirebaseFirestore.getInstance()
+    val documentPath = "$USERS_COLLECTION/$uid"
 
-fun createFirebaseDocHydration(uid: String){
-    val docRef = Firebase.firestore
-        .collection(JOURNAL_COLLECTION)
-        .document(UUID_DOC)
-        .collection(HYDRATION_COLLECTION)
-        .document(uid)
+    return try {
+        val documentSnapshot = db.document(documentPath).get().await()
+        val data = documentSnapshot.data
+        val waterIntakeArray = data?.get("Water intake") as? List<Map<String, Any>> ?: emptyList()
 
-    docRef.get()
-        .addOnSuccessListener { documentSnapshot ->
-            if(documentSnapshot.exists()){
-                Log.d(TAG_Hydration, "The user document exists for UID: $uid" )
-            } else {
-                docRef.set(hashMapOf<String, Any>())
-                    .addOnSuccessListener {
-                        Log.d(TAG_Hydration, "Document created for UID: $uid" )
-                    }
-                    .addOnFailureListener{e ->
-                        Log.e(TAG_Hydration, "Error:$e creating document for UID: $uid" )
-                    }
-            }
+        val yesterdayDate = Calendar.getInstance()
+        yesterdayDate.add(Calendar.DATE, -1)
+        val yesterdayDateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(yesterdayDate.time)
+
+        // Find yesterday's entry in the "Water intake" array
+        val yesterdayEntry = waterIntakeArray.firstOrNull { it["date"] == yesterdayDateString }
+
+        if (yesterdayEntry != null) {
+            val waterIntakeAmount = (yesterdayEntry["amount"] as? Long ?: 0).toInt()
+            waterIntakeAmount
+        } else {
+            0 // If yesterday's entry doesn't exist, return 0
         }
-        .addOnFailureListener{exception ->
-            Log.e(TAG_Hydration, exception.message ?:
-            "Error getting documents in hydration collection : $exception")
+    } catch (e: Exception) {
+        Log.e(TAG_Retrieve_Amount, "Error retrieving water intake for yesterday", e)
+        0
+    }
+}
+
+suspend fun retrieveWaterIntakeThisWeek(): Int {
+    val uid = currentUser!!.uid
+    val db = FirebaseFirestore.getInstance()
+    val documentPath = "$USERS_COLLECTION/$uid"
+
+    return try {
+        val documentSnapshot = db.document(documentPath).get().await()
+        val data = documentSnapshot.data
+        val waterIntakeArray = data?.get("Water intake") as? List<Map<String, Any>> ?: emptyList()
+
+        val calendar = Calendar.getInstance()
+        val currentWeek = calendar.get(Calendar.WEEK_OF_YEAR)
+        val currentYear = calendar.get(Calendar.YEAR)
+
+        // Filter entries for the current week
+        val thisWeekEntries = waterIntakeArray.filter { entry ->
+            val entryDate = entry["date"] as String
+            val entryCalendar = Calendar.getInstance()
+            entryCalendar.time = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(entryDate)!!
+            val entryWeek = entryCalendar.get(Calendar.WEEK_OF_YEAR)
+            val entryYear = entryCalendar.get(Calendar.YEAR)
+            entryWeek == currentWeek && entryYear == currentYear
         }
+
+        // Calculate total water intake for the current week
+        val totalWaterIntakeThisWeek = thisWeekEntries.sumOf { (it["amount"] as? Long ?: 0).toInt() }
+
+        totalWaterIntakeThisWeek
+    } catch (e: Exception) {
+        Log.e(TAG_Retrieve_Amount, "Error retrieving water intake for this week", e)
+        0
+    }
+}
+
+suspend fun retrieveWaterIntakeThisMonth(): Int {
+    val uid = currentUser!!.uid
+    val db = FirebaseFirestore.getInstance()
+    val documentPath = "$USERS_COLLECTION/$uid"
+
+    return try {
+        val documentSnapshot = db.document(documentPath).get().await()
+        val data = documentSnapshot.data
+        val waterIntakeArray = data?.get("Water intake") as? List<Map<String, Any>> ?: emptyList()
+
+        val calendar = Calendar.getInstance()
+        val currentMonth = calendar.get(Calendar.MONTH)
+        val currentYear = calendar.get(Calendar.YEAR)
+
+        // Filter entries for the current month
+        val thisMonthEntries = waterIntakeArray.filter { entry ->
+            val entryDate = entry["date"] as String
+            val entryCalendar = Calendar.getInstance()
+            entryCalendar.time = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(entryDate)!!
+            val entryMonth = entryCalendar.get(Calendar.MONTH)
+            val entryYear = entryCalendar.get(Calendar.YEAR)
+            entryMonth == currentMonth && entryYear == currentYear
+        }
+
+        // Calculate total water intake for the current month
+        val totalWaterIntakeThisMonth = thisMonthEntries.sumOf { (it["amount"] as? Long ?: 0).toInt() }
+
+        totalWaterIntakeThisMonth
+    } catch (e: Exception) {
+        Log.e(TAG_Retrieve_Amount, "Error retrieving water intake for this month", e)
+        0
+    }
 }
