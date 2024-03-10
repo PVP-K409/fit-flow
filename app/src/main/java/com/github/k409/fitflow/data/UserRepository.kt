@@ -174,13 +174,13 @@ class UserRepository @Inject constructor(
                 val documentSnapshot = db.collection(USERS_COLLECTION).document(uid).get().await()
 
                 User(
-                    uid = documentSnapshot.getLong("age")?.toString() ?: "",
+                    uid = documentSnapshot.getLong("uid")?.toString() ?: "",
                     name = documentSnapshot.getString("name") ?: "",
                     photoUrl = documentSnapshot.getString("photoUrl") ?: "",
                     email = documentSnapshot.getString("email") ?: "",
                     points = documentSnapshot.getLong("points")?.toInt() ?: 0,
                     xp = documentSnapshot.getLong("xp")?.toInt() ?: 0,
-                    age = documentSnapshot.getLong("age")?.toInt() ?: 0,
+                    dateOfBirth = documentSnapshot.getString("dateOfBirth") ?: "",
                     height = documentSnapshot.getDouble("height") ?: 0.0,
                     weight = documentSnapshot.getDouble("weight") ?: 0.0,
                     gender = documentSnapshot.getString("gender") ?: "",

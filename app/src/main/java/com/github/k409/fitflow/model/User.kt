@@ -9,7 +9,7 @@ data class User(
     var email: String = "",
     var points: Int = 0,
     var xp: Int = 0,
-    var age: Int = 0,
+    var dateOfBirth: String = "",
     var height: Double = 0.0,
     var weight: Double = 0.0,
     var gender: String = "",
