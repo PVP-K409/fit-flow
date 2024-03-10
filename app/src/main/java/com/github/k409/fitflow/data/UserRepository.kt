@@ -58,8 +58,11 @@ class UserRepository @Inject constructor(
         }
     }
 
-    fun getUser(uid: String): Flow<User> = db.collection(USERS_COLLECTION).document(uid).snapshots()
-        .map { it.toObject<User>() ?: User() }
+    fun getUser(uid: String): Flow<User> =
+        db.collection(USERS_COLLECTION)
+            .document(uid)
+            .snapshots()
+            .map { it.toObject<User>() ?: User() }
 
     fun createUser(firebaseUser: FirebaseUser) {
         val user = firebaseUser.toUser()
@@ -68,7 +71,9 @@ class UserRepository @Inject constructor(
             user.name = user.email
         }
 
-        db.collection(USERS_COLLECTION).document(user.uid).set(user)
+        db.collection(USERS_COLLECTION)
+            .document(user.uid)
+            .set(user)
 
         CoroutineScope(Dispatchers.IO).launch {
             setInitialSteps(user.uid)
@@ -92,103 +97,97 @@ class UserRepository @Inject constructor(
 
         val initialStepRecordList = mutableListOf(initialStepRecordMap)
 
-        db.collection(USERS_COLLECTION).document(uid).update(USER_STEPS_ARRAY, initialStepRecordList)
+        db.collection(USERS_COLLECTION)
+            .document(uid)
+            .update(USER_STEPS_ARRAY, initialStepRecordList)
     }
 
     suspend fun updateSteps(newSteps: DailyStepRecord) {
-        val currentUser = FirebaseAuth.getInstance().currentUser
+        val currentUser = auth.currentUser
 
-        if (currentUser != null) {
-            val uid = currentUser.uid
-            val userDocRef = db.collection(USERS_COLLECTION).document(uid)
-
-            try {
-                val snapshot = userDocRef.get().await()
-
-                if (snapshot.exists()) {
-                    val stepsList =
-                        snapshot.data?.get(USER_STEPS_ARRAY) as? List<Map<String, Any>> ?: mutableListOf()
-                    val existingStepMap = stepsList.firstOrNull { it["date"] == newSteps.recordDate }
-                    val updatedStepMap = mapOf(
-                        "current" to newSteps.totalSteps,
-                        "initial" to newSteps.initialSteps,
-                        "date" to newSteps.recordDate,
-                        "temp" to newSteps.stepsBeforeReboot,
-                        "distance" to newSteps.totalDistance,
-                        "calories" to newSteps.caloriesBurned,
-                    )
-
-                    val updatedStepsList = if (existingStepMap != null) {
-                        stepsList.map { if (it["date"] == newSteps.recordDate) updatedStepMap else it }
-                    } else {
-                        stepsList + updatedStepMap // new day
-                    }
-
-                    userDocRef.update(USER_STEPS_ARRAY, updatedStepsList).await()
-                } else {
-                    Log.e("User Repository", "No such document")
-                }
-            } catch (e: Exception) {
-                Log.e("User Repository", "Error updating steps", e)
-            }
-        } else {
+        if (currentUser == null) {
             Log.e("User Repository", "No signed-in user")
+            return
         }
+
+        val uid = currentUser.uid
+        val userDocRef = db.collection(USERS_COLLECTION)
+            .document(uid)
+
+        try {
+            val snapshot = userDocRef.get().await()
+
+            if (!snapshot.exists()) {
+                Log.e("User Repository", "No such document")
+                return
+            }
+
+            val stepsList =
+                snapshot.data?.get(USER_STEPS_ARRAY) as? List<Map<String, Any>>
+                    ?: mutableListOf()
+            val existingStepMap =
+                stepsList.firstOrNull { it["date"] == newSteps.recordDate }
+            val updatedStepMap = mapOf(
+                "current" to newSteps.totalSteps,
+                "initial" to newSteps.initialSteps,
+                "date" to newSteps.recordDate,
+                "temp" to newSteps.stepsBeforeReboot,
+                "distance" to newSteps.totalDistance,
+                "calories" to newSteps.caloriesBurned,
+            )
+
+            val updatedStepsList = if (existingStepMap != null) {
+                stepsList.map { if (it["date"] == newSteps.recordDate) updatedStepMap else it }
+            } else {
+                stepsList + updatedStepMap // new day
+            }
+
+            userDocRef.update(USER_STEPS_ARRAY, updatedStepsList).await()
+
+        } catch (e: Exception) {
+            Log.e("User Repository", "Error updating steps", e)
+        }
+
     }
 
     suspend fun loadTodaySteps(day: String): DailyStepRecord? {
-        val currentUser = FirebaseAuth.getInstance().currentUser
+        val currentUser = auth.currentUser ?: return null
 
-        if (currentUser != null) {
-            val uid = currentUser.uid
-            val userDocRef = db.collection(USERS_COLLECTION).document(uid)
-            val snapshot = userDocRef.get().await()
+        val userSnapshot = db.collection(USERS_COLLECTION)
+            .document(currentUser.uid)
+            .get()
+            .await()
 
-            if (snapshot.exists()) {
-                val stepsList = snapshot.data?.get(USER_STEPS_ARRAY) as? List<Map<String, Any>> ?: return null
-                val stepMap = stepsList.firstOrNull { it["date"] == day }
-
-                return stepMap?.let {
-                    DailyStepRecord(
-                        totalSteps = it["current"] as? Long ?: 0,
-                        initialSteps = it["initial"] as? Long ?: 0,
-                        recordDate = it["date"] as? String ?: day,
-                        stepsBeforeReboot = it["temp"] as? Long ?: 0,
-                        caloriesBurned = it["calories"] as? Long ?: 0,
-                        totalDistance = it["distance"] as? Double ?: 0.0,
-                    )
-                }
-            } else {
-                return null
-            }
-        } else {
+        if (!userSnapshot.exists()) {
             return null
+        }
+
+        val stepsList = userSnapshot.data
+            ?.get(USER_STEPS_ARRAY) as? List<Map<String, Any>> ?: return null
+        val stepMap = stepsList.firstOrNull { it["date"] == day }
+
+        return stepMap?.let {
+            DailyStepRecord(
+                totalSteps = it["current"] as? Long ?: 0,
+                initialSteps = it["initial"] as? Long ?: 0,
+                recordDate = it["date"] as? String ?: day,
+                stepsBeforeReboot = it["temp"] as? Long ?: 0,
+                caloriesBurned = it["calories"] as? Long ?: 0,
+                totalDistance = it["distance"] as? Double ?: 0.0,
+            )
         }
     }
 
     suspend fun getUser(): User? {
-        return try {
-            val currentUser = FirebaseAuth.getInstance().currentUser
-            if (currentUser != null) {
-                val uid = currentUser.uid
-                val documentSnapshot = db.collection(USERS_COLLECTION).document(uid).get().await()
+        val currentUser = auth.currentUser ?: return null
 
-                User(
-                    uid = documentSnapshot.getLong("uid")?.toString() ?: "",
-                    name = documentSnapshot.getString("name") ?: "",
-                    photoUrl = documentSnapshot.getString("photoUrl") ?: "",
-                    email = documentSnapshot.getString("email") ?: "",
-                    points = documentSnapshot.getLong("points")?.toInt() ?: 0,
-                    xp = documentSnapshot.getLong("xp")?.toInt() ?: 0,
-                    dateOfBirth = documentSnapshot.getString("dateOfBirth") ?: "",
-                    height = documentSnapshot.getDouble("height") ?: 0.0,
-                    weight = documentSnapshot.getDouble("weight") ?: 0.0,
-                    gender = documentSnapshot.getString("gender") ?: "",
-                    fitnessLevel = documentSnapshot.getString("fitnessLevel") ?: "",
-                )
-            } else {
-                null
-            }
+        return try {
+            val documentSnapshot = db.collection(USERS_COLLECTION)
+                .document(currentUser.uid)
+                .get()
+                .await()
+
+            documentSnapshot.toObject<User>()
         } catch (e: Exception) {
             null
         }
