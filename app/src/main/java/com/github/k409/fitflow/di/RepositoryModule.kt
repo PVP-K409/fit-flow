@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.di
 
+import android.content.SharedPreferences
 import com.github.k409.fitflow.data.AuthRepository
 import com.github.k409.fitflow.data.ProfileRepository
 import com.github.k409.fitflow.data.UserRepository
@@ -30,8 +31,9 @@ object RepositoryModule {
         db: FirebaseFirestore,
         auth: FirebaseAuth,
         stepCounter: StepCounter,
+        prefs: SharedPreferences,
     ): UserRepository {
-        return UserRepository(db, auth, stepCounter)
+        return UserRepository(db, auth, stepCounter, prefs)
     }
 
     @Provides
