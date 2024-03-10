@@ -184,6 +184,7 @@ class UserRepository @Inject constructor(
                     height = documentSnapshot.getDouble("height") ?: 0.0,
                     weight = documentSnapshot.getDouble("weight") ?: 0.0,
                     gender = documentSnapshot.getString("gender") ?: "",
+                    fitnessLevel = documentSnapshot.getString("fitnessLevel") ?: "",
                 )
             } else {
                 null
