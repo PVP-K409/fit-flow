@@ -133,6 +133,7 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.firebase.ui.auth)
     implementation(libs.androidx.activity)
+    implementation(libs.firebase.messaging)
 
     implementation(libs.animated.navigation.bar)
 }

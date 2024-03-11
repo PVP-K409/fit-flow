@@ -6,24 +6,32 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 private const val USERS_COLLECTION = "users"
+private const val JOURNAL_COLLECTION = "journal"
+private const val HYDRATION_COLLECTION = "hydration"
+private const val WATER_INTAKE_DOCUMENT = "waterIntake"
 private const val USER_WEIGHT = "weight"
 private const val TAG_Goal = "DailyGoal"
 private const val TAG_Retrieve_Amount = "RetrieveAmount"
-private val currentUser = FirebaseAuth.getInstance().currentUser
+private const val TAG_Doc_Creation = "DocCreation"
+private const val TAG_Collection_Creation = "CollectionCreation"
 
 @Composable
 fun getWaterIntakeGoal(): Int {
+
     val usersRef = FirebaseFirestore.getInstance().collection(USERS_COLLECTION)
     var userWeight by remember { mutableIntStateOf(0) }
+    val currentUser = FirebaseAuth.getInstance().currentUser
 
     if (currentUser != null) {
         val uid = currentUser.uid
@@ -49,12 +57,52 @@ fun getWaterIntakeGoal(): Int {
     return userWeight * 30
 }
 
+fun createFirebaseDoc(uid: String) {
+    val docRef = Firebase.firestore
+        .collection(JOURNAL_COLLECTION)
+        .document(uid)
+
+    docRef.get()
+        .addOnSuccessListener { documentSnapshot ->
+            if (documentSnapshot.exists()) {
+                Log.d(TAG_Doc_Creation, "The user document exists for UID: $uid")
+            } else {
+                docRef.set(hashMapOf<String, Any>()) // Create an empty document
+                    .addOnSuccessListener {
+                        Log.d(TAG_Doc_Creation, "Document created for UID: $uid")
+                        docRef.collection("hydration").document("waterIntake").set(hashMapOf<String, Any>())
+                            .addOnSuccessListener {
+                                Log.d(TAG_Collection_Creation, "Hydration collection created for UID: $uid")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e(TAG_Collection_Creation, "Error creating hydration collection for UID: $uid", e)
+                            }
+
+                        docRef.collection("activity").document("steps").set(hashMapOf<String, Any>())
+                            .addOnSuccessListener {
+                                Log.d(TAG_Collection_Creation, "Steps activity collection created for UID: $uid")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e(TAG_Collection_Creation, "Error creating steps activity collection for UID: $uid", e)
+                            }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e(TAG_Doc_Creation, "Error creating document for UID: $uid", e)
+                    }
+            }
+        }
+        .addOnFailureListener { exception ->
+            Log.e(TAG_Doc_Creation, "Error getting document for UID: $uid", exception)
+        }
+}
+
 fun addWaterIntake(waterIntake: Int) {
 
+    val currentUser = FirebaseAuth.getInstance().currentUser
     val uid = currentUser!!.uid
     val db = FirebaseFirestore.getInstance()
 
-    val documentPath = "$USERS_COLLECTION/$uid"
+    val documentPath = "$JOURNAL_COLLECTION/$uid/$HYDRATION_COLLECTION/$WATER_INTAKE_DOCUMENT"
 
     val todayDate = Calendar.getInstance().time
     val todayDateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(todayDate)
@@ -85,9 +133,11 @@ fun addWaterIntake(waterIntake: Int) {
 }
 
 suspend fun retrieveTotalWaterIntake(): Int {
+
+    val currentUser = FirebaseAuth.getInstance().currentUser
     val uid = currentUser!!.uid
     val db = FirebaseFirestore.getInstance()
-    val documentPath = "$USERS_COLLECTION/$uid"
+    val documentPath = "$JOURNAL_COLLECTION/$uid/$HYDRATION_COLLECTION/$WATER_INTAKE_DOCUMENT"
 
     return try {
         val documentSnapshot = db.document(documentPath).get().await()
@@ -112,9 +162,11 @@ suspend fun retrieveTotalWaterIntake(): Int {
 }
 
 suspend fun retrieveWaterIntakeYesterday(): Int {
+
+    val currentUser = FirebaseAuth.getInstance().currentUser
     val uid = currentUser!!.uid
     val db = FirebaseFirestore.getInstance()
-    val documentPath = "$USERS_COLLECTION/$uid"
+    val documentPath = "$JOURNAL_COLLECTION/$uid/$HYDRATION_COLLECTION/$WATER_INTAKE_DOCUMENT"
 
     return try {
         val documentSnapshot = db.document(documentPath).get().await()
@@ -141,9 +193,11 @@ suspend fun retrieveWaterIntakeYesterday(): Int {
 }
 
 suspend fun retrieveWaterIntakeThisWeek(): Int {
+
+    val currentUser = FirebaseAuth.getInstance().currentUser
     val uid = currentUser!!.uid
     val db = FirebaseFirestore.getInstance()
-    val documentPath = "$USERS_COLLECTION/$uid"
+    val documentPath = "$JOURNAL_COLLECTION/$uid/$HYDRATION_COLLECTION/$WATER_INTAKE_DOCUMENT"
 
     return try {
         val documentSnapshot = db.document(documentPath).get().await()
@@ -175,9 +229,11 @@ suspend fun retrieveWaterIntakeThisWeek(): Int {
 }
 
 suspend fun retrieveWaterIntakeThisMonth(): Int {
+
+    val currentUser = FirebaseAuth.getInstance().currentUser
     val uid = currentUser!!.uid
     val db = FirebaseFirestore.getInstance()
-    val documentPath = "$USERS_COLLECTION/$uid"
+    val documentPath = "$JOURNAL_COLLECTION/$uid/$HYDRATION_COLLECTION/$WATER_INTAKE_DOCUMENT"
 
     return try {
         val documentSnapshot = db.document(documentPath).get().await()
