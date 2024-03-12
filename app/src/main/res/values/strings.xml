@@ -38,4 +38,5 @@
     <string name="intermediate">Intermediate</string>
     <string name="advanced">Advanced</string>
     <string name="professional">Professional</string>
+    <string name="steps_icon">Steps Icon</string>
 </resources>

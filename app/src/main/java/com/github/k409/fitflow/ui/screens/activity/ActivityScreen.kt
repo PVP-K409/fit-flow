@@ -65,7 +65,6 @@ fun ActivityScreen() {
                 CircularProgressBar(
                     taken = it.totalSteps,
                     goal = todayGoal,
-                    radius = 80.dp,
                 )
             }
             todaySteps?.let {
