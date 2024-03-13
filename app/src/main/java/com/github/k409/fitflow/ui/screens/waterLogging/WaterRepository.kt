@@ -20,7 +20,6 @@ import java.util.Locale
 private const val USERS_COLLECTION = "users"
 private const val JOURNAL_COLLECTION = "journal"
 private const val HYDRATION_COLLECTION = "hydration"
-private const val WATER_INTAKE_DOCUMENT = "waterIntake"
 private const val USER_WEIGHT = "weight"
 private const val TAG_Goal = "DailyGoal"
 private const val TAG_Retrieve_Amount = "RetrieveAmount"
@@ -256,9 +255,6 @@ suspend fun retrieveWaterIntakeThisWeek(): Int {
         0
     }
 }
-
-
-
 
 suspend fun retrieveWaterIntakeThisMonth(): Int {
     val currentUser = FirebaseAuth.getInstance().currentUser

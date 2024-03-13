@@ -50,29 +50,34 @@ class WaterReminder : BroadcastReceiver() {
     }
 
     private fun showWaterNotification(context: Context) {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val currentTime = Calendar.getInstance()
+        val hourOfDay = currentTime.get(Calendar.HOUR_OF_DAY)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
-                "Drink some water",
-                NotificationManager.IMPORTANCE_DEFAULT
-            ).apply {
-                description = "Reminder to stay hydrated"
+        if (hourOfDay in 8..20) {
+            val notificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel = NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    "Drink some water",
+                    NotificationManager.IMPORTANCE_DEFAULT
+                ).apply {
+                    description = "Reminder to stay hydrated"
+                }
+                notificationManager.createNotificationChannel(channel)
             }
-            notificationManager.createNotificationChannel(channel)
+
+            val builder = Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
+                .setContentTitle("Don't forget to stay hydrated!")
+                .setContentText("It's been 3 hour since you last drank water, don't forget to stay hydrated")
+                .setSmallIcon(R.drawable.primary_fish)
+                .setAutoCancel(true)
+
+            notificationManager.notify(NOTIFICATION_ID, builder.build())
+
+            // Update lastNotificationTime after showing the notification
+            lastNotificationTime = System.currentTimeMillis()
         }
-
-        val builder = Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("Don't forget to stay hydrated!")
-            .setContentText("It's been 3 hour since you last drank water," +
-                    " don't forget to stay hydrated")
-            .setSmallIcon(R.drawable.primary_fish)
-            .setAutoCancel(true)
-
-        notificationManager.notify(NOTIFICATION_ID, builder.build())
-
-        // Update lastNotificationTime after showing the notification
-        lastNotificationTime = System.currentTimeMillis()
     }
 }

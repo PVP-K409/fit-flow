@@ -1,6 +1,7 @@
 package com.github.k409.fitflow.ui.screens.waterLogging
 
 import android.content.Context
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -63,21 +67,9 @@ fun WaterLoggingScreen() {
     val key2 = "waterAmount2"
     val key3 = "waterAmount3"
 
-//    saveCustomAmountLocally(key = key1,
-//        value = 0,
-//        context = context)
-//
-//    saveCustomAmountLocally(key = key2,
-//        value = 0,
-//        context = context)
-//
-//    saveCustomAmountLocally(key = key3,
-//        value = 0,
-//        context = context)
-
-    var button1Value = getSavedAmount(key1, context)
-    var button2Value = getSavedAmount(key2, context)
-    var button3Value = getSavedAmount(key3, context)
+    var button1Value by remember { mutableIntStateOf(0) }
+    var button2Value by remember { mutableIntStateOf(0) }
+    var button3Value by remember { mutableIntStateOf(0) }
 
     var totalWaterIntake by remember { mutableIntStateOf(0) }
     var yesterdaysTotalWaterIntake by remember { mutableIntStateOf(0) }
@@ -87,6 +79,11 @@ fun WaterLoggingScreen() {
     var customAmountValue by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
+
+        button1Value = getSavedAmount(key1, context)
+        button2Value = getSavedAmount(key2, context)
+        button3Value = getSavedAmount(key3, context)
+
         createHydrationDocument()
         delay(600)
         addWaterIntake(0)
@@ -104,6 +101,7 @@ fun WaterLoggingScreen() {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Text(
             text = "Water intake logging",
             fontSize = 24.sp,
@@ -160,8 +158,17 @@ fun WaterLoggingScreen() {
         TextField(
             value = customAmountValue,
             onValueChange = { newValue ->
-                // Only allow numeric input
                 customAmountValue = newValue.filter { it.isDigit() }
+            },
+            trailingIcon = {
+                Icon(
+                    Icons.Default.Clear,
+                    contentDescription = "clear text",
+                    modifier = Modifier
+                        .clickable {
+                            customAmountValue = ""
+                        }
+                )
             },
             label = { Text("Custom Amount (ml)") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
