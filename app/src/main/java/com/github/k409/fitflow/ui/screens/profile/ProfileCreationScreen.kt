@@ -43,7 +43,6 @@ import androidx.navigation.NavController
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.ui.common.NumberPickerDialog
-import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -375,7 +374,7 @@ fun ProfileCreationScreen(
                 if (success == true) {
                     success = null
                     displayMessage(stringResource(R.string.profile_saved))
-                    navController.navigate(NavRoutes.Settings.route)
+                    navController.navigateUp()
                 } else if (success == false) {
                     displayMessage(stringResource(R.string.something_went_wrong_try_again))
                     success = null
