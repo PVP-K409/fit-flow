@@ -14,7 +14,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,12 +28,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
-import com.github.k409.fitflow.ui.common.Dialog
-import com.github.k409.fitflow.ui.common.NumberPicker
-import com.github.k409.fitflow.ui.common.PickerState.Companion.rememberPickerState
+import com.github.k409.fitflow.ui.common.NumberPickerDialog
 import com.github.k409.fitflow.ui.components.WaterIndicator
 import com.github.k409.fitflow.ui.components.hydration.WaterIntakeLog
-import com.github.k409.fitflow.ui.common.NumberPickerDialog
 
 @Composable
 fun WaterLoggingScreen(
@@ -108,25 +104,27 @@ fun WaterLoggingScreen(
             val cupValues = Array(300) { (it * 10 + 10).toString() }
             NumberPickerDialog(
                 onDismissRequest = { editCupSizeDialogState.value = false },
-                onConfirmation = { editCupSizeDialogState.value = false
-                    viewModel.setCupSize(it.toInt()*10) },
+                onConfirmation = {
+                    editCupSizeDialogState.value = false
+                    viewModel.setCupSize(it.toInt() * 10)
+                },
                 dialogTitle = stringResource(R.string.cup_size_ml),
                 dialogText = "",
                 minValue = 1,
                 maxValue = 300,
-                initialValue = uiState.cupSize/10,
-                displayedValues = cupValues
+                initialValue = uiState.cupSize / 10,
+                displayedValues = cupValues,
             )
         }
     }
 }
 
-//@Composable
-//fun EditCupSizeDialog(
+// @Composable
+// fun EditCupSizeDialog(
 //    onDismiss: () -> Unit,
 //    onSaveClick: (Int) -> Unit,
 //    currentCupSize: Int,
-//) {
+// ) {
 //    val numberPickerState = rememberPickerState(initialValue = currentCupSize)
 //
 //    val minCupSize = 10
@@ -161,4 +159,4 @@ fun WaterLoggingScreen(
 //            )
 //        }
 //    }
-//}
+// }
