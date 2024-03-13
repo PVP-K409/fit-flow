@@ -15,5 +15,5 @@ class SettingsViewModel @Inject constructor(
         authRepository.signOut()
     }
 
-    val currentUser = userRepository.getCurrentUser
+    val currentUser = userRepository.currentUser
 }

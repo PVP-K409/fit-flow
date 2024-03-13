@@ -27,7 +27,7 @@ fun TextWithLabel(
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
     labelStyle: TextStyle = MaterialTheme.typography.labelMedium,
 
-    ) {
+) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -76,12 +76,13 @@ fun AnimatedCounter(
                 targetState = char,
                 transitionSpec = {
                     slideInVertically { it } togetherWith slideOutVertically { -it }
-                }, label = ""
+                },
+                label = "",
             ) {
                 Text(
                     text = it.toString(),
                     style = style,
-                    softWrap = false
+                    softWrap = false,
                 )
             }
         }

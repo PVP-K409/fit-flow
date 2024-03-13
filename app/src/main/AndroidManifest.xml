@@ -31,6 +31,16 @@
             </intent-filter>
         </activity>
 
+        <!-- Broadcast Receiver -->
+        <receiver
+            android:name=".ui.screens.hydration.HydrationReminder"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.github.k409.fitflow.ui.screens.waterLogging.SHOW_NOTIFICATION" />
+            </intent-filter>
+        </receiver>
+
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"

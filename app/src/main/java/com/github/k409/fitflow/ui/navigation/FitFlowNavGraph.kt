@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.screens.activity.ActivityScreen
 import com.github.k409.fitflow.ui.screens.goals.GoalsScreen
 import com.github.k409.fitflow.ui.screens.home.HomeScreen
+import com.github.k409.fitflow.ui.screens.hydration.WaterLoggingScreen
 import com.github.k409.fitflow.ui.screens.login.LoginScreen
 import com.github.k409.fitflow.ui.screens.market.MarketScreen
 import com.github.k409.fitflow.ui.screens.profile.ProfileCreationScreen
@@ -37,6 +38,11 @@ fun FitFlowNavGraph(
         composable(NavRoutes.Marketplace.route) {
             MarketScreen()
         }
+
+        composable(NavRoutes.Hydration.route) {
+            WaterLoggingScreen()
+        }
+
         composable(NavRoutes.ProfileCreation.route) {
             ProfileCreationScreen(navController)
         }

@@ -47,7 +47,7 @@ class UserRepository @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val getCurrentUser: Flow<User> = getAuthState().flatMapLatest { isUserLoggedOut ->
+    val currentUser: Flow<User> = getAuthState().flatMapLatest { isUserLoggedOut ->
         if (isUserLoggedOut) {
             callbackFlow {
                 trySend(User())
@@ -143,11 +143,9 @@ class UserRepository @Inject constructor(
             }
 
             userDocRef.update(USER_STEPS_ARRAY, updatedStepsList).await()
-
         } catch (e: Exception) {
             Log.e("User Repository", "Error updating steps", e)
         }
-
     }
 
     suspend fun loadTodaySteps(day: String): DailyStepRecord? {
