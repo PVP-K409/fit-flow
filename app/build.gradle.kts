@@ -111,6 +111,7 @@ dependencies {
     implementation (libs.androidx.runtime.livedata)
     implementation(libs.androidx.work.runtime)
     implementation(libs.accompanist.permissions)
+    implementation(libs.coil.compose)
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
