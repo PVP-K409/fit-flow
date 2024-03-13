@@ -58,9 +58,10 @@ fun FitFlowApp(
 
     val currentScreen =
         NavRoutes.navRoutes.find { it.route == currentDestination?.route } ?: NavRoutes.Default
-
     val startDestination = if (user.uid.isEmpty()) {
         NavRoutes.Login.route
+    } else if (user.gender.isEmpty() || user.dateOfBirth.isEmpty()) {
+        NavRoutes.ProfileCreation.route
     } else {
         NavRoutes.Home.route
     }
@@ -126,7 +127,7 @@ private fun UpdateTopAndBottomBarVisibility(
             topBarState.value = false
         }
 
-        NavRoutes.Settings -> {
+        NavRoutes.Settings, NavRoutes.ProfileCreation -> {
             bottomBarState.value = false
             topBarState.value = true
         }
