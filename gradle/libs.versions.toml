@@ -1,6 +1,8 @@
 [versions]
 agp = "8.2.2"
+androidx-connectClient = "1.1.0-alpha07"
 animatedNavigationBar = "1.0.0"
+connectClient = "1.0.0-alpha11"
 firebaseUiAuth = "8.0.0"
 googleServices = "4.4.1"
 hilt = "2.50"
@@ -32,6 +34,8 @@ lifecycleRuntimeCompose = "2.7.0"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+androidx-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "connectClient" }
+androidx-connect-client-v110alpha07 = { module = "androidx.health.connect:connect-client", version.ref = "androidx-connectClient" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltWork" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltWork" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }

@@ -104,6 +104,7 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.work.runtime)
+    implementation(libs.androidx.connect.client.v110alpha07)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
