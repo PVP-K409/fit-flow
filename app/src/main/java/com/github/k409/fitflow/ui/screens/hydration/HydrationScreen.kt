@@ -34,6 +34,7 @@ import com.github.k409.fitflow.ui.common.NumberPicker
 import com.github.k409.fitflow.ui.common.PickerState.Companion.rememberPickerState
 import com.github.k409.fitflow.ui.components.WaterIndicator
 import com.github.k409.fitflow.ui.components.hydration.WaterIntakeLog
+import com.github.k409.fitflow.ui.common.NumberPickerDialog
 
 @Composable
 fun WaterLoggingScreen(
@@ -104,53 +105,60 @@ fun WaterLoggingScreen(
         )
 
         if (editCupSizeDialogState.value) {
-            EditCupSizeDialog(
-                onDismiss = { editCupSizeDialogState.value = false },
-                onSaveClick = { viewModel.setCupSize(it) },
-                currentCupSize = uiState.cupSize,
+            val cupValues = Array(300) { (it * 10 + 10).toString() }
+            NumberPickerDialog(
+                onDismissRequest = { editCupSizeDialogState.value = false },
+                onConfirmation = { editCupSizeDialogState.value = false
+                    viewModel.setCupSize(it.toInt()*10) },
+                dialogTitle = stringResource(R.string.cup_size_ml),
+                dialogText = "",
+                minValue = 1,
+                maxValue = 300,
+                initialValue = uiState.cupSize/10,
+                displayedValues = cupValues
             )
         }
     }
 }
 
-@Composable
-fun EditCupSizeDialog(
-    onDismiss: () -> Unit,
-    onSaveClick: (Int) -> Unit,
-    currentCupSize: Int,
-) {
-    val numberPickerState = rememberPickerState(initialValue = currentCupSize)
-
-    val minCupSize = 10
-    val stepSize = 10
-    val maxCupSize = 3000
-
-    val items = remember {
-        ((minCupSize - stepSize)..(maxCupSize + stepSize) step stepSize).toList()
-    }
-
-    Dialog(
-        title = stringResource(R.string.cup_size_ml),
-        onSaveClick = {
-            onSaveClick(numberPickerState.value)
-            onDismiss()
-        },
-        onDismiss = onDismiss,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            NumberPicker(
-                items = items,
-                state = numberPickerState,
-                indexStart = items.indexOf(currentCupSize).coerceAtLeast(0),
-                showDivider = false,
-                textStyle = MaterialTheme.typography.headlineLarge,
-            )
-        }
-    }
-}
+//@Composable
+//fun EditCupSizeDialog(
+//    onDismiss: () -> Unit,
+//    onSaveClick: (Int) -> Unit,
+//    currentCupSize: Int,
+//) {
+//    val numberPickerState = rememberPickerState(initialValue = currentCupSize)
+//
+//    val minCupSize = 10
+//    val stepSize = 10
+//    val maxCupSize = 3000
+//
+//    val items = remember {
+//        ((minCupSize - stepSize)..(maxCupSize + stepSize) step stepSize).toList()
+//    }
+//
+//    Dialog(
+//        title = stringResource(R.string.cup_size_ml),
+//        onSaveClick = {
+//            onSaveClick(numberPickerState.value)
+//            onDismiss()
+//        },
+//        onDismiss = onDismiss,
+//    ) {
+//        Column(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(16.dp),
+//            verticalArrangement = Arrangement.Center,
+//            horizontalAlignment = Alignment.CenterHorizontally,
+//        ) {
+//            NumberPicker(
+//                items = items,
+//                state = numberPickerState,
+//                indexStart = items.indexOf(currentCupSize).coerceAtLeast(0),
+//                showDivider = false,
+//                textStyle = MaterialTheme.typography.headlineLarge,
+//            )
+//        }
+//    }
+//}
