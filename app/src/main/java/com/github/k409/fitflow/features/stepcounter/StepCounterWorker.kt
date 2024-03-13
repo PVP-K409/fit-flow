@@ -26,6 +26,7 @@ class StepCounterWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         val hasRebooted = prefs.getBoolean("rebooted", false)
+        val lastDate = prefs.getString("lastDate", "") // last update day
         val today = LocalDate.now().toString()
         val user: User? = repository.getUser()
 
@@ -46,9 +47,9 @@ class StepCounterWorker @AssistedInject constructor(
             } else if (hasRebooted || currentSteps <= 1) { // if current day and reboot has happened
                 newDailyStepRecord = DailyStepRecord(
                     totalSteps = dailyStepRecord.totalSteps + currentSteps,
-                    initialSteps = 0,
+                    initialSteps = currentSteps,
                     recordDate = today,
-                    stepsBeforeReboot = dailyStepRecord.totalSteps,
+                    stepsBeforeReboot = dailyStepRecord.totalSteps + currentSteps,
                     caloriesBurned = calculateCaloriesFromSteps(
                         (dailyStepRecord.totalSteps + currentSteps),
                         user,
@@ -60,6 +61,21 @@ class StepCounterWorker @AssistedInject constructor(
                 )
 
                 prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
+            } else if (today != lastDate) {
+                newDailyStepRecord = DailyStepRecord(
+                    totalSteps = dailyStepRecord.totalSteps,
+                    initialSteps = currentSteps,
+                    recordDate = today,
+                    stepsBeforeReboot = dailyStepRecord.totalSteps,
+                    caloriesBurned = calculateCaloriesFromSteps(
+                        (dailyStepRecord.totalSteps),
+                        user,
+                    ),
+                    totalDistance = calculateDistanceFromSteps(
+                        (dailyStepRecord.totalSteps),
+                        user,
+                    ),
+                )
             } else {
                 // if current day and no reboot
                 newDailyStepRecord = DailyStepRecord(
@@ -77,6 +93,8 @@ class StepCounterWorker @AssistedInject constructor(
                     ),
                 )
             }
+
+            prefs.edit().putString("lastDate", today).apply() // saving last update day
 
             repository.updateSteps(newDailyStepRecord)
 

@@ -11,18 +11,20 @@ class ProfileRepository @Inject constructor(
     suspend fun submitProfile(
         uid: String,
         name: String,
-        age: Int,
+        dateOfBirth: String,
         gender: String,
         weight: Int,
         height: Int,
+        fitnessLevel: String,
     ): Boolean {
         try {
             val updatedData = hashMapOf<String, Any>(
                 "name" to name,
-                "age" to age,
+                "dateOfBirth" to dateOfBirth,
                 "gender" to gender,
                 "weight" to weight,
                 "height" to height,
+                "fitnessLevel" to fitnessLevel
             )
 
             val userDocRef = db.collection("users").document(uid)

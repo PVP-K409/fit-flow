@@ -12,18 +12,20 @@ class ProfileViewModel @Inject constructor(
     suspend fun submitProfile(
         uid: String,
         name: String,
-        age: Int,
+        dateOfBirth: String,
         gender: String,
         weight: Int,
         height: Int,
+        fitnessLevel: String,
     ): Boolean {
         profileRepository.submitProfile(
             uid,
             name,
-            age,
+            dateOfBirth,
             gender,
             weight,
             height,
+            fitnessLevel,
         )
         return profileRepository.success
     }

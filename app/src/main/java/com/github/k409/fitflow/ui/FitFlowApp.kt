@@ -30,18 +30,13 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -94,12 +89,12 @@ fun FitFlowApp(
         bottomBar = {
             FitFlowBottomBar(
                 navController = navController,
-                currentDestination = currentDestination,
+                currentScreen = currentScreen,
                 visible = !(
-                    navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                        currentScreen,
-                    )
-                    ) && bottomBarState.value,
+                        navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                            currentScreen,
+                        )
+                        ) && bottomBarState.value,
                 containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
             )
         },
@@ -206,7 +201,7 @@ fun FitFlowTopBar(
 @Composable
 fun FitFlowBottomBar(
     navController: NavController,
-    currentDestination: NavDestination?,
+    currentScreen: NavRoutes,
     visible: Boolean,
     containerColor: Color = MaterialTheme.colorScheme.surface,
     style: BottomBarStyle = BottomBarStyle.Animated,
@@ -224,13 +219,14 @@ fun FitFlowBottomBar(
     if (style == BottomBarStyle.Animated) {
         AnimatedBottomBar(
             visible = visible,
+            currentScreen = currentScreen,
             onNavigate = onNavigate,
         )
     } else if (style == BottomBarStyle.Material) {
         MaterialNavigationBar(
             visible = visible,
             containerColor = containerColor,
-            currentDestination = currentDestination,
+            currentScreen = currentScreen,
             onNavigate = onNavigate,
         )
     }
@@ -240,7 +236,7 @@ fun FitFlowBottomBar(
 private fun MaterialNavigationBar(
     visible: Boolean,
     containerColor: Color,
-    currentDestination: NavDestination?,
+    currentScreen: NavRoutes,
     onNavigate: (String) -> Unit,
 ) {
     if (visible) {
@@ -258,7 +254,7 @@ private fun MaterialNavigationBar(
                             contentDescription = null,
                         )
                     },
-                    selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                    selected = currentScreen.route == screen.route,
                     onClick = {
                         onNavigate(screen.route)
                     },
@@ -271,35 +267,28 @@ private fun MaterialNavigationBar(
 @Composable
 private fun AnimatedBottomBar(
     visible: Boolean,
+    currentScreen: NavRoutes,
     onNavigate: (String) -> Unit,
 ) {
-    var selectedIndex by remember { mutableIntStateOf(0) }
-    val onBottomBarItemSelected: (Int) -> Unit = {
-        selectedIndex = it
-
-        val route = NavRoutes.bottomNavBarItems[selectedIndex].route
-        onNavigate(route)
-    }
-
     if (visible) {
         AnimatedNavigationBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .windowInsetsPadding(BottomAppBarDefaults.windowInsets)
                 .height(64.dp),
-            selectedIndex = selectedIndex,
+            selectedIndex = NavRoutes.bottomNavBarItems.indexOf(currentScreen),
             barColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp),
             ballColor = MaterialTheme.colorScheme.primary,
             ballAnimation = Teleport(tween(300)),
         ) {
-            NavRoutes.bottomNavBarItems.forEachIndexed { index, item ->
+            NavRoutes.bottomNavBarItems.forEach { route ->
                 DropletButton(
                     modifier = Modifier.fillMaxSize(),
                     size = 26.dp,
                     dropletColor = MaterialTheme.colorScheme.primary,
-                    isSelected = selectedIndex == index,
-                    onClick = { onBottomBarItemSelected(index) },
-                    icon = item.iconRes,
+                    isSelected = currentScreen.route == route.route,
+                    onClick = { onNavigate(route.route) },
+                    icon = route.iconRes,
                 )
             }
         }

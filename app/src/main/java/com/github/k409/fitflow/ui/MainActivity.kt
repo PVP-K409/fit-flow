@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val sharedUiState by mainActivityViewModel.sharedUiState.collectAsStateWithLifecycle()
 
-            FitFlowTheme(dynamicColor = false) {
+            FitFlowTheme {
                 when (sharedUiState) {
                     is SharedUiState.Loading -> {
                         FitFlowCircularProgressIndicator()
