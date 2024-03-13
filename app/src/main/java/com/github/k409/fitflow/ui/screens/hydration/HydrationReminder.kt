@@ -21,7 +21,7 @@ class HydrationReminder : BroadcastReceiver() {
 
     override fun onReceive(
         context: Context?,
-        intent: Intent?
+        intent: Intent?,
     ) {
         context?.let {
             showWaterNotification(context)

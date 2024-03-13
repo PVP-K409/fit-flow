@@ -60,7 +60,7 @@ fun WaterLoggingScreen(
         ) {
             WaterIndicator(
                 totalWaterAmount = uiState.dailyGoal,
-                usedWaterAmount = uiState.today
+                usedWaterAmount = uiState.today,
             )
 
             Box(
@@ -84,14 +84,14 @@ fun WaterLoggingScreen(
                     modifier = Modifier.align(Alignment.CenterEnd),
                     onClick = {
                         editCupSizeDialogState.value = true
-                    }
+                    },
                 ) {
                     Icon(
                         modifier = Modifier
                             .size(18.dp)
                             .alpha(0.5f),
                         imageVector = Icons.Outlined.ModeEditOutline,
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
             }
@@ -149,7 +149,7 @@ fun EditCupSizeDialog(
                 state = numberPickerState,
                 indexStart = items.indexOf(currentCupSize).coerceAtLeast(0),
                 showDivider = false,
-                textStyle = MaterialTheme.typography.headlineLarge
+                textStyle = MaterialTheme.typography.headlineLarge,
             )
         }
     }

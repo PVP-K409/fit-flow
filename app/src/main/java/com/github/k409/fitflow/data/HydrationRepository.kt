@@ -42,9 +42,9 @@ class HydrationRepository @Inject constructor(
             .set(
                 mapOf(
                     WATER_INTAKE_FIELD to FieldValue.increment(waterIntake.toLong()),
-                    DATE_FIELD to todayDateString
+                    DATE_FIELD to todayDateString,
                 ),
-                SetOptions.merge()
+                SetOptions.merge(),
             )
             .await()
     }
@@ -86,15 +86,15 @@ class HydrationRepository @Inject constructor(
             .collection(HYDRATION_COLLECTION)
             .orderBy(
                 DATE_FIELD,
-                Query.Direction.ASCENDING
+                Query.Direction.ASCENDING,
             )
             .whereGreaterThanOrEqualTo(
                 DATE_FIELD,
-                periodStart.toString()
+                periodStart.toString(),
             )
             .whereLessThanOrEqualTo(
                 DATE_FIELD,
-                periodEnd.toString()
+                periodEnd.toString(),
             )
             .snapshots()
             .map {

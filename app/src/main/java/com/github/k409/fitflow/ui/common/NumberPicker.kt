@@ -59,7 +59,7 @@ fun <T : Number> NumberPicker(
     },
     textStyle: TextStyle = LocalTextStyle.current,
     state: PickerState<T>,
-    showDivider: Boolean = true
+    showDivider: Boolean = true,
 ) {
     Picker(
         modifier = modifier,
@@ -70,7 +70,7 @@ fun <T : Number> NumberPicker(
         textModifier = Modifier,
         textStyle = textStyle,
         state = state,
-        showDivider = showDivider
+        showDivider = showDivider,
     )
 }
 
@@ -87,7 +87,7 @@ fun <T> Picker(
     textStyle: TextStyle = LocalTextStyle.current,
     visibleItemsCount: Int = 3,
     showDivider: Boolean = true,
-    infinityScroll: Boolean = false
+    infinityScroll: Boolean = false,
 ) {
     val itemsInMiddle = visibleItemsCount / 2
     val scrollCount = if (infinityScroll) Int.MAX_VALUE else items.size
@@ -102,7 +102,7 @@ fun <T> Picker(
         Brush.verticalGradient(
             0f to Color.Transparent,
             0.5f to Color.Black,
-            1f to Color.Transparent
+            1f to Color.Transparent,
         )
     }
 
@@ -127,7 +127,7 @@ fun <T> Picker(
                 .fillMaxWidth()
                 .height(itemHeightDp * visibleItemsCount)
                 .fadingEdge(brush = fadingEdgeGradient),
-            state = stateList
+            state = stateList,
         ) {
             items(scrollCount) { index ->
                 Text(
@@ -139,12 +139,11 @@ fun <T> Picker(
                             when {
                                 !infinityScroll && (isFirstItem(index) || isLastItem(index)) -> 0f
                                 else -> 1f
-                            }
-                        )
-                    ,
+                            },
+                        ),
                     overflow = TextOverflow.Ellipsis,
                     style = textStyle,
-                    text = label(getItem(index))
+                    text = label(getItem(index)),
                 )
             }
         }
@@ -152,12 +151,12 @@ fun <T> Picker(
         if (showDivider) {
             HorizontalDivider(
                 color = dividerColor,
-                modifier = Modifier.offset(y = itemHeightDp * itemsInMiddle)
+                modifier = Modifier.offset(y = itemHeightDp * itemsInMiddle),
             )
 
             HorizontalDivider(
                 color = dividerColor,
-                modifier = Modifier.offset(y = itemHeightDp * (itemsInMiddle + 1))
+                modifier = Modifier.offset(y = itemHeightDp * (itemsInMiddle + 1)),
             )
         }
     }
@@ -172,6 +171,6 @@ fun Modifier.fadingEdge(brush: Brush) = this
         drawContent()
         drawRect(
             brush = brush,
-            blendMode = BlendMode.DstIn
+            blendMode = BlendMode.DstIn,
         )
     }

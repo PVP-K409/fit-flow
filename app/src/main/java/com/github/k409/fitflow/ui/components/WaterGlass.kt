@@ -187,7 +187,7 @@ fun WaterBottlePreview() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
 
-            ) {
+        ) {
             WaterIndicator(
                 totalWaterAmount = totalWaterAmount,
                 usedWaterAmount = usedWaterAmount,
