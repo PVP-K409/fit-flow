@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.screens.waterLogging
+package com.github.k409.fitflow.ui.screens.hydration
 
 import android.app.AlarmManager
 import android.app.Notification
@@ -8,11 +8,10 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import com.github.k409.fitflow.R
 import java.util.Calendar
 
-class WaterReminder : BroadcastReceiver() {
+class HydrationReminder : BroadcastReceiver() {
 
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "WaterReminderChannel"
@@ -20,7 +19,10 @@ class WaterReminder : BroadcastReceiver() {
         private var lastNotificationTime = 0L
     }
 
-    override fun onReceive(context: Context?, intent: Intent?) {
+    override fun onReceive(
+        context: Context?,
+        intent: Intent?
+    ) {
         context?.let {
             showWaterNotification(context)
         }
@@ -28,7 +30,7 @@ class WaterReminder : BroadcastReceiver() {
 
     fun scheduleWaterReminder(context: Context) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, WaterReminder::class.java)
+        val intent = Intent(context, HydrationReminder::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             NOTIFICATION_ID,
@@ -38,7 +40,7 @@ class WaterReminder : BroadcastReceiver() {
 
         val calendar: Calendar = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
-            add(Calendar.HOUR, 3) // Set the initial alarm 1 minute later
+            add(Calendar.HOUR, 3)
         }
 
         alarmManager.setRepeating(
@@ -57,26 +59,23 @@ class WaterReminder : BroadcastReceiver() {
             val notificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel = NotificationChannel(
-                    NOTIFICATION_CHANNEL_ID,
-                    "Drink some water",
-                    NotificationManager.IMPORTANCE_DEFAULT,
-                ).apply {
-                    description = "Reminder to stay hydrated"
-                }
-                notificationManager.createNotificationChannel(channel)
+            val channel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID,
+                context.getString(R.string.hydration_notification_channel_name),
+                NotificationManager.IMPORTANCE_DEFAULT,
+            ).apply {
+                description = context.getString(R.string.hydration_notification_channel_description)
             }
+            notificationManager.createNotificationChannel(channel)
 
             val builder = Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
-                .setContentTitle("Don't forget to stay hydrated!")
-                .setContentText("It's been 3 hour since you last drank water, don't forget to stay hydrated")
+                .setContentTitle(context.getString(R.string.hydration_notification_title))
+                .setContentText(context.getString(R.string.hydration_notification_text))
                 .setSmallIcon(R.drawable.primary_fish)
                 .setAutoCancel(true)
 
             notificationManager.notify(NOTIFICATION_ID, builder.build())
 
-            // Update lastNotificationTime after showing the notification
             lastNotificationTime = System.currentTimeMillis()
         }
     }

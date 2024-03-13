@@ -40,7 +40,6 @@ fun WaterIndicator(
     unit: String = "ml",
 ) {
     Column(
-        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -73,16 +72,22 @@ fun WaterGlass(
     waterWavesColor: Color = Color(0xFF52A1FF),
     bottleColor: Color = Color(0xFF2D2C30),
 ) {
+    val targetWaterPercentage = if (totalWaterAmount != 0) {
+        (usedWaterAmount.toFloat() / totalWaterAmount.toFloat()).coerceIn(0.05f, 1f)
+    } else {
+        0.05f
+    }
+
     val waterPercentage = animateFloatAsState(
-        targetValue = (usedWaterAmount.toFloat() / totalWaterAmount.toFloat()),
+        targetValue = targetWaterPercentage,
         label = "Water level animation",
         animationSpec = tween(durationMillis = 1000),
     ).value
 
     Box(
         modifier = modifier
-            .width(200.dp)
-            .height(200.dp),
+            .width(150.dp)
+            .height(150.dp),
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val width = size.width
@@ -182,7 +187,7 @@ fun WaterBottlePreview() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
 
-        ) {
+            ) {
             WaterIndicator(
                 totalWaterAmount = totalWaterAmount,
                 usedWaterAmount = usedWaterAmount,

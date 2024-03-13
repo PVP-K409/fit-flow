@@ -47,7 +47,7 @@ class UserRepository @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val getCurrentUser: Flow<User> = getAuthState().flatMapLatest { isUserLoggedOut ->
+    val currentUser: Flow<User> = getAuthState().flatMapLatest { isUserLoggedOut ->
         if (isUserLoggedOut) {
             callbackFlow {
                 trySend(User())

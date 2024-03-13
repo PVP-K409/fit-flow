@@ -8,8 +8,7 @@ import androidx.activity.result.ActivityResult
 import androidx.lifecycle.ViewModel
 import com.github.k409.fitflow.data.AuthRepository
 import com.github.k409.fitflow.data.SignInResult
-import com.github.k409.fitflow.ui.screens.waterLogging.WaterReminder
-import com.github.k409.fitflow.ui.screens.waterLogging.createFirebaseDoc
+import com.github.k409.fitflow.ui.screens.hydration.HydrationReminder
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -48,8 +47,7 @@ class LoginViewModel @Inject constructor(
             Toast.makeText(context, "Welcome, ${signInResult.user.name}", Toast.LENGTH_SHORT)
                 .show()
 
-            createFirebaseDoc(signInResult.user.uid)
-            WaterReminder().scheduleWaterReminder(context)
+            HydrationReminder().scheduleWaterReminder(context)
 
             return
         }

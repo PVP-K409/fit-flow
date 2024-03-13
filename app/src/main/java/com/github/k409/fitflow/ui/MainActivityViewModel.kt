@@ -16,7 +16,7 @@ class MainActivityViewModel @Inject constructor(
     userRepository: UserRepository,
 ) : ViewModel() {
 
-    val sharedUiState: StateFlow<SharedUiState> = userRepository.getCurrentUser.map { currentUser ->
+    val sharedUiState: StateFlow<SharedUiState> = userRepository.currentUser.map { currentUser ->
         SharedUiState.Success(
             user = currentUser,
         )

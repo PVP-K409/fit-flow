@@ -33,7 +33,7 @@
 
         <!-- Broadcast Receiver -->
         <receiver
-            android:name=".ui.screens.waterLogging.WaterReminder"
+            android:name=".ui.screens.hydration.HydrationReminder"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

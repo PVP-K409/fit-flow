@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.github.k409.fitflow.R
 
 @Composable
-fun WaterIntake(
+fun WaterIntakeLog(
     milliliters: Long?,
     thisWeek: Double?,
     thisMonth: Double?,
@@ -27,7 +27,7 @@ fun WaterIntake(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp),
+            .padding(top = 32.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         Column(

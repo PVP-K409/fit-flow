@@ -26,12 +26,12 @@ sealed class NavRoutes(
             Activity,
             Goals,
             Marketplace,
-            WaterLogging,
+            Hydration,
             Login,
             ProfileCreation,
             Settings,
         )
-        val bottomNavBarItems = listOf(Home, Activity, WaterLogging, Goals, Marketplace)
+        val bottomNavBarItems = listOf(Home, Activity, Hydration, Goals, Marketplace)
     }
 
     data object Default : NavRoutes("default", R.string.app_name)
@@ -51,8 +51,8 @@ sealed class NavRoutes(
     data object Marketplace :
         NavRoutes("marketplace", R.string.marketplace, Icons.Outlined.Store, R.drawable.store_24px)
 
-    data object WaterLogging :
-        NavRoutes("waterLogging", R.string.waterLogging, Icons.Outlined.WaterDrop, R.drawable.water_drop_24px)
+    data object Hydration :
+        NavRoutes("hydration", R.string.waterLogging, Icons.Outlined.WaterDrop, R.drawable.water_drop_24px)
 
     data object ProfileCreation :
         NavRoutes("profileCreation", R.string.profile_creation, Icons.Outlined.PersonOutline)

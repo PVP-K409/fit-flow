@@ -13,7 +13,7 @@ import com.github.k409.fitflow.ui.screens.login.LoginScreen
 import com.github.k409.fitflow.ui.screens.market.MarketScreen
 import com.github.k409.fitflow.ui.screens.profile.ProfileCreationScreen
 import com.github.k409.fitflow.ui.screens.settings.SettingsScreen
-import com.github.k409.fitflow.ui.screens.waterLogging.WaterLoggingScreen
+import com.github.k409.fitflow.ui.screens.hydration.WaterLoggingScreen
 
 @Composable
 fun FitFlowNavGraph(
@@ -39,7 +39,7 @@ fun FitFlowNavGraph(
             MarketScreen()
         }
 
-        composable(NavRoutes.WaterLogging.route) {
+        composable(NavRoutes.Hydration.route) {
             WaterLoggingScreen()
         }
 
