@@ -102,6 +102,7 @@ fun WaterLoggingScreen(
 
         if (editCupSizeDialogState.value) {
             val cupValues = Array(300) { (it * 10 + 10).toString() }
+
             NumberPickerDialog(
                 onDismissRequest = { editCupSizeDialogState.value = false },
                 onConfirmation = {
@@ -118,45 +119,3 @@ fun WaterLoggingScreen(
         }
     }
 }
-
-// @Composable
-// fun EditCupSizeDialog(
-//    onDismiss: () -> Unit,
-//    onSaveClick: (Int) -> Unit,
-//    currentCupSize: Int,
-// ) {
-//    val numberPickerState = rememberPickerState(initialValue = currentCupSize)
-//
-//    val minCupSize = 10
-//    val stepSize = 10
-//    val maxCupSize = 3000
-//
-//    val items = remember {
-//        ((minCupSize - stepSize)..(maxCupSize + stepSize) step stepSize).toList()
-//    }
-//
-//    Dialog(
-//        title = stringResource(R.string.cup_size_ml),
-//        onSaveClick = {
-//            onSaveClick(numberPickerState.value)
-//            onDismiss()
-//        },
-//        onDismiss = onDismiss,
-//    ) {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp),
-//            verticalArrangement = Arrangement.Center,
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//        ) {
-//            NumberPicker(
-//                items = items,
-//                state = numberPickerState,
-//                indexStart = items.indexOf(currentCupSize).coerceAtLeast(0),
-//                showDivider = false,
-//                textStyle = MaterialTheme.typography.headlineLarge,
-//            )
-//        }
-//    }
-// }
