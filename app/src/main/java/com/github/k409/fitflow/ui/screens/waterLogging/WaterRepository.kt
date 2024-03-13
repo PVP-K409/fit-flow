@@ -26,28 +26,26 @@ private const val TAG_Retrieve_Amount = "RetrieveAmount"
 private const val TAG_Doc_Creation = "DocCreation"
 private const val TAG_Collection_Creation = "CollectionCreation"
 private const val TAG_Water_Intake = "WaterIntake"
-private const val TAG_Week_Intake= "WeekIntake"
-private const val TAG_Month_Intake= "MonthIntake"
+private const val TAG_Week_Intake = "WeekIntake"
+private const val TAG_Month_Intake = "MonthIntake"
 
 @Composable
 fun getWaterIntakeGoal(): Int {
-
     val currentUser = FirebaseAuth.getInstance().currentUser
     val usersRef = FirebaseFirestore.getInstance().collection(USERS_COLLECTION)
     var userWeight by remember { mutableIntStateOf(0) }
 
-
     if (currentUser != null) {
         val uid = currentUser.uid
-        usersRef.document(uid).get().addOnCompleteListener{ task ->
-            if(task.isSuccessful) {
+        usersRef.document(uid).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
                 val document = task.result
                 if (document.exists()) {
                     val weight = document.getLong(USER_WEIGHT)
                     if (weight != null) {
                         userWeight = weight.toInt()
                     }
-                } else{
+                } else {
                     Log.e(TAG_Goal, "The document doesn't exist.")
                 }
             } else {
@@ -88,7 +86,6 @@ fun createFirebaseDoc(uid: String) {
 }
 
 fun createHydrationDocument() {
-
     val currentUser = FirebaseAuth.getInstance().currentUser
     val uid = currentUser!!.uid
 
@@ -163,7 +160,6 @@ fun addWaterIntake(waterIntake: Int) {
             Log.e(TAG_Water_Intake, "Error updating water intake for $todayDateString and UID: $uid", e)
         }
 }
-
 
 suspend fun retrieveTotalWaterIntake(): Int {
     val currentUser = FirebaseAuth.getInstance().currentUser

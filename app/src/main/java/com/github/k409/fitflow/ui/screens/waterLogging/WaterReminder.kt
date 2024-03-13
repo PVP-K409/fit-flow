@@ -33,7 +33,7 @@ class WaterReminder : BroadcastReceiver() {
             context,
             NOTIFICATION_ID,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
 
         val calendar: Calendar = Calendar.getInstance().apply {
@@ -45,7 +45,7 @@ class WaterReminder : BroadcastReceiver() {
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
             AlarmManager.INTERVAL_HOUR * 3,
-            pendingIntent
+            pendingIntent,
         )
     }
 
@@ -61,7 +61,7 @@ class WaterReminder : BroadcastReceiver() {
                 val channel = NotificationChannel(
                     NOTIFICATION_CHANNEL_ID,
                     "Drink some water",
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_DEFAULT,
                 ).apply {
                     description = "Reminder to stay hydrated"
                 }

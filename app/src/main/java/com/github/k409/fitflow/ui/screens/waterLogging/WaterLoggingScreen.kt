@@ -13,15 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -29,22 +26,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.k409.fitflow.ui.components.hydration.WaterIntake
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 fun saveCustomAmountLocally(key: String, value: Int, context: Context) {
-
     // Access the default SharedPreferences file
     val sharedPref = context.getSharedPreferences("my_app_prefs", Context.MODE_PRIVATE)
 
-    with (sharedPref.edit()) {
+    with(sharedPref.edit()) {
         putInt(key, value)
         apply()
     }
@@ -58,7 +57,6 @@ fun getSavedAmount(key: String, context: Context): Int {
 
 @Composable
 fun WaterLoggingScreen() {
-
     val context = LocalContext.current
     val dailyGoal = getWaterIntakeGoal()
     val scope = rememberCoroutineScope()
@@ -79,7 +77,6 @@ fun WaterLoggingScreen() {
     var customAmountValue by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-
         button1Value = getSavedAmount(key1, context)
         button2Value = getSavedAmount(key2, context)
         button3Value = getSavedAmount(key3, context)
@@ -99,22 +96,21 @@ fun WaterLoggingScreen() {
             .fillMaxSize()
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
         Text(
             text = "Water intake logging",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CircularProgressIndicator(
                 progress = { totalWaterIntake.toFloat() / dailyGoal.toFloat() },
@@ -124,7 +120,7 @@ fun WaterLoggingScreen() {
                     .padding(16.dp),
                 trackColor = Color(android.graphics.Color.parseColor("#AFE6F0")),
                 strokeWidth = 20.dp,
-                color = Color(android.graphics.Color.parseColor("#03768A"))
+                color = Color(android.graphics.Color.parseColor("#03768A")),
             )
 
             Text(
@@ -132,7 +128,7 @@ fun WaterLoggingScreen() {
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = 8.dp),
             )
         }
 
@@ -148,12 +144,12 @@ fun WaterLoggingScreen() {
                 }
                 WaterReminder().scheduleWaterReminder(context)
             },
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp),
         ) {
             Text("Drink 250ml")
         }
 
-//Custom Buttons=================================================================================
+// Custom Buttons=================================================================================
 
         TextField(
             value = customAmountValue,
@@ -167,22 +163,24 @@ fun WaterLoggingScreen() {
                     modifier = Modifier
                         .clickable {
                             customAmountValue = ""
-                        }
+                        },
                 )
             },
             label = { Text("Custom Amount (ml)") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp)
+                .padding(bottom = 16.dp),
         )
 
         Button(
             onClick = {
-                if(customAmountValue.isNotBlank()){
-                    saveCustomAmountLocally(key = key1,
+                if (customAmountValue.isNotBlank()) {
+                    saveCustomAmountLocally(
+                        key = key1,
                         value = customAmountValue.toInt(),
-                        context = context)
+                        context = context,
+                    )
 
                     button1Value = getSavedAmount(key1, context)
                 } else {
@@ -196,21 +194,23 @@ fun WaterLoggingScreen() {
                     }
                     WaterReminder().scheduleWaterReminder(context)
                 }
-            }
+            },
         ) {
-            if(button1Value == 0){
+            if (button1Value == 0) {
                 Text("Not set")
-            }else{
+            } else {
                 Text("Drink $button1Value ml")
             }
         }
 
         Button(
             onClick = {
-                if(customAmountValue.isNotBlank()){
-                    saveCustomAmountLocally(key = key2,
+                if (customAmountValue.isNotBlank()) {
+                    saveCustomAmountLocally(
+                        key = key2,
                         value = customAmountValue.toInt(),
-                        context = context)
+                        context = context,
+                    )
 
                     button2Value = getSavedAmount(key2, context)
                 } else {
@@ -224,21 +224,23 @@ fun WaterLoggingScreen() {
                     }
                     WaterReminder().scheduleWaterReminder(context)
                 }
-            }
+            },
         ) {
-            if(button2Value == 0){
+            if (button2Value == 0) {
                 Text("Not set")
-            }else{
+            } else {
                 Text("Drink $button2Value ml")
             }
         }
 
         Button(
             onClick = {
-                if(customAmountValue.isNotBlank()){
-                    saveCustomAmountLocally(key = key3,
+                if (customAmountValue.isNotBlank()) {
+                    saveCustomAmountLocally(
+                        key = key3,
                         value = customAmountValue.toInt(),
-                        context = context)
+                        context = context,
+                    )
 
                     button3Value = getSavedAmount(key3, context)
                 } else {
@@ -252,18 +254,20 @@ fun WaterLoggingScreen() {
                     }
                     WaterReminder().scheduleWaterReminder(context)
                 }
-            }
+            },
         ) {
-            if(button3Value == 0){
+            if (button3Value == 0) {
                 Text("Not set")
-            }else{
+            } else {
                 Text("Drink $button3Value ml")
             }
         }
-//===============================================================================================
+// ===============================================================================================
 
-        WaterIntake(milliliters = yesterdaysTotalWaterIntake.toLong(),
+        WaterIntake(
+            milliliters = yesterdaysTotalWaterIntake.toLong(),
             thisWeek = thisWeeksTotalWaterIntake.toDouble(),
-            thisMonth = thisMonthsTotalWaterIntake.toDouble())
+            thisMonth = thisMonthsTotalWaterIntake.toDouble(),
+        )
     }
 }

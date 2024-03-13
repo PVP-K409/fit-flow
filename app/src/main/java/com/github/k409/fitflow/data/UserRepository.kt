@@ -143,11 +143,9 @@ class UserRepository @Inject constructor(
             }
 
             userDocRef.update(USER_STEPS_ARRAY, updatedStepsList).await()
-
         } catch (e: Exception) {
             Log.e("User Repository", "Error updating steps", e)
         }
-
     }
 
     suspend fun loadTodaySteps(day: String): DailyStepRecord? {

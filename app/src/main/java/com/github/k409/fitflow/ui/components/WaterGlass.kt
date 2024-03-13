@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.ui.common.AnimatedCounter
 
-
 @Composable
 fun WaterIndicator(
     modifier: Modifier = Modifier,
@@ -48,7 +47,7 @@ fun WaterIndicator(
         WaterGlass(
             modifier = modifier,
             totalWaterAmount = totalWaterAmount,
-            usedWaterAmount = usedWaterAmount
+            usedWaterAmount = usedWaterAmount,
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -60,7 +59,7 @@ fun WaterIndicator(
 
         Text(
             text = "/$totalWaterAmount $unit",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }
@@ -77,15 +76,14 @@ fun WaterGlass(
     val waterPercentage = animateFloatAsState(
         targetValue = (usedWaterAmount.toFloat() / totalWaterAmount.toFloat()),
         label = "Water level animation",
-        animationSpec = tween(durationMillis = 1000)
+        animationSpec = tween(durationMillis = 1000),
     ).value
 
     Box(
         modifier = modifier
             .width(200.dp)
-            .height(200.dp)
+            .height(200.dp),
     ) {
-
         Canvas(modifier = Modifier.fillMaxSize()) {
             val width = size.width
             val height = size.height
@@ -108,11 +106,11 @@ fun WaterGlass(
                         left = width * 0.6f,
                         top = height * 0.8f,
                         right = width * 0.85f,
-                        bottom = height
+                        bottom = height,
                     ),
                     startAngleDegrees = 0f,
                     sweepAngleDegrees = 90f,
-                    forceMoveTo = false
+                    forceMoveTo = false,
                 )
 
                 // bottom left corner arc
@@ -121,38 +119,43 @@ fun WaterGlass(
                         left = width * 0.15f,
                         top = height * 0.8f,
                         right = width * 0.4f,
-                        bottom = height
+                        bottom = height,
                     ),
                     startAngleDegrees = 90f,
                     sweepAngleDegrees = 90f,
-                    forceMoveTo = false
+                    forceMoveTo = false,
                 )
-
 
                 close()
             }
 
             clipPath(
-                path = bodyPath
+                path = bodyPath,
             ) {
                 drawRect(
-                    color = bottleColor, size = size, topLeft = Offset(0f, 0f)
+                    color = bottleColor,
+                    size = size,
+                    topLeft = Offset(0f, 0f),
                 )
 
                 val waterWavesYPosition = (1 - waterPercentage) * (size.height)
 
                 val wavesPath = Path().apply {
                     moveTo(
-                        x = 0f, y = waterWavesYPosition
+                        x = 0f,
+                        y = waterWavesYPosition,
                     )
                     lineTo(
-                        x = size.width, y = waterWavesYPosition
+                        x = size.width,
+                        y = waterWavesYPosition,
                     )
                     lineTo(
-                        x = size.width, y = size.height
+                        x = size.width,
+                        y = size.height,
                     )
                     lineTo(
-                        x = 0f, y = size.height
+                        x = 0f,
+                        y = size.height,
                     )
                     close()
                 }
@@ -164,7 +167,6 @@ fun WaterGlass(
         }
     }
 }
-
 
 @Preview
 @Composable
@@ -180,10 +182,10 @@ fun WaterBottlePreview() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
 
-            ) {
+        ) {
             WaterIndicator(
                 totalWaterAmount = totalWaterAmount,
-                usedWaterAmount = usedWaterAmount
+                usedWaterAmount = usedWaterAmount,
             )
 
             Button(modifier = Modifier.padding(top = 32.dp), onClick = {
