@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.common
 
-import android.util.Log
 import android.widget.NumberPicker
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -129,6 +128,7 @@ fun <T> Dialog(
         }
     }
 }
+
 @Composable
 fun NumberPickerDialog(
     onDismissRequest: () -> Unit,

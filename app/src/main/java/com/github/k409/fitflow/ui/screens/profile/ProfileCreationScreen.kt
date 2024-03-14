@@ -43,7 +43,6 @@ import androidx.navigation.NavController
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.ui.common.NumberPickerDialog
-import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -70,9 +69,11 @@ fun ProfileCreationScreen(
     var fitnessLevel by rememberSaveable(currentUser.fitnessLevel) { mutableStateOf(currentUser.fitnessLevel) }
 
     val genders = arrayOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
-    val fitnessLevels = arrayOf(stringResource(R.string.beginner),
-        stringResource(R.string.intermediate), stringResource(R.string.advanced),
-        stringResource(R.string.professional)
+    val fitnessLevels = arrayOf(
+        stringResource(R.string.beginner),
+        stringResource(R.string.intermediate),
+        stringResource(R.string.advanced),
+        stringResource(R.string.professional),
     )
 
     // State variables for error messages
@@ -87,7 +88,7 @@ fun ProfileCreationScreen(
         nameError = if (name.isEmpty()) stringResource(R.string.required_field) else null
         // Return true if all required field are filled
         return name.isNotEmpty() && dateOfBirth.isNotEmpty() && gender.isNotEmpty() && weight != 0 &&
-                height != 0
+            height != 0
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -152,7 +153,7 @@ fun ProfileCreationScreen(
                     displayedValues = displayedValues,
                 )
             } else {
-                val datePickerState = rememberDatePickerState(yearRange = LocalDate.now().year-120..<LocalDate.now().year)
+                val datePickerState = rememberDatePickerState(yearRange = LocalDate.now().year - 120..<LocalDate.now().year)
                 DatePickerDialog(
                     onDismissRequest = {
                         isExpanded = false
@@ -177,11 +178,11 @@ fun ProfileCreationScreen(
                         TextButton(
                             onClick = {
                                 isExpanded = false
-                            }
+                            },
                         ) {
                             Text("Cancel")
                         }
-                    }
+                    },
                 ) {
                     DatePicker(state = datePickerState)
                 }
@@ -320,7 +321,7 @@ fun ProfileCreationScreen(
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
-        //HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.tertiary)
+        // HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.tertiary)
 
         FlowRow(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -349,7 +350,7 @@ fun ProfileCreationScreen(
                 modifier = Modifier
                     .align(Alignment.Bottom),
                 verticalArrangement = Arrangement.Center,
-                //horizontalAlignment = Alignment.End,
+                // horizontalAlignment = Alignment.End,
             ) {
                 var isClicked by remember { mutableStateOf(false) }
 
@@ -375,7 +376,7 @@ fun ProfileCreationScreen(
                 if (success == true) {
                     success = null
                     displayMessage(stringResource(R.string.profile_saved))
-                    navController.navigate(NavRoutes.Settings.route)
+                    navController.navigateUp()
                 } else if (success == false) {
                     displayMessage(stringResource(R.string.something_went_wrong_try_again))
                     success = null
@@ -383,7 +384,5 @@ fun ProfileCreationScreen(
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
-
-
     }
 }

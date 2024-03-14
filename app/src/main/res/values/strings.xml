@@ -4,6 +4,7 @@
     <string name="activity">Activity</string>
     <string name="goals">Goals</string>
     <string name="marketplace">Market</string>
+    <string name="waterLogging">Water</string>
     <string name="distance">Distance</string>
     <string name="calories">Calories</string>
     <string name="steps">Steps</string>
@@ -31,6 +32,9 @@
     <string name="select_your_weight">Select your weight</string>
     <string name="select_your_height">Select your height</string>
     <string name="something_went_wrong_try_again">Something went wrong. Try again</string>
+    <string name="Yesterday">Yesterday</string>
+    <string name="Month">This Month</string>
+    <string name="Week">This Week</string>
     <string name="date_of_birth">Date of birth</string>
     <string name="fitness_level">Fitness level</string>
     <string name="select_your_fitness_level">Select your fitness level</string>
@@ -41,4 +45,10 @@
     <string name="steps_icon">Steps Icon</string>
     <string name="heat_icon">Heat</string>
     <string name="distance_icon">distance</string>
+    <string name="hydration_notification_channel_name">Hydration</string>
+    <string name="hydration_notification_channel_description">Reminder to stay hydrated</string>
+    <string name="hydration_notification_title">Don\'t forget to stay hydrated!</string>
+    <string name="hydration_notification_text">It\'s been 3 hour since you last drank water, don\'t forget to stay hydrated</string>
+    <string name="drink_ml">Drink %1$s ml</string>
+    <string name="cup_size_ml">Cup size (ml)</string>
 </resources>

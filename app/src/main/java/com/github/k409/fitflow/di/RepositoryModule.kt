@@ -2,6 +2,7 @@ package com.github.k409.fitflow.di
 
 import android.content.SharedPreferences
 import com.github.k409.fitflow.data.AuthRepository
+import com.github.k409.fitflow.data.HydrationRepository
 import com.github.k409.fitflow.data.ProfileRepository
 import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.features.stepcounter.StepCounter
@@ -43,5 +44,15 @@ object RepositoryModule {
         userRepository: UserRepository,
     ): AuthRepository {
         return AuthRepository(auth, userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWaterRepository(
+        userRepository: UserRepository,
+        db: FirebaseFirestore,
+        auth: FirebaseAuth,
+    ): HydrationRepository {
+        return HydrationRepository(userRepository, db, auth)
     }
 }

@@ -3,8 +3,8 @@
 package com.github.k409.fitflow.ui
 
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,16 +33,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.exyte.animatednavbar.AnimatedNavigationBar
 import com.exyte.animatednavbar.animation.balltrajectory.Teleport
 import com.exyte.animatednavbar.items.dropletbutton.DropletButton
+import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 
@@ -58,9 +64,10 @@ fun FitFlowApp(
 
     val currentScreen =
         NavRoutes.navRoutes.find { it.route == currentDestination?.route } ?: NavRoutes.Default
-
     val startDestination = if (user.uid.isEmpty()) {
         NavRoutes.Login.route
+    } else if (user.gender.isEmpty() || user.dateOfBirth.isEmpty()) {
+        NavRoutes.ProfileCreation.route
     } else {
         NavRoutes.Home.route
     }
@@ -84,6 +91,7 @@ fun FitFlowApp(
                 ),
                 navigateUp = { navController.navigateUp() },
                 navController = navController,
+                user = user,
             )
         },
         bottomBar = {
@@ -126,7 +134,7 @@ private fun UpdateTopAndBottomBarVisibility(
             topBarState.value = false
         }
 
-        NavRoutes.Settings -> {
+        NavRoutes.Settings, NavRoutes.ProfileCreation -> {
             bottomBarState.value = false
             topBarState.value = true
         }
@@ -152,6 +160,7 @@ fun FitFlowTopBar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     navController: NavController,
+    user: User,
 ) {
     if (topBarState) {
         Surface {
@@ -180,16 +189,32 @@ fun FitFlowTopBar(
                             restoreState = true
                         }
                     }) {
-                        Image(
-                            imageVector = Icons.Outlined.PersonOutline,
-                            contentDescription = "Profile settings",
+                        SubcomposeAsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(user.photoUrl)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            error = {
+                                Icon(
+                                    modifier = Modifier.padding(3.dp),
+                                    imageVector = Icons.Outlined.PersonOutline,
+                                    contentDescription = null,
+                                )
+                            },
                             modifier = Modifier
-                                .size(100.dp)
+                                .clip(CircleShape)
+                                .size(40.dp)
                                 .background(
                                     color = MaterialTheme.colorScheme.secondaryContainer,
                                     shape = CircleShape,
                                 )
-                                .padding(3.dp),
+                                .border(
+                                    width = 2.dp,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                                    shape = CircleShape,
+                                )
                         )
                     }
                 },
