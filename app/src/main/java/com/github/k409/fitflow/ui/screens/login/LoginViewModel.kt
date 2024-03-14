@@ -26,12 +26,6 @@ class LoginViewModel @Inject constructor(
         showSignInStateToast(context, signInResult)
     }
 
-    suspend fun signInWithGitHub(context: Context) {
-        val signInResult = authRepository.signInWithGitHub(context)
-
-        showSignInStateToast(context, signInResult)
-    }
-
     fun signInWithGoogle(
         signInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
         googleSignInClient: GoogleSignInClient,
