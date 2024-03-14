@@ -110,7 +110,7 @@ class ActivityViewModel @Inject constructor(
                 initialSteps = currentSteps,
                 recordDate = today,
                 stepsBeforeReboot = dailyStepRecord.totalSteps,
-                caloriesBurned = calories,
+                caloriesBurned = if (calories > dailyStepRecord.caloriesBurned!!) calories else dailyStepRecord.caloriesBurned,
                 totalDistance = distance,
             )
         } else {
