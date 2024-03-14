@@ -36,6 +36,7 @@ class AuthRepository @Inject constructor(
 
     suspend fun firebaseAuthWithGoogle(
         idToken: String,
+        context: Context,
     ): SignInResult {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         val authResult = auth.signInWithCredential(credential).await()
@@ -43,6 +44,10 @@ class AuthRepository @Inject constructor(
         if (authResult.additionalUserInfo?.isNewUser == true) {
             userRepository.createUser(authResult.user!!)
         }
+
+        val email: String = authResult.user!!.email!!
+
+        linkWithProvider(context, email)
 
         val user = authResult.user?.toUser()
 
@@ -77,6 +82,22 @@ class AuthRepository @Inject constructor(
         }
 
         return SignInResult(result.user?.toUser(), null)
+    }
+
+    private fun linkWithProvider(
+        context: Context,
+        email: String
+    ) {
+        val provider = OAuthProvider.newBuilder("github.com")
+        provider.addCustomParameter("login", email)
+
+        val firebaseUser = auth.currentUser!!
+        firebaseUser
+            .startActivityForLinkWithProvider(context as Activity, provider.build())
+            .addOnSuccessListener {
+            }
+            .addOnFailureListener {
+            }
     }
 
     suspend fun signOut() {

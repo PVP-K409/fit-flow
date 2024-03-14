@@ -21,7 +21,7 @@ class LoginViewModel @Inject constructor(
         context: Context,
         idToken: String,
     ) {
-        val signInResult = authRepository.firebaseAuthWithGoogle(idToken)
+        val signInResult = authRepository.firebaseAuthWithGoogle(idToken, context)
 
         showSignInStateToast(context, signInResult)
     }
