@@ -36,7 +36,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideCaloriesAndDistanceUtil(healthConnectService: HealthConnectService): CaloriesAndDistanceUtil{
+    fun provideCaloriesAndDistanceUtil(healthConnectService: HealthConnectService): CaloriesAndDistanceUtil {
         return CaloriesAndDistanceUtil(healthConnectService)
     }
 }
