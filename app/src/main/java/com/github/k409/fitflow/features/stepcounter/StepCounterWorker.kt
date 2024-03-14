@@ -11,6 +11,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.github.k409.fitflow.data.UserRepository
+import com.github.k409.fitflow.di.HealthConnect.HealthStatsManager
 import com.github.k409.fitflow.model.DailyStepRecord
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -26,7 +27,7 @@ class StepCounterWorker @AssistedInject constructor(
     private val stepCounter: StepCounter,
     private val prefs: SharedPreferences,
     private val client: HealthConnectClient,
-    private val caloriesAndDistanceUtil: CaloriesAndDistanceUtil,
+    private val healthStatsManager: HealthStatsManager,
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -49,8 +50,8 @@ class StepCounterWorker @AssistedInject constructor(
             var distance = 0.0
 
             if(granted){
-                calories = caloriesAndDistanceUtil.getCalories()
-                distance = caloriesAndDistanceUtil.getDistance()
+                calories = healthStatsManager.getCalories()
+                distance = healthStatsManager.getDistance()
             }
 
             if (dailyStepRecord == null) { // if new day

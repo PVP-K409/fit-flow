@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.health.connect.client.HealthConnectClient
 import com.github.k409.fitflow.di.services.HealthConnectService
-import com.github.k409.fitflow.features.stepcounter.CaloriesAndDistanceUtil
+import com.github.k409.fitflow.di.HealthConnect.HealthStatsManager
 import com.github.k409.fitflow.features.stepcounter.StepCounter
 import dagger.Module
 import dagger.Provides
@@ -36,7 +36,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideCaloriesAndDistanceUtil(healthConnectService: HealthConnectService): CaloriesAndDistanceUtil {
-        return CaloriesAndDistanceUtil(healthConnectService)
+    fun provideCaloriesAndDistanceUtil(healthConnectService: HealthConnectService): HealthStatsManager {
+        return HealthStatsManager(healthConnectService)
     }
 }

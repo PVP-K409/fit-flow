@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.features.stepcounter
+package com.github.k409.fitflow.di.HealthConnect
 
 import android.util.Log
 import com.github.k409.fitflow.di.services.HealthConnectService
@@ -7,7 +7,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
 
-class CaloriesAndDistanceUtil @Inject constructor(
+class HealthStatsManager @Inject constructor(
     private val healthConnectService: HealthConnectService,
 ) {
     suspend fun getCalories(): Long {
