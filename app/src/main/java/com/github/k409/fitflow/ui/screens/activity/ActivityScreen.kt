@@ -1,5 +1,8 @@
 package com.github.k409.fitflow.ui.screens.activity
 
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.health.connect.client.PermissionController
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.DailyStepRecord
@@ -28,17 +32,26 @@ import com.github.k409.fitflow.ui.components.activity.DistanceAndCalories
 import com.github.k409.fitflow.ui.components.calendar.CalendarView
 import java.time.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun ActivityScreen() {
     val activityViewModel: ActivityViewModel = hiltViewModel()
     val todaySteps by activityViewModel.todaySteps.observeAsState()
     val todayGoal: Long = 6000 // TODO goal setter
+    val permissionContract = PermissionController.createRequestPermissionResultContract()
+    val launcher = rememberLauncherForActivityResult(permissionContract) {
+    }
 
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
     var selectedDateRecord by remember { mutableStateOf(todaySteps) }
 
     LaunchedEffect(key1 = Unit) {
+        if (!activityViewModel.permissionsGranted()) {
+            launcher.launch(activityViewModel.permissions)
+        }
+
         activityViewModel.updateTodayStepsManually()
+
         if (selectedDate.value == LocalDate.now()) {
             selectedDateRecord = todaySteps
         }
@@ -65,7 +78,6 @@ fun ActivityScreen() {
                 CircularProgressBar(
                     taken = it.totalSteps,
                     goal = todayGoal,
-                    radius = 80.dp,
                 )
             }
             todaySteps?.let {
@@ -102,7 +114,7 @@ fun ActivityScreen() {
                     ) {
                         val options = listOf(
                             stringResource(R.string.steps) to it.totalSteps,
-                            stringResource(R.string.calories) to "${it.caloriesBurned} kcal",
+                            stringResource(R.string.calories) to "${it.caloriesBurned} cal",
                             stringResource(R.string.distance) to "${it.totalDistance} km",
                         )
 

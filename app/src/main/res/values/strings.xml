@@ -42,6 +42,9 @@
     <string name="intermediate">Intermediate</string>
     <string name="advanced">Advanced</string>
     <string name="professional">Professional</string>
+    <string name="steps_icon">Steps Icon</string>
+    <string name="heat_icon">Heat</string>
+    <string name="distance_icon">distance</string>
     <string name="hydration_notification_channel_name">Hydration</string>
     <string name="hydration_notification_channel_description">Reminder to stay hydrated</string>
     <string name="hydration_notification_title">Don\'t forget to stay hydrated!</string>

@@ -99,10 +99,10 @@ fun FitFlowApp(
                 navController = navController,
                 currentScreen = currentScreen,
                 visible = !(
-                        navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                            currentScreen,
-                        )
-                        ) && bottomBarState.value,
+                    navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                        currentScreen,
+                    )
+                    ) && bottomBarState.value,
                 containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
             )
         },
@@ -214,7 +214,7 @@ fun FitFlowTopBar(
                                     width = 2.dp,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
                                     shape = CircleShape,
-                                )
+                                ),
                         )
                     }
                 },
