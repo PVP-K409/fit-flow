@@ -70,7 +70,7 @@ fun LoginScreen(
                 signInLauncher,
                 googleSignInClient,
             )
-        }
+        },
     )
 }
 
@@ -97,7 +97,7 @@ fun SignInContent(
                     modifier = Modifier
                         .size(120.dp),
 
-                    )
+                )
                 Text(
                     text = "Sign in to continue",
                     style = MaterialTheme.typography.titleLarge,
