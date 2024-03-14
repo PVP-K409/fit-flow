@@ -114,7 +114,7 @@ fun ActivityScreen() {
                     ) {
                         val options = listOf(
                             stringResource(R.string.steps) to it.totalSteps,
-                            stringResource(R.string.calories) to "${it.caloriesBurned} kcal",
+                            stringResource(R.string.calories) to "${it.caloriesBurned} cal",
                             stringResource(R.string.distance) to "${it.totalDistance} km",
                         )
 
