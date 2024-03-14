@@ -21,13 +21,7 @@ class LoginViewModel @Inject constructor(
         context: Context,
         idToken: String,
     ) {
-        val signInResult = authRepository.firebaseAuthWithGoogle(idToken, context)
-
-        showSignInStateToast(context, signInResult)
-    }
-
-    suspend fun signInWithGitHub(context: Context) {
-        val signInResult = authRepository.signInWithGitHub(context)
+        val signInResult = authRepository.firebaseAuthWithGoogle(idToken)
 
         showSignInStateToast(context, signInResult)
     }
