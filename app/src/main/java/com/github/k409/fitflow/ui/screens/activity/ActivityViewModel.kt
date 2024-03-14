@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.UserRepository
-import com.github.k409.fitflow.di.HealthConnect.HealthStatsManager
+import com.github.k409.fitflow.features.stepcounter.CaloriesAndDistanceUtil
 import com.github.k409.fitflow.features.stepcounter.StepCounter
 import com.github.k409.fitflow.model.DailyStepRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +24,7 @@ class ActivityViewModel @Inject constructor(
     private val stepCounter: StepCounter,
     private val prefs: SharedPreferences,
     private val client: HealthConnectClient,
-    private val healthStatsManager: HealthStatsManager,
+    private val caloriesAndDistanceUtil: CaloriesAndDistanceUtil,
 ) : ViewModel() {
     private val _todaySteps = MutableLiveData<DailyStepRecord?>()
     val todaySteps: LiveData<DailyStepRecord?> = _todaySteps
@@ -78,9 +78,9 @@ class ActivityViewModel @Inject constructor(
         var calories = 0L
         var distance = 0.0
 
-        if(permissionsGranted()){
-            calories = healthStatsManager.getCalories()
-            distance = healthStatsManager.getDistance()
+        if (permissionsGranted()) {
+            calories = caloriesAndDistanceUtil.getCalories()
+            distance = caloriesAndDistanceUtil.getDistance()
         }
 
         if (dailyStepRecord == null) { // if new day

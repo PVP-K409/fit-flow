@@ -4,8 +4,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
-import kotlin.math.cos
-import kotlin.math.sin
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,6 +34,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.k409.fitflow.R
+import kotlin.math.cos
+import kotlin.math.sin
 
 @Composable
 fun CircularProgressBar(
@@ -51,10 +51,9 @@ fun CircularProgressBar(
     var animationPlayed by remember {
         mutableStateOf(false)
     }
-    val percentage : Float = if ( taken.toFloat() >= goal) {
+    val percentage: Float = if (taken.toFloat() >= goal) {
         1.0f
-    }
-    else {
+    } else {
         (taken.toFloat() / goal)
     }
 
@@ -73,7 +72,7 @@ fun CircularProgressBar(
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
             contentAlignment = Alignment.Center,
@@ -84,7 +83,7 @@ fun CircularProgressBar(
                 val lineWidth = 3.dp.toPx()
                 val lineLength = 6.dp.toPx()
                 val linesCount = 15
-                val sweepAnglePerLine = 290f / (linesCount-1)
+                val sweepAnglePerLine = 290f / (linesCount - 1)
                 val radiusInPx = radius.toPx()
 
                 for (i in 0 until linesCount) {
@@ -102,7 +101,7 @@ fun CircularProgressBar(
                         color = lineColor,
                         start = Offset(startX, startY),
                         end = Offset(endX, endY),
-                        strokeWidth = lineWidth
+                        strokeWidth = lineWidth,
                     )
                 }
 
@@ -123,8 +122,8 @@ fun CircularProgressBar(
             }
 
             Column(
-                modifier = Modifier.
-                fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Icon(
@@ -132,19 +131,19 @@ fun CircularProgressBar(
                     contentDescription = stringResource(R.string.steps_icon),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
-                        .size(36.dp)
+                        .size(36.dp),
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "$taken",
-                    fontSize = fontSize/2*3,
+                    fontSize = fontSize / 2 * 3,
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "/$goal",
                     color = color.copy(alpha = 0.6f),
-                    fontSize = fontSize/3*2,
+                    fontSize = fontSize / 3 * 2,
                 )
             }
         }

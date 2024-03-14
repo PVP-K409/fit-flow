@@ -39,7 +39,7 @@ fun ActivityScreen() {
     val todaySteps by activityViewModel.todaySteps.observeAsState()
     val todayGoal: Long = 6000 // TODO goal setter
     val permissionContract = PermissionController.createRequestPermissionResultContract()
-    val launcher = rememberLauncherForActivityResult(permissionContract){
+    val launcher = rememberLauncherForActivityResult(permissionContract) {
     }
 
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
