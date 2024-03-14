@@ -10,7 +10,7 @@ import javax.inject.Inject
 class CaloriesAndDistanceUtil @Inject constructor(
     private val healthConnectService: HealthConnectService,
 ) {
-    suspend fun getCalories(): Long{
+    suspend fun getCalories(): Long {
         val end = Instant.now()
         val start = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()
 
@@ -25,7 +25,7 @@ class CaloriesAndDistanceUtil @Inject constructor(
         }
     }
 
-    suspend fun getDistance(): Double{
+    suspend fun getDistance(): Double {
         val end = Instant.now()
         val start = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()
 
