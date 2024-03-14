@@ -86,7 +86,7 @@ class AuthRepository @Inject constructor(
 
     private fun linkWithProvider(
         context: Context,
-        email: String
+        email: String,
     ) {
         val provider = OAuthProvider.newBuilder("github.com")
         provider.addCustomParameter("login", email)
