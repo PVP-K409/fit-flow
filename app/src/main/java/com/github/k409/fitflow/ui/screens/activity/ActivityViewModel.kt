@@ -78,7 +78,7 @@ class ActivityViewModel @Inject constructor(
         var calories = 0L
         var distance = 0.0
 
-        if(permissionsGranted()){
+        if (permissionsGranted()) {
             calories = healthStatsManager.getCalories()
             distance = healthStatsManager.getDistance()
         }

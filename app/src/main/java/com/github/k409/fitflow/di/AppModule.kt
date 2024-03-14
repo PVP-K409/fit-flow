@@ -36,8 +36,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideHealthStatsManager(healthConnectService: HealthConnectService) : HealthStatsManager {
+    fun provideHealthStatsManager(healthConnectService: HealthConnectService): HealthStatsManager {
         return HealthStatsManager(healthConnectService)
     }
-
 }

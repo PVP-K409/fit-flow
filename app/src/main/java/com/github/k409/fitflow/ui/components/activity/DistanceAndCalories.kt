@@ -36,7 +36,6 @@ fun DistanceAndCalories(
             .padding(top = 24.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -45,7 +44,7 @@ fun DistanceAndCalories(
                 contentDescription = stringResource(R.string.heat_icon),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(36.dp),
             )
             Text(
                 text = "$calories",
@@ -67,7 +66,7 @@ fun DistanceAndCalories(
                 contentDescription = stringResource(R.string.distance_icon),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(36.dp),
             )
             Text(
                 text = "$distance",

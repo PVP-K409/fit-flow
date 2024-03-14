@@ -12,23 +12,22 @@ import java.time.Instant
 import javax.inject.Inject
 import kotlin.math.round
 
-
 class HealthConnectService @Inject constructor(
     private val client: HealthConnectClient,
 ) {
     suspend fun aggregateDistance(
         startTime: Instant,
-        endTime: Instant
+        endTime: Instant,
     ): Double {
         return try {
             val response = client.aggregate(
                 AggregateRequest(
                     metrics = setOf(DistanceRecord.DISTANCE_TOTAL),
-                    timeRangeFilter = TimeRangeFilter.between(startTime, endTime)
-                )
+                    timeRangeFilter = TimeRangeFilter.between(startTime, endTime),
+                ),
             )
             val distance = response[DistanceRecord.DISTANCE_TOTAL]?.inMeters ?: 0.0
-            BigDecimal(distance/1000).setScale(
+            BigDecimal(distance / 1000).setScale(
                 2,
                 RoundingMode.CEILING,
             ).toDouble()
@@ -40,14 +39,14 @@ class HealthConnectService @Inject constructor(
 
     suspend fun aggregateCalories(
         startTime: Instant,
-        endTime: Instant
+        endTime: Instant,
     ): Long {
         return try {
             val response = client.aggregate(
                 AggregateRequest(
                     metrics = setOf(TotalCaloriesBurnedRecord.ENERGY_TOTAL),
-                    timeRangeFilter = TimeRangeFilter.between(startTime, endTime)
-                )
+                    timeRangeFilter = TimeRangeFilter.between(startTime, endTime),
+                ),
             )
             val calories = response[TotalCaloriesBurnedRecord.ENERGY_TOTAL]?.inCalories?.toLong() ?: 0L
             round(calories.toDouble() / 1000).toLong()
@@ -57,4 +56,3 @@ class HealthConnectService @Inject constructor(
         }
     }
 }
-
