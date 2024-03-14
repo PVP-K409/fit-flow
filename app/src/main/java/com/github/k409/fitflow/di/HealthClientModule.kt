@@ -35,7 +35,7 @@ object HealthClientModule {
 
                     putExtra("overlay", true)
                     putExtra("callerId", context.packageName)
-                }
+                },
             )
         }
 

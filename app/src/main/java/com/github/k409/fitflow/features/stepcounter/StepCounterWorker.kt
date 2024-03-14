@@ -48,7 +48,7 @@ class StepCounterWorker @AssistedInject constructor(
             var calories = 0L
             var distance = 0.0
 
-            if(granted){
+            if (granted) {
                 calories = caloriesAndDistanceUtil.getCalories()
                 distance = caloriesAndDistanceUtil.getDistance()
             }
@@ -105,5 +105,4 @@ class StepCounterWorker @AssistedInject constructor(
             return Result.retry()
         }
     }
-
 }
