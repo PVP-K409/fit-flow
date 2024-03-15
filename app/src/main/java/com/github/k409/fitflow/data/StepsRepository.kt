@@ -14,7 +14,6 @@ import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
 import javax.inject.Inject
 
-
 private const val STEPS_COLLECTION = "steps"
 private const val JOURNAL_COLLECTION = "journal"
 
@@ -52,7 +51,7 @@ class StepsRepository @Inject constructor(
 
             stepsDocumentRef.set(
                 newStepRecord,
-                SetOptions.merge()
+                SetOptions.merge(),
             ).await()
         } catch (e: FirebaseFirestoreException) {
             Log.e("Steps Repository", "Error updating steps", e)
@@ -75,7 +74,7 @@ class StepsRepository @Inject constructor(
 
     private fun getStepsDocumentReference(
         uid: String,
-        recordDate: String
+        recordDate: String,
     ): DocumentReference {
         return db.collection(JOURNAL_COLLECTION)
             .document(uid)
