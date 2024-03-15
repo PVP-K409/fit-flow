@@ -67,10 +67,7 @@ class StepsRepository @Inject constructor(
     suspend fun getSteps(recordDate: String): DailyStepRecord? {
         val currentUser = auth.currentUser ?: return null
 
-        val dailyStepRecordSnapshot = db.collection(JOURNAL_COLLECTION)
-            .document(currentUser.uid)
-            .collection(STEPS_COLLECTION)
-            .document(recordDate)
+        val dailyStepRecordSnapshot = getStepsDocumentReference(currentUser.uid, recordDate)
             .get()
             .await()
 
