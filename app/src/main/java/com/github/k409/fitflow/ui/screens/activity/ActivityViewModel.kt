@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.k409.fitflow.data.UserRepository
+import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.di.healthConnect.HealthStatsManager
 import com.github.k409.fitflow.features.stepcounter.StepCounter
 import com.github.k409.fitflow.model.DailyStepRecord
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ActivityViewModel @Inject constructor(
-    private val userRepository: UserRepository,
+    private val stepsRepository: StepsRepository,
     private val stepCounter: StepCounter,
     private val prefs: SharedPreferences,
     private val client: HealthConnectClient,
@@ -28,6 +28,7 @@ class ActivityViewModel @Inject constructor(
 ) : ViewModel() {
     private val _todaySteps = MutableLiveData<DailyStepRecord?>()
     val todaySteps: LiveData<DailyStepRecord?> = _todaySteps
+
     val permissions = setOf(
         HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class),
         HealthPermission.getReadPermission(DistanceRecord::class),
@@ -54,13 +55,13 @@ class ActivityViewModel @Inject constructor(
     private fun loadTodaySteps() {
         viewModelScope.launch {
             val today = LocalDate.now().toString()
-            val step = userRepository.loadTodaySteps(today)
+            val step = stepsRepository.getSteps(today)
 
             if (step == null) { // new day
                 viewModelScope.launch {
                     updateTodayStepsManually()
                     _todaySteps.value =
-                        userRepository.loadTodaySteps(today) // Update step after the suspend function completes
+                        stepsRepository.getSteps(today) // Update step after the suspend function completes
                 }
             } else {
                 _todaySteps.value = step
@@ -72,7 +73,7 @@ class ActivityViewModel @Inject constructor(
         val hasRebooted = prefs.getBoolean("rebooted", false) // boolean if reboot has happened
         val lastDate = prefs.getString("lastDate", "") // last update day
         val today = LocalDate.now().toString()
-        val dailyStepRecord: DailyStepRecord? = userRepository.loadTodaySteps(today)
+        val dailyStepRecord: DailyStepRecord? = stepsRepository.getSteps(today)
         val currentSteps = stepCounter.steps()
         val newDailyStepRecord: DailyStepRecord
         var calories = 0L
@@ -126,12 +127,12 @@ class ActivityViewModel @Inject constructor(
         }
         prefs.edit().putString("lastDate", today).apply() // saving last update day
 
-        userRepository.updateSteps(newDailyStepRecord)
+        stepsRepository.updateSteps(newDailyStepRecord)
 
         _todaySteps.value = newDailyStepRecord
     }
 
     suspend fun getStepRecord(date: LocalDate): DailyStepRecord? {
-        return userRepository.loadTodaySteps(date.toString())
+        return stepsRepository.getSteps(date.toString())
     }
 }

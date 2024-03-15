@@ -1,9 +1,5 @@
 package com.github.k409.fitflow.data
 
-import android.content.SharedPreferences
-import android.util.Log
-import com.github.k409.fitflow.features.stepcounter.StepCounter
-import com.github.k409.fitflow.model.DailyStepRecord
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.toUser
 import com.google.firebase.auth.FirebaseAuth
@@ -21,17 +17,15 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.time.LocalDate
 import javax.inject.Inject
 
 private const val USERS_COLLECTION = "users"
-private const val USER_STEPS_ARRAY = "steps"
+
 
 class UserRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
-    private val stepCounter: StepCounter,
-    private val prefs: SharedPreferences,
+    private val stepsRepository: StepsRepository,
 ) {
 
     private fun getAuthState() = callbackFlow {
@@ -59,8 +53,7 @@ class UserRepository @Inject constructor(
     }
 
     fun getUser(uid: String): Flow<User> =
-        db.collection(USERS_COLLECTION)
-            .document(uid)
+        getUserDocumentReference(uid)
             .snapshots()
             .map { it.toObject<User>() ?: User() }
 
@@ -71,108 +64,10 @@ class UserRepository @Inject constructor(
             user.name = user.email
         }
 
-        db.collection(USERS_COLLECTION)
-            .document(user.uid)
-            .set(user)
+        getUserDocumentReference(user.uid).set(user)
 
         CoroutineScope(Dispatchers.IO).launch {
-            setInitialSteps(user.uid)
-        }
-    }
-
-    private suspend fun setInitialSteps(uid: String) {
-        val initialSteps = stepCounter.steps()
-        val today = LocalDate.now().toString()
-
-        prefs.edit().putString("lastDate", today).apply()
-
-        val initialStepRecordMap = mapOf(
-            "current" to 0L,
-            "initial" to initialSteps,
-            "date" to today,
-            "temp" to 0L,
-            "distance" to 0.0,
-            "calories" to 0L,
-        )
-
-        val initialStepRecordList = mutableListOf(initialStepRecordMap)
-
-        db.collection(USERS_COLLECTION)
-            .document(uid)
-            .update(USER_STEPS_ARRAY, initialStepRecordList)
-    }
-
-    suspend fun updateSteps(newSteps: DailyStepRecord) {
-        val currentUser = auth.currentUser
-
-        if (currentUser == null) {
-            Log.e("User Repository", "No signed-in user")
-            return
-        }
-
-        val uid = currentUser.uid
-        val userDocRef = db.collection(USERS_COLLECTION)
-            .document(uid)
-
-        try {
-            val snapshot = userDocRef.get().await()
-
-            if (!snapshot.exists()) {
-                Log.e("User Repository", "No such document")
-                return
-            }
-
-            val stepsList =
-                snapshot.data?.get(USER_STEPS_ARRAY) as? List<Map<String, Any>>
-                    ?: mutableListOf()
-            val existingStepMap =
-                stepsList.firstOrNull { it["date"] == newSteps.recordDate }
-            val updatedStepMap = mapOf(
-                "current" to newSteps.totalSteps,
-                "initial" to newSteps.initialSteps,
-                "date" to newSteps.recordDate,
-                "temp" to newSteps.stepsBeforeReboot,
-                "distance" to newSteps.totalDistance,
-                "calories" to newSteps.caloriesBurned,
-            )
-
-            val updatedStepsList = if (existingStepMap != null) {
-                stepsList.map { if (it["date"] == newSteps.recordDate) updatedStepMap else it }
-            } else {
-                stepsList + updatedStepMap // new day
-            }
-
-            userDocRef.update(USER_STEPS_ARRAY, updatedStepsList).await()
-        } catch (e: Exception) {
-            Log.e("User Repository", "Error updating steps", e)
-        }
-    }
-
-    suspend fun loadTodaySteps(day: String): DailyStepRecord? {
-        val currentUser = auth.currentUser ?: return null
-
-        val userSnapshot = db.collection(USERS_COLLECTION)
-            .document(currentUser.uid)
-            .get()
-            .await()
-
-        if (!userSnapshot.exists()) {
-            return null
-        }
-
-        val stepsList = userSnapshot.data
-            ?.get(USER_STEPS_ARRAY) as? List<Map<String, Any>> ?: return null
-        val stepMap = stepsList.firstOrNull { it["date"] == day }
-
-        return stepMap?.let {
-            DailyStepRecord(
-                totalSteps = it["current"] as? Long ?: 0,
-                initialSteps = it["initial"] as? Long ?: 0,
-                recordDate = it["date"] as? String ?: day,
-                stepsBeforeReboot = it["temp"] as? Long ?: 0,
-                caloriesBurned = it["calories"] as? Long ?: 0,
-                totalDistance = it["distance"] as? Double ?: 0.0,
-            )
+            stepsRepository.setInitialSteps(user.uid)
         }
     }
 
@@ -180,14 +75,16 @@ class UserRepository @Inject constructor(
         val currentUser = auth.currentUser ?: return null
 
         return try {
-            val documentSnapshot = db.collection(USERS_COLLECTION)
-                .document(currentUser.uid)
+            getUserDocumentReference(currentUser.uid)
                 .get()
                 .await()
-
-            documentSnapshot.toObject<User>()
+                .toObject<User>()
         } catch (e: Exception) {
             null
         }
     }
+
+    private fun getUserDocumentReference(uid: String) =
+        db.collection(USERS_COLLECTION)
+            .document(uid)
 }
