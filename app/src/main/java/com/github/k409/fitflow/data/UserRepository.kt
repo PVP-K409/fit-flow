@@ -21,7 +21,6 @@ import javax.inject.Inject
 
 private const val USERS_COLLECTION = "users"
 
-
 class UserRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
