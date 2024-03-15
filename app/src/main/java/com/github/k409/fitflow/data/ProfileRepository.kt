@@ -1,40 +1,39 @@
 package com.github.k409.fitflow.data
 
-import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class ProfileRepository @Inject constructor(
-    private val db: FirebaseFirestore
-
+    private val db: FirebaseFirestore,
+    var success: Boolean = true,
 ) {
-    fun submitProfile(
+    suspend fun submitProfile(
+        uid: String,
         name: String,
-        age: Int,
+        dateOfBirth: String,
         gender: String,
         weight: Int,
-        height: Int
-    ) {
+        height: Int,
+        fitnessLevel: String,
+    ): Boolean {
         try {
             val updatedData = hashMapOf<String, Any>(
                 "name" to name,
-                "age" to age,
+                "dateOfBirth" to dateOfBirth,
                 "gender" to gender,
                 "weight" to weight,
-                "height" to height
+                "height" to height,
+                "fitnessLevel" to fitnessLevel,
             )
-            val userid = "ohxyZCvlrIt0JaQQH5RF"
-            val userDocRef = db.collection("users").document(userid)
 
-            userDocRef.update(updatedData).addOnSuccessListener {
+            val userDocRef = db.collection("users").document(uid)
 
-            }.addOnFailureListener { e ->
-                Log.e("FirestoreUpdate", "Error updating document", e)
-            }
-
-            Log.d("profileRepository", "DB stuff")
+            userDocRef.update(updatedData).await()
         } catch (e: Exception) {
             e.printStackTrace()
+            success = false
         }
+        return success
     }
 }

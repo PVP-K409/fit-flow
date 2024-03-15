@@ -2,17 +2,20 @@ package com.github.k409.fitflow.ui.theme
 
 import android.app.Activity
 import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 
 private val LightColors = lightColorScheme(
@@ -46,7 +49,6 @@ private val LightColors = lightColorScheme(
     outlineVariant = md_theme_light_outlineVariant,
     scrim = md_theme_light_scrim,
 )
-
 
 private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
@@ -82,11 +84,11 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun FitFlowTheme(
-    darkTheme: Boolean = false,
-    // Dynamic color is available on Android 12+
+    darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
+    val view = LocalView.current
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
@@ -96,12 +98,14 @@ fun FitFlowTheme(
         darkTheme -> DarkColors
         else -> LightColors
     }
-    val view = LocalView.current
 
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = Color.Transparent.toArgb() // colorScheme.background.toArgb()
+
+            window.statusBarColor = Color.Transparent.toArgb()
+            window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
+
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
@@ -109,6 +113,6 @@ fun FitFlowTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }

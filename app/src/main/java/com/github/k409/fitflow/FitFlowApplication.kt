@@ -9,7 +9,7 @@ import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.github.k409.fitflow.features.step_counter.StepCounterWorker
+import com.github.k409.fitflow.features.stepcounter.StepCounterWorker
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -25,26 +25,44 @@ class FitFlowApplication : Application(), Configuration.Provider {
         super.onCreate()
 
         val myWork = PeriodicWorkRequestBuilder<StepCounterWorker>(
-            15, TimeUnit.MINUTES
+            180,
+            TimeUnit.MINUTES,
         ).build()
 
         WorkManager.getInstance(this)
             .enqueueUniquePeriodicWork(
                 "UpdateStepsWorker",
-                ExistingPeriodicWorkPolicy.UPDATE, myWork
+                ExistingPeriodicWorkPolicy.UPDATE,
+                myWork,
             )
 
         val midnightWorkRequest =
             PeriodicWorkRequestBuilder<StepCounterWorker>(
-                24, TimeUnit.HOURS,
-                1, TimeUnit.MINUTES
+                24,
+                TimeUnit.HOURS,
+                1,
+                TimeUnit.MINUTES,
             ).setInitialDelay(calculateInitialDelayUntilMidnight(), TimeUnit.MILLISECONDS)
                 .build()
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "MidnightWorker",
             ExistingPeriodicWorkPolicy.UPDATE,
-            midnightWorkRequest
+            midnightWorkRequest,
+        )
+
+        val beforeMidnightWorkRequest =
+            PeriodicWorkRequestBuilder<StepCounterWorker>(
+                24,
+                TimeUnit.HOURS,
+                1,
+                TimeUnit.MINUTES,
+            ).setInitialDelay(calculateInitialDelayBeforeMidnight(), TimeUnit.MILLISECONDS).build()
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "BeforeMidnightWorker",
+            ExistingPeriodicWorkPolicy.UPDATE,
+            beforeMidnightWorkRequest,
         )
     }
 
@@ -55,6 +73,20 @@ class FitFlowApplication : Application(), Configuration.Provider {
         calendar.add(Calendar.DAY_OF_YEAR, 1)
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        return calendar.timeInMillis - now
+    }
+
+    private fun calculateInitialDelayBeforeMidnight(): Long {
+        val calendar = Calendar.getInstance()
+        val now = calendar.timeInMillis
+
+        calendar.add(Calendar.DAY_OF_YEAR, 1)
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        val minuteOffset = 58
+        calendar.set(Calendar.MINUTE, minuteOffset)
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
 

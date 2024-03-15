@@ -1,16 +1,18 @@
 package com.github.k409.fitflow.ui.screens.activity
 
 import android.content.SharedPreferences
+import androidx.health.connect.client.HealthConnectClient
+import androidx.health.connect.client.permission.HealthPermission
+import androidx.health.connect.client.records.DistanceRecord
+import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.UserRepository
-import com.github.k409.fitflow.features.step_counter.StepCounter
-import com.github.k409.fitflow.features.step_counter.calculateCaloriesFromSteps
-import com.github.k409.fitflow.features.step_counter.calculateDistanceFromSteps
+import com.github.k409.fitflow.di.healthConnect.HealthStatsManager
+import com.github.k409.fitflow.features.stepcounter.StepCounter
 import com.github.k409.fitflow.model.DailyStepRecord
-import com.github.k409.fitflow.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -21,9 +23,15 @@ class ActivityViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val stepCounter: StepCounter,
     private val prefs: SharedPreferences,
+    private val client: HealthConnectClient,
+    private val healthStatsManager: HealthStatsManager,
 ) : ViewModel() {
     private val _todaySteps = MutableLiveData<DailyStepRecord?>()
     val todaySteps: LiveData<DailyStepRecord?> = _todaySteps
+    val permissions = setOf(
+        HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class),
+        HealthPermission.getReadPermission(DistanceRecord::class),
+    )
 
     init {
         _todaySteps.value = DailyStepRecord(
@@ -32,9 +40,15 @@ class ActivityViewModel @Inject constructor(
             recordDate = LocalDate.now().toString(),
             stepsBeforeReboot = 0,
             caloriesBurned = 0,
-            totalDistance = 0.0
+            totalDistance = 0.0,
         )
         loadTodaySteps()
+    }
+
+    suspend fun permissionsGranted(): Boolean {
+        val granted = client.permissionController.getGrantedPermissions()
+
+        return granted.containsAll(permissions)
     }
 
     private fun loadTodaySteps() {
@@ -56,11 +70,18 @@ class ActivityViewModel @Inject constructor(
 
     suspend fun updateTodayStepsManually() {
         val hasRebooted = prefs.getBoolean("rebooted", false) // boolean if reboot has happened
+        val lastDate = prefs.getString("lastDate", "") // last update day
         val today = LocalDate.now().toString()
-        val user: User? = userRepository.getUser()
         val dailyStepRecord: DailyStepRecord? = userRepository.loadTodaySteps(today)
         val currentSteps = stepCounter.steps()
         val newDailyStepRecord: DailyStepRecord
+        var calories = 0L
+        var distance = 0.0
+
+        if (permissionsGranted()) {
+            calories = healthStatsManager.getCalories()
+            distance = healthStatsManager.getDistance()
+        }
 
         if (dailyStepRecord == null) { // if new day
             newDailyStepRecord = DailyStepRecord(
@@ -68,25 +89,30 @@ class ActivityViewModel @Inject constructor(
                 initialSteps = currentSteps,
                 recordDate = today,
                 stepsBeforeReboot = 0,
-                caloriesBurned = 0,
-                totalDistance = 0.0
+                caloriesBurned = calories,
+                totalDistance = distance,
 
             )
-        } else if (hasRebooted || currentSteps <= 1) { //if current day and reboot has happened
+        } else if (hasRebooted || currentSteps <= 1) { // if current day and reboot has happened
             newDailyStepRecord = DailyStepRecord(
                 totalSteps = dailyStepRecord.totalSteps + currentSteps,
-                initialSteps = 0,
+                initialSteps = currentSteps,
                 recordDate = today,
-                stepsBeforeReboot = dailyStepRecord.totalSteps,
-                caloriesBurned = calculateCaloriesFromSteps(
-                    (dailyStepRecord.totalSteps + currentSteps), user
-                ),
-                totalDistance = calculateDistanceFromSteps(
-                    (dailyStepRecord.totalSteps + currentSteps), user
-                )
+                stepsBeforeReboot = dailyStepRecord.totalSteps + currentSteps,
+                caloriesBurned = calories,
+                totalDistance = distance,
             )
 
             prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
+        } else if (today != lastDate) {
+            newDailyStepRecord = DailyStepRecord(
+                totalSteps = dailyStepRecord.totalSteps,
+                initialSteps = currentSteps,
+                recordDate = today,
+                stepsBeforeReboot = dailyStepRecord.totalSteps,
+                caloriesBurned = if (calories > dailyStepRecord.caloriesBurned!!) calories else dailyStepRecord.caloriesBurned,
+                totalDistance = distance,
+            )
         } else {
             // if current day and no reboot
             newDailyStepRecord = DailyStepRecord(
@@ -94,19 +120,18 @@ class ActivityViewModel @Inject constructor(
                 initialSteps = dailyStepRecord.initialSteps,
                 recordDate = today,
                 stepsBeforeReboot = dailyStepRecord.stepsBeforeReboot,
-                caloriesBurned = calculateCaloriesFromSteps(
-                    (currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot),
-                    user
-                ),
-                totalDistance = calculateDistanceFromSteps(
-                    (currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot),
-                    user
-                )
+                caloriesBurned = calories,
+                totalDistance = distance,
             )
         }
+        prefs.edit().putString("lastDate", today).apply() // saving last update day
 
         userRepository.updateSteps(newDailyStepRecord)
 
         _todaySteps.value = newDailyStepRecord
+    }
+
+    suspend fun getStepRecord(date: LocalDate): DailyStepRecord? {
+        return userRepository.loadTodaySteps(date.toString())
     }
 }

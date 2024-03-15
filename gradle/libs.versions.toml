@@ -1,5 +1,9 @@
 [versions]
 agp = "8.2.2"
+androidx-connectClient = "1.1.0-alpha07"
+animatedNavigationBar = "1.0.0"
+coilCompose = "2.6.0"
+firebaseMessaging = "23.4.1"
 firebaseUiAuth = "8.0.0"
 googleServices = "4.4.1"
 hilt = "2.50"
@@ -19,21 +23,26 @@ navigation-runtime-ktx = "2.7.7"
 navigation-compose = "2.7.7"
 runtimeLivedata = "1.6.2"
 playServicesAuth = "21.0.0"
+spotlessPluginGradle = "6.19.0"
 ui = "1.6.2"
 gmsPlugin = "4.4.1"
-firebase-bom = "32.7.2"
+firebase-bom = "32.7.3"
 workRuntimeKtx = "2.9.0"
 accompanist = "0.32.0"
+lifecycleRuntimeCompose = "2.7.0"
 
 
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+androidx-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "androidx-connectClient" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltWork" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltWork" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
 androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "workRuntimeKtx" }
+animated-navigation-bar = { module = "com.exyte:animated-navigation-bar", version.ref = "animatedNavigationBar" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
@@ -47,6 +56,7 @@ lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtim
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+spotless-plugin-gradle = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotlessPluginGradle" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -63,8 +73,9 @@ firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
-firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging"  }
 firebase-config = { module = "com.google.firebase:firebase-config" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 
 [bundles]
 firebase = ["firebase-auth",
@@ -80,4 +91,4 @@ kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 daggerHilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
-
+spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPluginGradle" }

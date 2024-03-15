@@ -2,7 +2,10 @@ package com.github.k409.fitflow.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.github.k409.fitflow.features.step_counter.StepCounter
+import androidx.health.connect.client.HealthConnectClient
+import com.github.k409.fitflow.di.healthConnect.HealthStatsManager
+import com.github.k409.fitflow.di.services.HealthConnectService
+import com.github.k409.fitflow.features.stepcounter.StepCounter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,4 +28,15 @@ class AppModule {
         return appContext.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
     }
 
+    @Provides
+    @Singleton
+    fun provideHealthConnectService(client: HealthConnectClient): HealthConnectService {
+        return HealthConnectService(client)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHealthStatsManager(healthConnectService: HealthConnectService): HealthStatsManager {
+        return HealthStatsManager(healthConnectService)
+    }
 }

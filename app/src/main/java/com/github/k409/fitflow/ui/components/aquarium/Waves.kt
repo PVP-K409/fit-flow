@@ -28,7 +28,7 @@ fun AnimatedWaves(
     waveFrequency: Float = 0.03f,
     brush: Brush = Brush.linearGradient(
         colors = listOf(Color(0xFF7FABC0), Color(0x1A3C726A)),
-    )
+    ),
 ) {
     val waveAmplitudeState = remember { mutableFloatStateOf(waveAmplitude) }
     val waveFrequencyState = remember { mutableFloatStateOf(waveFrequency) }
@@ -40,9 +40,9 @@ fun AnimatedWaves(
         targetValue = waveAmplitudeState.floatValue * 1.2f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1500 * 4, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
+            repeatMode = RepeatMode.Reverse,
         ),
-        label = ""
+        label = "",
     )
 
     val frequencyAnimation by infiniteTransition.animateFloat(
@@ -50,13 +50,13 @@ fun AnimatedWaves(
         targetValue = waveFrequencyState.floatValue * 1.2f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1500 * 4, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
+            repeatMode = RepeatMode.Reverse,
         ),
-        label = ""
+        label = "",
     )
 
     Canvas(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
     ) {
         drawWave(
             waveCount = waveCount,
@@ -70,13 +70,10 @@ fun AnimatedWaves(
                     Color(0x80838BC0),
                     Color(0x6383FD6F),
                 ),
-            )
+            ),
         )
-
-
     }
 }
-
 
 fun DrawScope.drawWave(
     waveCount: Int,
@@ -102,7 +99,12 @@ fun DrawScope.drawWave(
             startY + amplitude * sin(((i + 1) * size.width / waveCount) * frequency)
 
         wavePath.cubicTo(
-            x1 + size.width / (2 * waveCount), y1, x1 + size.width / (2 * waveCount), y2, x2, y2
+            x1 + size.width / (2 * waveCount),
+            y1,
+            x1 + size.width / (2 * waveCount),
+            y2,
+            x2,
+            y2,
         )
     }
 

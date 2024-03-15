@@ -32,7 +32,7 @@ fun CircularPrimaryFish(
     modifier: Modifier = Modifier,
     initialFishSize: Dp = 100.dp,
     maxFishSize: Dp = 300.dp,
-    movementRadius: Dp = 100.dp
+    movementRadius: Dp = 100.dp,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -43,9 +43,13 @@ fun CircularPrimaryFish(
 
     val infiniteTransition = rememberInfiniteTransition(label = "InfiniteTransition")
     val animationValue by infiniteTransition.animateFloat(
-        initialValue = 0f, targetValue = 2 * Math.PI.toFloat(), animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 4000), repeatMode = RepeatMode.Restart
-        ), label = "RotationAnimation"
+        initialValue = 0f,
+        targetValue = 2 * Math.PI.toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 4000),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "RotationAnimation",
     )
 
     val xPosition = remember(animationValue) {
@@ -56,13 +60,15 @@ fun CircularPrimaryFish(
         (sin(animationValue.toDouble()) * movementRadius.value).toFloat()
     }
 
-    Image(painter = primaryFishPainter,
+    Image(
+        painter = primaryFishPainter,
         contentDescription = "Fish",
         modifier = modifier
             .size(currentFishSize.value.dp)
             .offset {
                 IntOffset(
-                    xPosition.roundToInt(), yPosition.roundToInt()
+                    xPosition.roundToInt(),
+                    yPosition.roundToInt(),
                 )
             }
             .graphicsLayer(rotationZ = currentRotationAngle.value)
@@ -70,21 +76,21 @@ fun CircularPrimaryFish(
                 coroutineScope.launch {
                     currentRotationAngle.animateTo(
                         currentRotationAngle.value + 360f,
-                        animationSpec = tween(durationMillis = 2000)
+                        animationSpec = tween(durationMillis = 2000),
                     )
                 }
             }, onLongClick = {
                 coroutineScope.launch {
                     val newFishSize = Random.nextLong(
-                        initialFishSize.value.toLong(), maxFishSize.value.toLong()
+                        initialFishSize.value.toLong(),
+                        maxFishSize.value.toLong(),
                     )
 
                     currentFishSize.animateTo(newFishSize.toFloat())
                 }
-            })
+            }),
     )
 }
-
 
 @Composable
 fun AnimatedPrimaryFish(
@@ -99,9 +105,13 @@ fun AnimatedPrimaryFish(
 
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val xPosition by infiniteTransition.animateFloat(
-        initialValue = 0f, targetValue = 200f, animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 2000), repeatMode = RepeatMode.Reverse
-        ), label = "FishXPositionAnimation"
+        initialValue = 0f,
+        targetValue = 200f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2000),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "FishXPositionAnimation",
     )
 
     Image(
@@ -110,7 +120,7 @@ fun AnimatedPrimaryFish(
         modifier = modifier
             .size(currentFishSize.value.dp)
             .graphicsLayer(
-                translationX = xPosition
+                translationX = xPosition,
             )
             .noRippleClickable(onClick = {
                 coroutineScope.launch {
@@ -128,6 +138,6 @@ fun AnimatedPrimaryFish(
                         currentFishSize.animateTo(maxFishSize.value)
                     }
                 }
-            })
+            }),
     )
 }

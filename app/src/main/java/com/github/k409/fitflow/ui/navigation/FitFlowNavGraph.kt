@@ -9,10 +9,11 @@ import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.screens.activity.ActivityScreen
 import com.github.k409.fitflow.ui.screens.goals.GoalsScreen
 import com.github.k409.fitflow.ui.screens.home.HomeScreen
+import com.github.k409.fitflow.ui.screens.hydration.WaterLoggingScreen
+import com.github.k409.fitflow.ui.screens.login.LoginScreen
 import com.github.k409.fitflow.ui.screens.market.MarketScreen
 import com.github.k409.fitflow.ui.screens.profile.ProfileCreationScreen
-import com.github.k409.fitflow.ui.screens.profile.ProfileSettingsScreen
-import com.github.k409.fitflow.ui.screens.registration.RegistrationScreen
+import com.github.k409.fitflow.ui.screens.settings.SettingsScreen
 
 @Composable
 fun FitFlowNavGraph(
@@ -23,7 +24,7 @@ fun FitFlowNavGraph(
     NavHost(
         navController = navController,
         startDestination = startDestination,
-        modifier = modifier
+        modifier = modifier,
     ) {
         composable(NavRoutes.Home.route) {
             HomeScreen()
@@ -37,15 +38,27 @@ fun FitFlowNavGraph(
         composable(NavRoutes.Marketplace.route) {
             MarketScreen()
         }
-        composable(NavRoutes.Registration.route) {
-            RegistrationScreen()
+
+        composable(NavRoutes.Hydration.route) {
+            WaterLoggingScreen()
         }
+
         composable(NavRoutes.ProfileCreation.route) {
             ProfileCreationScreen(navController)
         }
-        composable(NavRoutes.ProfileSettings.route) {
-            ProfileSettingsScreen(navController)
+        composable(NavRoutes.Settings.route) {
+            SettingsScreen(navController = navController)
+        }
+        composable(NavRoutes.Login.route) {
+            LoginScreen(
+                onSuccessfulSignIn = {
+                    navController.navigate(NavRoutes.Home.route) {
+                        popUpTo(NavRoutes.Home.route) {
+                            inclusive = false
+                        }
+                    }
+                },
+            )
         }
     }
-
 }

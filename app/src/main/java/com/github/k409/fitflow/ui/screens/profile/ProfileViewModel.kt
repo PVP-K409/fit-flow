@@ -9,15 +9,24 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
 ) : ViewModel() {
-    fun submitProfile(
+    suspend fun submitProfile(
+        uid: String,
         name: String,
-        age: Int,
+        dateOfBirth: String,
         gender: String,
         weight: Int,
-        height: Int
-    ) {
+        height: Int,
+        fitnessLevel: String,
+    ): Boolean {
         profileRepository.submitProfile(
-            name, age, gender, weight, height
+            uid,
+            name,
+            dateOfBirth,
+            gender,
+            weight,
+            height,
+            fitnessLevel,
         )
+        return profileRepository.success
     }
 }

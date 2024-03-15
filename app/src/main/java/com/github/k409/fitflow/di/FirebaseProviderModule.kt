@@ -22,7 +22,7 @@ class FirebaseProviderModule {
         firestoreSettings = firestoreSettings {
             setLocalCacheSettings(
                 PersistentCacheSettings.newBuilder()
-                    .build()
+                    .build(),
             )
         }
     }

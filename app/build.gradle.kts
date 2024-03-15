@@ -98,11 +98,13 @@ android {
 
 dependencies {
     implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.work.runtime)
+    implementation(libs.androidx.connect.client)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
@@ -110,6 +112,7 @@ dependencies {
     implementation (libs.androidx.runtime.livedata)
     implementation(libs.androidx.work.runtime)
     implementation(libs.accompanist.permissions)
+    implementation(libs.coil.compose)
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
@@ -132,4 +135,7 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.firebase.ui.auth)
     implementation(libs.androidx.activity)
+    implementation(libs.firebase.messaging)
+
+    implementation(libs.animated.navigation.bar)
 }

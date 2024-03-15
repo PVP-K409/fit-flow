@@ -1,45 +1,132 @@
 package com.github.k409.fitflow.ui.screens.activity
 
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.health.connect.client.PermissionController
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.k409.fitflow.R
+import com.github.k409.fitflow.model.DailyStepRecord
+import com.github.k409.fitflow.ui.common.TextWithLabel
 import com.github.k409.fitflow.ui.components.activity.CircularProgressBar
 import com.github.k409.fitflow.ui.components.activity.DistanceAndCalories
+import com.github.k409.fitflow.ui.components.calendar.CalendarView
+import java.time.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun ActivityScreen() {
     val activityViewModel: ActivityViewModel = hiltViewModel()
     val todaySteps by activityViewModel.todaySteps.observeAsState()
     val todayGoal: Long = 6000 // TODO goal setter
+    val permissionContract = PermissionController.createRequestPermissionResultContract()
+    val launcher = rememberLauncherForActivityResult(permissionContract) {
+    }
+
+    val selectedDate = remember { mutableStateOf(LocalDate.now()) }
+    var selectedDateRecord by remember { mutableStateOf(todaySteps) }
 
     LaunchedEffect(key1 = Unit) {
+        if (!activityViewModel.permissionsGranted()) {
+            launcher.launch(activityViewModel.permissions)
+        }
+
         activityViewModel.updateTodayStepsManually()
+
+        if (selectedDate.value == LocalDate.now()) {
+            selectedDateRecord = todaySteps
+        }
     }
+
+    LaunchedEffect(key1 = selectedDate.value) {
+        val record = activityViewModel.getStepRecord(selectedDate.value)
+        selectedDateRecord = record
+    }
+
     Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 16.dp),
     ) {
-        todaySteps?.let {
-            CircularProgressBar(
-                taken = it.totalSteps,
-                goal = todayGoal,
-            )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.6f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            todaySteps?.let {
+                CircularProgressBar(
+                    taken = it.totalSteps,
+                    goal = todayGoal,
+                )
+            }
+            todaySteps?.let {
+                DistanceAndCalories(
+                    calories = it.caloriesBurned,
+                    distance = it.totalDistance,
+                )
+            }
         }
-        todaySteps?.let {
-            DistanceAndCalories(
-                calories = it.caloriesBurned,
-                distance = it.totalDistance
-            )
+
+        OutlinedCard(
+            modifier = Modifier
+                .padding(16.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(top = 8.dp),
+            ) {
+                CalendarView(
+                    selectedDate = selectedDate,
+                    weeksCount = 52,
+                )
+
+                (selectedDateRecord ?: DailyStepRecord()).let {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        val options = listOf(
+                            stringResource(R.string.steps) to it.totalSteps,
+                            stringResource(R.string.calories) to "${it.caloriesBurned} cal",
+                            stringResource(R.string.distance) to "${it.totalDistance} km",
+                        )
+
+                        options.forEachIndexed { _, option ->
+                            TextWithLabel(
+                                label = option.first,
+                                text = option.second.toString(),
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
-
 }
-
