@@ -43,20 +43,15 @@ class StepsRepository @Inject constructor(
             .await()
     }
 
-    suspend fun updateSteps(newSteps: DailyStepRecord) {
+    suspend fun updateSteps(newStepRecord: DailyStepRecord) {
         val currentUser = auth.currentUser ?: return
         val uid = currentUser.uid
 
         try {
-            val stepsDocumentRef = getStepsDocumentReference(uid, newSteps.recordDate)
+            val stepsDocumentRef = getStepsDocumentReference(uid, newStepRecord.recordDate)
 
             stepsDocumentRef.set(
-                mapOf(
-                    "totalSteps" to newSteps.totalSteps,
-                    "stepsBeforeReboot" to newSteps.stepsBeforeReboot,
-                    "totalDistance" to newSteps.totalDistance,
-                    "caloriesBurned" to newSteps.caloriesBurned
-                ),
+                newStepRecord,
                 SetOptions.merge()
             ).await()
         } catch (e: FirebaseFirestoreException) {
