@@ -10,7 +10,7 @@ import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.github.k409.fitflow.data.UserRepository
+import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.di.healthConnect.HealthStatsManager
 import com.github.k409.fitflow.model.DailyStepRecord
 import dagger.assisted.Assisted
@@ -23,7 +23,7 @@ private const val TAG = "StepCounterWorker"
 class StepCounterWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    private val repository: UserRepository,
+    private val stepsRepository: StepsRepository,
     private val stepCounter: StepCounter,
     private val prefs: SharedPreferences,
     private val client: HealthConnectClient,
@@ -44,7 +44,7 @@ class StepCounterWorker @AssistedInject constructor(
 
         try {
             val currentSteps = stepCounter.steps()
-            val dailyStepRecord: DailyStepRecord? = repository.loadTodaySteps(today)
+            val dailyStepRecord: DailyStepRecord? = stepsRepository.getSteps(today)
             val newDailyStepRecord: DailyStepRecord
             var calories = 0L
             var distance = 0.0
@@ -97,7 +97,7 @@ class StepCounterWorker @AssistedInject constructor(
 
             prefs.edit().putString("lastDate", today).apply() // saving last update day
 
-            repository.updateSteps(newDailyStepRecord)
+            stepsRepository.updateSteps(newDailyStepRecord)
 
             return Result.success()
         } catch (e: Exception) {
