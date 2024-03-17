@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Modifier.noRippleClickable(
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
     onLongClick: (() -> Unit)? = null,
     onDoubleClick: (() -> Unit)? = null,
 ): Modifier = this.then(

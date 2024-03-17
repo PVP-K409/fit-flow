@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.components.aquarium
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -7,14 +8,21 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -140,4 +148,74 @@ fun AnimatedPrimaryFish(
                 }
             }),
     )
+}
+
+@Composable
+fun Fish(
+    modifier: Modifier = Modifier,
+    @DrawableRes fishDrawableId: Int = R.drawable.primary_fish,
+    fishSize: Dp = 100.dp,
+) {
+    val primaryFishPainter = painterResource(id = fishDrawableId)
+
+    Image(
+        painter = primaryFishPainter,
+        contentDescription = "Primary Fish",
+        modifier = modifier.size(fishSize),
+    )
+}
+
+@Composable
+fun DraggableFish(
+    modifier: Modifier = Modifier,
+    fishModifier: Modifier = Modifier,
+    @DrawableRes fishDrawableId: Int = R.drawable.primary_fish,
+    fishSize: Dp = 100.dp,
+    widthFraction: Float = 0.5f,
+    heightFraction: Float = 0.5f,
+    initialOffsetX: Float? = null,
+    initialOffsetY: Float? = null,
+    onPositionChanged: (x: Float, y: Float) -> Unit = { _, _ -> }
+) {
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+        val maxHeight = constraints.maxHeight
+        val maxWidth = constraints.maxWidth
+
+        val fishSizePx = with(LocalDensity.current) { fishSize.toPx() }
+
+        val initialPositionX = initialOffsetX ?: ((maxWidth * widthFraction) - (fishSizePx / 2f))
+        val initialPositionY = initialOffsetY ?: ((maxHeight * heightFraction) - (fishSizePx / 2f))
+
+        var offsetX by remember { mutableFloatStateOf(initialPositionX) }
+        var offsetY by remember { mutableFloatStateOf(initialPositionY) }
+
+        val maxOffsetX = maxWidth.toFloat() - fishSizePx
+        val maxOffsetY = maxHeight.toFloat() - fishSizePx
+
+        Fish(
+            fishSize = fishSize,
+            fishDrawableId = fishDrawableId,
+            modifier = fishModifier
+                .offset {
+                    IntOffset(
+                        offsetX
+                            .roundToInt()
+                            .coerceIn(0, maxOffsetX.toInt()),
+                        offsetY
+                            .roundToInt()
+                            .coerceIn(0, maxOffsetY.toInt())
+                    )
+                }
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+
+                        offsetX = (offsetX + dragAmount.x).coerceIn(0f, maxOffsetX)
+                        offsetY = (offsetY + dragAmount.y).coerceIn(0f, maxOffsetY)
+
+                        onPositionChanged(offsetX, offsetY)
+                    }
+                }
+        )
+    }
 }
