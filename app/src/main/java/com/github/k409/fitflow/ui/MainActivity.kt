@@ -22,18 +22,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val sharedUiState by mainActivityViewModel.sharedUiState.collectAsStateWithLifecycle()
+            val uiState by mainActivityViewModel.sharedUiState.collectAsStateWithLifecycle()
 
-            FitFlowTheme {
-                when (sharedUiState) {
-                    is SharedUiState.Loading -> {
-                        FitFlowCircularProgressIndicator()
-                    }
+            when (uiState) {
+                is SharedUiState.Loading -> {
+                    FitFlowCircularProgressIndicator()
+                }
 
-                    is SharedUiState.Success -> {
+                is SharedUiState.Success -> {
+                    val sharedUiState = uiState as SharedUiState.Success
+
+                    FitFlowTheme(
+                        themePreferences = sharedUiState.themePreferences,
+                    ) {
                         PermissionsHandler()
                         FitFlowApp(
-                            sharedUiState = sharedUiState as SharedUiState.Success,
+                            sharedUiState = sharedUiState,
                         )
                     }
                 }

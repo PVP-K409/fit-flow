@@ -114,6 +114,9 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.coil.compose)
 
+    implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.androidx.datastore.preferences)
+
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
