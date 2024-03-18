@@ -122,6 +122,9 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.coil.compose)
 
+    implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.androidx.datastore.preferences)
+
     implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.core.ktx)
