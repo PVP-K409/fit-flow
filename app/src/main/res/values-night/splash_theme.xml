@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.App.AppSplash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#FF1C1B1F</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/avd_fitflow</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="postSplashScreenTheme">@style/Theme.FitFlow</item>
+    </style>
+
+</resources>
