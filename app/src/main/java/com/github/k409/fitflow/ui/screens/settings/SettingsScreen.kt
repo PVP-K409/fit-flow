@@ -35,8 +35,8 @@ import androidx.navigation.NavHostController
 import com.exyte.animatednavbar.utils.noRippleClickable
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.theme.ThemeColour
-import com.github.k409.fitflow.model.theme.ThemePreferences
 import com.github.k409.fitflow.model.theme.ThemeMode
+import com.github.k409.fitflow.model.theme.ThemePreferences
 import com.github.k409.fitflow.ui.common.FancyIndicatorTabs
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.components.settings.SettingsEntry
@@ -131,6 +131,24 @@ private fun ColumnScope.AppearanceSettingsGroup(
 ) {
     SettingsEntryGroupText(title = "Appearance")
 
+    ThemeModeSelector(
+        themePreferences = themePreferences,
+        onUpdateThemePreferences = onUpdateThemePreferences
+    )
+
+    ThemeColourSelector(
+        themePreferences = themePreferences,
+        onUpdateThemePreferences = onUpdateThemePreferences
+    )
+
+    SettingsGroupSpacer()
+}
+
+@Composable
+private fun ThemeModeSelector(
+    themePreferences: ThemePreferences,
+    onUpdateThemePreferences: (ThemePreferences) -> Unit
+) {
     Column(
         modifier = Modifier.padding(
             horizontal = 32.dp,
@@ -139,9 +157,10 @@ private fun ColumnScope.AppearanceSettingsGroup(
     ) {
         Text(
             modifier = Modifier.padding(bottom = 8.dp),
-            text = "Colors",
+            text = "Mode",
             style = typography.titleMedium,
         )
+
         val values = ThemeMode.entries
             .map { it.title }
 
@@ -159,7 +178,13 @@ private fun ColumnScope.AppearanceSettingsGroup(
             }
         )
     }
+}
 
+@Composable
+private fun ColumnScope.ThemeColourSelector(
+    themePreferences: ThemePreferences,
+    onUpdateThemePreferences: (ThemePreferences) -> Unit
+) {
     AnimatedVisibility(
         visible = themePreferences.themeMode != ThemeMode.AUTOMATIC,
     ) {
@@ -169,7 +194,7 @@ private fun ColumnScope.AppearanceSettingsGroup(
                 .padding(horizontal = 32.dp),
         ) {
             Text(
-                text = "Theme",
+                text = "Colour",
                 style = typography.titleMedium,
             )
 
@@ -235,6 +260,4 @@ private fun ColumnScope.AppearanceSettingsGroup(
             }
         }
     }
-
-    SettingsGroupSpacer()
 }
