@@ -27,12 +27,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.exyte.animatednavbar.utils.noRippleClickable
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.theme.ThemeColour
 import com.github.k409.fitflow.model.theme.ThemeMode
@@ -87,16 +89,16 @@ private fun AccountSettingsGroup(
     coroutineScope: CoroutineScope,
     settingsViewModel: SettingsViewModel
 ) {
-    SettingsEntryGroupText(title = "Account")
+    SettingsEntryGroupText(title = stringResource(R.string.account_settings_group_title))
 
     SettingsEntry(
-        title = "Email",
-        text = currentUser.email.ifEmpty { "Not logged in" },
+        title = stringResource(R.string.email),
+        text = currentUser.email.ifEmpty { stringResource(R.string.not_logged_in) },
     )
 
     SettingsEntry(
-        title = "Log out",
-        text = "You are logged in as ${currentUser.name}",
+        title = stringResource(R.string.log_out),
+        text = stringResource(R.string.you_are_logged_in_as, currentUser.name),
         onClick = {
             coroutineScope.launch {
                 settingsViewModel.signOut()
@@ -111,11 +113,11 @@ private fun AccountSettingsGroup(
 private fun ProfileSettingsGroup(
     navController: NavHostController,
 ) {
-    SettingsEntryGroupText(title = "Profile")
+    SettingsEntryGroupText(title = stringResource(R.string.profile_settings_group_title))
 
     SettingsEntry(
-        title = "Edit profile",
-        text = "Edit your profile",
+        title = stringResource(R.string.edit_profile),
+        text = stringResource(R.string.edit_your_profile),
         onClick = {
             navController.navigate(NavRoutes.ProfileCreation.route)
         },
@@ -129,7 +131,7 @@ private fun ColumnScope.AppearanceSettingsGroup(
     themePreferences: ThemePreferences,
     onUpdateThemePreferences: (ThemePreferences) -> Unit,
 ) {
-    SettingsEntryGroupText(title = "Appearance")
+    SettingsEntryGroupText(title = stringResource(R.string.appearance_settings_group_title))
 
     ThemeModeSelector(
         themePreferences = themePreferences,
@@ -157,7 +159,7 @@ private fun ThemeModeSelector(
     ) {
         Text(
             modifier = Modifier.padding(bottom = 8.dp),
-            text = "Mode",
+            text = stringResource(R.string.mode),
             style = typography.titleMedium,
         )
 
@@ -194,7 +196,7 @@ private fun ColumnScope.ThemeColourSelector(
                 .padding(horizontal = 32.dp),
         ) {
             Text(
-                text = "Colour",
+                text = stringResource(R.string.colour),
                 style = typography.titleMedium,
             )
 
