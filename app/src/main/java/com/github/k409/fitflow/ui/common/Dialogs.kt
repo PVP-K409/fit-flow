@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.common
 
+import android.view.ViewGroup.FOCUS_BLOCK_DESCENDANTS
 import android.widget.NumberPicker
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -141,6 +143,7 @@ fun NumberPickerDialog(
     displayedValues: Array<String>?,
 ) {
     var currentValue = initialValue
+    val themeColor = MaterialTheme.colorScheme.onSurface
     AlertDialog(
         title = {
             Text(text = dialogTitle)
@@ -151,7 +154,9 @@ fun NumberPickerDialog(
             AndroidView(
                 modifier = Modifier.fillMaxWidth(),
                 factory = { context ->
-                    NumberPicker(context).apply {
+                    NumberPicker(context) },
+                update = { numberPicker ->
+                    numberPicker.apply {
                         setOnValueChangedListener { _, _, newValue ->
                             currentValue = newValue
                         }
@@ -161,10 +166,13 @@ fun NumberPickerDialog(
                         if (displayedValues != null) {
                             this.displayedValues = displayedValues
                         }
+                        // Disable manual user input on number pickers
+                        this.descendantFocusability = FOCUS_BLOCK_DESCENDANTS
+                        // Needs API 29+
+                        this.textColor = themeColor.toArgb()
                     }
-                },
-                update = {},
-            )
+                         },
+                )
         },
         onDismissRequest = {
             onDismissRequest()
