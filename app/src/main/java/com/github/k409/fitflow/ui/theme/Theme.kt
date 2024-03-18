@@ -16,9 +16,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import com.github.k409.fitflow.model.theme.Theme
+import com.github.k409.fitflow.model.theme.ThemeColour
 import com.github.k409.fitflow.model.theme.ThemePreferences
-import com.github.k409.fitflow.model.theme.ThemeType
+import com.github.k409.fitflow.model.theme.ThemeMode
 import com.github.k409.fitflow.ui.theme.scheme.Amoled
 import com.github.k409.fitflow.ui.theme.scheme.Green
 import com.github.k409.fitflow.ui.theme.scheme.Pink
@@ -43,7 +43,7 @@ fun FitFlowTheme(
             window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
 
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
-                themePreferences.themeType == ThemeType.LIGHT || (themePreferences.themeType == ThemeType.AUTOMATIC && !isSystemInDarkTheme)
+                themePreferences.themeMode == ThemeMode.LIGHT || (themePreferences.themeMode == ThemeMode.AUTOMATIC && !isSystemInDarkTheme)
         }
     }
 
@@ -59,26 +59,26 @@ fun getColorScheme(
     themePreferences: ThemePreferences
 ): ColorScheme {
     return getColorScheme(
-        themeType = themePreferences.themeType,
-        theme = themePreferences.theme,
+        themeMode = themePreferences.themeMode,
+        themeColour = themePreferences.themeColour,
     )
 }
 
 @Composable
 fun getColorScheme(
-    themeType: ThemeType,
-    theme: Theme
+    themeMode: ThemeMode,
+    themeColour: ThemeColour
 ): ColorScheme {
 
     val dynamicColorsAvailable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
-    return when (themeType) {
-        ThemeType.DARK -> {
+    return when (themeMode) {
+        ThemeMode.DARK -> {
             when {
-                theme == Theme.GREEN -> Green.DarkColorScheme
-                theme == Theme.PINK -> Pink.PinkDarkColorScheme
-                theme == Theme.AMOLED -> Amoled.AmoledColorScheme
-                theme == Theme.DYNAMIC && dynamicColorsAvailable -> dynamicDarkColorScheme(
+                themeColour == ThemeColour.GREEN -> Green.DarkColorScheme
+                themeColour == ThemeColour.PINK -> Pink.PinkDarkColorScheme
+                themeColour == ThemeColour.AMOLED -> Amoled.AmoledColorScheme
+                themeColour == ThemeColour.DYNAMIC && dynamicColorsAvailable -> dynamicDarkColorScheme(
                     LocalContext.current
                 )
 
@@ -86,11 +86,11 @@ fun getColorScheme(
             }
         }
 
-        ThemeType.LIGHT -> {
+        ThemeMode.LIGHT -> {
             when {
-                theme == Theme.GREEN -> Green.LightColorScheme
-                theme == Theme.PINK -> Pink.PinkLightColorScheme
-                theme == Theme.DYNAMIC && dynamicColorsAvailable -> dynamicLightColorScheme(
+                themeColour == ThemeColour.GREEN -> Green.LightColorScheme
+                themeColour == ThemeColour.PINK -> Pink.PinkLightColorScheme
+                themeColour == ThemeColour.DYNAMIC && dynamicColorsAvailable -> dynamicLightColorScheme(
                     LocalContext.current
                 )
 
@@ -98,7 +98,7 @@ fun getColorScheme(
             }
         }
 
-        ThemeType.AUTOMATIC -> {
+        ThemeMode.AUTOMATIC -> {
             when {
                 isSystemInDarkTheme() -> Green.DarkColorScheme
                 else -> Green.LightColorScheme

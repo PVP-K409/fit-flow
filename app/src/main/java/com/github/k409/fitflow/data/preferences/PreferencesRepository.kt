@@ -5,9 +5,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
-import com.github.k409.fitflow.model.theme.Theme
+import com.github.k409.fitflow.model.theme.ThemeColour
 import com.github.k409.fitflow.model.theme.ThemePreferences
-import com.github.k409.fitflow.model.theme.ThemeType
+import com.github.k409.fitflow.model.theme.ThemeMode
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -42,20 +42,20 @@ class PreferencesRepository @Inject constructor(@ApplicationContext private val 
 
     suspend fun updateThemePreferences(themePreferences: ThemePreferences) {
         dataStore.edit { preferences ->
-            preferences[PreferenceKeys.THEME_TYPE] = themePreferences.themeType.name
-            preferences[PreferenceKeys.THEME] = themePreferences.theme.name
+            preferences[PreferenceKeys.THEME_TYPE] = themePreferences.themeMode.name
+            preferences[PreferenceKeys.THEME] = themePreferences.themeColour.name
         }
     }
 
-    val themePreferences: Flow<ThemePreferences> =
+    val themeColourPreferences: Flow<ThemePreferences> =
         dataStore.data.map { preferences ->
             ThemePreferences(
-                themeType = ThemeType.valueOf(
+                themeMode = ThemeMode.valueOf(
                     preferences[PreferenceKeys.THEME_TYPE]
-                        ?: ThemeType.AUTOMATIC.name
+                        ?: ThemeMode.AUTOMATIC.name
                 ),
-                theme = Theme.valueOf(
-                    preferences[PreferenceKeys.THEME] ?: Theme.GREEN.name
+                themeColour = ThemeColour.valueOf(
+                    preferences[PreferenceKeys.THEME] ?: ThemeColour.GREEN.name
                 )
             )
         }

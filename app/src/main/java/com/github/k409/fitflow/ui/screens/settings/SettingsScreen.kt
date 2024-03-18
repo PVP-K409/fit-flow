@@ -34,9 +34,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.exyte.animatednavbar.utils.noRippleClickable
 import com.github.k409.fitflow.model.User
-import com.github.k409.fitflow.model.theme.Theme
+import com.github.k409.fitflow.model.theme.ThemeColour
 import com.github.k409.fitflow.model.theme.ThemePreferences
-import com.github.k409.fitflow.model.theme.ThemeType
+import com.github.k409.fitflow.model.theme.ThemeMode
 import com.github.k409.fitflow.ui.common.FancyIndicatorTabs
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.components.settings.SettingsEntry
@@ -142,18 +142,18 @@ private fun ColumnScope.AppearanceSettingsGroup(
             text = "Colors",
             style = typography.titleMedium,
         )
-        val values = ThemeType.entries
+        val values = ThemeMode.entries
             .map { it.title }
 
         FancyIndicatorTabs(
             values = values,
-            selectedIndex = values.indexOf(themePreferences.themeType.title),
+            selectedIndex = values.indexOf(themePreferences.themeMode.title),
             onValueChange = {
-                val themeType = ThemeType.entries[it]
+                val themeMode = ThemeMode.entries[it]
 
                 onUpdateThemePreferences(
                     themePreferences.copy(
-                        themeType = themeType
+                        themeMode = themeMode
                     )
                 )
             }
@@ -161,7 +161,7 @@ private fun ColumnScope.AppearanceSettingsGroup(
     }
 
     AnimatedVisibility(
-        visible = themePreferences.themeType != ThemeType.AUTOMATIC,
+        visible = themePreferences.themeMode != ThemeMode.AUTOMATIC,
     ) {
         Column(
             modifier = Modifier
@@ -182,19 +182,19 @@ private fun ColumnScope.AppearanceSettingsGroup(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val themes = when (themePreferences.themeType) {
-                    ThemeType.DARK -> Theme.darkColorThemes
-                    ThemeType.LIGHT -> Theme.lightColorThemes
+                val themeColours = when (themePreferences.themeMode) {
+                    ThemeMode.DARK -> ThemeColour.darkColours
+                    ThemeMode.LIGHT -> ThemeColour.lightColours
                     else -> emptyList()
                 }
 
                 items(
-                    themes
+                    themeColours
                 ) { theme ->
                     val colorScheme = getColorScheme(
                         ThemePreferences(
-                            themeType = themePreferences.themeType,
-                            theme = theme,
+                            themeMode = themePreferences.themeMode,
+                            themeColour = theme,
                         )
                     )
 
@@ -206,7 +206,7 @@ private fun ColumnScope.AppearanceSettingsGroup(
                             .noRippleClickable {
                                 onUpdateThemePreferences(
                                     themePreferences.copy(
-                                        theme = theme
+                                        themeColour = theme
                                     )
                                 )
                             })
@@ -218,7 +218,7 @@ private fun ColumnScope.AppearanceSettingsGroup(
                                 .background(color = colorScheme.primaryContainer)
                                 .border(
                                     width = 2.dp,
-                                    color = if (themePreferences.theme == theme) colorScheme.primary else Color.Transparent,
+                                    color = if (themePreferences.themeColour == theme) colorScheme.primary else Color.Transparent,
                                     shape = CircleShape
                                 )
                         )

@@ -26,7 +26,7 @@ class SettingsViewModel @Inject constructor(
 
     val settingsUiState: StateFlow<SettingsUiState> = combine(
         userRepository.currentUser,
-        preferencesRepository.themePreferences,
+        preferencesRepository.themeColourPreferences,
     ) { user, themePreferences ->
         SettingsUiState.Success(
             user = user,

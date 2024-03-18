@@ -1,6 +1,6 @@
 package com.github.k409.fitflow.model.theme
 
-enum class Theme(
+enum class ThemeColour(
     val title: String,
 ) {
     GREEN("Green"),
@@ -9,14 +9,14 @@ enum class Theme(
     AMOLED("Amoled");
 
     companion object {
-        val darkColorThemes = listOf(
+        val darkColours = listOf(
             GREEN,
             PINK,
             DYNAMIC,
             AMOLED,
         )
 
-        val lightColorThemes = listOf(
+        val lightColours = listOf(
             GREEN,
             PINK,
             DYNAMIC,
