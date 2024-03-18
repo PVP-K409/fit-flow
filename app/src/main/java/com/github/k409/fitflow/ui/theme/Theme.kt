@@ -29,7 +29,7 @@ fun FitFlowTheme(
     content: @Composable () -> Unit,
 ) {
     val colorScheme = getColorScheme(
-        themePreferences = themePreferences
+        themePreferences = themePreferences,
     )
     val isSystemInDarkTheme = isSystemInDarkTheme()
 
@@ -56,7 +56,7 @@ fun FitFlowTheme(
 
 @Composable
 fun getColorScheme(
-    themePreferences: ThemePreferences
+    themePreferences: ThemePreferences,
 ): ColorScheme {
     return getColorScheme(
         themeMode = themePreferences.themeMode,
@@ -67,9 +67,8 @@ fun getColorScheme(
 @Composable
 fun getColorScheme(
     themeMode: ThemeMode,
-    themeColour: ThemeColour
+    themeColour: ThemeColour,
 ): ColorScheme {
-
     val dynamicColorsAvailable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     return when (themeMode) {
@@ -79,7 +78,7 @@ fun getColorScheme(
                 themeColour == ThemeColour.PINK -> Pink.PinkDarkColorScheme
                 themeColour == ThemeColour.AMOLED -> Amoled.AmoledColorScheme
                 themeColour == ThemeColour.DYNAMIC && dynamicColorsAvailable -> dynamicDarkColorScheme(
-                    LocalContext.current
+                    LocalContext.current,
                 )
 
                 else -> Green.DarkColorScheme
@@ -91,7 +90,7 @@ fun getColorScheme(
                 themeColour == ThemeColour.GREEN -> Green.LightColorScheme
                 themeColour == ThemeColour.PINK -> Pink.PinkLightColorScheme
                 themeColour == ThemeColour.DYNAMIC && dynamicColorsAvailable -> dynamicLightColorScheme(
-                    LocalContext.current
+                    LocalContext.current,
                 )
 
                 else -> Green.LightColorScheme
@@ -101,10 +100,10 @@ fun getColorScheme(
         ThemeMode.AUTOMATIC -> {
             when {
                 isSystemInDarkTheme() && dynamicColorsAvailable -> dynamicDarkColorScheme(
-                    LocalContext.current
+                    LocalContext.current,
                 )
                 dynamicColorsAvailable -> dynamicLightColorScheme(
-                    LocalContext.current
+                    LocalContext.current,
                 )
 
                 else -> Green.LightColorScheme

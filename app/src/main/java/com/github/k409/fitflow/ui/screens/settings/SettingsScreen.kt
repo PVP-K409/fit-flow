@@ -71,7 +71,7 @@ fun SettingsScreen(
     ) {
         AppearanceSettingsGroup(
             themePreferences = themePreferences,
-            onUpdateThemePreferences = settingsViewModel::updateThemePreferences
+            onUpdateThemePreferences = settingsViewModel::updateThemePreferences,
         )
 
         ProfileSettingsGroup(navController = navController)
@@ -79,7 +79,7 @@ fun SettingsScreen(
         AccountSettingsGroup(
             currentUser = currentUser,
             coroutineScope = coroutineScope,
-            settingsViewModel = settingsViewModel
+            settingsViewModel = settingsViewModel,
         )
     }
 }
@@ -88,7 +88,7 @@ fun SettingsScreen(
 private fun AccountSettingsGroup(
     currentUser: User,
     coroutineScope: CoroutineScope,
-    settingsViewModel: SettingsViewModel
+    settingsViewModel: SettingsViewModel,
 ) {
     SettingsEntryGroupText(title = stringResource(R.string.account_settings_group_title))
 
@@ -135,11 +135,13 @@ private fun ColumnScope.AppearanceSettingsGroup(
     SettingsEntryGroupText(title = stringResource(R.string.appearance_settings_group_title))
 
     ThemeModeSelector(
-        themePreferences = themePreferences, onUpdateThemePreferences = onUpdateThemePreferences
+        themePreferences = themePreferences,
+        onUpdateThemePreferences = onUpdateThemePreferences,
     )
 
     ThemeColourSelector(
-        themePreferences = themePreferences, onUpdateThemePreferences = onUpdateThemePreferences
+        themePreferences = themePreferences,
+        onUpdateThemePreferences = onUpdateThemePreferences,
     )
 
     SettingsGroupSpacer()
@@ -148,12 +150,13 @@ private fun ColumnScope.AppearanceSettingsGroup(
 @Composable
 private fun ThemeModeSelector(
     themePreferences: ThemePreferences,
-    onUpdateThemePreferences: (ThemePreferences) -> Unit
+    onUpdateThemePreferences: (ThemePreferences) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(
-            horizontal = 32.dp, vertical = 16.dp
-        )
+            horizontal = 32.dp,
+            vertical = 16.dp,
+        ),
     ) {
         Text(
             modifier = Modifier.padding(bottom = 8.dp),
@@ -163,24 +166,26 @@ private fun ThemeModeSelector(
 
         val values = ThemeMode.entries.map { it.title }
 
-        FancyIndicatorTabs(values = values,
+        FancyIndicatorTabs(
+            values = values,
             selectedIndex = values.indexOf(themePreferences.themeMode.title),
             onValueChange = {
                 val themeMode = ThemeMode.entries[it]
 
                 onUpdateThemePreferences(
                     themePreferences.copy(
-                        themeMode = themeMode
-                    )
+                        themeMode = themeMode,
+                    ),
                 )
-            })
+            },
+        )
     }
 }
 
 @Composable
 private fun ColumnScope.ThemeColourSelector(
     themePreferences: ThemePreferences,
-    onUpdateThemePreferences: (ThemePreferences) -> Unit
+    onUpdateThemePreferences: (ThemePreferences) -> Unit,
 ) {
     AnimatedVisibility(
         visible = themePreferences.themeMode != ThemeMode.AUTOMATIC,
@@ -198,10 +203,10 @@ private fun ColumnScope.ThemeColourSelector(
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(
-                    bottom = 8.dp
+                    bottom = 8.dp,
                 ),
                 horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 val dynamicColorsAvailable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
@@ -212,26 +217,28 @@ private fun ColumnScope.ThemeColourSelector(
                 }.toMutableList().apply { if (!dynamicColorsAvailable) remove(ThemeColour.DYNAMIC) }
 
                 items(
-                    themeColours
+                    themeColours,
                 ) { theme ->
                     val colorScheme = getColorScheme(
                         ThemePreferences(
                             themeMode = themePreferences.themeMode,
                             themeColour = theme,
-                        )
+                        ),
                     )
 
-                    Column(verticalArrangement = Arrangement.Center,
+                    Column(
+                        verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .padding(8.dp)
                             .noRippleClickable {
                                 onUpdateThemePreferences(
                                     themePreferences.copy(
-                                        themeColour = theme
-                                    )
+                                        themeColour = theme,
+                                    ),
                                 )
-                            }) {
+                            },
+                    ) {
                         Box(
                             modifier = Modifier
                                 .size(50.dp)
@@ -240,8 +247,8 @@ private fun ColumnScope.ThemeColourSelector(
                                 .border(
                                     width = 2.dp,
                                     color = if (themePreferences.themeColour == theme) colorScheme.primary else Color.Transparent,
-                                    shape = CircleShape
-                                )
+                                    shape = CircleShape,
+                                ),
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
@@ -249,7 +256,7 @@ private fun ColumnScope.ThemeColourSelector(
                         Text(
                             text = theme.title,
                             style = typography.labelMedium,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
                         )
                     }
                 }

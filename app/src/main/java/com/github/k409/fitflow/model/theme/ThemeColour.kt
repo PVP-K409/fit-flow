@@ -6,7 +6,8 @@ enum class ThemeColour(
     GREEN("Green"),
     PINK("Pink"),
     DYNAMIC("Dynamic"),
-    AMOLED("Amoled");
+    AMOLED("Amoled"),
+    ;
 
     companion object {
         val darkColours = listOf(

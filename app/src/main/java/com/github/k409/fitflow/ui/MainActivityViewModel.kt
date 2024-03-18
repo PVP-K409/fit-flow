@@ -22,8 +22,7 @@ class MainActivityViewModel @Inject constructor(
     val sharedUiState: StateFlow<SharedUiState> = combine(
         userRepository.currentUser,
         preferencesRepository.themeColourPreferences,
-    )
-    { currentUser, themePreferences ->
+    ) { currentUser, themePreferences ->
         SharedUiState.Success(
             user = currentUser,
             themePreferences = themePreferences,

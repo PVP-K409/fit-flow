@@ -6,13 +6,12 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.github.k409.fitflow.model.theme.ThemeColour
-import com.github.k409.fitflow.model.theme.ThemePreferences
 import com.github.k409.fitflow.model.theme.ThemeMode
+import com.github.k409.fitflow.model.theme.ThemePreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-
 
 const val DATASTORE_NAME = "preferences"
 
@@ -24,7 +23,7 @@ class PreferencesRepository @Inject constructor(@ApplicationContext private val 
 
     suspend fun <T> putPreference(
         key: Preferences.Key<T>,
-        value: T
+        value: T,
     ) {
         dataStore.edit { preferences ->
             preferences[key] = value
@@ -33,7 +32,7 @@ class PreferencesRepository @Inject constructor(@ApplicationContext private val 
 
     fun <T> getPreference(
         key: Preferences.Key<T>,
-        default: T
+        default: T,
     ): Flow<T> {
         return dataStore.data.map { preferences ->
             preferences[key] ?: default
@@ -52,12 +51,11 @@ class PreferencesRepository @Inject constructor(@ApplicationContext private val 
             ThemePreferences(
                 themeMode = ThemeMode.valueOf(
                     preferences[PreferenceKeys.THEME_TYPE]
-                        ?: ThemeMode.AUTOMATIC.name
+                        ?: ThemeMode.AUTOMATIC.name,
                 ),
                 themeColour = ThemeColour.valueOf(
-                    preferences[PreferenceKeys.THEME] ?: ThemeColour.GREEN.name
-                )
+                    preferences[PreferenceKeys.THEME] ?: ThemeColour.GREEN.name,
+                ),
             )
         }
-
 }

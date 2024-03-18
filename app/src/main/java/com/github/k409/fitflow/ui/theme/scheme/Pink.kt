@@ -4,7 +4,6 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-
 object Pink {
     val md_theme_light_primary = Color(0xFFAF2363)
     val md_theme_light_onPrimary = Color(0xFFFFFFFF)
@@ -101,7 +100,6 @@ object Pink {
         outlineVariant = md_theme_light_outlineVariant,
         scrim = md_theme_light_scrim,
     )
-
 
     val PinkDarkColorScheme = darkColorScheme(
         primary = md_theme_dark_primary,

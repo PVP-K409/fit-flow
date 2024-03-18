@@ -70,7 +70,6 @@ object Green {
     val md_theme_dark_scrim = Color(0xFF000000)
     /*val seed = Color(0xFF006C56)*/
 
-
     val LightColorScheme = lightColorScheme(
         primary = md_theme_light_primary,
         onPrimary = md_theme_light_onPrimary,
@@ -135,4 +134,3 @@ object Green {
         scrim = md_theme_dark_scrim,
     )
 }
-

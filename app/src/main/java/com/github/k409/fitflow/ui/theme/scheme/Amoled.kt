@@ -9,6 +9,6 @@ object Amoled {
     val AmoledColorScheme =
         Green.DarkColorScheme.copy(
             background = md_theme_amoled_background,
-            surface = md_theme_amoled_surface
+            surface = md_theme_amoled_surface,
         )
 }
