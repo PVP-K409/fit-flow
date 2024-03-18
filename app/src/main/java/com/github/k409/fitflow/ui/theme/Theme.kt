@@ -17,8 +17,8 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.github.k409.fitflow.model.theme.ThemeColour
-import com.github.k409.fitflow.model.theme.ThemePreferences
 import com.github.k409.fitflow.model.theme.ThemeMode
+import com.github.k409.fitflow.model.theme.ThemePreferences
 import com.github.k409.fitflow.ui.theme.scheme.Amoled
 import com.github.k409.fitflow.ui.theme.scheme.Green
 import com.github.k409.fitflow.ui.theme.scheme.Pink
@@ -100,7 +100,13 @@ fun getColorScheme(
 
         ThemeMode.AUTOMATIC -> {
             when {
-                isSystemInDarkTheme() -> Green.DarkColorScheme
+                isSystemInDarkTheme() && dynamicColorsAvailable -> dynamicDarkColorScheme(
+                    LocalContext.current
+                )
+                dynamicColorsAvailable -> dynamicLightColorScheme(
+                    LocalContext.current
+                )
+
                 else -> Green.LightColorScheme
             }
         }

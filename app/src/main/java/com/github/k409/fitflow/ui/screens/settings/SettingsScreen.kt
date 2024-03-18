@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.screens.settings
 
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -134,13 +135,11 @@ private fun ColumnScope.AppearanceSettingsGroup(
     SettingsEntryGroupText(title = stringResource(R.string.appearance_settings_group_title))
 
     ThemeModeSelector(
-        themePreferences = themePreferences,
-        onUpdateThemePreferences = onUpdateThemePreferences
+        themePreferences = themePreferences, onUpdateThemePreferences = onUpdateThemePreferences
     )
 
     ThemeColourSelector(
-        themePreferences = themePreferences,
-        onUpdateThemePreferences = onUpdateThemePreferences
+        themePreferences = themePreferences, onUpdateThemePreferences = onUpdateThemePreferences
     )
 
     SettingsGroupSpacer()
@@ -153,8 +152,7 @@ private fun ThemeModeSelector(
 ) {
     Column(
         modifier = Modifier.padding(
-            horizontal = 32.dp,
-            vertical = 16.dp
+            horizontal = 32.dp, vertical = 16.dp
         )
     ) {
         Text(
@@ -163,11 +161,9 @@ private fun ThemeModeSelector(
             style = typography.titleMedium,
         )
 
-        val values = ThemeMode.entries
-            .map { it.title }
+        val values = ThemeMode.entries.map { it.title }
 
-        FancyIndicatorTabs(
-            values = values,
+        FancyIndicatorTabs(values = values,
             selectedIndex = values.indexOf(themePreferences.themeMode.title),
             onValueChange = {
                 val themeMode = ThemeMode.entries[it]
@@ -177,8 +173,7 @@ private fun ThemeModeSelector(
                         themeMode = themeMode
                     )
                 )
-            }
-        )
+            })
     }
 }
 
@@ -201,19 +196,20 @@ private fun ColumnScope.ThemeColourSelector(
             )
 
             LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(
                     bottom = 8.dp
                 ),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val dynamicColorsAvailable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
                 val themeColours = when (themePreferences.themeMode) {
                     ThemeMode.DARK -> ThemeColour.darkColours
                     ThemeMode.LIGHT -> ThemeColour.lightColours
                     else -> emptyList()
-                }
+                }.toMutableList().apply { if (!dynamicColorsAvailable) remove(ThemeColour.DYNAMIC) }
 
                 items(
                     themeColours
@@ -225,8 +221,7 @@ private fun ColumnScope.ThemeColourSelector(
                         )
                     )
 
-                    Column(
-                        verticalArrangement = Arrangement.Center,
+                    Column(verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .padding(8.dp)
@@ -236,8 +231,7 @@ private fun ColumnScope.ThemeColourSelector(
                                         themeColour = theme
                                     )
                                 )
-                            })
-                    {
+                            }) {
                         Box(
                             modifier = Modifier
                                 .size(50.dp)
