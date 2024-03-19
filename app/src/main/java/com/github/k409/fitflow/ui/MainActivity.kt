@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.PermissionsHandler
@@ -21,19 +22,29 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        val splashScreen = installSplashScreen()
+
+        splashScreen.setKeepOnScreenCondition {
+            mainActivityViewModel.isLoading()
+        }
+
         setContent {
-            val sharedUiState by mainActivityViewModel.sharedUiState.collectAsStateWithLifecycle()
+            val uiState by mainActivityViewModel.sharedUiState.collectAsStateWithLifecycle()
 
-            FitFlowTheme {
-                when (sharedUiState) {
-                    is SharedUiState.Loading -> {
-                        FitFlowCircularProgressIndicator()
-                    }
+            when (uiState) {
+                is SharedUiState.Loading -> {
+                    FitFlowCircularProgressIndicator()
+                }
 
-                    is SharedUiState.Success -> {
+                is SharedUiState.Success -> {
+                    val sharedUiState = uiState as SharedUiState.Success
+
+                    FitFlowTheme(
+                        themePreferences = sharedUiState.themePreferences,
+                    ) {
                         PermissionsHandler()
                         FitFlowApp(
-                            sharedUiState = sharedUiState as SharedUiState.Success,
+                            sharedUiState = sharedUiState,
                         )
                     }
                 }

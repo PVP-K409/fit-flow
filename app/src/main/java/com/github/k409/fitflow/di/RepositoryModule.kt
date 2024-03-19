@@ -1,17 +1,20 @@
 package com.github.k409.fitflow.di
 
+import android.content.Context
 import android.content.SharedPreferences
 import com.github.k409.fitflow.data.AuthRepository
 import com.github.k409.fitflow.data.HydrationRepository
 import com.github.k409.fitflow.data.ProfileRepository
 import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.data.UserRepository
+import com.github.k409.fitflow.data.preferences.PreferencesRepository
 import com.github.k409.fitflow.features.stepcounter.StepCounter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -65,5 +68,11 @@ object RepositoryModule {
         prefs: SharedPreferences,
     ): StepsRepository {
         return StepsRepository(db, auth, stepCounter, prefs)
+    }
+
+    @Provides
+    @Singleton
+    fun providePreferencesRepository(@ApplicationContext context: Context): PreferencesRepository {
+        return PreferencesRepository(context)
     }
 }

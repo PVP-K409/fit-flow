@@ -25,7 +25,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.FitFlow">
+            android:theme="@style/Theme.App.AppSplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW_PERMISSION_USAGE"/>
@@ -36,7 +36,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Broadcast Receiver -->
         <receiver
             android:name=".ui.screens.hydration.HydrationReminder"
             android:enabled="true"
