@@ -153,7 +153,7 @@ fun AquariumMetrics(
                     modifier = Modifier.size(16.dp),
                     imageVector = Icons.Filled.WaterDrop,
                     contentDescription = "Water Level",
-                    tint = Color(0xFF7FABC0),
+                    tint = Color(0xFF03A9F4),
                 )
             }
 
