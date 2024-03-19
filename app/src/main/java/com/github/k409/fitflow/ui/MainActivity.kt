@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.PermissionsHandler
@@ -20,6 +21,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        val splashScreen = installSplashScreen()
+
+        splashScreen.setKeepOnScreenCondition {
+            mainActivityViewModel.isLoading()
+        }
 
         setContent {
             val uiState by mainActivityViewModel.sharedUiState.collectAsStateWithLifecycle()

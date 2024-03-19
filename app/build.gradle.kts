@@ -31,8 +31,16 @@ android {
         }
 
         buildConfigField("String", "CLIENT_ID", "\"${keystoreProperties["github.clientId"]}\"")
-        buildConfigField("String", "CLIENT_SECRET", "\"${keystoreProperties["github.clientSecret"]}\"")
-        buildConfigField("String", "REDIRECT_URI", "\"${keystoreProperties["github.redirectUri"]}\"")
+        buildConfigField(
+            "String",
+            "CLIENT_SECRET",
+            "\"${keystoreProperties["github.clientSecret"]}\""
+        )
+        buildConfigField(
+            "String",
+            "REDIRECT_URI",
+            "\"${keystoreProperties["github.redirectUri"]}\""
+        )
     }
 
     buildFeatures {
@@ -109,13 +117,15 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
 
-    implementation (libs.androidx.runtime.livedata)
+    implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.work.runtime)
     implementation(libs.accompanist.permissions)
     implementation(libs.coil.compose)
 
     implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.androidx.datastore.preferences)
+
+    implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
