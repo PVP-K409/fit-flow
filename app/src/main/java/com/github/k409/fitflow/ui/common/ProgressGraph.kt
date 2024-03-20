@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
@@ -32,6 +31,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 @Composable
@@ -50,36 +50,49 @@ fun ProgressGraph(
     circleRadius: Float = 10f,
     textSize: TextUnit = 10.sp,
 ) {
-//    val selectedIndex = remember { mutableIntStateOf(-1) }
-
     val density = LocalDensity.current
-    val textPaint = remember(density) {
+    val textPaintXAxis = remember(density) {
         Paint().apply {
             this.color = textColor.toArgb()
             this.textAlign = Paint.Align.CENTER
             this.textSize = density.run { textSize.toPx() }
         }
     }
+    val textPaintYAxis = remember(density) {
+        Paint().apply {
+            this.color = textColor.toArgb()
+            this.textAlign = Paint.Align.RIGHT
+            this.textSize = density.run { textSize.toPx() }
+        }
+    }
 
-    val maxDataPoint = data.maxOfOrNull { it.toFloat() } ?: 1f
+    val maxDataValue = data.maxOfOrNull { it.toFloat() } ?: 1f
+    val minDataValue = data.minOfOrNull { it.toFloat() } ?: 0f
+
+    val maxXAxisLabelWidth = xAxisLabels.maxOf { textPaintXAxis.measureText(it) }
+    val maxYAxisLabelWidth =
+        textPaintYAxis.measureText("${data.maxOfOrNull { it.toFloat() } ?: 1f}$dataUnit")
+
+    val padding = 10f
 
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
+//            .background(primaryColor.copy(alpha = 0.2f))
             .pointerInput(Unit) {
                 detectTapGestures { offset ->
-                    // Select the nearest dot based on x-coordinate
-                    val startX = 50f
-                    val endX = size.width - 50f
-                    val dotsStep = (endX - startX) / (data.size - 1)
+                    // Calculate the width of the longest label on the x-axis
+                    val startX = max(maxYAxisLabelWidth, maxXAxisLabelWidth) + padding
+                    val endX = size.width - padding * 2
 
-                    // Find the nearest dot based on x-coordinate
+                    val pointsStep = (endX - startX) / (data.size - 1)
+
+                    // Find the nearest point based on x-coordinate
                     var nearestIndex = -1
                     var smallestDifference = Float.MAX_VALUE
 
                     for (i in data.indices) {
-                        val x = startX + dotsStep * i
+                        val x = startX + pointsStep * i
                         val difference = abs(offset.x - x)
 
                         if (difference < smallestDifference) {
@@ -88,19 +101,22 @@ fun ProgressGraph(
                         }
                     }
 
-                    // Select the nearest dot
+                    // Select the nearest point
                     if (nearestIndex != -1) {
                         selectedIndex.intValue = nearestIndex
                         onSelectedIndexChange(nearestIndex)
                     }
                 }
-            }
+            },
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val startX = 50f
-            val endX = size.width - 50f
-            val startY = size.height - 50f
+            val startX = max(maxYAxisLabelWidth, maxXAxisLabelWidth) + padding
+            val endX = size.width - padding * 2
+
+            val startY = size.height - textPaintXAxis.textSize - padding * 2 - 50f
             val endY = 50f
+
+            val pointsStep = (endX - startX) / (data.size - 1)
 
             drawGridLines(
                 gridColor = gridColor,
@@ -119,22 +135,20 @@ fun ProgressGraph(
                 startX = startX,
                 xAxisLabels = xAxisLabels,
                 startY = startY,
-                textPaint = textPaint,
-                data = data,
+                textPaintXAxis = textPaintXAxis,
+                textPaintYAxis = textPaintYAxis,
+                maxDataValue = maxDataValue,
+                minDataValue = minDataValue,
                 dataUnit = dataUnit,
                 endY = endY
             )
 
-
-            val dotsStep = (endX - startX) / (data.size - 1)
-
-            // Draw lines between dots
             drawLinesBetweenPoints(
                 data,
                 startX,
-                dotsStep,
+                pointsStep,
                 startY,
-                maxDataPoint,
+                maxDataValue,
                 endY,
                 primaryColor,
                 lineWidth
@@ -144,20 +158,19 @@ fun ProgressGraph(
                 startX = startX,
                 startY = startY,
                 data = data,
-                maxDataPoint = maxDataPoint,
+                maxDataPoint = maxDataValue,
                 endY = endY,
-                dotsStep = dotsStep,
+                pointsStep = pointsStep,
                 endX = endX,
                 primaryColor = primaryColor
             )
 
-            // Draw dots
             drawPoints(
                 data = data,
                 startX = startX,
-                dotsStep = dotsStep,
+                pointsStep = pointsStep,
                 startY = startY,
-                maxDataPoint = maxDataPoint,
+                maxDataPoint = maxDataValue,
                 endY = endY,
                 selectedIndex = selectedIndex,
                 selectedColor = selectedColor,
@@ -172,7 +185,7 @@ fun ProgressGraph(
 private fun DrawScope.drawPoints(
     data: List<Number>,
     startX: Float,
-    dotsStep: Float,
+    pointsStep: Float,
     startY: Float,
     maxDataPoint: Float,
     endY: Float,
@@ -183,7 +196,7 @@ private fun DrawScope.drawPoints(
     lineWidth: Float
 ) {
     data.forEachIndexed { index, progress ->
-        val x = startX + dotsStep * index
+        val x = startX + pointsStep * index
         val y = startY - (progress.toFloat() / maxDataPoint) * (startY - endY)
 
         val color = if (index == selectedIndex.intValue) selectedColor else primaryColor
@@ -212,7 +225,7 @@ private fun DrawScope.drawAreaUnderGraph(
     data: List<Number>,
     maxDataPoint: Float,
     endY: Float,
-    dotsStep: Float,
+    pointsStep: Float,
     endX: Float,
     primaryColor: Color
 ) {
@@ -224,7 +237,7 @@ private fun DrawScope.drawAreaUnderGraph(
 
     for (i in 1 until data.size) {
         path.lineTo(
-            startX + dotsStep * i,
+            startX + pointsStep * i,
             startY - (data[i].toFloat() / maxDataPoint) * (startY - endY)
         )
     }
@@ -248,7 +261,7 @@ private fun DrawScope.drawAreaUnderGraph(
 private fun DrawScope.drawLinesBetweenPoints(
     data: List<Number>,
     startX: Float,
-    dotsStep: Float,
+    pointsStep: Float,
     startY: Float,
     maxDataPoint: Float,
     endY: Float,
@@ -256,10 +269,10 @@ private fun DrawScope.drawLinesBetweenPoints(
     lineWidth: Float
 ) {
     for (i in 0 until data.size - 1) {
-        val x1 = startX + dotsStep * i
+        val x1 = startX + pointsStep * i
         val y1 = startY - (data[i].toFloat() / maxDataPoint) * (startY - endY)
 
-        val x2 = startX + dotsStep * (i + 1)
+        val x2 = startX + pointsStep * (i + 1)
         val y2 = startY - (data[i + 1].toFloat() / maxDataPoint) * (startY - endY)
 
         drawLine(
@@ -276,8 +289,10 @@ private fun DrawScope.drawLabels(
     startX: Float,
     xAxisLabels: List<String>,
     startY: Float,
-    textPaint: Paint,
-    data: List<Number>,
+    textPaintXAxis: Paint,
+    textPaintYAxis: Paint,
+    maxDataValue: Float,
+    minDataValue: Float,
     dataUnit: String,
     endY: Float
 ) {
@@ -286,35 +301,53 @@ private fun DrawScope.drawLabels(
 
     xAxisLabels.forEachIndexed { index, label ->
         val x = startX + xLabelStep * index - 10f
-        val y = startY + 50f
+        val y = startY + 60f
 
-        this.drawIntoCanvas {
-            it.nativeCanvas.drawText(label, x, y, textPaint)
+        val textWidth = textPaintXAxis.measureText(label)
+
+        // Labels alignment
+        when (index) {
+            0 -> {
+                this.drawIntoCanvas {
+                    it.nativeCanvas.drawText(label, x + textWidth / 2, y, textPaintXAxis)
+                }
+            }
+
+            xAxisLabels.size - 1 -> {
+                this.drawIntoCanvas {
+                    it.nativeCanvas.drawText(label, x - textWidth / 2, y, textPaintXAxis)
+                }
+            }
+
+            else -> {
+                this.drawIntoCanvas {
+                    it.nativeCanvas.drawText(label, x, y, textPaintXAxis)
+                }
+            }
         }
     }
 
     // Draw y-axis labels
-    val max = data.maxOfOrNull { it.toFloat() } ?: 1f
-    val min = data.minOfOrNull { it.toFloat() } ?: 0f
-    val center = (max + min) / 2
+    val center = (maxDataValue + minDataValue) / 2
 
-    val maxLabel = "${max.roundToInt()}$dataUnit"
-    val minLabel = "${min.roundToInt()}$dataUnit"
+    val maxLabel = "${maxDataValue.roundToInt()}$dataUnit"
+    val minLabel = "${minDataValue.roundToInt()}$dataUnit"
     val centerLabel = "${center.roundToInt()}$dataUnit"
 
-    val maxLabelX = startX - 50f
-    val maxLabelY = endY + 10f
+    val spaceFromAxis = 30f
 
-    val minLabelX = startX - 50f
-    val minLabelY = startY + 10f
+    val maxLabelX = startX - spaceFromAxis
+    val maxLabelY = endY + textPaintYAxis.textSize
 
-    val centerLabelX = startX - 50f
+    val minLabelX = startX - spaceFromAxis
+
+    val centerLabelX = startX - spaceFromAxis
     val centerLabelY = startY - (startY - endY) / 2
 
     this.drawIntoCanvas {
-        it.nativeCanvas.drawText(maxLabel, maxLabelX, maxLabelY, textPaint)
-        it.nativeCanvas.drawText(minLabel, minLabelX, minLabelY, textPaint)
-        it.nativeCanvas.drawText(centerLabel, centerLabelX, centerLabelY, textPaint)
+        it.nativeCanvas.drawText(maxLabel, maxLabelX, maxLabelY, textPaintYAxis)
+        it.nativeCanvas.drawText(minLabel, minLabelX, startY, textPaintYAxis)
+        it.nativeCanvas.drawText(centerLabel, centerLabelX, centerLabelY, textPaintYAxis)
     }
 }
 
