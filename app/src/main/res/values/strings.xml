@@ -6,6 +6,8 @@
     <string name="marketplace">Market</string>
     <string name="waterLogging">Water</string>
     <string name="inventory">Inventory</string>
+    <string name="fishes">Fishes</string>
+    <string name="decorations">Decorations</string>
     <string name="distance">Distance</string>
     <string name="calories">Calories</string>
     <string name="steps">Steps</string>

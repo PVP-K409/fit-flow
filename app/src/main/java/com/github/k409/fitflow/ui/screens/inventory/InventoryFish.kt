@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-//import androidx.compose.material3.BottomAppBar
-//import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.R
 
 @Composable
-fun InventoryScreen(){
+fun InventoryFishes(){
     Box(
         modifier = Modifier.fillMaxSize()
     ){
@@ -37,9 +35,6 @@ fun InventoryScreen(){
             Item("Clownfish",
                 "The fish from the movie \"Finding Nemo\"",
                 R.drawable.primary_fish),
-            Item("Plant",
-                "I don't know what type of plant this is",
-                R.drawable.plant),
         )
         List(items)
     }

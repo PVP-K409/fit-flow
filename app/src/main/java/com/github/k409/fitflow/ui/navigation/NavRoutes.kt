@@ -4,13 +4,16 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Adjust
+import androidx.compose.material.icons.outlined.Anchor
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Inventory2
+import androidx.compose.material.icons.outlined.PanoramaFishEye
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Store
 import androidx.compose.material.icons.outlined.ViewTimeline
+import androidx.compose.material.icons.outlined.Water
 import androidx.compose.material.icons.outlined.WaterDrop
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.k409.fitflow.R
@@ -32,6 +35,8 @@ sealed class NavRoutes(
             ProfileCreation,
             Settings,
             Inventory,
+            Fishes,
+            Decorations,
         )
         val bottomNavBarItems = listOf(Home, Activity, Hydration, Goals, Marketplace)
     }
@@ -64,4 +69,7 @@ sealed class NavRoutes(
     data object Settings : NavRoutes("settings", R.string.settings, Icons.Outlined.Settings)
 
     data object Inventory : NavRoutes("inventory", R.string.inventory, Icons.Outlined.Inventory2)
+
+    data object Fishes : NavRoutes("fishes", R.string.fishes, Icons.Outlined.Water)
+    data object Decorations : NavRoutes("decorations", R.string.decorations, Icons.Outlined.Anchor)
 }
