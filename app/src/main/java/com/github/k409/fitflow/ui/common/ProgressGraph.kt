@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -36,6 +38,7 @@ import kotlin.math.roundToInt
 fun ProgressGraph(
     modifier: Modifier = Modifier,
     data: List<Number>,
+    selectedIndex: MutableIntState = remember { mutableIntStateOf(-1) },
     dataUnit: String = "",
     xAxisLabels: List<String>,
     onSelectedIndexChange: (Int) -> Unit = {},
@@ -47,7 +50,7 @@ fun ProgressGraph(
     circleRadius: Float = 10f,
     textSize: TextUnit = 10.sp,
 ) {
-    val selectedIndex = remember { mutableIntStateOf(-1) }
+//    val selectedIndex = remember { mutableIntStateOf(-1) }
 
     val density = LocalDensity.current
     val textPaint = remember(density) {
@@ -99,151 +102,272 @@ fun ProgressGraph(
             val startY = size.height - 50f
             val endY = 50f
 
-            // Draw x-axis
-            drawLine(
-                color = gridColor,
-                start = Offset(startX, startY),
-                end = Offset(endX, startY),
-                strokeWidth = lineWidth
+            drawGridLines(
+                gridColor = gridColor,
+                startX = startX,
+                startY = startY,
+                endX = endX,
+                lineWidth = lineWidth,
+                endY = endY,
+                data = data,
+                selectedIndex = selectedIndex,
+                selectedColor = selectedColor
             )
 
-            // Draw y-axis
-            drawLine(
-                color = gridColor,
-                start = Offset(startX, startY),
-                end = Offset(startX, endY),
-                strokeWidth = lineWidth
+            drawLabels(
+                endX = endX,
+                startX = startX,
+                xAxisLabels = xAxisLabels,
+                startY = startY,
+                textPaint = textPaint,
+                data = data,
+                dataUnit = dataUnit,
+                endY = endY
             )
-
-            // Draw vertical grid lines where each data point is
-            val stepVerticalLine = (endX - startX) / (data.size - 1)
-
-            for (i in data.indices) {
-                val x = startX + stepVerticalLine * i
-                val color =
-                    if (i == selectedIndex.intValue) selectedColor else gridColor
-
-                drawLine(
-                    color = color,
-                    start = Offset(x, startY),
-                    end = Offset(x, endY),
-                    strokeWidth = lineWidth
-                )
-            }
-
-            // Draw horizontal grid lines
-            drawLine(
-                color = gridColor,
-                start = Offset(startX, endY),
-                end = Offset(endX, endY),
-                strokeWidth = lineWidth
-            )
-
-            // Draw x-axis labels from yLabels
-            val xLabelStep = (endX - startX) / (xAxisLabels.size - 1)
-
-            xAxisLabels.forEachIndexed { index, label ->
-                val x = startX + xLabelStep * index - 10f
-                val y = startY + 50f
-
-                this.drawIntoCanvas {
-                    it.nativeCanvas.drawText(label, x, y, textPaint)
-                }
-            }
-
-            // Draw y-axis labels
-            val max = data.maxOfOrNull { it.toFloat() } ?: 1f
-            val min = data.minOfOrNull { it.toFloat() } ?: 0f
-            val center = (max + min) / 2
-            val maxLabel = "${max.roundToInt()}$dataUnit"
-            val minLabel = "${min.roundToInt()}$dataUnit"
-            val centerLabel = "${center.roundToInt()}$dataUnit"
-
-            val maxLabelX = startX - 50f
-            val maxLabelY = endY + 10f
-
-            val minLabelX = startX - 50f
-            val minLabelY = startY + 10f
-
-            val centerLabelX = startX - 50f
-            val centerLabelY = startY - (startY - endY) / 2
-
-            this.drawIntoCanvas {
-                it.nativeCanvas.drawText(maxLabel, maxLabelX, maxLabelY, textPaint)
-                it.nativeCanvas.drawText(minLabel, minLabelX, minLabelY, textPaint)
-                it.nativeCanvas.drawText(centerLabel, centerLabelX, centerLabelY, textPaint)
-            }
 
 
             val dotsStep = (endX - startX) / (data.size - 1)
 
             // Draw lines between dots
-            for (i in 0 until data.size - 1) {
-                val x1 = startX + dotsStep * i
-                val y1 = startY - (data[i].toFloat() / maxDataPoint) * (startY - endY)
-                val x2 = startX + dotsStep * (i + 1)
-                val y2 = startY - (data[i + 1].toFloat() / maxDataPoint) * (startY - endY)
+            drawLinesBetweenPoints(
+                data,
+                startX,
+                dotsStep,
+                startY,
+                maxDataPoint,
+                endY,
+                primaryColor,
+                lineWidth
+            )
 
-                drawLine(
-                    color = primaryColor,
-                    start = Offset(x1, y1),
-                    end = Offset(x2, y2),
-                    strokeWidth = lineWidth
-                )
-            }
-
-            // Draw area under the graph
-            val path = Path()
-
-            path.moveTo(startX, startY)
-            path.lineTo(startX, startY - (data[0].toFloat() / maxDataPoint) * (startY - endY))
-
-            for (i in 1 until data.size) {
-                path.lineTo(
-                    startX + dotsStep * i,
-                    startY - (data[i].toFloat() / maxDataPoint) * (startY - endY)
-                )
-            }
-
-            path.lineTo(endX, startY)
-            path.close()
-
-            drawPath(
-                path = path,
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.Transparent,
-                        primaryColor.copy(alpha = 0.4f),
-                    ),
-                    startY = startY,
-                    endY = endY
-                )
+            drawAreaUnderGraph(
+                startX = startX,
+                startY = startY,
+                data = data,
+                maxDataPoint = maxDataPoint,
+                endY = endY,
+                dotsStep = dotsStep,
+                endX = endX,
+                primaryColor = primaryColor
             )
 
             // Draw dots
-            data.forEachIndexed { index, progress ->
-                val x = startX + dotsStep * index
-                val y = startY - (progress.toFloat() / maxDataPoint) * (startY - endY)
-                val color = if (index == selectedIndex.intValue) selectedColor else primaryColor
-
-                if (index == selectedIndex.intValue) {
-                    drawCircle(
-                        color = color,
-                        center = Offset(x, y),
-                        radius = circleRadius * 0.5f,
-                        style = Fill,
-                    )
-                }
-
-                drawCircle(
-                    color = color,
-                    center = Offset(x, y),
-                    radius = circleRadius,
-                    style = Stroke(width = lineWidth),
-                )
-            }
+            drawPoints(
+                data = data,
+                startX = startX,
+                dotsStep = dotsStep,
+                startY = startY,
+                maxDataPoint = maxDataPoint,
+                endY = endY,
+                selectedIndex = selectedIndex,
+                selectedColor = selectedColor,
+                primaryColor = primaryColor,
+                circleRadius = circleRadius,
+                lineWidth = lineWidth
+            )
         }
     }
+}
+
+private fun DrawScope.drawPoints(
+    data: List<Number>,
+    startX: Float,
+    dotsStep: Float,
+    startY: Float,
+    maxDataPoint: Float,
+    endY: Float,
+    selectedIndex: MutableIntState,
+    selectedColor: Color,
+    primaryColor: Color,
+    circleRadius: Float,
+    lineWidth: Float
+) {
+    data.forEachIndexed { index, progress ->
+        val x = startX + dotsStep * index
+        val y = startY - (progress.toFloat() / maxDataPoint) * (startY - endY)
+
+        val color = if (index == selectedIndex.intValue) selectedColor else primaryColor
+
+        if (index == selectedIndex.intValue) {
+            drawCircle(
+                color = color,
+                center = Offset(x, y),
+                radius = circleRadius * 0.5f,
+                style = Fill,
+            )
+        }
+
+        drawCircle(
+            color = color,
+            center = Offset(x, y),
+            radius = circleRadius,
+            style = Stroke(width = lineWidth),
+        )
+    }
+}
+
+private fun DrawScope.drawAreaUnderGraph(
+    startX: Float,
+    startY: Float,
+    data: List<Number>,
+    maxDataPoint: Float,
+    endY: Float,
+    dotsStep: Float,
+    endX: Float,
+    primaryColor: Color
+) {
+    // Draw area under the graph
+    val path = Path()
+
+    path.moveTo(startX, startY)
+    path.lineTo(startX, startY - (data[0].toFloat() / maxDataPoint) * (startY - endY))
+
+    for (i in 1 until data.size) {
+        path.lineTo(
+            startX + dotsStep * i,
+            startY - (data[i].toFloat() / maxDataPoint) * (startY - endY)
+        )
+    }
+
+    path.lineTo(endX, startY)
+    path.close()
+
+    drawPath(
+        path = path,
+        brush = Brush.verticalGradient(
+            colors = listOf(
+                Color.Transparent,
+                primaryColor.copy(alpha = 0.4f),
+            ),
+            startY = startY,
+            endY = endY
+        )
+    )
+}
+
+private fun DrawScope.drawLinesBetweenPoints(
+    data: List<Number>,
+    startX: Float,
+    dotsStep: Float,
+    startY: Float,
+    maxDataPoint: Float,
+    endY: Float,
+    primaryColor: Color,
+    lineWidth: Float
+) {
+    for (i in 0 until data.size - 1) {
+        val x1 = startX + dotsStep * i
+        val y1 = startY - (data[i].toFloat() / maxDataPoint) * (startY - endY)
+
+        val x2 = startX + dotsStep * (i + 1)
+        val y2 = startY - (data[i + 1].toFloat() / maxDataPoint) * (startY - endY)
+
+        drawLine(
+            color = primaryColor,
+            start = Offset(x1, y1),
+            end = Offset(x2, y2),
+            strokeWidth = lineWidth
+        )
+    }
+}
+
+private fun DrawScope.drawLabels(
+    endX: Float,
+    startX: Float,
+    xAxisLabels: List<String>,
+    startY: Float,
+    textPaint: Paint,
+    data: List<Number>,
+    dataUnit: String,
+    endY: Float
+) {
+    // Draw x-axis labels from yLabels
+    val xLabelStep = (endX - startX) / (xAxisLabels.size - 1)
+
+    xAxisLabels.forEachIndexed { index, label ->
+        val x = startX + xLabelStep * index - 10f
+        val y = startY + 50f
+
+        this.drawIntoCanvas {
+            it.nativeCanvas.drawText(label, x, y, textPaint)
+        }
+    }
+
+    // Draw y-axis labels
+    val max = data.maxOfOrNull { it.toFloat() } ?: 1f
+    val min = data.minOfOrNull { it.toFloat() } ?: 0f
+    val center = (max + min) / 2
+
+    val maxLabel = "${max.roundToInt()}$dataUnit"
+    val minLabel = "${min.roundToInt()}$dataUnit"
+    val centerLabel = "${center.roundToInt()}$dataUnit"
+
+    val maxLabelX = startX - 50f
+    val maxLabelY = endY + 10f
+
+    val minLabelX = startX - 50f
+    val minLabelY = startY + 10f
+
+    val centerLabelX = startX - 50f
+    val centerLabelY = startY - (startY - endY) / 2
+
+    this.drawIntoCanvas {
+        it.nativeCanvas.drawText(maxLabel, maxLabelX, maxLabelY, textPaint)
+        it.nativeCanvas.drawText(minLabel, minLabelX, minLabelY, textPaint)
+        it.nativeCanvas.drawText(centerLabel, centerLabelX, centerLabelY, textPaint)
+    }
+}
+
+private fun DrawScope.drawGridLines(
+    gridColor: Color,
+    startX: Float,
+    startY: Float,
+    endX: Float,
+    lineWidth: Float,
+    endY: Float,
+    data: List<Number>,
+    selectedIndex: MutableIntState,
+    selectedColor: Color
+) {
+    // Draw x-axis
+    drawLine(
+        color = gridColor,
+        start = Offset(startX, startY),
+        end = Offset(endX, startY),
+        strokeWidth = lineWidth
+    )
+
+    // Draw y-axis
+    drawLine(
+        color = gridColor,
+        start = Offset(startX, startY),
+        end = Offset(startX, endY),
+        strokeWidth = lineWidth
+    )
+
+    // Draw vertical grid lines where each data point is
+    val stepVerticalLine = (endX - startX) / (data.size - 1)
+
+    for (i in data.indices) {
+        val x = startX + stepVerticalLine * i
+        val color =
+            if (i == selectedIndex.intValue) selectedColor else gridColor
+
+        drawLine(
+            color = color,
+            start = Offset(x, startY),
+            end = Offset(x, endY),
+            strokeWidth = lineWidth
+        )
+    }
+
+    // Draw horizontal grid lines
+    drawLine(
+        color = gridColor,
+        start = Offset(startX, endY),
+        end = Offset(endX, endY),
+        strokeWidth = lineWidth
+    )
 }
 
 @Preview
