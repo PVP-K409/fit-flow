@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.model.AquariumFishPhase
 import com.github.k409.fitflow.model.AquariumFishType
 import com.github.k409.fitflow.ui.common.noRippleClickable
 import kotlin.math.roundToInt
@@ -124,7 +125,7 @@ fun Aquarium(
                              color = Color.Red,
                          )*/
                         fishSize = 100.dp,
-                        fishDrawableId = it.imageRes,
+                        fishDrawableId = it.phaseImages[AquariumFishPhase.Regular]!!
                     )
                 }
 
