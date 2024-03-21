@@ -1,11 +1,9 @@
 package com.github.k409.fitflow.ui.components.aquarium
 
 import androidx.annotation.FloatRange
-import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -59,18 +57,20 @@ fun AnimatedWaves(
         label = "",
     )
 
-    val verticalStart = animateFloatAsState(
-        targetValue = (1 - waterLevel),
-        label = "",
-        animationSpec = tween(durationMillis = 1500, easing = FastOutLinearInEasing)
-    )
+//    val verticalStart = animateFloatAsState(
+//        targetValue = (1 - waterLevel),
+//        label = "",
+//        animationSpec = tween(durationMillis = 1500, easing = FastOutLinearInEasing)
+//    )
+
+
 
     Canvas(
         modifier = modifier.fillMaxSize(),
     ) {
         drawWave(
             waveCount = waveCount,
-            verticalStart = verticalStart.value,
+            verticalStart = waterLevel,
             amplitude = amplitudeAnimation,
             frequency = frequencyAnimation,
             brush = Brush.verticalGradient(

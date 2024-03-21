@@ -1,6 +1,9 @@
 package com.github.k409.fitflow.ui.components.aquarium
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -27,6 +30,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -53,6 +58,15 @@ fun AquariumContent(
 ) {
     val waterLevel = uiState.waterLevel
     val healthLevel = uiState.healthLevel
+    val waterLevelAnimation = remember { Animatable(initialValue = 1f - waterLevel) }
+
+    LaunchedEffect(key1 = waterLevel) {
+        waterLevelAnimation.animateTo(
+            targetValue = 1f - waterLevel,
+            animationSpec = tween(durationMillis = 1500, easing = FastOutLinearInEasing)
+        )
+    }
+
 
     Column(
         modifier = modifier
@@ -70,7 +84,7 @@ fun AquariumContent(
             val height = constraints.maxHeight
             val width = constraints.maxWidth
 
-            AnimatedWaves(waterLevel = waterLevel)
+            AnimatedWaves(waterLevel = waterLevelAnimation.value)
 
             WaterBubbles(
                 modifier = Modifier
