@@ -16,17 +16,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -36,34 +36,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.R
-import com.github.k409.fitflow.model.AquariumFishPhase
-import com.github.k409.fitflow.model.AquariumFishType
-import com.github.k409.fitflow.ui.common.noRippleClickable
+import com.github.k409.fitflow.model.AquariumFish
+import com.github.k409.fitflow.ui.screens.aquarium.AquariumUiState
 import kotlin.math.roundToInt
 
 @Composable
-fun Aquarium(
+fun AquariumContent(
     modifier: Modifier = Modifier,
-) {
-    val aquariumBackground = Brush.linearGradient(
+    uiState: AquariumUiState,
+    onWaterLevelChanged: (Float) -> Unit,
+    onHealthLevelChanged: (Float) -> Unit,
+    onFishChanged: (AquariumFish) -> Unit,
+    aquariumBackground: Brush = Brush.linearGradient(
         colors = listOf(Color(0xFFA7B9D3), Color(0xFF9CED96), Color(0xffd0e7cf)),
-    )
-
-    val currentFish = remember { mutableIntStateOf(0) }
-    val waterLevel = remember { mutableFloatStateOf(0.85f) }
-    val healthLevel = remember { mutableFloatStateOf(0.85f) }
-
-    fun onDoubleClick() {
-        currentFish.intValue = (currentFish.intValue + 1) % AquariumFishType.entries.size
-
-        val newLevel = waterLevel.floatValue.minus(0.1f)
-
-        waterLevel.floatValue = if (newLevel < 0.1f) 0.85f else newLevel
-    }
-
-    fun onLongClick() {
-        waterLevel.floatValue = 0.85f
-    }
+    ),
+) {
+    val waterLevel = uiState.waterLevel
+    val healthLevel = uiState.healthLevel
 
     Column(
         modifier = modifier
@@ -81,12 +70,12 @@ fun Aquarium(
             val height = constraints.maxHeight
             val width = constraints.maxWidth
 
-            AnimatedWaves(waterLevel = waterLevel.floatValue)
+            AnimatedWaves(waterLevel = waterLevel)
 
             WaterBubbles(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(waterLevel.floatValue)
+                    .fillMaxHeight(waterLevel)
                     .alpha(0.20f)
                     .align(Alignment.BottomCenter),
                 colors = listOf(Color.Blue, Color.Green),
@@ -101,12 +90,12 @@ fun Aquarium(
             AquariumMetrics(
                 modifier = Modifier
                     .align(Alignment.TopEnd),
-                waterLevel = waterLevel.floatValue,
-                healthLevel = healthLevel.floatValue
+                waterLevel = waterLevel,
+                healthLevel = healthLevel
             )
 
             Crossfade(
-                targetState = AquariumFishType.entries[currentFish.intValue],
+                targetState = uiState,
                 label = "",
             ) {
                 Column(
@@ -115,17 +104,58 @@ fun Aquarium(
                 ) {
                     DraggableFish(
                         modifier = Modifier
-                            .fillMaxHeight(waterLevel.floatValue)
-                            .noRippleClickable(
-                                onDoubleClick = ::onDoubleClick,
-                                onLongClick = ::onLongClick
-                            ),
-                        /* .border(
-                             width = 1.dp,
-                             color = Color.Red,
-                         )*/
+                            .fillMaxHeight(waterLevel),
                         fishSize = 100.dp,
-                        fishDrawableId = it.phaseImages[AquariumFishPhase.Regular]!!
+                        fishDrawableId = it.fish.getCurrentImageRes()
+                    )
+                }
+
+            }
+
+            // TODO FOR TESTING
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(horizontal = 16.dp, vertical = 70.dp),
+            ) {
+                IconButton(onClick = {
+                    val newWaterLevel = (waterLevel + 0.25f).coerceIn(0.0f, 1.0f)
+                    onWaterLevelChanged(newWaterLevel)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Increase Water Level"
+                    )
+                }
+
+                IconButton(onClick =
+                {
+                    val newWaterLevel = (waterLevel - 0.25f).coerceIn(0.0f, 1.0f)
+                    onWaterLevelChanged(newWaterLevel)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Remove,
+                        contentDescription = "Decrease Water Level"
+                    )
+                }
+
+                IconButton(onClick = {
+                    val newHealthLevel = (healthLevel + 0.25f).coerceIn(0.0f, 1.0f)
+                    onHealthLevelChanged(newHealthLevel)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Increase Health Level"
+                    )
+                }
+
+                IconButton(onClick = {
+                    val newHealthLevel = (healthLevel - 0.25f).coerceIn(0.0f, 1.0f)
+                    onHealthLevelChanged(newHealthLevel)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Remove,
+                        contentDescription = "Decrease Health Level"
                     )
                 }
 

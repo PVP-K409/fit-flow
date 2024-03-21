@@ -192,6 +192,10 @@ fun DraggableFish(
         val maxOffsetX = maxWidth.toFloat() - fishSizePx
         val maxOffsetY = maxHeight.toFloat() - fishSizePx
 
+        if (maxOffsetX < 0 || maxOffsetY < 0) {
+            return@BoxWithConstraints
+        }
+
         Fish(
             fishSize = fishSize,
             fishDrawableId = fishDrawableId,
