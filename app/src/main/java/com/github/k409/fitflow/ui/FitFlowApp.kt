@@ -146,7 +146,12 @@ private fun UpdateTopAndBottomBarVisibility(
             topBarState.value = false
         }
 
-        NavRoutes.Inventory -> {
+        NavRoutes.Fishes -> {
+            bottomBarState.value = false
+            topBarState.value = true
+        }
+
+        NavRoutes.Decorations -> {
             bottomBarState.value = false
             topBarState.value = true
         }
@@ -192,7 +197,7 @@ fun FitFlowTopBar(
                 actions = {
 
                     IconButton(onClick = {
-                        navController.navigate(NavRoutes.Inventory.route) {
+                        navController.navigate(NavRoutes.Fishes.route) {
                             launchSingleTop = true
                             restoreState = true
                         }

@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.screens.inventory
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,15 +50,22 @@ fun ColumnItem(
     name: String,
     description: String,
 ){
+    val context = LocalContext.current
 
     Card(
+        onClick = {
+            Toast.makeText(
+                context,
+                "Add to aquarium",
+                Toast.LENGTH_SHORT).show()
+        },
         modifier
             .padding(10.dp)
             .wrapContentSize(),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
-        elevation = CardDefaults.cardElevation(10.dp)
+        elevation = CardDefaults.cardElevation(10.dp),
     ) {
         Row(
             modifier.fillMaxSize(),
@@ -66,11 +75,11 @@ fun ColumnItem(
             Image(
                 painter = painterResource(id = painter),
                 contentDescription = name,
-                modifier.size(140.dp)
+                modifier.size(100.dp),
             )
             Column(modifier.padding(12.dp)) {
-                Text(text = name, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                Text(text = description, fontSize = 18.sp)
+                Text(text = name, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(text = description, fontSize = 14.sp)
             }
         }
     }

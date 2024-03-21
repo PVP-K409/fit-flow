@@ -7,8 +7,6 @@ import androidx.compose.material.icons.outlined.Adjust
 import androidx.compose.material.icons.outlined.Anchor
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Inventory2
-import androidx.compose.material.icons.outlined.PanoramaFishEye
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Store
@@ -34,7 +32,6 @@ sealed class NavRoutes(
             Login,
             ProfileCreation,
             Settings,
-            Inventory,
             Fishes,
             Decorations,
         )
@@ -68,8 +65,6 @@ sealed class NavRoutes(
 
     data object Settings : NavRoutes("settings", R.string.settings, Icons.Outlined.Settings)
 
-    data object Inventory : NavRoutes("inventory", R.string.inventory, Icons.Outlined.Inventory2)
-
-    data object Fishes : NavRoutes("fishes", R.string.fishes, Icons.Outlined.Water)
-    data object Decorations : NavRoutes("decorations", R.string.decorations, Icons.Outlined.Anchor)
+    data object Fishes : NavRoutes("Fishes", R.string.fishes, Icons.Outlined.Water)
+    data object Decorations : NavRoutes("Decorations", R.string.decorations, Icons.Outlined.Anchor)
 }
