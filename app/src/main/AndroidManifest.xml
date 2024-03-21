@@ -25,6 +25,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.App.AppSplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +42,7 @@
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.github.k409.fitflow.ui.screens.waterLogging.SHOW_NOTIFICATION" />
+                <action android:name="com.github.k409.fitflow.ui.screens.hydration.SHOW_NOTIFICATION" />
             </intent-filter>
         </receiver>
 

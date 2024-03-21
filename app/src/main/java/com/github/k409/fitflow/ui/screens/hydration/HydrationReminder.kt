@@ -71,7 +71,7 @@ class HydrationReminder : BroadcastReceiver() {
             val builder = Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(context.getString(R.string.hydration_notification_title))
                 .setContentText(context.getString(R.string.hydration_notification_text))
-                .setSmallIcon(R.drawable.primary_fish)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setAutoCancel(true)
 
             notificationManager.notify(NOTIFICATION_ID, builder.build())
