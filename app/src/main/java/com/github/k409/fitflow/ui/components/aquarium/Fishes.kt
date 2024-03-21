@@ -10,19 +10,22 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -161,7 +164,7 @@ fun Fish(
     Image(
         painter = primaryFishPainter,
         contentDescription = "Primary Fish",
-        modifier = modifier.size(fishSize),
+        modifier = modifier.width(fishSize),
     )
 }
 
@@ -171,54 +174,62 @@ fun DraggableFish(
     fishModifier: Modifier = Modifier,
     @DrawableRes fishDrawableId: Int = R.drawable.primary_fish,
     fishSize: Dp = 100.dp,
-    widthFraction: Float = 0.5f,
-    heightFraction: Float = 0.5f,
-    initialOffsetX: Float? = null,
-    initialOffsetY: Float? = null,
+    initialOffset: Offset = Offset(0f, 0f),
     onPositionChanged: (x: Float, y: Float) -> Unit = { _, _ -> }
 ) {
-    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
-        val maxHeight = constraints.maxHeight
-        val maxWidth = constraints.maxWidth
+    BoxWithConstraints(
+        modifier = modifier
+            .fillMaxSize()
+            /*.border(
+                width = 1.dp,
+                color = Color.Red
+            )*/
+    ) {
+        val parentWidth = constraints.maxWidth
+        val parentHeight = constraints.maxHeight
 
-        val fishSizePx = with(LocalDensity.current) { fishSize.toPx() }
+        var offsetX by remember { mutableFloatStateOf(initialOffset.x) }
+        var offsetY by remember { mutableFloatStateOf(initialOffset.y) }
 
-        val initialPositionX = initialOffsetX ?: ((maxWidth * widthFraction) - (fishSizePx / 2f))
-        val initialPositionY = initialOffsetY ?: ((maxHeight * heightFraction) - (fishSizePx / 2f))
+        var fishHeight by remember(fishSize) { mutableFloatStateOf(fishSize.value) }
+        var fishWidth by remember(fishSize) { mutableFloatStateOf(fishSize.value) }
 
-        var offsetX by remember { mutableFloatStateOf(initialPositionX) }
-        var offsetY by remember { mutableFloatStateOf(initialPositionY) }
-
-        val maxOffsetX = maxWidth.toFloat() - fishSizePx
-        val maxOffsetY = maxHeight.toFloat() - fishSizePx
-
-        if (maxOffsetX < 0 || maxOffsetY < 0) {
-            return@BoxWithConstraints
-        }
+        /*Text(
+            text = "x: $offsetX, y: $offsetY\nparentWidth: $parentWidth, parentHeight: $parentHeight",
+            modifier = Modifier.align(Alignment.TopStart)
+        )*/
 
         Fish(
             fishSize = fishSize,
             fishDrawableId = fishDrawableId,
             modifier = fishModifier
-                .offset {
-                    IntOffset(
-                        offsetX
-                            .roundToInt()
-                            .coerceIn(0, maxOffsetX.toInt()),
-                        offsetY
-                            .roundToInt()
-                            .coerceIn(0, maxOffsetY.toInt())
-                    )
-                }
-                .pointerInput(Unit) {
-                    detectDragGestures { change, dragAmount ->
-                        change.consume()
+                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                .align(Alignment.TopStart)
+                .pointerInput(fishSize) {
+                    val boxSize = this.size
 
-                        offsetX = (offsetX + dragAmount.x).coerceIn(0f, maxOffsetX)
-                        offsetY = (offsetY + dragAmount.y).coerceIn(0f, maxOffsetY)
-
-                        onPositionChanged(offsetX, offsetY)
+                    detectDragGestures { _, dragAmount ->
+                        offsetX = (offsetX + dragAmount.x).coerceIn(
+                            0f,
+                            parentWidth - boxSize.width.toFloat()
+                        )
+                        offsetY = (offsetY + dragAmount.y).coerceIn(
+                            0f,
+                            parentHeight - boxSize.height.toFloat()
+                        )
                     }
+                }
+                /*.border(
+                    width = 1.dp,
+                    color = Color.Blue
+                )*/
+                .onSizeChanged { size ->
+                    fishHeight = size.height.toFloat()
+                    fishWidth = size.width.toFloat()
+
+                    // center the fish
+                    offsetX = (parentWidth - size.width) / 2f
+                    offsetY = (parentHeight - size.height) / 2f
                 }
         )
     }

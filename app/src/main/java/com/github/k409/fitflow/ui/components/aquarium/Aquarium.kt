@@ -1,11 +1,11 @@
 package com.github.k409.fitflow.ui.components.aquarium
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -108,73 +108,97 @@ fun AquariumContent(
                 healthLevel = healthLevel
             )
 
-            Crossfade(
-                targetState = uiState.aquariumStats,
-                label = "",
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 10.dp),
+                verticalArrangement = Arrangement.Bottom,
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Bottom,
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight(waterLevel),
                 ) {
                     DraggableFish(
-                        modifier = Modifier
-                            .fillMaxHeight(waterLevel),
-                        fishSize = 100.dp,
-                        fishDrawableId = it.fish.getPhaseImage(healthLevel),
+                        modifier = Modifier,
+                        fishSize = 200.dp * waterLevel,
+                        fishDrawableId = uiState.aquariumStats.fish.getPhaseImage(healthLevel),
                     )
-                }
 
+                    /*Fish(
+                        modifier = Modifier
+                            .align(Alignment.Center),
+                        fishSize = 200.dp * waterLevel,
+                        fishDrawableId = uiState.aquariumStats.fish.getPhaseImage(healthLevel),
+                    )*/
+                }
             }
 
             // TODO FOR TESTING
-            Row(
+            ButtonToModifyMetrics(
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(horizontal = 16.dp, vertical = 70.dp),
-            ) {
-                IconButton(onClick = {
-                    val newWaterLevel = (waterLevel + 0.25f).coerceIn(0.0f, 1.0f)
-                    onWaterLevelChanged(newWaterLevel)
-                }) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Increase Water Level"
-                    )
-                }
-
-                IconButton(onClick =
-                {
-                    val newWaterLevel = (waterLevel - 0.25f).coerceIn(0.0f, 1.0f)
-                    onWaterLevelChanged(newWaterLevel)
-                }) {
-                    Icon(
-                        imageVector = Icons.Filled.Remove,
-                        contentDescription = "Decrease Water Level"
-                    )
-                }
-
-                IconButton(onClick = {
-                    val newHealthLevel = (healthLevel + 0.25f).coerceIn(0.0f, 1.0f)
-                    onHealthLevelChanged(newHealthLevel)
-                }) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Increase Health Level"
-                    )
-                }
-
-                IconButton(onClick = {
-                    val newHealthLevel = (healthLevel - 0.25f).coerceIn(0.0f, 1.0f)
-                    onHealthLevelChanged(newHealthLevel)
-                }) {
-                    Icon(
-                        imageVector = Icons.Filled.Remove,
-                        contentDescription = "Decrease Health Level"
-                    )
-                }
-
-            }
+                    .align(Alignment.TopEnd),
+                waterLevel = waterLevel,
+                onWaterLevelChanged = onWaterLevelChanged,
+                healthLevel = healthLevel,
+                onHealthLevelChanged = onHealthLevelChanged
+            )
         }
+    }
+}
+
+@Composable
+private fun ButtonToModifyMetrics(
+    modifier: Modifier = Modifier,
+    waterLevel: Float,
+    onWaterLevelChanged: (Float) -> Unit,
+    healthLevel: Float,
+    onHealthLevelChanged: (Float) -> Unit
+) {
+    Row(
+        modifier = modifier
+            .padding(vertical = 70.dp),
+    ) {
+        IconButton(onClick = {
+            val newWaterLevel = (waterLevel + 0.25f).coerceIn(0.0f, 1.0f)
+            onWaterLevelChanged(newWaterLevel)
+        }) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Increase Water Level"
+            )
+        }
+
+        IconButton(onClick =
+        {
+            val newWaterLevel = (waterLevel - 0.25f).coerceIn(0.0f, 1.0f)
+            onWaterLevelChanged(newWaterLevel)
+        }) {
+            Icon(
+                imageVector = Icons.Filled.Remove,
+                contentDescription = "Decrease Water Level"
+            )
+        }
+
+        IconButton(onClick = {
+            val newHealthLevel = (healthLevel + 0.25f).coerceIn(0.0f, 1.0f)
+            onHealthLevelChanged(newHealthLevel)
+        }) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Increase Health Level"
+            )
+        }
+
+        IconButton(onClick = {
+            val newHealthLevel = (healthLevel - 0.25f).coerceIn(0.0f, 1.0f)
+            onHealthLevelChanged(newHealthLevel)
+        }) {
+            Icon(
+                imageVector = Icons.Filled.Remove,
+                contentDescription = "Decrease Health Level"
+            )
+        }
+
     }
 }
 
