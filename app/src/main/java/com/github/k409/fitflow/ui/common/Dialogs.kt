@@ -154,7 +154,8 @@ fun NumberPickerDialog(
             AndroidView(
                 modifier = Modifier.fillMaxWidth(),
                 factory = { context ->
-                    NumberPicker(context) },
+                    NumberPicker(context)
+                },
                 update = { numberPicker ->
                     numberPicker.apply {
                         setOnValueChangedListener { _, _, newValue ->
@@ -171,8 +172,8 @@ fun NumberPickerDialog(
                         // Needs API 29+
                         this.textColor = themeColor.toArgb()
                     }
-                         },
-                )
+                },
+            )
         },
         onDismissRequest = {
             onDismissRequest()
