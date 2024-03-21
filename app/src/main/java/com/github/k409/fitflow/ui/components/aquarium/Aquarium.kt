@@ -41,23 +41,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.R
-import com.github.k409.fitflow.model.AquariumFish
 import com.github.k409.fitflow.ui.screens.aquarium.AquariumUiState
 import kotlin.math.roundToInt
 
 @Composable
 fun AquariumContent(
     modifier: Modifier = Modifier,
-    uiState: AquariumUiState,
+    uiState: AquariumUiState.Success,
     onWaterLevelChanged: (Float) -> Unit,
     onHealthLevelChanged: (Float) -> Unit,
-    onFishChanged: (AquariumFish) -> Unit,
     aquariumBackground: Brush = Brush.linearGradient(
         colors = listOf(Color(0xFFA7B9D3), Color(0xFF9CED96), Color(0xffd0e7cf)),
     ),
 ) {
-    val waterLevel = uiState.waterLevel
-    val healthLevel = uiState.healthLevel
+    val aquariumStats = uiState.aquariumStats
+
+    val waterLevel = aquariumStats.waterLevel
+    val healthLevel = aquariumStats.healthLevel
+
     val waterLevelAnimation = remember { Animatable(initialValue = 1f - waterLevel) }
 
     LaunchedEffect(key1 = waterLevel) {
@@ -66,7 +67,6 @@ fun AquariumContent(
             animationSpec = tween(durationMillis = 1500, easing = FastOutLinearInEasing)
         )
     }
-
 
     Column(
         modifier = modifier
@@ -109,7 +109,7 @@ fun AquariumContent(
             )
 
             Crossfade(
-                targetState = uiState,
+                targetState = uiState.aquariumStats,
                 label = "",
             ) {
                 Column(
@@ -120,7 +120,7 @@ fun AquariumContent(
                         modifier = Modifier
                             .fillMaxHeight(waterLevel),
                         fishSize = 100.dp,
-                        fishDrawableId = it.fish.getCurrentImageRes()
+                        fishDrawableId = it.fish.getPhaseImage(healthLevel),
                     )
                 }
 

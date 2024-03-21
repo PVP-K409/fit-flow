@@ -1,6 +1,7 @@
 package com.github.k409.fitflow.model
 
 import com.github.k409.fitflow.R
+import com.google.firebase.firestore.Exclude
 
 enum class FishType(
     val id: Int,
@@ -44,18 +45,21 @@ enum class FishType(
             FishPhase.Dying to R.drawable.third_fish_dying,
             FishPhase.Dead to R.drawable.third_fish_dead
         )
-    )
-}
+    );
 
-//secondary_fish_dead
-data class AquariumFish(
-    val type: FishType,
-    val phase: FishPhase
-) {
-    fun getCurrentImageRes(): Int {
-        return type.phaseImages[phase]
-            ?: throw IllegalStateException("Image not found for phase: $phase, type: $type")
+
+    @Exclude
+    fun getPhaseImage(healthLevel: Float): Int {
+        return this.phaseImages[FishPhase.getPhase(healthLevel)]
+            ?: throw IllegalStateException(
+                "Image not found for phase: ${
+                    FishPhase.getPhase(
+                        healthLevel
+                    )
+                }, type: $this"
+            )
     }
+
 }
 
 enum class FishPhase {
