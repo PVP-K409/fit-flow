@@ -48,7 +48,7 @@
     <string name="hydration_notification_channel_name">Hydration</string>
     <string name="hydration_notification_channel_description">Reminder to stay hydrated</string>
     <string name="hydration_notification_title">Don\'t forget to stay hydrated!</string>
-    <string name="hydration_notification_text">It\'s been 3 hour since you last drank water, don\'t forget to stay hydrated</string>
+    <string name="hydration_notification_text">It\'s been a while since you last drank water, don\'t forget to stay hydrated</string>
     <string name="drink_ml">Drink %1$s ml</string>
     <string name="cup_size_ml">Cup size (ml)</string>
     <string name="firebase_auth_user_collision_error_message">Sorry, but this email address associated with another account.</string>
