@@ -3,14 +3,14 @@ package com.github.k409.fitflow.model
 import com.github.k409.fitflow.R
 import com.google.firebase.firestore.Exclude
 
-enum class FishType(
+enum class Fish(
     val id: Int,
     val title: String,
     val description: String,
     val price: Int,
-    val phaseImages: Map<FishPhase, Int>
+    val phases: Map<FishPhase, Int>
 ) {
-    PrimaryFish(
+    Primary(
         0,
         "Primary Fish",
         "The primary fish is the most common fish in the aquarium.",
@@ -22,7 +22,7 @@ enum class FishType(
             FishPhase.Dead to R.drawable.primary_fish
         )
     ),
-    SecondaryFish(
+    Secondary(
         1,
         "Secondary Fish",
         "The secondary fish is the second most common fish in the aquarium.",
@@ -34,7 +34,7 @@ enum class FishType(
             FishPhase.Dead to R.drawable.secondary_fish
         )
     ),
-    ThirdFish(
+    Third(
         2,
         "Third Fish",
         "The third fish is the third most common fish in the aquarium.",
@@ -50,7 +50,7 @@ enum class FishType(
 
     @Exclude
     fun getPhaseImage(healthLevel: Float): Int {
-        return this.phaseImages[FishPhase.getPhase(healthLevel)]
+        return this.phases[FishPhase.getPhase(healthLevel)]
             ?: throw IllegalStateException(
                 "Image not found for phase: ${
                     FishPhase.getPhase(
@@ -59,6 +59,13 @@ enum class FishType(
                 }, type: $this"
             )
     }
+
+    @Exclude
+    fun getPhaseImage(phase: FishPhase): Int {
+        return this.phases[phase]
+            ?: throw IllegalStateException("Image not found for phase: $phase, type: $this")
+    }
+
 
 }
 

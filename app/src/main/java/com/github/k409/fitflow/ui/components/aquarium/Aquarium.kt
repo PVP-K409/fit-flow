@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.screens.aquarium.AquariumUiState
@@ -60,6 +61,14 @@ fun AquariumContent(
     val healthLevel = aquariumStats.healthLevel
 
     val waterLevelAnimation = remember { Animatable(initialValue = 1f - waterLevel) }
+
+    fun calculateFishSize(waterLevel: Float): Dp {
+        val minSize = 100.dp
+        val maxSize = 150.dp
+
+        return minSize + (maxSize - minSize) * waterLevel
+    }
+
 
     LaunchedEffect(key1 = waterLevel) {
         waterLevelAnimation.animateTo(
@@ -118,18 +127,11 @@ fun AquariumContent(
                     modifier = Modifier
                         .fillMaxHeight(waterLevel),
                 ) {
-                    DraggableFish(
+                    DraggableFishBox(
                         modifier = Modifier,
-                        fishSize = 200.dp * waterLevel,
+                        fishSize = calculateFishSize(waterLevel),
                         fishDrawableId = uiState.aquariumStats.fish.getPhaseImage(healthLevel),
                     )
-
-                    /*Fish(
-                        modifier = Modifier
-                            .align(Alignment.Center),
-                        fishSize = 200.dp * waterLevel,
-                        fishDrawableId = uiState.aquariumStats.fish.getPhaseImage(healthLevel),
-                    )*/
                 }
             }
 
