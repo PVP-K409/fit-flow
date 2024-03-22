@@ -63,4 +63,6 @@
     <string name="mode">Mode</string>
     <string name="colour">Colour</string>
     <string name="email">Email</string>
+    <string name="current_week_progress">Current Week Progress</string>
+    <string name="weekly_progress">Weekly Progress</string>
 </resources>

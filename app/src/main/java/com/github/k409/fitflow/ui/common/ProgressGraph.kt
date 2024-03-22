@@ -38,9 +38,10 @@ import kotlin.math.roundToInt
 fun ProgressGraph(
     modifier: Modifier = Modifier,
     data: List<Number>,
-    selectedIndex: MutableIntState = remember { mutableIntStateOf(-1) },
+    selected: Int = -1,
+    selectedIndex: MutableIntState = remember { mutableIntStateOf(selected) },
     dataUnit: String = "",
-    xAxisLabels: List<String>,
+    xAxisLabels: List<String> = emptyList(),
     onSelectedIndexChange: (Int) -> Unit = {},
     primaryColor: Color = MaterialTheme.colorScheme.primary,
     gridColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
@@ -50,6 +51,8 @@ fun ProgressGraph(
     circleRadius: Float = 10f,
     textSize: TextUnit = 10.sp,
 ) {
+    if (data.isEmpty()) return
+
     val density = LocalDensity.current
     val textPaintXAxis = remember(density) {
         Paint().apply {
@@ -66,10 +69,15 @@ fun ProgressGraph(
         }
     }
 
-    val maxDataValue = data.maxOfOrNull { it.toFloat() } ?: 1f
-    val minDataValue = data.minOfOrNull { it.toFloat() } ?: 0f
+    var minDataValue = data.minOfOrNull { it.toFloat() } ?: 0f
+    var maxDataValue = data.maxOfOrNull { it.toFloat() } ?: 1f
 
-    val maxXAxisLabelWidth = xAxisLabels.maxOf { textPaintXAxis.measureText(it) }
+    if (minDataValue == maxDataValue) {
+        minDataValue = 0f
+        maxDataValue = 1f
+    }
+
+    val maxXAxisLabelWidth = xAxisLabels.maxOfOrNull { textPaintXAxis.measureText(it) } ?: 0f
     val maxYAxisLabelWidth =
         textPaintYAxis.measureText("${data.maxOfOrNull { it.toFloat() } ?: 1f}$dataUnit")
 
@@ -78,7 +86,6 @@ fun ProgressGraph(
     Box(
         modifier = modifier
             .fillMaxSize()
-//            .background(primaryColor.copy(alpha = 0.2f))
             .pointerInput(Unit) {
                 detectTapGestures { offset ->
                     // Calculate the width of the longest label on the x-axis
@@ -205,8 +212,9 @@ private fun DrawScope.drawPoints(
             drawCircle(
                 color = color,
                 center = Offset(x, y),
-                radius = circleRadius * 0.5f,
+                radius = circleRadius * 2f,
                 style = Fill,
+                alpha = 0.5f
             )
         }
 
@@ -214,7 +222,7 @@ private fun DrawScope.drawPoints(
             color = color,
             center = Offset(x, y),
             radius = circleRadius,
-            style = Stroke(width = lineWidth),
+            style = if (index == selectedIndex.intValue) Fill else Stroke(width = lineWidth)
         )
     }
 }
