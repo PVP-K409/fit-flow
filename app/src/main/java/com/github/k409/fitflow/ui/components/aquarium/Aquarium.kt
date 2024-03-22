@@ -69,11 +69,10 @@ fun AquariumContent(
         return minSize + (maxSize - minSize) * waterLevel
     }
 
-
     LaunchedEffect(key1 = waterLevel) {
         waterLevelAnimation.animateTo(
             targetValue = 1f - waterLevel,
-            animationSpec = tween(durationMillis = 1500, easing = FastOutLinearInEasing)
+            animationSpec = tween(durationMillis = 1500, easing = FastOutLinearInEasing),
         )
     }
 
@@ -86,7 +85,7 @@ fun AquariumContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-        ) {
+    ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -114,7 +113,7 @@ fun AquariumContent(
                 modifier = Modifier
                     .align(Alignment.TopEnd),
                 waterLevel = waterLevel,
-                healthLevel = healthLevel
+                healthLevel = healthLevel,
             )
 
             Column(
@@ -142,7 +141,7 @@ fun AquariumContent(
                 waterLevel = waterLevel,
                 onWaterLevelChanged = onWaterLevelChanged,
                 healthLevel = healthLevel,
-                onHealthLevelChanged = onHealthLevelChanged
+                onHealthLevelChanged = onHealthLevelChanged,
             )
         }
     }
@@ -154,7 +153,7 @@ private fun ButtonToModifyMetrics(
     waterLevel: Float,
     onWaterLevelChanged: (Float) -> Unit,
     healthLevel: Float,
-    onHealthLevelChanged: (Float) -> Unit
+    onHealthLevelChanged: (Float) -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -166,18 +165,20 @@ private fun ButtonToModifyMetrics(
         }) {
             Icon(
                 imageVector = Icons.Filled.Add,
-                contentDescription = "Increase Water Level"
+                contentDescription = "Increase Water Level",
             )
         }
 
-        IconButton(onClick =
-        {
-            val newWaterLevel = (waterLevel - 0.25f).coerceIn(0.0f, 1.0f)
-            onWaterLevelChanged(newWaterLevel)
-        }) {
+        IconButton(
+            onClick =
+            {
+                val newWaterLevel = (waterLevel - 0.25f).coerceIn(0.0f, 1.0f)
+                onWaterLevelChanged(newWaterLevel)
+            },
+        ) {
             Icon(
                 imageVector = Icons.Filled.Remove,
-                contentDescription = "Decrease Water Level"
+                contentDescription = "Decrease Water Level",
             )
         }
 
@@ -187,7 +188,7 @@ private fun ButtonToModifyMetrics(
         }) {
             Icon(
                 imageVector = Icons.Filled.Add,
-                contentDescription = "Increase Health Level"
+                contentDescription = "Increase Health Level",
             )
         }
 
@@ -197,10 +198,9 @@ private fun ButtonToModifyMetrics(
         }) {
             Icon(
                 imageVector = Icons.Filled.Remove,
-                contentDescription = "Decrease Health Level"
+                contentDescription = "Decrease Health Level",
             )
         }
-
     }
 }
 
@@ -233,7 +233,7 @@ fun AquariumMetrics(
                     text = "${(waterLevel * 100).roundToInt()}%",
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
-                    color = textColor
+                    color = textColor,
                 )
 
                 Spacer(modifier = Modifier.width(6.dp))
@@ -257,7 +257,7 @@ fun AquariumMetrics(
                     text = "${(healthLevel * 100).roundToInt()}%",
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
-                    color = textColor
+                    color = textColor,
                 )
 
                 Spacer(modifier = Modifier.width(6.dp))

@@ -8,7 +8,7 @@ enum class Fish(
     val title: String,
     val description: String,
     val price: Int,
-    val phases: Map<FishPhase, Int>
+    val phases: Map<FishPhase, Int>,
 ) {
     Primary(
         0,
@@ -19,8 +19,8 @@ enum class Fish(
             FishPhase.Regular to R.drawable.primary_fish,
             FishPhase.Strong to R.drawable.primary_fish,
             FishPhase.Dying to R.drawable.primary_fish,
-            FishPhase.Dead to R.drawable.primary_fish
-        )
+            FishPhase.Dead to R.drawable.primary_fish,
+        ),
     ),
     Secondary(
         1,
@@ -31,8 +31,8 @@ enum class Fish(
             FishPhase.Regular to R.drawable.secondary_fish,
             FishPhase.Strong to R.drawable.secondary_fish,
             FishPhase.Dying to R.drawable.secondary_fish,
-            FishPhase.Dead to R.drawable.secondary_fish
-        )
+            FishPhase.Dead to R.drawable.secondary_fish,
+        ),
     ),
     Third(
         2,
@@ -43,10 +43,10 @@ enum class Fish(
             FishPhase.Regular to R.drawable.third_fish_regular,
             FishPhase.Strong to R.drawable.third_fish_strong,
             FishPhase.Dying to R.drawable.third_fish_dying,
-            FishPhase.Dead to R.drawable.third_fish_dead
-        )
-    );
-
+            FishPhase.Dead to R.drawable.third_fish_dead,
+        ),
+    ),
+    ;
 
     @Exclude
     fun getPhaseImage(healthLevel: Float): Int {
@@ -54,9 +54,9 @@ enum class Fish(
             ?: throw IllegalStateException(
                 "Image not found for phase: ${
                     FishPhase.getPhase(
-                        healthLevel
+                        healthLevel,
                     )
-                }, type: $this"
+                }, type: $this",
             )
     }
 
@@ -65,15 +65,14 @@ enum class Fish(
         return this.phases[phase]
             ?: throw IllegalStateException("Image not found for phase: $phase, type: $this")
     }
-
-
 }
 
 enum class FishPhase {
     Regular,
     Strong,
     Dying,
-    Dead;
+    Dead,
+    ;
 
     companion object {
         fun getPhase(healthLevel: Float): FishPhase {

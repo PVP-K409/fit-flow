@@ -35,7 +35,7 @@ class ActivityViewModel @Inject constructor(
 
     val progressUiState: StateFlow<ProgressUiState> = combine(
         stepsRepository.getStepRecordCurrentWeek(),
-        stepsRepository.getStepRecordLastWeeks(12)
+        stepsRepository.getStepRecordLastWeeks(12),
     ) { currentWeek, lastWeeks ->
         ProgressUiState.Success(
             currentWeek = currentWeek,
@@ -106,7 +106,7 @@ class ActivityViewModel @Inject constructor(
                 caloriesBurned = calories,
                 totalDistance = distance,
 
-                )
+            )
         } else if (hasRebooted || currentSteps <= 1) { // if current day and reboot has happened
             newDailyStepRecord = DailyStepRecord(
                 totalSteps = dailyStepRecord.totalSteps + currentSteps,

@@ -19,7 +19,7 @@ import com.github.k409.fitflow.ui.common.HorizontalPagerIndicator
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun ActivityScreen(
-    activityViewModel: ActivityViewModel = hiltViewModel()
+    activityViewModel: ActivityViewModel = hiltViewModel(),
 ) {
     val pagerState = rememberPagerState(pageCount = {
         2
@@ -28,13 +28,13 @@ fun ActivityScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 10.dp)
+            .padding(bottom = 10.dp),
     ) {
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 8.dp)
+                .padding(bottom = 8.dp),
         ) { page ->
             when (page) {
                 0 -> {

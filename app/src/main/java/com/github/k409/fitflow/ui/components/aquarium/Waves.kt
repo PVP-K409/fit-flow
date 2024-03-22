@@ -63,8 +63,6 @@ fun AnimatedWaves(
 //        animationSpec = tween(durationMillis = 1500, easing = FastOutLinearInEasing)
 //    )
 
-
-
     Canvas(
         modifier = modifier.fillMaxSize(),
     ) {

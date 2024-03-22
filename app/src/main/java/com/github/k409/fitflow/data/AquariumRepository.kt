@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-
 private const val AQUARIUM_COLLECTION = "aquarium"
 
 class AquariumRepository @Inject constructor(

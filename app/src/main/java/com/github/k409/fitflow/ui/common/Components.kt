@@ -85,7 +85,7 @@ fun HorizontalPagerIndicator(
     defaultRadius: Dp = 8.dp,
     space: Dp = 6.dp,
     activeColor: Color = MaterialTheme.colorScheme.onSurface,
-    inactiveColor: Color = activeColor.copy(alpha = 0.5f)
+    inactiveColor: Color = activeColor.copy(alpha = 0.5f),
 ) {
     Row(
         modifier
@@ -103,7 +103,7 @@ fun HorizontalPagerIndicator(
                     .padding(horizontal = space / 2)
                     .clip(CircleShape)
                     .background(color)
-                    .size(defaultRadius)
+                    .size(defaultRadius),
             )
         }
     }

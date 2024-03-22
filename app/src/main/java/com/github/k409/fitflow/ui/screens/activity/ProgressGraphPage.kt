@@ -40,7 +40,6 @@ internal fun ProgressGraphPage(
     when (val uiState = progressUiState) {
         is ProgressUiState.Loading -> {
             FitFlowCircularProgressIndicator()
-
         }
 
         is ProgressUiState.Success -> {
@@ -61,13 +60,13 @@ private fun ProgressGraphPageContent(uiState: ProgressUiState.Success) {
                     .parse(record.recordDate)
                     .format(
                         DateTimeFormatter.ofLocalizedDate(
-                            FormatStyle.FULL
-                        )
+                            FormatStyle.FULL,
+                        ),
                     )
             },
             selectedInitial = uiState.currentWeek.values.find {
                 it.recordDate == LocalDate.now().toString()
-            }
+            },
         )
 
         WalkingProgressGraphContainer(
@@ -79,7 +78,7 @@ private fun ProgressGraphPageContent(uiState: ProgressUiState.Success) {
 
                 "$startDate - $endDate"
             },
-            selectedInitial = uiState.lastWeeks.values.lastOrNull()
+            selectedInitial = uiState.lastWeeks.values.lastOrNull(),
         )
     }
 }
@@ -108,8 +107,7 @@ private fun WalkingProgressGraphContainer(
             .padding(16.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
-    )
-    {
+    ) {
         Text(
             modifier = Modifier.padding(bottom = 16.dp),
             text = graphTitle,
@@ -135,10 +133,9 @@ private fun WalkingProgressGraphContainer(
                 onSelectedIndexChange = { index ->
                     selected.value = data.getOrNull(index)
                 },
-                selected = data.indexOf(selected.value)
+                selected = data.indexOf(selected.value),
             )
         }
-
     }
 }
 
@@ -160,7 +157,7 @@ private fun DailyStepRecordTexts(selected: MutableState<DailyStepRecord?>) {
             modifier = Modifier
                 .height(18.dp)
                 .padding(horizontal = 12.dp),
-            thickness = 1.dp
+            thickness = 1.dp,
         )
 
         TextWithLabel(
@@ -172,7 +169,7 @@ private fun DailyStepRecordTexts(selected: MutableState<DailyStepRecord?>) {
             modifier = Modifier
                 .height(18.dp)
                 .padding(horizontal = 12.dp),
-            thickness = 1.dp
+            thickness = 1.dp,
         )
 
         TextWithLabel(

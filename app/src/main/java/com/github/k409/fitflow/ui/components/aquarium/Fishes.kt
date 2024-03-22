@@ -38,7 +38,6 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.random.Random
 
-
 @Composable
 fun FishImage(
     modifier: Modifier = Modifier,
@@ -61,11 +60,11 @@ fun DraggableFishBox(
     @DrawableRes fishDrawableId: Int = R.drawable.primary_fish,
     fishSize: Dp = 100.dp,
     initialOffset: Offset = Offset(0f, 0f),
-    onPositionChanged: (x: Float, y: Float) -> Unit = { _, _ -> }
+    onPositionChanged: (x: Float, y: Float) -> Unit = { _, _ -> },
 ) {
     BoxWithConstraints(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxSize(),
         /*.border(
             width = 1.dp,
             color = Color.Red
@@ -97,11 +96,11 @@ fun DraggableFishBox(
                     detectDragGestures { _, dragAmount ->
                         offsetX = (offsetX + dragAmount.x).coerceIn(
                             0f,
-                            parentWidth - boxSize.width.toFloat()
+                            parentWidth - boxSize.width.toFloat(),
                         )
                         offsetY = (offsetY + dragAmount.y).coerceIn(
                             0f,
-                            parentHeight - boxSize.height.toFloat()
+                            parentHeight - boxSize.height.toFloat(),
                         )
                     }
                 }
@@ -116,7 +115,7 @@ fun DraggableFishBox(
                     // center the fish
                     offsetX = (parentWidth - size.width) / 2f
                     offsetY = (parentHeight - size.height) / 2f
-                }
+                },
         )
     }
 }

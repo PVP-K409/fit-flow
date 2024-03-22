@@ -144,7 +144,7 @@ class StepsRepository @Inject constructor(
 
                     val record =
                         records.find { it.recordDate == recordDate.toString() } ?: DailyStepRecord(
-                            recordDate = recordDate.toString()
+                            recordDate = recordDate.toString(),
                         )
 
                     recordsMap[day] = record
@@ -156,15 +156,15 @@ class StepsRepository @Inject constructor(
 
     private fun aggregateWeeklyRecord(
         records: List<DailyStepRecord>,
-        recordDate: LocalDate
+        recordDate: LocalDate,
     ): DailyStepRecord {
         return records.filter {
             val recordLocalDate = LocalDate.parse(it.recordDate)
 
             recordLocalDate.isAfter(recordDate.minusDays(1)) && recordLocalDate.isBefore(
                 recordDate.plusDays(
-                    6
-                )
+                    6,
+                ),
             )
         }.fold(DailyStepRecord(recordDate = recordDate.toString())) { acc, dailyStepRecord ->
             acc.copy(

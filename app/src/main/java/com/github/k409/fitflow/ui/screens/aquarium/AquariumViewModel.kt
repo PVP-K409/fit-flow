@@ -30,7 +30,7 @@ class AquariumViewModel @Inject constructor(
     fun updateHealthLevel(level: Float) {
         val currentStats = uiState.value as? AquariumUiState.Success ?: return
         val newStats = currentStats.aquariumStats.copy(
-            healthLevel = level.coerceIn(0f..1f)
+            healthLevel = level.coerceIn(0f..1f),
         )
 
         viewModelScope.launch {
@@ -41,7 +41,7 @@ class AquariumViewModel @Inject constructor(
     fun updateWaterLevel(level: Float) {
         val currentStats = uiState.value as? AquariumUiState.Success ?: return
         val newStats = currentStats.aquariumStats.copy(
-            waterLevel = level.coerceIn(0f..1f)
+            waterLevel = level.coerceIn(0f..1f),
         )
 
         viewModelScope.launch {

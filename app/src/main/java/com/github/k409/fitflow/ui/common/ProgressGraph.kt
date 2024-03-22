@@ -134,7 +134,7 @@ fun ProgressGraph(
                 endY = endY,
                 data = data,
                 selectedIndex = selectedIndex,
-                selectedColor = selectedColor
+                selectedColor = selectedColor,
             )
 
             drawLabels(
@@ -147,7 +147,7 @@ fun ProgressGraph(
                 maxDataValue = maxDataValue,
                 minDataValue = minDataValue,
                 dataUnit = dataUnit,
-                endY = endY
+                endY = endY,
             )
 
             drawLinesBetweenPoints(
@@ -158,7 +158,7 @@ fun ProgressGraph(
                 maxDataValue,
                 endY,
                 primaryColor,
-                lineWidth
+                lineWidth,
             )
 
             drawAreaUnderGraph(
@@ -169,7 +169,7 @@ fun ProgressGraph(
                 endY = endY,
                 pointsStep = pointsStep,
                 endX = endX,
-                primaryColor = primaryColor
+                primaryColor = primaryColor,
             )
 
             drawPoints(
@@ -183,7 +183,7 @@ fun ProgressGraph(
                 selectedColor = selectedColor,
                 primaryColor = primaryColor,
                 circleRadius = circleRadius,
-                lineWidth = lineWidth
+                lineWidth = lineWidth,
             )
         }
     }
@@ -200,7 +200,7 @@ private fun DrawScope.drawPoints(
     selectedColor: Color,
     primaryColor: Color,
     circleRadius: Float,
-    lineWidth: Float
+    lineWidth: Float,
 ) {
     data.forEachIndexed { index, progress ->
         val x = startX + pointsStep * index
@@ -214,7 +214,7 @@ private fun DrawScope.drawPoints(
                 center = Offset(x, y),
                 radius = circleRadius * 2f,
                 style = Fill,
-                alpha = 0.5f
+                alpha = 0.5f,
             )
         }
 
@@ -222,7 +222,7 @@ private fun DrawScope.drawPoints(
             color = color,
             center = Offset(x, y),
             radius = circleRadius,
-            style = if (index == selectedIndex.intValue) Fill else Stroke(width = lineWidth)
+            style = if (index == selectedIndex.intValue) Fill else Stroke(width = lineWidth),
         )
     }
 }
@@ -235,7 +235,7 @@ private fun DrawScope.drawAreaUnderGraph(
     endY: Float,
     pointsStep: Float,
     endX: Float,
-    primaryColor: Color
+    primaryColor: Color,
 ) {
     // Draw area under the graph
     val path = Path()
@@ -246,7 +246,7 @@ private fun DrawScope.drawAreaUnderGraph(
     for (i in 1 until data.size) {
         path.lineTo(
             startX + pointsStep * i,
-            startY - (data[i].toFloat() / maxDataPoint) * (startY - endY)
+            startY - (data[i].toFloat() / maxDataPoint) * (startY - endY),
         )
     }
 
@@ -261,8 +261,8 @@ private fun DrawScope.drawAreaUnderGraph(
                 primaryColor.copy(alpha = 0.4f),
             ),
             startY = startY,
-            endY = endY
-        )
+            endY = endY,
+        ),
     )
 }
 
@@ -274,7 +274,7 @@ private fun DrawScope.drawLinesBetweenPoints(
     maxDataPoint: Float,
     endY: Float,
     primaryColor: Color,
-    lineWidth: Float
+    lineWidth: Float,
 ) {
     for (i in 0 until data.size - 1) {
         val x1 = startX + pointsStep * i
@@ -287,7 +287,7 @@ private fun DrawScope.drawLinesBetweenPoints(
             color = primaryColor,
             start = Offset(x1, y1),
             end = Offset(x2, y2),
-            strokeWidth = lineWidth
+            strokeWidth = lineWidth,
         )
     }
 }
@@ -302,7 +302,7 @@ private fun DrawScope.drawLabels(
     maxDataValue: Float,
     minDataValue: Float,
     dataUnit: String,
-    endY: Float
+    endY: Float,
 ) {
     // Draw x-axis labels from yLabels
     val xLabelStep = (endX - startX) / (xAxisLabels.size - 1)
@@ -368,14 +368,14 @@ private fun DrawScope.drawGridLines(
     endY: Float,
     data: List<Number>,
     selectedIndex: MutableIntState,
-    selectedColor: Color
+    selectedColor: Color,
 ) {
     // Draw x-axis
     drawLine(
         color = gridColor,
         start = Offset(startX, startY),
         end = Offset(endX, startY),
-        strokeWidth = lineWidth
+        strokeWidth = lineWidth,
     )
 
     // Draw y-axis
@@ -383,7 +383,7 @@ private fun DrawScope.drawGridLines(
         color = gridColor,
         start = Offset(startX, startY),
         end = Offset(startX, endY),
-        strokeWidth = lineWidth
+        strokeWidth = lineWidth,
     )
 
     // Draw vertical grid lines where each data point is
@@ -398,7 +398,7 @@ private fun DrawScope.drawGridLines(
             color = color,
             start = Offset(x, startY),
             end = Offset(x, endY),
-            strokeWidth = lineWidth
+            strokeWidth = lineWidth,
         )
     }
 
@@ -407,7 +407,7 @@ private fun DrawScope.drawGridLines(
         color = gridColor,
         start = Offset(startX, endY),
         end = Offset(endX, endY),
-        strokeWidth = lineWidth
+        strokeWidth = lineWidth,
     )
 }
 

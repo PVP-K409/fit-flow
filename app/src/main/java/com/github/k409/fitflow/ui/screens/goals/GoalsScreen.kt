@@ -15,7 +15,7 @@ fun GoalsScreen() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-        ) {
+    ) {
         Text(text = "Goals Screen")
     }
 }
