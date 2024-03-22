@@ -144,6 +144,8 @@ private fun WalkingProgressGraphContainer(
 
 @Composable
 private fun DailyStepRecordTexts(selected: MutableState<DailyStepRecord?>) {
+    val record = selected.value ?: DailyStepRecord()
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -151,7 +153,7 @@ private fun DailyStepRecordTexts(selected: MutableState<DailyStepRecord?>) {
     ) {
         TextWithLabel(
             label = "Steps",
-            text = selected.value?.totalSteps?.toString() ?: "0",
+            text = record.totalSteps.toString(),
         )
 
         VerticalDivider(
@@ -163,7 +165,7 @@ private fun DailyStepRecordTexts(selected: MutableState<DailyStepRecord?>) {
 
         TextWithLabel(
             label = "Calories",
-            text = selected.value?.caloriesBurned?.toString() ?: "0",
+            text = record.caloriesBurned?.toString() ?: "0",
         )
 
         VerticalDivider(
@@ -175,7 +177,7 @@ private fun DailyStepRecordTexts(selected: MutableState<DailyStepRecord?>) {
 
         TextWithLabel(
             label = "Distance",
-            text = selected.value?.totalDistance?.toString() ?: "0",
+            text = String.format("%.2f", record.totalDistance),
         )
     }
 }
