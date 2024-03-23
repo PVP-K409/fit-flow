@@ -66,15 +66,8 @@ fun ProfileCreationScreen(
     var gender by rememberSaveable(currentUser.gender) { mutableStateOf(currentUser.gender) }
     var weight by rememberSaveable(currentUser.weight) { mutableIntStateOf(currentUser.weight.toInt()) }
     var height by rememberSaveable(currentUser.height) { mutableIntStateOf(currentUser.height.toInt()) }
-    var fitnessLevel by rememberSaveable(currentUser.fitnessLevel) { mutableStateOf(currentUser.fitnessLevel) }
 
     val genders = arrayOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
-    val fitnessLevels = arrayOf(
-        stringResource(R.string.beginner),
-        stringResource(R.string.intermediate),
-        stringResource(R.string.advanced),
-        stringResource(R.string.professional),
-    )
 
     // State variables for error messages
     var nameError by remember { mutableStateOf<String?>(null) }
@@ -324,28 +317,11 @@ fun ProfileCreationScreen(
         // HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.tertiary)
 
         FlowRow(
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.End,
             modifier = Modifier
                 .fillMaxWidth(),
             // .padding(8.dp)
         ) {
-            Column {
-                Text(
-                    text = stringResource(R.string.fitness_level),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(4.dp),
-                )
-                DropdownMenu(
-                    stringResource(R.string.select_your_fitness_level),
-                    stringResource(R.string.select),
-                    { fitnessLevel = fitnessLevels[it.toInt()] },
-                    0,
-                    3,
-                    fitnessLevel,
-                    fitnessLevels,
-                    false,
-                )
-            }
             Column(
                 modifier = Modifier
                     .align(Alignment.Bottom),
@@ -368,7 +344,6 @@ fun ProfileCreationScreen(
                                 gender,
                                 weight,
                                 height,
-                                fitnessLevel,
                             )
                         }
                     }
