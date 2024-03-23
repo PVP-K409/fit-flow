@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -53,12 +55,6 @@ fun ColumnItem(
     val context = LocalContext.current
 
     Card(
-        onClick = {
-            Toast.makeText(
-                context,
-                "Add to aquarium",
-                Toast.LENGTH_SHORT).show()
-        },
         modifier
             .padding(10.dp)
             .wrapContentSize(),
@@ -80,6 +76,41 @@ fun ColumnItem(
             Column(modifier.padding(12.dp)) {
                 Text(text = name, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 Text(text = description, fontSize = 18.sp)
+            }
+        }
+
+        Row(
+            modifier.fillMaxSize(),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.spacedBy(15.dp)
+        ){
+            Column (
+                modifier.padding(12.dp),
+                verticalArrangement = Arrangement.Center
+            ){
+                Button(onClick = {
+                    Toast.makeText(context,
+                    "Added to aquarium",
+                    Toast.LENGTH_SHORT).show()
+                }
+                ) {
+                    Text(text = "Add")
+                }
+            }
+            Column (
+                modifier.padding(12.dp),
+                verticalArrangement = Arrangement.Center
+            ){
+                Button(onClick = {
+                    Toast.makeText(context,
+                        "Removed from aquarium",
+                        Toast.LENGTH_SHORT).show()
+                },
+                    colors = ButtonDefaults.buttonColors(Color.DarkGray)
+                ) {
+                    Text(text = "Remove")
+
+                }
             }
         }
     }
