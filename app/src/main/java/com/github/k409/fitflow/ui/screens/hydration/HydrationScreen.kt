@@ -3,9 +3,11 @@ package com.github.k409.fitflow.ui.screens.hydration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -30,7 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.NumberPickerDialog
 import com.github.k409.fitflow.ui.components.hydration.WaterIndicator
-import com.github.k409.fitflow.ui.components.hydration.WaterIntakeLog
+import com.github.k409.fitflow.ui.components.hydration.HydrationStatisticsCard
 
 @Composable
 fun WaterLoggingScreen(
@@ -94,17 +96,22 @@ fun WaterLoggingScreen(
             }
         }
 
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxHeight(),
+                .fillMaxSize()
         ) {
-            WaterIntakeLog(
+            Column(
                 modifier = Modifier
-                    .padding(bottom = 16.dp),
-                milliliters = uiState.yesterday.toLong(),
-                thisWeek = uiState.thisWeek.toDouble(),
-                thisMonth = uiState.thisMonth.toDouble(),
-            )
+                    .align(Alignment.Center)
+                    .height(IntrinsicSize.Max)
+                    .fillMaxWidth(),
+            ) {
+                HydrationStatisticsCard(
+                    modifier = Modifier
+                        .padding(bottom = 16.dp),
+                    stats = uiState.stats,
+                )
+            }
         }
 
         if (editCupSizeDialogState.value) {

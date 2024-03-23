@@ -10,11 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -89,12 +89,12 @@ private fun WalkingProgressGraphContainer(
     selectedValueTitle: (DailyStepRecord) -> String,
     selectedInitial: DailyStepRecord? = data.lastOrNull(),
 ) {
-    val selected = remember {
+    var selectedRecord by remember {
         mutableStateOf(selectedInitial)
     }
 
-    val graphTitle = if (selected.value != null) {
-        selectedValueTitle(selected.value!!)
+    val graphTitle = if (selectedRecord != null) {
+        selectedValueTitle(selectedRecord!!)
     } else {
         title
     }
@@ -113,7 +113,14 @@ private fun WalkingProgressGraphContainer(
             fontWeight = FontWeight.ExtraBold,
         )
 
-        DailyStepRecordTexts(selected = selected)
+        TextLabelWithDivider(
+            data = listOf(
+                "Steps" to (selectedRecord?.totalSteps ?: 0),
+                "Calories" to "${(selectedRecord?.caloriesBurned ?: 0)} kcal",
+                "Distance" to String.format("%.2f km", selectedRecord?.totalDistance ?: 0f),
+            ),
+            horizontalArrangement = Arrangement.Start,
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -129,61 +136,10 @@ private fun WalkingProgressGraphContainer(
                     },
                 xAxisLabels = xAxisLabels,
                 onSelectedIndexChange = { index ->
-                    selected.value = data.getOrNull(index)
+                    selectedRecord = data.getOrNull(index)
                 },
-                selected = data.indexOf(selected.value),
+                selected = data.indexOf(selectedRecord),
             )
         }
     }
 }
-
-@Composable
-private fun DailyStepRecordTexts(selected: MutableState<DailyStepRecord?>) {
-    val record = selected.value ?: DailyStepRecord()
-
-    TextLabelWithDivider(
-        data = listOf(
-            "Steps" to record.totalSteps,
-            "Calories" to "${(record.caloriesBurned ?: 0)} kcal",
-            "Distance" to String.format("%.2f km", record.totalDistance)
-        )
-    )
-
-
-    /*Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start,
-    ) {
-        TextWithLabel(
-            label = "Steps",
-            text = record.totalSteps.toString(),
-        )
-
-        VerticalDivider(
-            modifier = Modifier
-                .height(18.dp)
-                .padding(horizontal = 12.dp),
-            thickness = 1.dp,
-        )
-
-        TextWithLabel(
-            label = "Calories",
-            text = record.caloriesBurned?.toString() ?: "0",
-        )
-
-        VerticalDivider(
-            modifier = Modifier
-                .height(18.dp)
-                .padding(horizontal = 12.dp),
-            thickness = 1.dp,
-        )
-
-        TextWithLabel(
-            label = "Distance",
-            text = String.format("%.2f", record.totalDistance),
-        )
-    }*/
-}
-
-

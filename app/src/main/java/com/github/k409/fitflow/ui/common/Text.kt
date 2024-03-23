@@ -7,9 +7,11 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -117,7 +119,9 @@ fun <T> TextLabelWithDivider(
                 labelStyle = labelStyle,
             )
 
-            if (data.last().second != value && dividerVisible) {
+            val isLast = data.last().second == value
+
+            if (!isLast && dividerVisible) {
                 VerticalDivider(
                     modifier = Modifier
                         .height(18.dp)
@@ -125,6 +129,11 @@ fun <T> TextLabelWithDivider(
                     thickness = 1.dp,
                 )
             }
+
+            if (!isLast && !dividerVisible) {
+                Spacer(modifier = Modifier.width(16.dp))
+            }
+
         }
     }
 }
