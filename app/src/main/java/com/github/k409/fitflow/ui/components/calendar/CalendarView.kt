@@ -38,14 +38,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.ui.common.noRippleClickable
+import com.github.k409.fitflow.util.getShortWeekdayNames
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.time.format.TextStyle
-import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -88,9 +86,7 @@ fun CalendarView(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
         ) {
-            DayOfWeek.entries.forEach { dayOfWeek ->
-                val dayName = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
-
+            getShortWeekdayNames().forEach { dayName ->
                 Text(
                     text = dayName,
                     modifier = Modifier.weight(1f),

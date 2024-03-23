@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.components.aquarium
 
+import androidx.annotation.FloatRange
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -23,7 +24,8 @@ import kotlin.math.sin
 fun AnimatedWaves(
     modifier: Modifier = Modifier,
     waveCount: Int = 1,
-    verticalWavesStart: Float = 0.3f,
+    @FloatRange(from = 0.0, to = 1.0)
+    waterLevel: Float = 0.85f,
     waveAmplitude: Float = 50f,
     waveFrequency: Float = 0.03f,
     brush: Brush = Brush.linearGradient(
@@ -55,12 +57,18 @@ fun AnimatedWaves(
         label = "",
     )
 
+//    val verticalStart = animateFloatAsState(
+//        targetValue = (1 - waterLevel),
+//        label = "",
+//        animationSpec = tween(durationMillis = 1500, easing = FastOutLinearInEasing)
+//    )
+
     Canvas(
         modifier = modifier.fillMaxSize(),
     ) {
         drawWave(
             waveCount = waveCount,
-            verticalStart = verticalWavesStart,
+            verticalStart = waterLevel,
             amplitude = amplitudeAnimation,
             frequency = frequencyAnimation,
             brush = Brush.verticalGradient(

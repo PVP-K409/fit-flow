@@ -7,8 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.screens.activity.ActivityScreen
+import com.github.k409.fitflow.ui.screens.aquarium.AquariumScreen
 import com.github.k409.fitflow.ui.screens.goals.GoalsScreen
-import com.github.k409.fitflow.ui.screens.home.HomeScreen
 import com.github.k409.fitflow.ui.screens.hydration.WaterLoggingScreen
 import com.github.k409.fitflow.ui.screens.login.LoginScreen
 import com.github.k409.fitflow.ui.screens.market.MarketScreen
@@ -19,15 +19,15 @@ import com.github.k409.fitflow.ui.screens.settings.SettingsScreen
 fun FitFlowNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = NavRoutes.Home.route,
+    startDestination: String = NavRoutes.Aquarium.route,
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        composable(NavRoutes.Home.route) {
-            HomeScreen()
+        composable(NavRoutes.Aquarium.route) {
+            AquariumScreen()
         }
         composable(NavRoutes.Activity.route) {
             ActivityScreen()
@@ -52,8 +52,8 @@ fun FitFlowNavGraph(
         composable(NavRoutes.Login.route) {
             LoginScreen(
                 onSuccessfulSignIn = {
-                    navController.navigate(NavRoutes.Home.route) {
-                        popUpTo(NavRoutes.Home.route) {
+                    navController.navigate(NavRoutes.Aquarium.route) {
+                        popUpTo(NavRoutes.Aquarium.route) {
                             inclusive = false
                         }
                     }
