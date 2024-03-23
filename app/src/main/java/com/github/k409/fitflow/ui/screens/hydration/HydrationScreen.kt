@@ -44,7 +44,7 @@ fun WaterLoggingScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp),
+            .padding(16.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -94,11 +94,18 @@ fun WaterLoggingScreen(
             }
         }
 
-        WaterIntakeLog(
-            milliliters = uiState.yesterday.toLong(),
-            thisWeek = uiState.thisWeek.toDouble(),
-            thisMonth = uiState.thisMonth.toDouble(),
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxHeight(),
+        ) {
+            WaterIntakeLog(
+                modifier = Modifier
+                    .padding(bottom = 16.dp),
+                milliliters = uiState.yesterday.toLong(),
+                thisWeek = uiState.thisWeek.toDouble(),
+                thisMonth = uiState.thisMonth.toDouble(),
+            )
+        }
 
         if (editCupSizeDialogState.value) {
             val cupValues = Array(300) { (it * 10 + 10).toString() }

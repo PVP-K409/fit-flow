@@ -2,7 +2,6 @@ package com.github.k409.fitflow.ui.screens.activity
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -26,7 +24,7 @@ import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.DailyStepRecord
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.ProgressGraph
-import com.github.k409.fitflow.ui.common.TextWithLabel
+import com.github.k409.fitflow.ui.common.TextLabelWithDivider
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -143,7 +141,16 @@ private fun WalkingProgressGraphContainer(
 private fun DailyStepRecordTexts(selected: MutableState<DailyStepRecord?>) {
     val record = selected.value ?: DailyStepRecord()
 
-    Row(
+    TextLabelWithDivider(
+        data = listOf(
+            "Steps" to record.totalSteps,
+            "Calories" to "${(record.caloriesBurned ?: 0)} kcal",
+            "Distance" to String.format("%.2f km", record.totalDistance)
+        )
+    )
+
+
+    /*Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
@@ -176,5 +183,7 @@ private fun DailyStepRecordTexts(selected: MutableState<DailyStepRecord?>) {
             label = "Distance",
             text = String.format("%.2f", record.totalDistance),
         )
-    }
+    }*/
 }
+
+
