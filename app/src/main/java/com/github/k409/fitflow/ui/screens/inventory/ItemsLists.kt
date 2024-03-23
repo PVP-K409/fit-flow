@@ -75,11 +75,11 @@ fun ColumnItem(
             Image(
                 painter = painterResource(id = painter),
                 contentDescription = name,
-                modifier.size(100.dp),
+                modifier.size(140.dp),
             )
             Column(modifier.padding(12.dp)) {
-                Text(text = name, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Text(text = description, fontSize = 14.sp)
+                Text(text = name, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(text = description, fontSize = 18.sp)
             }
         }
     }
