@@ -10,8 +10,7 @@ import com.github.k409.fitflow.ui.screens.activity.ActivityScreen
 import com.github.k409.fitflow.ui.screens.goals.GoalsScreen
 import com.github.k409.fitflow.ui.screens.home.HomeScreen
 import com.github.k409.fitflow.ui.screens.hydration.WaterLoggingScreen
-import com.github.k409.fitflow.ui.screens.inventory.InventoryDecorations
-import com.github.k409.fitflow.ui.screens.inventory.InventoryFishes
+import com.github.k409.fitflow.ui.screens.inventory.InventoryScreen
 import com.github.k409.fitflow.ui.screens.login.LoginScreen
 import com.github.k409.fitflow.ui.screens.market.MarketScreen
 import com.github.k409.fitflow.ui.screens.profile.ProfileCreationScreen
@@ -41,12 +40,8 @@ fun FitFlowNavGraph(
             MarketScreen()
         }
 
-        composable(NavRoutes.Fishes.route){
-            InventoryFishes(navController)
-        }
-
-        composable(NavRoutes.Decorations.route){
-            InventoryDecorations(navController)
+        composable(NavRoutes.Inventory.route){
+            InventoryScreen()
         }
 
         composable(NavRoutes.Hydration.route) {

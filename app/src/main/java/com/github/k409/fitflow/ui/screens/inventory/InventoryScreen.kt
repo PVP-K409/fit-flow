@@ -1,8 +1,6 @@
 package com.github.k409.fitflow.ui.screens.inventory
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,27 +23,28 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.github.k409.fitflow.R
 
-@Composable
-fun InventoryFishes(navController: NavController){
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ){
-        Image(
-            painter = painterResource(id = R.drawable.chest),
-            contentDescription = "Background Image",
-            modifier = Modifier.fillMaxSize(),
-        )
-    }
+data class BottomNavigationItem(
+    val title: String,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+)
 
-    val ownedItems = listOf(
+@Composable
+fun InventoryScreen(){
+    val ownedFishes = listOf(
         Item("Clownfish",
             "The fish from the movie \"Finding Nemo\"",
             R.drawable.primary_fish),
+    )
+
+    val ownedDecorations = listOf(
+        Item("Plant",
+            "I don't know what type of plant this is",
+            R.drawable.plant),
     )
 
     val items = listOf(
@@ -70,10 +69,9 @@ fun InventoryFishes(navController: NavController){
                 NavigationBar {
                     items.forEachIndexed { index, item ->
                         NavigationBarItem(
-                            selected = false,
+                            selected = selectedItemIndex == index,
                             onClick = {
                                 selectedItemIndex = index
-                                navController.navigate(item.title)
                             },
                             label = {
                                 Text(text = item.title)
@@ -93,15 +91,21 @@ fun InventoryFishes(navController: NavController){
         ) {paddingValues ->
             Column(
                 modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = paddingValues.calculateBottomPadding())
+                    .fillMaxSize()
+                    .padding(bottom = paddingValues.calculateBottomPadding())
             ) {
                 Column(
                     modifier = Modifier
                         .padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                ){List(ownedItems)}
+                ){
+                    if(selectedItemIndex == 0){
+                        List(ownedFishes)
+                    } else {
+                        List(ownedDecorations)
+                    }
+                }
             }
         }
     }
