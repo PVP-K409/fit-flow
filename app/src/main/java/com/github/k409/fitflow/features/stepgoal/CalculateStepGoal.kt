@@ -16,8 +16,7 @@ fun calculateDailyStepGoal(
         } else {
             (stepHistory.average()).toInt()
         }
-    }
-    else {
+    } else {
         defaultValue
     }
 }
