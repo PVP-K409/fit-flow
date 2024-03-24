@@ -69,4 +69,6 @@
     <string name="average_consumption">Average Daily Consumption</string>
     <string name="this_week">This week</string>
     <string name="this_month">This month</string>
+    <string name="your_progress_for_this_week">Your progress for this week</string>
+    <string name="your_progress_for_the_last_12_weeks">Your progress for the last 12 weeks</string>
 </resources>

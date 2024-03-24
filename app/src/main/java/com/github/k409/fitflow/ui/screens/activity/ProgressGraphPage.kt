@@ -52,6 +52,7 @@ private fun ProgressGraphPageContent(uiState: ProgressUiState.Success) {
         WalkingProgressGraphContainer(
             data = uiState.currentWeek.values.toList(),
             title = stringResource(R.string.current_week_progress),
+            subtitle = stringResource(R.string.your_progress_for_this_week),
             xAxisLabels = uiState.currentWeek.keys.toList(),
             selectedValueTitle = { record ->
                 LocalDate
@@ -70,6 +71,7 @@ private fun ProgressGraphPageContent(uiState: ProgressUiState.Success) {
         WalkingProgressGraphContainer(
             data = uiState.lastWeeks.values.toList(),
             title = stringResource(R.string.weekly_progress),
+            subtitle = stringResource(R.string.your_progress_for_the_last_12_weeks),
             selectedValueTitle = { record ->
                 val startDate = LocalDate.parse(record.recordDate)
                 val endDate = startDate.plusDays(6)
@@ -85,6 +87,7 @@ private fun ProgressGraphPageContent(uiState: ProgressUiState.Success) {
 private fun WalkingProgressGraphContainer(
     data: List<DailyStepRecord>,
     title: String,
+    subtitle: String,
     xAxisLabels: List<String> = emptyList(),
     selectedValueTitle: (DailyStepRecord) -> String,
     selectedInitial: DailyStepRecord? = data.lastOrNull(),
@@ -93,10 +96,10 @@ private fun WalkingProgressGraphContainer(
         mutableStateOf(selectedInitial)
     }
 
-    val graphTitle = if (selectedRecord != null) {
+    val subtitleText = if (selectedRecord != null) {
         selectedValueTitle(selectedRecord!!)
     } else {
-        title
+        subtitle
     }
 
     Column(
@@ -107,10 +110,17 @@ private fun WalkingProgressGraphContainer(
         horizontalAlignment = Alignment.Start,
     ) {
         Text(
-            modifier = Modifier.padding(bottom = 16.dp),
-            text = graphTitle,
-            style = MaterialTheme.typography.labelLarge,
+            modifier = Modifier.padding(bottom = 6.dp),
+            text = title,
+            style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.ExtraBold,
+        )
+
+        Text(
+            modifier = Modifier.padding(bottom = 16.dp),
+            text = subtitleText,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Light,
         )
 
         TextLabelWithDivider(
