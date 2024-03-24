@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.inventory
+package com.github.k409.fitflow.ui.screens.inventory
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

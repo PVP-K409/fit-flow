@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.inventory
+package com.github.k409.fitflow.ui.screens.inventory
 
 import com.github.k409.fitflow.model.Fish
 

@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.inventory
+package com.github.k409.fitflow.ui.screens.inventory
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -15,11 +15,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,13 +53,14 @@ fun ColumnItem(
     description: String,
 ) {
     val context = LocalContext.current
+    val colors = MaterialTheme.colorScheme
 
     Card(
         modifier
             .padding(10.dp)
             .wrapContentSize(),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = colors.surface,
         ),
         elevation = CardDefaults.cardElevation(10.dp),
     ) {
@@ -112,7 +113,7 @@ fun ColumnItem(
                             Toast.LENGTH_SHORT,
                         ).show()
                     },
-                    colors = ButtonDefaults.buttonColors(Color.DarkGray),
+                    colors = ButtonDefaults.buttonColors(colors.error),
                 ) {
                     Text(text = "Remove")
                 }
