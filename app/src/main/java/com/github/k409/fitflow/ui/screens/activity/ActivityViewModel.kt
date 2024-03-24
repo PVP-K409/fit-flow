@@ -5,8 +5,6 @@ import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.DistanceRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.StepsRepository
@@ -14,6 +12,11 @@ import com.github.k409.fitflow.di.healthConnect.HealthStatsManager
 import com.github.k409.fitflow.features.stepcounter.StepCounter
 import com.github.k409.fitflow.model.DailyStepRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -26,8 +29,23 @@ class ActivityViewModel @Inject constructor(
     private val client: HealthConnectClient,
     private val healthStatsManager: HealthStatsManager,
 ) : ViewModel() {
-    private val _todaySteps = MutableLiveData<DailyStepRecord?>()
-    val todaySteps: LiveData<DailyStepRecord?> = _todaySteps
+
+    private val _todaySteps = MutableStateFlow<DailyStepRecord?>(null)
+    val todaySteps: StateFlow<DailyStepRecord?> = _todaySteps
+
+    val progressUiState: StateFlow<ProgressUiState> = combine(
+        stepsRepository.getStepRecordCurrentWeek(),
+        stepsRepository.getStepRecordLastWeeks(12),
+    ) { currentWeek, lastWeeks ->
+        ProgressUiState.Success(
+            currentWeek = currentWeek,
+            lastWeeks = lastWeeks,
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = ProgressUiState.Loading,
+    )
 
     val permissions = setOf(
         HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class),
@@ -36,12 +54,7 @@ class ActivityViewModel @Inject constructor(
 
     init {
         _todaySteps.value = DailyStepRecord(
-            totalSteps = 0,
-            initialSteps = 0,
             recordDate = LocalDate.now().toString(),
-            stepsBeforeReboot = 0,
-            caloriesBurned = 0,
-            totalDistance = 0.0,
         )
         loadTodaySteps()
     }
@@ -135,4 +148,12 @@ class ActivityViewModel @Inject constructor(
     suspend fun getStepRecord(date: LocalDate): DailyStepRecord? {
         return stepsRepository.getSteps(date.toString())
     }
+}
+
+sealed interface ProgressUiState {
+    data object Loading : ProgressUiState
+    data class Success(
+        val currentWeek: Map<String, DailyStepRecord> = emptyMap(),
+        val lastWeeks: Map<String, DailyStepRecord> = emptyMap(),
+    ) : ProgressUiState
 }

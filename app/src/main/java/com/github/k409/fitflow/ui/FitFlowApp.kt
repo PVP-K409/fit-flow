@@ -71,7 +71,7 @@ fun FitFlowApp(
     } else if (user.gender.isEmpty() || user.dateOfBirth.isEmpty()) {
         NavRoutes.ProfileCreation.route
     } else {
-        NavRoutes.Home.route
+        NavRoutes.Aquarium.route
     }
 
     val bottomBarState = rememberSaveable { (mutableStateOf(false)) }
@@ -105,12 +105,12 @@ fun FitFlowApp(
                         currentScreen,
                     )
                     ) && bottomBarState.value,
-                containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
+                containerColor = if (currentScreen == NavRoutes.Aquarium) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
             )
         },
     ) { innerPadding ->
         val topPadding =
-            if (currentScreen == NavRoutes.Home) 0.dp else innerPadding.calculateTopPadding()
+            if (currentScreen == NavRoutes.Aquarium) 0.dp else innerPadding.calculateTopPadding()
         val bottomPadding = innerPadding.calculateBottomPadding().minus(10.dp).coerceAtLeast(0.dp)
 
         FitFlowNavGraph(
@@ -141,7 +141,7 @@ private fun UpdateTopAndBottomBarVisibility(
             topBarState.value = true
         }
 
-        NavRoutes.Home -> {
+        NavRoutes.Aquarium -> {
             bottomBarState.value = true
             topBarState.value = false
         }

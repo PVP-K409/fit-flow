@@ -51,8 +51,21 @@
     <string name="hydration_notification_channel_name">Hydration</string>
     <string name="hydration_notification_channel_description">Reminder to stay hydrated</string>
     <string name="hydration_notification_title">Don\'t forget to stay hydrated!</string>
-    <string name="hydration_notification_text">It\'s been 3 hour since you last drank water, don\'t forget to stay hydrated</string>
+    <string name="hydration_notification_text">It\'s been a while since you last drank water, don\'t forget to stay hydrated</string>
     <string name="drink_ml">Drink %1$s ml</string>
     <string name="cup_size_ml">Cup size (ml)</string>
     <string name="firebase_auth_user_collision_error_message">Sorry, but this email address associated with another account.</string>
+    <string name="account_settings_group_title">Account</string>
+    <string name="not_logged_in">Not logged in</string>
+    <string name="log_out">Log out</string>
+    <string name="you_are_logged_in_as">You are logged in as %1$s</string>
+    <string name="profile_settings_group_title">Profile</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="edit_your_profile">Edit your profile</string>
+    <string name="appearance_settings_group_title">Appearance</string>
+    <string name="mode">Mode</string>
+    <string name="colour">Colour</string>
+    <string name="email">Email</string>
+    <string name="current_week_progress">Current Week Progress</string>
+    <string name="weekly_progress">Weekly Progress</string>
 </resources>
