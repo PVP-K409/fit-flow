@@ -111,7 +111,7 @@ class HealthConnectService @Inject constructor(
             ).toDouble()
 
         } catch (e: Exception) {
-            Log.e("HealthConnectService", "Failed to aggregate running distance")
+            Log.e("HealthConnectService", "Failed to aggregate exercise distance")
             0.0
         }
     }
