@@ -1,6 +1,7 @@
 package com.github.k409.fitflow.di
 
 import android.content.SharedPreferences
+import com.github.k409.fitflow.data.AquariumRepository
 import com.github.k409.fitflow.data.AuthRepository
 import com.github.k409.fitflow.data.HydrationRepository
 import com.github.k409.fitflow.data.ProfileRepository
@@ -65,5 +66,20 @@ object RepositoryModule {
         prefs: SharedPreferences,
     ): StepsRepository {
         return StepsRepository(db, auth, stepCounter, prefs)
+    }
+    
+    @Provides
+    @Singleton
+    fun providePreferencesRepository(@ApplicationContext context: Context): PreferencesRepository {
+        return PreferencesRepository(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAquariumRepository(
+        db: FirebaseFirestore,
+        auth: FirebaseAuth,
+    ): AquariumRepository {
+        return AquariumRepository(db, auth)
     }
 }

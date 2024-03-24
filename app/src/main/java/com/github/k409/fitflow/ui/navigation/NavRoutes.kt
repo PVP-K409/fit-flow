@@ -23,7 +23,7 @@ sealed class NavRoutes(
 ) {
     companion object {
         val navRoutes = listOf(
-            Home,
+            Aquarium,
             Activity,
             Goals,
             Marketplace,
@@ -33,12 +33,12 @@ sealed class NavRoutes(
             Settings,
             Inventory,
         )
-        val bottomNavBarItems = listOf(Home, Activity, Hydration, Goals, Marketplace)
+        val bottomNavBarItems = listOf(Aquarium, Activity, Hydration, Goals, Marketplace)
     }
 
     data object Default : NavRoutes("default", R.string.app_name)
 
-    data object Home : NavRoutes("home", R.string.home, Icons.Outlined.Home, R.drawable.home_24px)
+    data object Aquarium : NavRoutes("aquarium", R.string.home, Icons.Outlined.Home, R.drawable.home_24px)
 
     data object Activity : NavRoutes(
         "activity",
