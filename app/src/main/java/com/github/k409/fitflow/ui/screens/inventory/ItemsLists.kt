@@ -51,7 +51,7 @@ fun ColumnItem(
     painter: Int,
     name: String,
     description: String,
-){
+) {
     val context = LocalContext.current
 
     Card(
