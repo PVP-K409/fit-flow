@@ -25,8 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.R
 
 @Composable
-fun InventoryScreen(){
-    
+fun InventoryScreen() {
     var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
 
     Surface(
