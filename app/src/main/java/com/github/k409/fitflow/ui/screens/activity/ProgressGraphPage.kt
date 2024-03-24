@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -48,7 +51,11 @@ internal fun ProgressGraphPage(
 
 @Composable
 private fun ProgressGraphPageContent(uiState: ProgressUiState.Success) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+    ) {
         WalkingProgressGraphContainer(
             data = uiState.currentWeek.values.toList(),
             title = stringResource(R.string.current_week_progress),
@@ -67,6 +74,8 @@ private fun ProgressGraphPageContent(uiState: ProgressUiState.Success) {
                 it.recordDate == LocalDate.now().toString()
             },
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         WalkingProgressGraphContainer(
             data = uiState.lastWeeks.values.toList(),
@@ -102,54 +111,60 @@ private fun WalkingProgressGraphContainer(
         subtitle
     }
 
-    Column(
+    OutlinedCard(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start,
+            .padding(horizontal = 16.dp)
     ) {
-        Text(
-            modifier = Modifier.padding(bottom = 6.dp),
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.ExtraBold,
-        )
 
-        Text(
-            modifier = Modifier.padding(bottom = 16.dp),
-            text = subtitleText,
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Light,
-        )
-
-        TextLabelWithDivider(
-            data = listOf(
-                "Steps" to (selectedRecord?.totalSteps ?: 0),
-                "Calories" to "${(selectedRecord?.caloriesBurned ?: 0)} kcal",
-                "Distance" to String.format("%.2f km", selectedRecord?.totalDistance ?: 0f),
-            ),
-            horizontalArrangement = Arrangement.Start,
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Column {
-            ProgressGraph(
-                modifier = Modifier
-                    .height(200.dp)
-                    .fillMaxWidth(),
-                data = data
-                    .map { it.totalSteps }
-                    .ifEmpty {
-                        List(xAxisLabels.size) { 0 }
-                    },
-                xAxisLabels = xAxisLabels,
-                onSelectedIndexChange = { index ->
-                    selectedRecord = data.getOrNull(index)
-                },
-                selected = data.indexOf(selectedRecord),
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start,
+        ) {
+            Text(
+                modifier = Modifier.padding(bottom = 6.dp),
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.ExtraBold,
             )
+
+            Text(
+                modifier = Modifier.padding(bottom = 16.dp),
+                text = subtitleText,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Light,
+            )
+
+            TextLabelWithDivider(
+                data = listOf(
+                    "Steps" to (selectedRecord?.totalSteps ?: 0),
+                    "Calories" to "${(selectedRecord?.caloriesBurned ?: 0)} kcal",
+                    "Distance" to String.format("%.2f km", selectedRecord?.totalDistance ?: 0f),
+                ),
+                horizontalArrangement = Arrangement.Start,
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Column {
+                ProgressGraph(
+                    modifier = Modifier
+                        .height(200.dp)
+                        .fillMaxWidth(),
+                    data = data
+                        .map { it.totalSteps }
+                        .ifEmpty {
+                            List(xAxisLabels.size) { 0 }
+                        },
+                    xAxisLabels = xAxisLabels,
+                    onSelectedIndexChange = { index ->
+                        selectedRecord = data.getOrNull(index)
+                    },
+                    selected = data.indexOf(selectedRecord),
+                )
+            }
         }
     }
 }

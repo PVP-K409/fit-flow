@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.LineAxis
 import androidx.compose.material.icons.outlined.WaterDrop
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,7 +35,7 @@ fun HydrationStatisticsCard(
         modifier = modifier
             .fillMaxSize()
     ) {
-        ElevatedCard {
+        OutlinedCard {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -84,7 +84,7 @@ fun HydrationStatisticsCard(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        ElevatedCard {
+        OutlinedCard {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -228,7 +228,7 @@ private fun ButtonToModifyMetrics(
 }
 
 @Composable
-fun AquariumMetrics(
+private fun AquariumMetrics(
     modifier: Modifier = Modifier,
     waterLevel: Float,
     healthLevel: Float,
@@ -296,14 +296,14 @@ fun AquariumMetrics(
     }
 }
 
-internal fun calculateFishSize(waterLevel: Float): Dp {
+private fun calculateFishSize(waterLevel: Float): Dp {
     val minSize = AquariumTokens.MinFishSize
     val maxSize = AquariumTokens.MaxFishSize
 
     return minSize + (maxSize - minSize) * waterLevel
 }
 
-internal fun calculateAquariumBackgroundAlpha(waterLevel: Float): Float {
+private fun calculateAquariumBackgroundAlpha(waterLevel: Float): Float {
     val minAlpha = AquariumTokens.MinAquariumBackgroundAlpha
     val maxAlpha = AquariumTokens.MaxAquariumBackgroundAlpha
 
