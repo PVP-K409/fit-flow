@@ -46,20 +46,20 @@ fun InventoryScreen() {
                             },
                             icon = {
                                 Icon(
-                                    imageVector = if(index == selectedItemIndex) {
+                                    imageVector = if (index == selectedItemIndex) {
                                         item.selectedIcon
                                     } else item.unselectedIcon,
                                     contentDescription = item.title,
                                 )
-                            }
+                            },
                         )
                     }
                 }
-            }
-        ) {paddingValues ->
+            },
+        ) { paddingValues ->
             Box(
-                modifier = Modifier.fillMaxSize()
-            ){
+                modifier = Modifier.fillMaxSize(),
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.chest),
                     contentDescription = "Background Image",
@@ -69,15 +69,15 @@ fun InventoryScreen() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = paddingValues.calculateBottomPadding())
+                    .padding(bottom = paddingValues.calculateBottomPadding()),
             ) {
                 Column(
                     modifier = Modifier
                         .padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                ){
-                    if(selectedItemIndex == 0){
+                ) {
+                    if (selectedItemIndex == 0) {
                         List(ownedFishes)
                     } else {
                         List(ownedDecorations)

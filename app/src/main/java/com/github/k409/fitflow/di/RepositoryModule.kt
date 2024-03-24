@@ -67,7 +67,7 @@ object RepositoryModule {
     ): StepsRepository {
         return StepsRepository(db, auth, stepCounter, prefs)
     }
-    
+
     @Provides
     @Singleton
     fun providePreferencesRepository(@ApplicationContext context: Context): PreferencesRepository {

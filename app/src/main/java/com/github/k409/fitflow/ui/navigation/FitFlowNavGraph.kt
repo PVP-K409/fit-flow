@@ -40,7 +40,7 @@ fun FitFlowNavGraph(
             MarketScreen()
         }
 
-        composable(NavRoutes.Inventory.route){
+        composable(NavRoutes.Inventory.route) {
             InventoryScreen()
         }
 
