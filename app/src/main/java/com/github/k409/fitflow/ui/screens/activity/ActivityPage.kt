@@ -28,8 +28,6 @@ import com.github.k409.fitflow.ui.common.TextWithLabel
 import com.github.k409.fitflow.ui.components.activity.CircularProgressBar
 import com.github.k409.fitflow.ui.components.activity.DistanceAndCalories
 import com.github.k409.fitflow.ui.components.calendar.CalendarView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
