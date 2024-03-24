@@ -85,7 +85,7 @@ fun AquariumContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+        ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -127,7 +127,6 @@ fun AquariumContent(
                         .fillMaxHeight(waterLevel),
                 ) {
                     DraggableFishBox(
-                        modifier = Modifier,
                         fishSize = calculateFishSize(waterLevel),
                         fishDrawableId = uiState.aquariumStats.fish.getPhaseImage(healthLevel),
                     )
@@ -146,6 +145,7 @@ fun AquariumContent(
         }
     }
 }
+
 
 @Composable
 private fun ButtonToModifyMetrics(

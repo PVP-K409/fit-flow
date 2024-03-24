@@ -2,6 +2,7 @@ package com.github.k409.fitflow.ui.components.aquarium
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -79,16 +80,26 @@ fun DraggableFishBox(
         var fishHeight by remember(fishSize) { mutableFloatStateOf(fishSize.value) }
         var fishWidth by remember(fishSize) { mutableFloatStateOf(fishSize.value) }
 
-        /*Text(
-            text = "x: $offsetX, y: $offsetY\nparentWidth: $parentWidth, parentHeight: $parentHeight",
-            modifier = Modifier.align(Alignment.TopStart)
-        )*/
+        val transition = rememberInfiniteTransition(label = "")
+        val translationY by transition.animateFloat(
+            initialValue = 0f,
+            targetValue = -30f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 3000, easing = EaseInOut),
+                repeatMode = RepeatMode.Reverse
+            ), label = ""
+        )
 
         FishImage(
             fishSize = fishSize,
             fishDrawableId = fishDrawableId,
             modifier = fishModifier
-                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                .offset {
+                    IntOffset(
+                        offsetX.roundToInt(),
+                        offsetY.roundToInt() + translationY.roundToInt()
+                    )
+                }
                 .align(Alignment.TopStart)
                 .pointerInput(fishSize) {
                     val boxSize = this.size
@@ -104,10 +115,6 @@ fun DraggableFishBox(
                         )
                     }
                 }
-                /*.border(
-                    width = 1.dp,
-                    color = Color.Blue
-                )*/
                 .onSizeChanged { size ->
                     fishHeight = size.height.toFloat()
                     fishWidth = size.width.toFloat()
@@ -115,7 +122,7 @@ fun DraggableFishBox(
                     // center the fish
                     offsetX = (parentWidth - size.width) / 2f
                     offsetY = (parentHeight - size.height) / 2f
-                },
+                }
         )
     }
 }
