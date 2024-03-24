@@ -26,6 +26,7 @@ import com.github.k409.fitflow.R
 
 @Composable
 fun InventoryScreen(){
+    
     var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
 
     Surface(
