@@ -50,8 +50,8 @@ class StepCounterWorker @AssistedInject constructor(
             var distance = 0.0
 
             if (granted) {
-                calories = healthStatsManager.getCalories()
-                distance = healthStatsManager.getDistance()
+                calories = healthStatsManager.getTotalCalories()
+                distance = healthStatsManager.getTotalDistance()
             }
 
             if (dailyStepRecord == null) { // if new day
