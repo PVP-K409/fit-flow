@@ -34,7 +34,7 @@ fun List(
     modifier: Modifier = Modifier,
 ) {
     LazyColumn {
-        items(fishes) {fish ->
+        items(fishes) { fish ->
             ColumnItem(
                 modifier,
                 painter = fish.imageResId,
@@ -59,15 +59,15 @@ fun ColumnItem(
             .padding(10.dp)
             .wrapContentSize(),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = Color.White,
         ),
         elevation = CardDefaults.cardElevation(10.dp),
     ) {
         Row(
             modifier.fillMaxSize(),
             verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.spacedBy(15.dp)
-        ){
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
+        ) {
             Image(
                 painter = painterResource(id = painter),
                 contentDescription = name,
@@ -82,34 +82,39 @@ fun ColumnItem(
         Row(
             modifier.fillMaxSize(),
             verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.spacedBy(15.dp)
-        ){
-            Column (
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
+        ) {
+            Column(
                 modifier.padding(12.dp),
-                verticalArrangement = Arrangement.Center
-            ){
-                Button(onClick = {
-                    Toast.makeText(context,
-                    "Added to aquarium",
-                    Toast.LENGTH_SHORT).show()
-                }
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Button(
+                    onClick = {
+                        Toast.makeText(
+                            context,
+                            "Added to aquarium",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    },
                 ) {
                     Text(text = "Add")
                 }
             }
-            Column (
+            Column(
                 modifier.padding(12.dp),
-                verticalArrangement = Arrangement.Center
-            ){
-                Button(onClick = {
-                    Toast.makeText(context,
-                        "Removed from aquarium",
-                        Toast.LENGTH_SHORT).show()
-                },
-                    colors = ButtonDefaults.buttonColors(Color.DarkGray)
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Button(
+                    onClick = {
+                        Toast.makeText(
+                            context,
+                            "Removed from aquarium",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    },
+                    colors = ButtonDefaults.buttonColors(Color.DarkGray),
                 ) {
                     Text(text = "Remove")
-
                 }
             }
         }

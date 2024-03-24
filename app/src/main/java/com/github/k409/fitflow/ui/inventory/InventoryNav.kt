@@ -23,5 +23,5 @@ val items = listOf(
         title = "Decorations",
         selectedIcon = Icons.Filled.Anchor,
         unselectedIcon = Icons.Outlined.Anchor,
-    )
+    ),
 )

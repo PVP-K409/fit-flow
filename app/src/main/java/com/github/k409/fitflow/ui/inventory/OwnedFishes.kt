@@ -6,31 +6,31 @@ val ownedFishes = listOf(
     Item(
         Fish.Primary.title,
         Fish.Primary.description,
-        Fish.Primary.getPhaseImage(0.55.toFloat())
+        Fish.Primary.getPhaseImage(0.55.toFloat()),
     ),
     Item(
         Fish.Secondary.title,
         Fish.Secondary.description,
-        Fish.Secondary.getPhaseImage(0.55.toFloat())
+        Fish.Secondary.getPhaseImage(0.55.toFloat()),
     ),
     Item(
         Fish.Third.title,
         Fish.Third.description,
-        Fish.Third.getPhaseImage(0.80.toFloat())
+        Fish.Third.getPhaseImage(0.80.toFloat()),
     ),
     Item(
         Fish.Third.title,
         Fish.Third.description,
-        Fish.Third.getPhaseImage(0.55.toFloat())
+        Fish.Third.getPhaseImage(0.55.toFloat()),
     ),
     Item(
         Fish.Third.title,
         Fish.Third.description,
-        Fish.Third.getPhaseImage(0.20.toFloat())
+        Fish.Third.getPhaseImage(0.20.toFloat()),
     ),
     Item(
         Fish.Third.title,
         Fish.Third.description,
-        Fish.Third.getPhaseImage(0.toFloat())
+        Fish.Third.getPhaseImage(0.toFloat()),
     ),
 )
