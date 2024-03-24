@@ -29,7 +29,7 @@ class HealthStatsManager @Inject constructor(
     )
 
     suspend fun getTotalDistance(): Double = fetchData(
-        fetchFunction = { healthConnectService.aggregateBikingDistance(
+        fetchFunction = { healthConnectService.aggregateTotalDistance(
             startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
             endTime = Instant.now()
         ) },
