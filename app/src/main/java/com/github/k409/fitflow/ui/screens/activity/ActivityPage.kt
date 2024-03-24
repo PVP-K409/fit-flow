@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,14 +28,21 @@ import com.github.k409.fitflow.ui.common.TextWithLabel
 import com.github.k409.fitflow.ui.components.activity.CircularProgressBar
 import com.github.k409.fitflow.ui.components.activity.DistanceAndCalories
 import com.github.k409.fitflow.ui.components.calendar.CalendarView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
 internal fun ActivityPage(activityViewModel: ActivityViewModel) {
     val todaySteps by activityViewModel.todaySteps.collectAsState()
     val todayGoal: Long = 6000 // TODO goal setter
+    val coroutineScope = rememberCoroutineScope()
     val permissionContract = PermissionController.createRequestPermissionResultContract()
     val launcher = rememberLauncherForActivityResult(permissionContract) {
+        coroutineScope.launch {
+            activityViewModel.updateTodayStepsManually()
+        }
     }
 
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
