@@ -8,8 +8,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.R
 
@@ -17,10 +18,10 @@ import com.github.k409.fitflow.R
 fun BoxScope.Sand(
     modifier: Modifier = Modifier,
 ) {
-    val sandPainter = painterResource(id = R.drawable.sand)
+    val sandVector = ImageVector.vectorResource(id = R.drawable.sand)
 
     Image(
-        painter = sandPainter,
+        imageVector = sandVector,
         contentDescription = "Sand",
         modifier = modifier
             .align(Alignment.BottomCenter)
@@ -34,10 +35,10 @@ fun BoxScope.Sand(
 fun BoxScope.Plant(
     modifier: Modifier = Modifier,
 ) {
-    val plantPainter = painterResource(id = R.drawable.plant)
+    val plantVector = ImageVector.vectorResource(id = R.drawable.plant)
 
     Image(
-        painter = plantPainter,
+        imageVector = plantVector,
         contentDescription = "Plant",
         modifier = modifier
             .align(Alignment.BottomEnd)

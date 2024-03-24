@@ -25,9 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -45,11 +47,11 @@ fun FishImage(
     @DrawableRes fishDrawableId: Int = R.drawable.primary_fish,
     fishSize: Dp = 100.dp,
 ) {
-    val primaryFishPainter = painterResource(id = fishDrawableId)
+    val fishVector = ImageVector.vectorResource(id = fishDrawableId)
 
     Image(
-        painter = primaryFishPainter,
-        contentDescription = "Primary Fish",
+        imageVector = fishVector,
+        contentDescription = "Fish",
         modifier = modifier.width(fishSize),
     )
 }
@@ -66,10 +68,6 @@ fun DraggableFishBox(
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize(),
-        /*.border(
-            width = 1.dp,
-            color = Color.Red
-        )*/
     ) {
         val parentWidth = constraints.maxWidth
         val parentHeight = constraints.maxHeight

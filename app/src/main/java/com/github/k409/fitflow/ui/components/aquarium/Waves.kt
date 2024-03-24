@@ -1,7 +1,6 @@
 package com.github.k409.fitflow.ui.components.aquarium
 
 import androidx.annotation.FloatRange
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -15,25 +14,23 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import kotlin.math.sin
 
+
 @Composable
 fun AnimatedWaves(
     modifier: Modifier = Modifier,
-    waveCount: Int = 1,
     @FloatRange(from = 0.0, to = 1.0)
-    waterLevel: Float = 0.85f,
-    waveAmplitude: Float = 50f,
-    waveFrequency: Float = 0.03f,
-    brush: Brush = Brush.linearGradient(
-        colors = listOf(Color(0xFF7FABC0), Color(0x1A3C726A)),
-    ),
+    waterLevel: Float,
+    waveCount: Int = 1,
+    amplitude: Float = WavesTokens.WaveAmplitude,
+    frequency: Float = WavesTokens.WaveFrequency,
+    brush: Brush = WavesTokens.WaveBrush,
 ) {
-    val waveAmplitudeState = remember { mutableFloatStateOf(waveAmplitude) }
-    val waveFrequencyState = remember { mutableFloatStateOf(waveFrequency) }
+    val waveAmplitudeState = remember { mutableFloatStateOf(amplitude) }
+    val waveFrequencyState = remember { mutableFloatStateOf(frequency) }
 
     val infiniteTransition = rememberInfiniteTransition(label = "")
 
@@ -41,7 +38,10 @@ fun AnimatedWaves(
         initialValue = waveAmplitudeState.floatValue,
         targetValue = waveAmplitudeState.floatValue * 1.2f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1500 * 4, easing = LinearEasing),
+            animation = tween(
+                durationMillis = WavesTokens.WavesAnimationDurationMillis,
+                easing = WavesTokens.WavesAnimationEasing
+            ),
             repeatMode = RepeatMode.Reverse,
         ),
         label = "",
@@ -51,34 +51,24 @@ fun AnimatedWaves(
         initialValue = waveFrequencyState.floatValue,
         targetValue = waveFrequencyState.floatValue * 1.2f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1500 * 4, easing = LinearEasing),
+            animation = tween(
+                durationMillis = WavesTokens.WavesAnimationDurationMillis,
+                easing = WavesTokens.WavesAnimationEasing
+            ),
             repeatMode = RepeatMode.Reverse,
         ),
         label = "",
     )
-
-//    val verticalStart = animateFloatAsState(
-//        targetValue = (1 - waterLevel),
-//        label = "",
-//        animationSpec = tween(durationMillis = 1500, easing = FastOutLinearInEasing)
-//    )
 
     Canvas(
         modifier = modifier.fillMaxSize(),
     ) {
         drawWave(
             waveCount = waveCount,
-            verticalStart = waterLevel,
+            verticalStart = 1f - waterLevel,
             amplitude = amplitudeAnimation,
             frequency = frequencyAnimation,
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    Color(0x1A3C726A),
-                    Color(0xFF7FB1C0),
-                    Color(0x80838BC0),
-                    Color(0x6383FD6F),
-                ),
-            ),
+            brush = brush,
         )
     }
 }
@@ -88,9 +78,7 @@ fun DrawScope.drawWave(
     verticalStart: Float,
     amplitude: Float,
     frequency: Float,
-    brush: Brush = Brush.linearGradient(
-        colors = listOf(Color(0xFF7FABC0), Color(0x1A3C726A)),
-    ),
+    brush: Brush = WavesTokens.WaveBrush,
 ) {
     val wavePath = Path()
 

@@ -1,7 +1,6 @@
 package com.github.k409.fitflow.ui.components.aquarium
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,11 +28,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -45,42 +42,71 @@ import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.screens.aquarium.AquariumUiState
 import kotlin.math.roundToInt
 
+
 @Composable
 fun AquariumContent(
     modifier: Modifier = Modifier,
     uiState: AquariumUiState.Success,
     onWaterLevelChanged: (Float) -> Unit,
     onHealthLevelChanged: (Float) -> Unit,
-    aquariumBackground: Brush = Brush.linearGradient(
-        colors = listOf(Color(0xFFA7B9D3), Color(0xFF9CED96), Color(0xffd0e7cf)),
-    ),
+    aquariumBackground: Brush = AquariumTokens.AquariumBackground,
 ) {
-    val aquariumStats = uiState.aquariumStats
+    val waterLevel = uiState.aquariumStats.waterLevel
+    val healthLevel = uiState.aquariumStats.healthLevel
 
-    val waterLevel = aquariumStats.waterLevel
-    val healthLevel = aquariumStats.healthLevel
+    val backgroundAlpha by animateFloatAsState(
+        targetValue = calculateAquariumBackgroundAlpha(waterLevel),
+        animationSpec = tween(
+            durationMillis = AquariumTokens.AquariumBackgroundAlphaAnimationDuration,
+            easing = AquariumTokens.AquariumBackgroundAlphaAnimationEasing
+        ),
+        label = "Aquarium Background Alpha Animation",
+    )
 
-    val waterLevelAnimation = remember { Animatable(initialValue = 1f - waterLevel) }
+    val waterLevelAnimation by animateFloatAsState(
+        targetValue = waterLevel,
+        animationSpec = tween(
+            durationMillis = AquariumTokens.WaterLevelAnimationDuration,
+            easing = AquariumTokens.WaterLevelAnimationEasing
+        ),
+        label = "Water Level Animation",
+    )
 
-    fun calculateFishSize(waterLevel: Float): Dp {
-        val minSize = 100.dp
-        val maxSize = 150.dp
+    val fishSize = remember(waterLevelAnimation) { calculateFishSize(waterLevelAnimation) }
 
-        return minSize + (maxSize - minSize) * waterLevel
-    }
+    AquariumLayout(
+        modifier = modifier,
+        aquariumBackground = aquariumBackground,
+        backgroundAlpha = backgroundAlpha,
+        waterLevelAnimation = waterLevelAnimation,
+        waterLevel = waterLevel,
+        healthLevel = healthLevel,
+        fishSize = fishSize,
+        uiState = uiState,
+        onWaterLevelChanged = onWaterLevelChanged,
+        onHealthLevelChanged = onHealthLevelChanged
+    )
+}
 
-    LaunchedEffect(key1 = waterLevel) {
-        waterLevelAnimation.animateTo(
-            targetValue = 1f - waterLevel,
-            animationSpec = tween(durationMillis = 1500, easing = FastOutLinearInEasing),
-        )
-    }
-
+@Composable
+private fun AquariumLayout(
+    modifier: Modifier,
+    aquariumBackground: Brush,
+    backgroundAlpha: Float,
+    waterLevelAnimation: Float,
+    waterLevel: Float,
+    healthLevel: Float,
+    fishSize: Dp,
+    uiState: AquariumUiState.Success,
+    onWaterLevelChanged: (Float) -> Unit,
+    onHealthLevelChanged: (Float) -> Unit
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(
                 brush = aquariumBackground,
+                alpha = backgroundAlpha,
             ),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -92,16 +118,14 @@ fun AquariumContent(
             val height = constraints.maxHeight
             val width = constraints.maxWidth
 
-            AnimatedWaves(waterLevel = waterLevelAnimation.value)
+            AnimatedWaves(waterLevel = waterLevelAnimation)
 
             WaterBubbles(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(waterLevel)
-                    .alpha(0.20f)
+                    .fillMaxHeight(waterLevelAnimation)
                     .align(Alignment.BottomCenter),
-                colors = listOf(Color.Blue, Color.Green),
                 bubbleCount = 6,
+                waterLevel = waterLevel,
                 offsetX = width.toFloat(),
                 offsetY = height.toFloat(),
             )
@@ -124,10 +148,10 @@ fun AquariumContent(
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxHeight(waterLevel),
+                        .fillMaxHeight(waterLevelAnimation),
                 ) {
                     DraggableFishBox(
-                        fishSize = calculateFishSize(waterLevel),
+                        fishSize = fishSize,
                         fishDrawableId = uiState.aquariumStats.fish.getPhaseImage(healthLevel),
                     )
                 }
@@ -145,7 +169,6 @@ fun AquariumContent(
         }
     }
 }
-
 
 @Composable
 private fun ButtonToModifyMetrics(
@@ -271,4 +294,18 @@ fun AquariumMetrics(
             }
         }
     }
+}
+
+internal fun calculateFishSize(waterLevel: Float): Dp {
+    val minSize = AquariumTokens.MinFishSize
+    val maxSize = AquariumTokens.MaxFishSize
+
+    return minSize + (maxSize - minSize) * waterLevel
+}
+
+internal fun calculateAquariumBackgroundAlpha(waterLevel: Float): Float {
+    val minAlpha = AquariumTokens.MinAquariumBackgroundAlpha
+    val maxAlpha = AquariumTokens.MaxAquariumBackgroundAlpha
+
+    return minAlpha + (maxAlpha - minAlpha) * waterLevel
 }
