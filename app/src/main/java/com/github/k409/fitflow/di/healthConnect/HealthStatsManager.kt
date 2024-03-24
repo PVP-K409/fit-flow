@@ -20,38 +20,46 @@ class HealthStatsManager @Inject constructor(
     }
 
     suspend fun getTotalCalories(): Long = fetchData(
-        fetchFunction = { healthConnectService.aggregateTotalCalories(
-            startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
-            endTime = Instant.now()
-        ) },
+        fetchFunction = {
+            healthConnectService.aggregateTotalCalories(
+                startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                endTime = Instant.now(),
+            )
+        },
         default = 0L,
-        logTag = "Total Calories"
+        logTag = "Total Calories",
     )
 
     suspend fun getTotalDistance(): Double = fetchData(
-        fetchFunction = { healthConnectService.aggregateTotalDistance(
-            startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
-            endTime = Instant.now()
-        ) },
+        fetchFunction = {
+            healthConnectService.aggregateTotalDistance(
+                startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                endTime = Instant.now(),
+            )
+        },
         default = 0.0,
-        logTag = "Total Distance"
+        logTag = "Total Distance",
     )
 
     suspend fun getTotalBikingDistance(): Double = fetchData(
-        fetchFunction = { healthConnectService.aggregateBikingDistance(
-            startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
-            endTime = Instant.now()
-        ) },
+        fetchFunction = {
+            healthConnectService.aggregateBikingDistance(
+                startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                endTime = Instant.now(),
+            )
+        },
         default = 0.0,
-        logTag = "Biking Distance"
+        logTag = "Biking Distance",
     )
 
     suspend fun getTotalRunningDistance(): Double = fetchData(
-        fetchFunction = { healthConnectService.aggregateRunningDistance(
-            startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
-            endTime = Instant.now()
-        ) },
+        fetchFunction = {
+            healthConnectService.aggregateRunningDistance(
+                startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                endTime = Instant.now(),
+            )
+        },
         default = 0.0,
-        logTag = "Running Distance"
+        logTag = "Running Distance",
     )
 }
