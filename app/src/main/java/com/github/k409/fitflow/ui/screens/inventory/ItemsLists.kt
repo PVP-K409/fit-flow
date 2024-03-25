@@ -104,7 +104,7 @@ fun ColumnItem(
                 Row(
                     modifier.fillMaxSize(),
                     verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(1.dp),
                 ) {
                     Column(
                         modifier.padding(6.dp),
