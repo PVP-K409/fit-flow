@@ -68,7 +68,6 @@ fun ColumnItem(
         elevation = CardDefaults.cardElevation(10.dp),
     ) {
         Box(modifier.fillMaxSize()) {
-
             Image(
                 painter = painterResource(id = R.drawable.chest3),
                 contentDescription = null,
@@ -91,12 +90,12 @@ fun ColumnItem(
                             text = name,
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black
+                            color = Color.Black,
                         )
                         Text(
                             text = description,
                             fontSize = 18.sp,
-                            color = Color.Black
+                            color = Color.Black,
                         )
                     }
                 }
