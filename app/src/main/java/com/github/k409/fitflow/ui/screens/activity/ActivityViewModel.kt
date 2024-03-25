@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.DistanceRecord
+import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -50,6 +51,7 @@ class ActivityViewModel @Inject constructor(
     val permissions = setOf(
         HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class),
         HealthPermission.getReadPermission(DistanceRecord::class),
+        HealthPermission.getReadPermission(ExerciseSessionRecord::class),
     )
 
     init {
@@ -93,8 +95,8 @@ class ActivityViewModel @Inject constructor(
         var distance = 0.0
 
         if (permissionsGranted()) {
-            calories = healthStatsManager.getCalories()
-            distance = healthStatsManager.getDistance()
+            calories = healthStatsManager.getTotalCalories()
+            distance = healthStatsManager.getTotalDistance()
         }
 
         if (dailyStepRecord == null) { // if new day

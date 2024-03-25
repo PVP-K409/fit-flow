@@ -10,33 +10,56 @@ import javax.inject.Inject
 class HealthStatsManager @Inject constructor(
     private val healthConnectService: HealthConnectService,
 ) {
-    suspend fun getCalories(): Long {
-        val end = Instant.now()
-        val start = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()
-
+    private suspend fun <T> fetchData(fetchFunction: suspend () -> T, default: T, logTag: String): T {
         return try {
-            healthConnectService.aggregateCalories(
-                startTime = start,
-                endTime = end,
-            )
+            fetchFunction()
         } catch (e: Exception) {
-            Log.d("get Calories", "Unable to get Calories")
-            0L
+            Log.d(logTag, "Unable to get $logTag")
+            default
         }
     }
 
-    suspend fun getDistance(): Double {
-        val end = Instant.now()
-        val start = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()
-
-        return try {
-            healthConnectService.aggregateDistance(
-                startTime = start,
-                endTime = end,
+    suspend fun getTotalCalories(): Long = fetchData(
+        fetchFunction = {
+            healthConnectService.aggregateTotalCalories(
+                startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                endTime = Instant.now(),
             )
-        } catch (e: Exception) {
-            Log.d("get Distance", "Unable to get Distance")
-            0.0
-        }
-    }
+        },
+        default = 0L,
+        logTag = "Total Calories",
+    )
+
+    suspend fun getTotalDistance(): Double = fetchData(
+        fetchFunction = {
+            healthConnectService.aggregateTotalDistance(
+                startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                endTime = Instant.now(),
+            )
+        },
+        default = 0.0,
+        logTag = "Total Distance",
+    )
+
+    suspend fun getTotalBikingDistance(): Double = fetchData(
+        fetchFunction = {
+            healthConnectService.aggregateBikingDistance(
+                startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                endTime = Instant.now(),
+            )
+        },
+        default = 0.0,
+        logTag = "Biking Distance",
+    )
+
+    suspend fun getTotalRunningDistance(): Double = fetchData(
+        fetchFunction = {
+            healthConnectService.aggregateRunningDistance(
+                startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                endTime = Instant.now(),
+            )
+        },
+        default = 0.0,
+        logTag = "Running Distance",
+    )
 }
