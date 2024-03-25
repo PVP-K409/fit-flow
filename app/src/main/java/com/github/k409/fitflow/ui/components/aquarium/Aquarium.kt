@@ -4,6 +4,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -41,7 +43,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screens.aquarium.AquariumUiState
 import kotlin.math.roundToInt
 
@@ -54,6 +58,7 @@ fun AquariumContent(
     aquariumBackground: Brush = Brush.linearGradient(
         colors = listOf(Color(0xFFA7B9D3), Color(0xFF9CED96), Color(0xffd0e7cf)),
     ),
+    navController: NavController,
 ) {
     val aquariumStats = uiState.aquariumStats
 
@@ -108,6 +113,12 @@ fun AquariumContent(
 
             Sand()
             Plant()
+
+            InventoryButton(
+                modifier = Modifier
+                    .align(Alignment.TopStart),
+                navController = navController,
+            )
 
             AquariumMetrics(
                 modifier = Modifier
@@ -269,6 +280,39 @@ fun AquariumMetrics(
                     tint = healthLevelIconTint,
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun InventoryButton(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+) {
+    Card(
+        modifier = modifier
+            .padding(horizontal = 12.dp, vertical = 50.dp)
+            .clickable {
+                navController.navigate(NavRoutes.Inventory.route) {
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
+        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.3f)),
+        shape = RoundedCornerShape(100),
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(16.dp),
+                tint = Color(0xFF434B48),
+                imageVector = Icons.Outlined.Inventory2,
+                contentDescription = "Inventory",
+            )
         }
     }
 }

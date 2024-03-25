@@ -65,4 +65,5 @@
     <string name="email">Email</string>
     <string name="current_week_progress">Current Week Progress</string>
     <string name="weekly_progress">Weekly Progress</string>
+    <string name="inventory">Inventory</string>
 </resources>
