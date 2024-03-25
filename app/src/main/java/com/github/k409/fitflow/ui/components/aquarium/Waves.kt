@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import kotlin.math.sin
 
-
 @Composable
 fun AnimatedWaves(
     modifier: Modifier = Modifier,
