@@ -6,7 +6,7 @@ import com.github.k409.fitflow.model.Fish
 internal data class InventoryItem(
     val name: String,
     val description: String,
-    val imageResId: Int
+    val imageResId: Int,
 )
 
 internal val mockDecorations = listOf(
@@ -49,4 +49,3 @@ internal val mockFishes = listOf(
         Fish.Third.getPhaseImage(0.toFloat()),
     ),
 )
-

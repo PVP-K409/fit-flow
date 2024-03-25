@@ -90,7 +90,7 @@ fun AquariumContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-        ) {
+    ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -311,7 +311,7 @@ fun InventoryButton(
                     .size(16.dp),
                 tint = Color(0xFF434B48),
                 imageVector = Icons.Outlined.Inventory2,
-                contentDescription = "Inventory"
+                contentDescription = "Inventory",
             )
         }
     }

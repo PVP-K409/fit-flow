@@ -65,7 +65,8 @@ fun InventoryScreen() {
             CategorySelectHeader(
                 selectedItemIndex = selectedCategoryIndex,
                 items = categories,
-                onItemSelected = { selectedCategoryIndex = it })
+                onItemSelected = { selectedCategoryIndex = it },
+            )
         }
         items(items) { item ->
             InventoryItemCard(
@@ -103,7 +104,7 @@ fun CategorySelectHeader(
 ) {
     SingleChoiceSegmentedButtonRow(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
     ) {
         items.forEachIndexed { index, item ->
             SegmentedButton(
@@ -156,12 +157,12 @@ fun InventoryItemCard(
 
         Box(
             modifier = modifier
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
             Column(
                 modifier = modifier
                     .padding(16.dp)
-                    .fillMaxSize()
+                    .fillMaxSize(),
             ) {
                 Row(
                     modifier = modifier
@@ -173,7 +174,6 @@ fun InventoryItemCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
-
                     Image(
                         modifier = modifier
                             .padding(8.dp)
@@ -197,7 +197,6 @@ fun InventoryItemCard(
                             textAlign = TextAlign.Justify,
                         )
                     }
-
                 }
 
                 Spacer(modifier = modifier.height(16.dp))
@@ -219,7 +218,6 @@ fun InventoryItemCard(
                     ) {
                         Text(text = "Remove")
                     }
-
                 }
             }
         }
