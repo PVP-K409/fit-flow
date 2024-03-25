@@ -45,7 +45,7 @@ fun WaterBubbles(
         List(bubbleCount) {
             val radius = Random.nextLong(
                 WaterBubblesTokens.minRadius.toLong(),
-                WaterBubblesTokens.maxRadius.toLong()
+                WaterBubblesTokens.maxRadius.toLong(),
             ).toFloat()
 
             Bubble(
@@ -59,7 +59,7 @@ fun WaterBubbles(
                 ),
                 duration = Random.nextLong(
                     WaterBubblesTokens.minAnimationDuration,
-                    WaterBubblesTokens.maxAnimationDuration
+                    WaterBubblesTokens.maxAnimationDuration,
                 ),
                 easing = when (Random.nextInt(3)) {
                     0 -> LinearEasing
@@ -87,7 +87,7 @@ fun WaterBubbles(
 @Composable
 fun AnimatedBubble(
     bubble: Bubble,
-    colors: List<Color>
+    colors: List<Color>,
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val xValue by infiniteTransition.animateFloat(

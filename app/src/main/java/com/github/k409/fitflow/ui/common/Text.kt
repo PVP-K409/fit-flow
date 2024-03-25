@@ -36,7 +36,7 @@ fun TextWithLabel(
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
     labelStyle: TextStyle = MaterialTheme.typography.labelMedium,
 
-    ) {
+) {
     Column(
         modifier = modifier,
         horizontalAlignment = horizontalAlignment,
@@ -133,7 +133,6 @@ fun <T> TextLabelWithDivider(
             if (!isLast && !dividerVisible) {
                 Spacer(modifier = Modifier.width(16.dp))
             }
-
         }
     }
 }

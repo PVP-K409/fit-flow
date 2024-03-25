@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.NumberPickerDialog
-import com.github.k409.fitflow.ui.components.hydration.WaterIndicator
 import com.github.k409.fitflow.ui.components.hydration.HydrationStatisticsCard
+import com.github.k409.fitflow.ui.components.hydration.WaterIndicator
 
 @Composable
 fun WaterLoggingScreen(
@@ -98,7 +98,7 @@ fun WaterLoggingScreen(
 
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
             Column(
                 modifier = Modifier

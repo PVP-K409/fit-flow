@@ -84,8 +84,9 @@ fun DraggableFishBox(
             targetValue = -30f,
             animationSpec = infiniteRepeatable(
                 animation = tween(durationMillis = 3000, easing = EaseInOut),
-                repeatMode = RepeatMode.Reverse
-            ), label = ""
+                repeatMode = RepeatMode.Reverse,
+            ),
+            label = "",
         )
 
         FishImage(
@@ -95,7 +96,7 @@ fun DraggableFishBox(
                 .offset {
                     IntOffset(
                         offsetX.roundToInt(),
-                        offsetY.roundToInt() + translationY.roundToInt()
+                        offsetY.roundToInt() + translationY.roundToInt(),
                     )
                 }
                 .align(Alignment.TopStart)
@@ -120,7 +121,7 @@ fun DraggableFishBox(
                     // center the fish
                     offsetX = (parentWidth - size.width) / 2f
                     offsetY = (parentHeight - size.height) / 2f
-                }
+                },
         )
     }
 }

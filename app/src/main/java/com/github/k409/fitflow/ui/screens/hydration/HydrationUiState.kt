@@ -6,5 +6,5 @@ data class HydrationUiState(
     val dailyGoal: Int = 0,
     val today: Int = 0,
     val cupSize: Int = 250,
-    val stats: HydrationStats = HydrationStats()
+    val stats: HydrationStats = HydrationStats(),
 )

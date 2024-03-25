@@ -39,7 +39,7 @@ fun AnimatedWaves(
         animationSpec = infiniteRepeatable(
             animation = tween(
                 durationMillis = WavesTokens.WavesAnimationDurationMillis,
-                easing = WavesTokens.WavesAnimationEasing
+                easing = WavesTokens.WavesAnimationEasing,
             ),
             repeatMode = RepeatMode.Reverse,
         ),
@@ -52,7 +52,7 @@ fun AnimatedWaves(
         animationSpec = infiniteRepeatable(
             animation = tween(
                 durationMillis = WavesTokens.WavesAnimationDurationMillis,
-                easing = WavesTokens.WavesAnimationEasing
+                easing = WavesTokens.WavesAnimationEasing,
             ),
             repeatMode = RepeatMode.Reverse,
         ),

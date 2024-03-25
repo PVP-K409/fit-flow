@@ -33,7 +33,7 @@ fun HydrationStatisticsCard(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxSize(),
     ) {
         OutlinedCard {
             Column(
@@ -46,18 +46,18 @@ fun HydrationStatisticsCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(
                         8.dp,
-                        Alignment.CenterHorizontally
+                        Alignment.CenterHorizontally,
                     ),
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.WaterDrop,
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(16.dp),
                     )
                     Text(
                         text = stringResource(R.string.your_hydration_statistics),
                         style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Light
+                        fontWeight = FontWeight.Light,
                     )
                 }
 
@@ -67,7 +67,7 @@ fun HydrationStatisticsCard(
                     dividerVisible = false,
                     horizontalArrangement = Arrangement.spacedBy(
                         12.dp,
-                        Alignment.Start
+                        Alignment.Start,
                     ),
                     data = listOf(
                         stringResource(R.string.Yesterday) to "${stats.yesterdayTotalAmount} ml",
@@ -90,24 +90,23 @@ fun HydrationStatisticsCard(
                     .fillMaxWidth()
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Top,
-            )
-            {
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(
                         8.dp,
-                        Alignment.CenterHorizontally
+                        Alignment.CenterHorizontally,
                     ),
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.LineAxis,
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(16.dp),
                     )
                     Text(
                         text = stringResource(R.string.average_consumption),
                         style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Light
+                        fontWeight = FontWeight.Light,
                     )
                 }
 
@@ -117,19 +116,19 @@ fun HydrationStatisticsCard(
                     dividerVisible = false,
                     horizontalArrangement = Arrangement.spacedBy(
                         16.dp,
-                        Alignment.Start
+                        Alignment.Start,
                     ),
                     data = listOf(
                         stringResource(R.string.this_week) to "${
                             String.format(
                                 "%.2f",
-                                stats.thisWeekTotalAmount.toFloat().div(7).div(1000)
+                                stats.thisWeekTotalAmount.toFloat().div(7).div(1000),
                             )
                         } l",
                         stringResource(R.string.this_month) to "${
                             String.format(
                                 "%.2f",
-                                stats.thisMonthTotalAmount.toFloat().div(30).div(1000)
+                                stats.thisMonthTotalAmount.toFloat().div(30).div(1000),
                             )
                         } l",
                     ),
@@ -138,4 +137,3 @@ fun HydrationStatisticsCard(
         }
     }
 }
-

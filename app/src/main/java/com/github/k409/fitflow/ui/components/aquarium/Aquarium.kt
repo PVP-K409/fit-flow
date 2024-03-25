@@ -46,7 +46,6 @@ import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screens.aquarium.AquariumUiState
 import kotlin.math.roundToInt
 
-
 @Composable
 fun AquariumContent(
     modifier: Modifier = Modifier,
@@ -63,7 +62,7 @@ fun AquariumContent(
         targetValue = calculateAquariumBackgroundAlpha(waterLevel),
         animationSpec = tween(
             durationMillis = AquariumTokens.AquariumBackgroundAlphaAnimationDuration,
-            easing = AquariumTokens.AquariumBackgroundAlphaAnimationEasing
+            easing = AquariumTokens.AquariumBackgroundAlphaAnimationEasing,
         ),
         label = "Aquarium Background Alpha Animation",
     )
@@ -72,7 +71,7 @@ fun AquariumContent(
         targetValue = waterLevel,
         animationSpec = tween(
             durationMillis = AquariumTokens.WaterLevelAnimationDuration,
-            easing = AquariumTokens.WaterLevelAnimationEasing
+            easing = AquariumTokens.WaterLevelAnimationEasing,
         ),
         label = "Water Level Animation",
     )
@@ -90,7 +89,7 @@ fun AquariumContent(
         uiState = uiState,
         navController = navController,
         onWaterLevelChanged = onWaterLevelChanged,
-        onHealthLevelChanged = onHealthLevelChanged
+        onHealthLevelChanged = onHealthLevelChanged,
     )
 }
 
@@ -106,7 +105,7 @@ private fun AquariumLayout(
     uiState: AquariumUiState.Success,
     navController: NavController,
     onWaterLevelChanged: (Float) -> Unit,
-    onHealthLevelChanged: (Float) -> Unit
+    onHealthLevelChanged: (Float) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -118,7 +117,7 @@ private fun AquariumLayout(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-        ) {
+    ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
         ) {

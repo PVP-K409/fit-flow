@@ -113,9 +113,8 @@ private fun WalkingProgressGraphContainer(
 
     OutlinedCard(
         modifier = Modifier
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp),
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
