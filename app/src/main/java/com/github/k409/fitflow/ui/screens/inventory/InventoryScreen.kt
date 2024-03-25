@@ -1,8 +1,6 @@
 package com.github.k409.fitflow.ui.screens.inventory
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,9 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.github.k409.fitflow.R
 
 @Composable
 fun InventoryScreen() {
@@ -57,15 +53,6 @@ fun InventoryScreen() {
                 }
             },
         ) { paddingValues ->
-            Box(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.chest),
-                    contentDescription = "Background Image",
-                    modifier = Modifier.fillMaxSize(),
-                )
-            }
             Column(
                 modifier = Modifier
                     .fillMaxSize()

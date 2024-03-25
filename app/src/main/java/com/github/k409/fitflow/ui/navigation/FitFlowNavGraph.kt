@@ -28,7 +28,7 @@ fun FitFlowNavGraph(
         modifier = modifier,
     ) {
         composable(NavRoutes.Aquarium.route) {
-            AquariumScreen()
+            AquariumScreen(navController = navController)
         }
         composable(NavRoutes.Activity.route) {
             ActivityScreen()
