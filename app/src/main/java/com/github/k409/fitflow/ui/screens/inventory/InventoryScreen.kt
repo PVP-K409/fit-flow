@@ -21,6 +21,7 @@ import com.github.k409.fitflow.ui.components.item.InventoryItemCard
 import com.github.k409.fitflow.ui.components.item.mockDecorations
 import com.github.k409.fitflow.ui.components.item.mockFishes
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun InventoryScreen() {
     val context = LocalContext.current
@@ -67,6 +68,7 @@ fun InventoryScreen() {
                         Toast.LENGTH_SHORT,
                     ).show()
                 },
+                coinIcon = {}
             )
         }
     }

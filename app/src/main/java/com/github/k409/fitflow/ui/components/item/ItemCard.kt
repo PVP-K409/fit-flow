@@ -37,6 +37,7 @@ fun InventoryItemCard(
     onAddClick: () -> Unit = {},
     removeButtonText: String,
     onRemoveClick: () -> Unit = {},
+    coinIcon: @Composable () -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
 
@@ -103,6 +104,7 @@ fun InventoryItemCard(
                         onClick = onAddClick,
                     ) {
                         Text(text = addButtonText)
+                        coinIcon()
                     }
 
                     Button(
@@ -110,6 +112,7 @@ fun InventoryItemCard(
                         colors = ButtonDefaults.buttonColors(colors.error),
                     ) {
                         Text(text = removeButtonText)
+                        coinIcon()
                     }
                 }
             }

@@ -1,7 +1,5 @@
 package com.github.k409.fitflow.ui.screens.activity
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +14,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.ui.common.HorizontalPagerIndicator
 
 @OptIn(ExperimentalFoundationApi::class)
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun ActivityScreen(
     activityViewModel: ActivityViewModel = hiltViewModel(),
