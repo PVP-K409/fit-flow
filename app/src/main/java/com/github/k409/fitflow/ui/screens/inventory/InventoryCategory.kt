@@ -7,19 +7,19 @@ import androidx.compose.material.icons.outlined.Anchor
 import androidx.compose.material.icons.outlined.Water
 import androidx.compose.ui.graphics.vector.ImageVector
 
-data class BottomNavigationItem(
+data class InventoryCategory(
     val title: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
 )
 
-val items = listOf(
-    BottomNavigationItem(
+val categories = listOf(
+    InventoryCategory(
         title = "Fishes",
         selectedIcon = Icons.Filled.Water,
         unselectedIcon = Icons.Outlined.Water,
     ),
-    BottomNavigationItem(
+    InventoryCategory(
         title = "Decorations",
         selectedIcon = Icons.Filled.Anchor,
         unselectedIcon = Icons.Outlined.Anchor,

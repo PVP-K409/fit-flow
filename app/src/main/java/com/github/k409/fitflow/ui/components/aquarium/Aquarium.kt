@@ -3,8 +3,8 @@ package com.github.k409.fitflow.ui.components.aquarium
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -90,7 +90,7 @@ fun AquariumContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+        ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -289,17 +289,30 @@ fun InventoryButton(
     modifier: Modifier = Modifier,
     navController: NavController,
 ) {
-    Column(
+    Card(
         modifier = modifier
-            .padding(horizontal = 12.dp, vertical = 50.dp),
+            .padding(horizontal = 12.dp, vertical = 50.dp)
+            .clickable {
+                navController.navigate(NavRoutes.Inventory.route) {
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
+        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.3f)),
+        shape = RoundedCornerShape(100),
     ) {
-        IconButton(onClick = {
-            navController.navigate(NavRoutes.Inventory.route) {
-                launchSingleTop = true
-                restoreState = true
-            }
-        }) {
-            Image(imageVector = Icons.Outlined.Inventory2, contentDescription = null)
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(16.dp),
+                tint = Color(0xFF434B48),
+                imageVector = Icons.Outlined.Inventory2,
+                contentDescription = "Inventory"
+            )
         }
     }
 }

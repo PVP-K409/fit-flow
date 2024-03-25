@@ -3,7 +3,6 @@
 package com.github.k409.fitflow.ui
 
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -188,15 +186,6 @@ fun FitFlowTopBar(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        navController.navigate(NavRoutes.Inventory.route) {
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }) {
-                        Image(imageVector = Icons.Outlined.Inventory2, contentDescription = null)
-                    }
-
                     IconButton(onClick = {
                         navController.navigate(NavRoutes.Settings.route) {
                             launchSingleTop = true
