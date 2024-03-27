@@ -31,14 +31,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -56,8 +52,6 @@ import coil.request.ImageRequest
 import com.exyte.animatednavbar.AnimatedNavigationBar
 import com.exyte.animatednavbar.animation.balltrajectory.Teleport
 import com.exyte.animatednavbar.items.dropletbutton.DropletButton
-import com.github.k409.fitflow.data.getPoints
-import com.github.k409.fitflow.data.getXp
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
@@ -172,19 +166,6 @@ fun FitFlowTopBar(
     navController: NavController,
     user: User,
 ) {
-    var points by remember { mutableIntStateOf(0) }
-    var xp by remember { mutableIntStateOf(0) }
-
-    LaunchedEffect(Unit) {
-        getPoints { fetchedPoints ->
-            points = fetchedPoints
-        }
-
-        getXp { fetchedXp ->
-            xp = fetchedXp
-        }
-    }
-
     if (topBarState) {
         Surface {
             TopAppBar(
@@ -199,7 +180,7 @@ fun FitFlowTopBar(
 
                     Text(
                         modifier = Modifier.padding(start = 130.dp),
-                        text = points.toString(),
+                        text = user.points.toString(),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
                     )
@@ -213,7 +194,7 @@ fun FitFlowTopBar(
 
                     Text(
                         modifier = Modifier.padding(start = 220.dp),
-                        text = xp.toString(),
+                        text = user.xp.toString(),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
                     )
