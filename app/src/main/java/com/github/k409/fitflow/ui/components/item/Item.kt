@@ -4,9 +4,9 @@ import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.Fish
 
 internal data class Item(
-    val name: String,
-    val description: String,
-    val imageResId: Int,
+    val name: String = "",
+    val description: String = "",
+    val imageResId: Int = -1,
 )
 
 internal val mockDecorations = listOf(

@@ -98,6 +98,8 @@ fun SettingsEntry(
 
     if (showDialog) {
         ConfirmDialog(
+            dialogTitle = "Are you sure?",
+            dialogText = "This action cannot be undone",
             onConfirm = {
                 showDialog = false
                 onClick()
