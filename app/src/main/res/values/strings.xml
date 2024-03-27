@@ -66,4 +66,11 @@
     <string name="current_week_progress">Current Week Progress</string>
     <string name="weekly_progress">Weekly Progress</string>
     <string name="inventory">Inventory</string>
+    <string name="goal_creation">Create goal</string>
+    <string name="walking">Walking</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="Running">Running</string>
+    <string name="Biking">Biking</string>
+    <string name="add_goal">Add Goal</string>
 </resources>
