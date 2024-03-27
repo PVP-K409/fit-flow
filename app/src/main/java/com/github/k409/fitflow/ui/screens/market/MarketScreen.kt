@@ -77,11 +77,9 @@ fun MarketScreen() {
                     selectedItem = item
                 },
                 // Replace with designed coin icon later
-                coinIcon = { Icon(Icons.Filled.CurrencyBitcoin,"",tint = MaterialTheme.colorScheme.onPrimary) }
+                coinIcon = { Icon(Icons.Filled.CurrencyBitcoin, "", tint = MaterialTheme.colorScheme.onPrimary) },
             )
-
         }
-
     }
     if (showDialog) {
         ConfirmDialog(
@@ -103,6 +101,7 @@ fun MarketScreen() {
                 }
                 showDialog = false
             },
-            onDismiss = { showDialog = false })
+            onDismiss = { showDialog = false },
+        )
     }
 }

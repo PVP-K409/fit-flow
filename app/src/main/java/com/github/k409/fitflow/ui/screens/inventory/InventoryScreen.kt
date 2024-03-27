@@ -68,7 +68,7 @@ fun InventoryScreen() {
                         Toast.LENGTH_SHORT,
                     ).show()
                 },
-                coinIcon = {}
+                coinIcon = {},
             )
         }
     }
