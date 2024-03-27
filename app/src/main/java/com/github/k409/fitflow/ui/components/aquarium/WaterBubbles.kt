@@ -32,105 +32,117 @@ data class Bubble(
     val easing: Easing,
 )
 
-private const val minAnimationDuration = 3000L
-private const val maxAnimationDuration = 10000L
-
-private const val minRadius = 10f
-private const val maxRadius = 26f
-
 @Composable
 fun WaterBubbles(
-    colors: List<Color>,
-    bubbleCount: Int,
     modifier: Modifier = Modifier,
+    colors: List<Color> = listOf(Color.Blue, Color.Green),
+    bubbleCount: Int,
+    waterLevel: Float,
     offsetX: Float,
     offsetY: Float,
 ) {
-    val infiniteTransition = rememberInfiniteTransition(label = "")
+    val bubbles = remember(offsetX, offsetY, bubbleCount) {
+        List(bubbleCount) {
+            val radius = Random.nextLong(
+                WaterBubblesTokens.minRadius.toLong(),
+                WaterBubblesTokens.maxRadius.toLong(),
+            ).toFloat()
+
+            Bubble(
+                start = Offset(
+                    x = Random.nextFloat() * offsetX,
+                    y = offsetX,
+                ),
+                end = Offset(
+                    x = Random.nextFloat() * offsetX,
+                    y = 0f + radius + (Random.nextFloat() * offsetY / 2f),
+                ),
+                duration = Random.nextLong(
+                    WaterBubblesTokens.minAnimationDuration,
+                    WaterBubblesTokens.maxAnimationDuration,
+                ),
+                easing = when (Random.nextInt(3)) {
+                    0 -> LinearEasing
+                    1 -> FastOutSlowInEasing
+                    else -> CubicBezierEasing(0.23f, 0.12f, 0.25f, 1.0f)
+                },
+                radius = radius,
+            )
+        }
+    }
 
     Box(
-        modifier = modifier,
+        modifier = modifier
+            /*.fillMaxWidth()
+            .fillMaxHeight(waterLevel)*/
+            .fillMaxSize()
+            .alpha(0.20f),
     ) {
-        val bubbles = remember {
-            List(bubbleCount) {
-                val radius = Random.nextLong(minRadius.toLong(), maxRadius.toLong()).toFloat()
-
-                Bubble(
-                    start = Offset(
-                        x = Random.nextFloat() * offsetX,
-                        y = offsetX,
-                    ),
-                    end = Offset(
-                        x = Random.nextFloat() * offsetX,
-                        y = 0f + radius + (Random.nextFloat() * offsetY / 2f),
-                    ),
-                    duration = Random.nextLong(minAnimationDuration, maxAnimationDuration),
-                    easing = when (Random.nextInt(3)) {
-                        0 -> LinearEasing
-                        1 -> FastOutSlowInEasing
-                        else -> CubicBezierEasing(0.23f, 0.12f, 0.25f, 1.0f)
-                    },
-                    radius = radius,
-                )
-            }
+        for (bubble in bubbles) {
+            AnimatedBubble(bubble = bubble, colors = colors)
         }
+    }
+}
 
-        bubbles.forEach { bubble ->
-            val xValue by infiniteTransition.animateFloat(
-                initialValue = bubble.start.x,
-                targetValue = bubble.end.x,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(bubble.duration.toInt(), easing = bubble.easing),
-                    repeatMode = RepeatMode.Restart,
-                ),
-                label = "",
-            )
+@Composable
+fun AnimatedBubble(
+    bubble: Bubble,
+    colors: List<Color>,
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "")
+    val xValue by infiniteTransition.animateFloat(
+        initialValue = bubble.start.x,
+        targetValue = bubble.end.x,
+        animationSpec = infiniteRepeatable(
+            animation = tween(bubble.duration.toInt(), easing = bubble.easing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "",
+    )
 
-            val yValue by infiniteTransition.animateFloat(
-                initialValue = bubble.start.y,
-                targetValue = bubble.end.y,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(bubble.duration.toInt(), easing = bubble.easing),
-                    repeatMode = RepeatMode.Restart,
-                ),
-                label = "",
-            )
+    val yValue by infiniteTransition.animateFloat(
+        initialValue = bubble.start.y,
+        targetValue = bubble.end.y,
+        animationSpec = infiniteRepeatable(
+            animation = tween(bubble.duration.toInt(), easing = bubble.easing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "",
+    )
 
-            val alpha by infiniteTransition.animateFloat(
-                initialValue = 1f,
-                targetValue = 0f,
-                animationSpec = infiniteRepeatable(
-                    animation = keyframes {
-                        durationMillis = bubble.duration.toInt()
-                        0.5f at 0 using LinearOutSlowInEasing
-                        1f at bubble.duration.toInt() using LinearOutSlowInEasing
-                    },
-                    repeatMode = RepeatMode.Restart,
-                ),
-                label = "",
-            )
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 0f,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = bubble.duration.toInt()
+                0.5f at 0 using LinearOutSlowInEasing
+                1f at bubble.duration.toInt() using LinearOutSlowInEasing
+            },
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "",
+    )
 
-            Canvas(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .alpha(alpha),
-            ) {
-                drawCircle(
-                    color = Color.Blue,
-                    radius = bubble.radius * 1.2f,
-                    center = Offset(xValue, yValue),
-                )
+    Canvas(
+        modifier = Modifier
+            .fillMaxSize()
+            .alpha(alpha),
+    ) {
+        drawCircle(
+            color = Color.Blue,
+            radius = bubble.radius * 1.2f,
+            center = Offset(xValue, yValue),
+        )
 
-                drawCircle(
-                    brush = Brush.linearGradient(
-                        colors = colors,
-                        start = Offset(xValue - 90, yValue),
-                        end = Offset(xValue + 90, yValue),
-                    ),
-                    radius = bubble.radius,
-                    center = Offset(xValue, yValue),
-                )
-            }
-        }
+        drawCircle(
+            brush = Brush.linearGradient(
+                colors = colors,
+                start = Offset(xValue - 90, yValue),
+                end = Offset(xValue + 90, yValue),
+            ),
+            radius = bubble.radius,
+            center = Offset(xValue, yValue),
+        )
     }
 }

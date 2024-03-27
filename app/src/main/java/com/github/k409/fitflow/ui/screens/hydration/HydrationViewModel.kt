@@ -80,9 +80,7 @@ class HydrationViewModel @Inject constructor(
                 hydrationRepository.getLastMonthStats().collect { stats ->
                     _uiState.update {
                         it.copy(
-                            yesterday = stats.yesterdayTotalAmount,
-                            thisWeek = stats.thisWeekTotalAmount,
-                            thisMonth = stats.thisMonthTotalAmount,
+                            stats = stats,
                         )
                     }
                 }
