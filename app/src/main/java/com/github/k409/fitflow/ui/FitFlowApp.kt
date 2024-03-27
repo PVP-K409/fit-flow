@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ControlPoint
+import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,16 +31,21 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -49,6 +56,8 @@ import coil.request.ImageRequest
 import com.exyte.animatednavbar.AnimatedNavigationBar
 import com.exyte.animatednavbar.animation.balltrajectory.Teleport
 import com.exyte.animatednavbar.items.dropletbutton.DropletButton
+import com.github.k409.fitflow.data.getPoints
+import com.github.k409.fitflow.data.getXp
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
@@ -163,6 +172,19 @@ fun FitFlowTopBar(
     navController: NavController,
     user: User,
 ) {
+    var points by remember { mutableIntStateOf(0) }
+    var xp by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(Unit) {
+        getPoints { fetchedPoints ->
+            points = fetchedPoints
+        }
+
+        getXp { fetchedXp ->
+            xp = fetchedXp
+        }
+    }
+
     if (topBarState) {
         Surface {
             TopAppBar(
@@ -173,6 +195,34 @@ fun FitFlowTopBar(
                     Text(
                         text = stringResource(id = currentRoute.stringRes),
                         style = MaterialTheme.typography.titleLarge,
+                    )
+
+                    Text(
+                        modifier = Modifier.padding(start = 130.dp),
+                        text = points.toString(),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
+
+                    Icon(
+                        modifier = Modifier.padding(start = 105.dp),
+                        imageVector = Icons.Filled.MonetizationOn,
+                        contentDescription = null,
+                        tint = Color(0xFFFFC107)
+                    )
+
+                    Text(
+                        modifier = Modifier.padding(start = 220.dp),
+                        text = xp.toString(),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
+
+                    Icon(
+                        modifier = Modifier.padding(start = 195.dp),
+                        imageVector = Icons.Filled.ControlPoint,
+                        contentDescription = null,
+                        tint = Color(0xFF673AB7)
                     )
                 },
                 navigationIcon = {
