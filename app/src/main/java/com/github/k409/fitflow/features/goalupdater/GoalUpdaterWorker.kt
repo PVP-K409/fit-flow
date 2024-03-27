@@ -7,14 +7,12 @@ import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.DistanceRecord
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.StepsRecord
-import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.github.k409.fitflow.data.GoalsRepository
 import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.di.healthConnect.HealthStatsManager
-import com.github.k409.fitflow.di.services.HealthConnectService
 import com.github.k409.fitflow.model.getValidExerciseTypesByType
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
