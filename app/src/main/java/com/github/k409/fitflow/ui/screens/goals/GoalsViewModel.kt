@@ -152,7 +152,6 @@ class GoalsViewModel @Inject constructor(
     private suspend fun updateGoals(type: String) {
 
         val date = LocalDate.now()
-        Log.d("date", date.toString())
 
         val goalsToUpdate: MutableMap<String, GoalRecord>? = when (type) {
             daily -> _todayGoals.value
