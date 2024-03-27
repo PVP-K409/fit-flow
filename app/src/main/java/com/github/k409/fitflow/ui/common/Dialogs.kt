@@ -27,16 +27,18 @@ import com.github.k409.fitflow.R
 
 @Composable
 fun ConfirmDialog(
+    dialogTitle: String,
+    dialogText: String,
     onConfirm: () -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = "Are you sure?")
+            Text(text = dialogTitle)
         },
         text = {
-            Text(text = "This action cannot be undone")
+            Text(text = dialogText)
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
