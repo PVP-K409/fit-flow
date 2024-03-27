@@ -108,6 +108,29 @@ class StepsRepository @Inject constructor(
                 }
             }
     }
+    suspend fun stepSumAndCountInPeriod(
+        periodStart: LocalDate,
+        periodEnd: LocalDate,
+    ): Pair<Long, Int> {
+        val uid = auth.currentUser!!.uid
+        var totalSum: Long = 0
+        var count = 0
+        db.collection(JOURNAL_COLLECTION)
+            .document(uid)
+            .collection(STEPS_COLLECTION)
+            .orderBy(DATE_FIELD, Query.Direction.ASCENDING)
+            .whereGreaterThanOrEqualTo(DATE_FIELD, periodStart.toString())
+            .whereLessThanOrEqualTo(DATE_FIELD, periodEnd.toString())
+            .get()
+            .await()
+            .documents.forEach { document ->
+                val stepRecord = document.toObject(DailyStepRecord::class.java) // Convert the document to DailyStepRecord
+                totalSum += stepRecord?.totalSteps ?: 0
+                count++
+            }
+        return Pair(totalSum, count)
+    }
+
 
     fun getStepRecordLastWeeks(weeksCount: Int): Flow<Map<String, DailyStepRecord>> {
         val today = LocalDate.now()

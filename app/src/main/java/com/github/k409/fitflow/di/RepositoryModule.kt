@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.github.k409.fitflow.data.AquariumRepository
 import com.github.k409.fitflow.data.AuthRepository
+import com.github.k409.fitflow.data.GoalsRepository
 import com.github.k409.fitflow.data.HydrationRepository
 import com.github.k409.fitflow.data.ProfileRepository
 import com.github.k409.fitflow.data.StepsRepository
@@ -48,6 +49,15 @@ object RepositoryModule {
         userRepository: UserRepository,
     ): AuthRepository {
         return AuthRepository(auth, userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGoalRepository(
+        db: FirebaseFirestore,
+        auth: FirebaseAuth,
+    ): GoalsRepository {
+        return GoalsRepository(db, auth)
     }
 
     @Provides
