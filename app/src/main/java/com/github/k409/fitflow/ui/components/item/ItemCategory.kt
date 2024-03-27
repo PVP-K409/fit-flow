@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Anchor
-import androidx.compose.material.icons.filled.Water
-import androidx.compose.material.icons.outlined.Anchor
-import androidx.compose.material.icons.outlined.Water
+import androidx.compose.material.icons.filled.Grass
+import androidx.compose.material.icons.filled.Phishing
+import androidx.compose.material.icons.outlined.Grass
+import androidx.compose.material.icons.outlined.Phishing
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SegmentedButton
@@ -31,13 +31,13 @@ data class ItemCategory(
 val categories = listOf(
     ItemCategory(
         title = "Fishes",
-        selectedIcon = Icons.Filled.Water,
-        unselectedIcon = Icons.Outlined.Water,
+        selectedIcon = Icons.Filled.Phishing,
+        unselectedIcon = Icons.Outlined.Phishing,
     ),
     ItemCategory(
         title = "Decorations",
-        selectedIcon = Icons.Filled.Anchor,
-        unselectedIcon = Icons.Outlined.Anchor,
+        selectedIcon = Icons.Filled.Grass,
+        unselectedIcon = Icons.Outlined.Grass,
     ),
 )
 
@@ -45,7 +45,6 @@ val categories = listOf(
 @Composable
 fun CategorySelectHeader(
     selectedItemIndex: Int,
-    //items: List<ItemCategory>,
     onItemSelected: (Int) -> Unit,
 ) {
     SingleChoiceSegmentedButtonRow(

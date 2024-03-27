@@ -19,13 +19,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.github.k409.fitflow.R
 
 @Composable
 fun InventoryItemCard(
@@ -41,79 +38,74 @@ fun InventoryItemCard(
 ) {
     val colors = MaterialTheme.colorScheme
 
-    Box {
-        Image(
-            modifier = modifier.matchParentSize(),
-            painter = painterResource(id = R.drawable.chest3),
-            contentDescription = null,
-            contentScale = ContentScale.FillBounds,
-        )
-
-        Box(
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = colors.tertiaryContainer, shape = CardDefaults.shape),
+    ) {
+        Column(
             modifier = modifier
+                .padding(16.dp)
                 .fillMaxSize(),
         ) {
-            Column(
+            Row(
                 modifier = modifier
-                    .padding(16.dp)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .background(
+                        color = colors.tertiary,
+                        shape = CardDefaults.shape,
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                Row(
+                Image(
                     modifier = modifier
-                        .fillMaxSize()
-                        .background(
-                            color = Color.White.copy(alpha = 0.3f),
-                            shape = CardDefaults.shape,
-                        ),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Image(
-                        modifier = modifier
-                            .padding(8.dp)
-                            .size(80.dp),
-                        painter = painterResource(id = painter),
-                        contentDescription = name,
-                    )
+                        .padding(8.dp)
+                        .size(80.dp),
+                    painter = painterResource(id = painter),
+                    contentDescription = name,
+                )
 
-                    Column(modifier = modifier.padding(8.dp)) {
-                        Text(
-                            text = name,
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black,
-                        )
-                        Text(
-                            text = description,
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Normal,
-                            color = Color.Black,
-                            textAlign = TextAlign.Justify,
-                        )
-                    }
+                Column(modifier = modifier.padding(8.dp)) {
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.onTertiary,
+                    )
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Normal,
+                        color = colors.onTertiary,
+                        textAlign = TextAlign.Justify,
+                    )
+                }
+            }
+
+            Spacer(modifier = modifier.height(16.dp))
+
+            Row(
+                modifier = modifier.fillMaxSize(),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                // TODO : disable remove button if item is not in aquarium / was not purchased
+                // TODO : disable add button if item is in aquarium and no more in inventory (also, can user purchase multiple fishes of single type?)
+                Button(
+                    onClick = onAddClick,
+                    colors = ButtonDefaults.buttonColors(colors.primary),
+                ) {
+                    Text(text = addButtonText)
+                    coinIcon()
                 }
 
-                Spacer(modifier = modifier.height(16.dp))
-
-                Row(
-                    modifier = modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                Button(
+                    onClick = onRemoveClick,
+                    colors = ButtonDefaults.buttonColors(colors.error),
                 ) {
-                    Button(
-                        onClick = onAddClick,
-                    ) {
-                        Text(text = addButtonText)
-                        coinIcon()
-                    }
-
-                    Button(
-                        onClick = onRemoveClick,
-                        colors = ButtonDefaults.buttonColors(colors.error),
-                    ) {
-                        Text(text = removeButtonText)
-                        coinIcon()
-                    }
+                    Text(text = removeButtonText)
+                    coinIcon()
                 }
             }
         }

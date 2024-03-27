@@ -31,8 +31,8 @@ fun MarketScreen() {
     var selectedCategoryIndex by rememberSaveable { mutableIntStateOf(0) }
 
     val items = when (selectedCategoryIndex) {
-        0 -> mockFishes
-        1 -> mockDecorations
+        0 -> mockFishes // Replace with fishes from db later
+        1 -> mockDecorations // Replace with decorations from db later
         else -> emptyList()
     }
     LazyColumn(
@@ -70,7 +70,7 @@ fun MarketScreen() {
                     ).show()
                 },
                 // Replace with designed coin icon later
-                coinIcon = { Icon(Icons.Filled.CurrencyBitcoin,"",tint = MaterialTheme.colorScheme.onSurface) }
+                coinIcon = { Icon(Icons.Filled.CurrencyBitcoin,"",tint = MaterialTheme.colorScheme.onPrimary) }
             )
         }
     }
