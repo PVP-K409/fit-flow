@@ -20,21 +20,6 @@ class GoalsRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
 ) {
-    suspend fun setGoals(
-        goals: MutableMap<String, GoalRecord>,
-        period: String = DAILY_COLLECTION,
-    ) {
-        val currentUser = auth.currentUser
-        val uid = currentUser!!.uid
-
-        val todayDateString = LocalDate.now().toString()
-
-        val goalsDocumentRef = getGoalsDocumentReference(uid, period, todayDateString)
-
-        goalsDocumentRef
-            .set(goals)
-            .await()
-    }
     suspend fun getDailyGoals(
         date: String,
     ): MutableMap<String, GoalRecord>? {
