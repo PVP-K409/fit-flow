@@ -18,14 +18,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -117,7 +114,7 @@ private fun AquariumLayout(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+        ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -168,73 +165,6 @@ private fun AquariumLayout(
                     )
                 }
             }
-
-            // TODO FOR TESTING
-            ButtonToModifyMetrics(
-                modifier = Modifier
-                    .align(Alignment.TopEnd),
-                waterLevel = waterLevel,
-                onWaterLevelChanged = onWaterLevelChanged,
-                healthLevel = healthLevel,
-                onHealthLevelChanged = onHealthLevelChanged,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ButtonToModifyMetrics(
-    modifier: Modifier = Modifier,
-    waterLevel: Float,
-    onWaterLevelChanged: (Float) -> Unit,
-    healthLevel: Float,
-    onHealthLevelChanged: (Float) -> Unit,
-) {
-    Row(
-        modifier = modifier
-            .padding(vertical = 70.dp),
-    ) {
-        IconButton(onClick = {
-            val newWaterLevel = (waterLevel + 0.25f).coerceIn(0.0f, 1.0f)
-            onWaterLevelChanged(newWaterLevel)
-        }) {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "Increase Water Level",
-            )
-        }
-
-        IconButton(
-            onClick =
-            {
-                val newWaterLevel = (waterLevel - 0.25f).coerceIn(0.0f, 1.0f)
-                onWaterLevelChanged(newWaterLevel)
-            },
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Remove,
-                contentDescription = "Decrease Water Level",
-            )
-        }
-
-        IconButton(onClick = {
-            val newHealthLevel = (healthLevel + 0.25f).coerceIn(0.0f, 1.0f)
-            onHealthLevelChanged(newHealthLevel)
-        }) {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "Increase Health Level",
-            )
-        }
-
-        IconButton(onClick = {
-            val newHealthLevel = (healthLevel - 0.25f).coerceIn(0.0f, 1.0f)
-            onHealthLevelChanged(newHealthLevel)
-        }) {
-            Icon(
-                imageVector = Icons.Filled.Remove,
-                contentDescription = "Decrease Health Level",
-            )
         }
     }
 }
