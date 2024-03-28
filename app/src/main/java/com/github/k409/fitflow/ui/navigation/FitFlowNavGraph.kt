@@ -51,6 +51,10 @@ fun FitFlowNavGraph(
             InventoryScreen()
         }
 
+        composable(NavRoutes.Marketplace.route) {
+            MarketScreen()
+        }
+
         composable(NavRoutes.ProfileCreation.route) {
             ProfileCreationScreen(navController)
         }

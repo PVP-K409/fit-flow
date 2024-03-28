@@ -1,21 +1,107 @@
 package com.github.k409.fitflow.ui.screens.market
 
+import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CurrencyBitcoin
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import com.github.k409.fitflow.ui.common.ConfirmDialog
+import com.github.k409.fitflow.ui.components.item.CategorySelectHeader
+import com.github.k409.fitflow.ui.components.item.InventoryItemCard
+import com.github.k409.fitflow.ui.components.item.Item
+import com.github.k409.fitflow.ui.components.item.mockDecorations
+import com.github.k409.fitflow.ui.components.item.mockFishes
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MarketScreen() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+    val context = LocalContext.current
 
+    var selectedCategoryIndex by rememberSaveable { mutableIntStateOf(0) }
+
+    var showDialog by remember { mutableStateOf(false) }
+    var dialogText by remember { mutableStateOf("") }
+    var addClicked by remember { mutableStateOf(false) }
+    var selectedItem by remember { mutableStateOf(Item()) }
+
+    val items = when (selectedCategoryIndex) {
+        0 -> mockFishes // Replace with fishes from db later
+        1 -> mockDecorations // Replace with decorations from db later
+        else -> emptyList()
+    }
+    LazyColumn(
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Text(text = "Market Screen")
+        stickyHeader {
+            CategorySelectHeader(
+                selectedItemIndex = selectedCategoryIndex,
+                onItemSelected = { selectedCategoryIndex = it },
+            )
+        }
+        items(items) { item ->
+            InventoryItemCard(
+                modifier = Modifier,
+                painter = item.imageResId,
+                name = item.name,
+                description = item.description,
+                removeButtonText = "Sell for: 5",
+                onRemoveClick =
+                {
+                    showDialog = true
+                    addClicked = false
+                    dialogText = "Are you sure you want to sell " + item.name + "?"
+                    selectedItem = item
+                },
+                addButtonText = "Buy for: 10",
+                onAddClick =
+                {
+                    showDialog = true
+                    addClicked = true
+                    dialogText = "Are you sure you want to buy " + item.name + "?"
+                    selectedItem = item
+                },
+                // Replace with designed coin icon later
+                coinIcon = { Icon(Icons.Filled.CurrencyBitcoin, "", tint = MaterialTheme.colorScheme.onPrimary) },
+            )
+        }
+    }
+    if (showDialog) {
+        ConfirmDialog(
+            dialogTitle = "Are you sure?",
+            dialogText = dialogText,
+            onConfirm = {
+                if (addClicked) {
+                    Toast.makeText(
+                        context,
+                        selectedItem.name + " has been added to your inventory",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        context,
+                        selectedItem.name + " has been sold",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+                showDialog = false
+            },
+            onDismiss = { showDialog = false },
+        )
     }
 }

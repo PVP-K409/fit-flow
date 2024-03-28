@@ -3,9 +3,11 @@ package com.github.k409.fitflow.ui.screens.hydration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -29,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.NumberPickerDialog
+import com.github.k409.fitflow.ui.components.hydration.HydrationStatisticsCard
 import com.github.k409.fitflow.ui.components.hydration.WaterIndicator
-import com.github.k409.fitflow.ui.components.hydration.WaterIntakeLog
 
 @Composable
 fun WaterLoggingScreen(
@@ -44,7 +46,7 @@ fun WaterLoggingScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp),
+            .padding(16.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -94,11 +96,23 @@ fun WaterLoggingScreen(
             }
         }
 
-        WaterIntakeLog(
-            milliliters = uiState.yesterday.toLong(),
-            thisWeek = uiState.thisWeek.toDouble(),
-            thisMonth = uiState.thisMonth.toDouble(),
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+        ) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .height(IntrinsicSize.Max)
+                    .fillMaxWidth(),
+            ) {
+                HydrationStatisticsCard(
+                    modifier = Modifier
+                        .padding(bottom = 16.dp),
+                    stats = uiState.stats,
+                )
+            }
+        }
 
         if (editCupSizeDialogState.value) {
             val cupValues = Array(300) { (it * 10 + 10).toString() }

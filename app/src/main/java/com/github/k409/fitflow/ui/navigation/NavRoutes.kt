@@ -34,6 +34,7 @@ sealed class NavRoutes(
             Settings,
             Inventory,
             GoalCreation,
+            Marketplace,
         )
         val bottomNavBarItems = listOf(Aquarium, Activity, Hydration, Goals, Marketplace)
     }

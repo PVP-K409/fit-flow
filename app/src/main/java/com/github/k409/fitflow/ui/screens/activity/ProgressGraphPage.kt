@@ -2,21 +2,22 @@ package com.github.k409.fitflow.ui.screens.activity
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,7 +27,7 @@ import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.DailyStepRecord
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.ProgressGraph
-import com.github.k409.fitflow.ui.common.TextWithLabel
+import com.github.k409.fitflow.ui.common.TextLabelWithDivider
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -50,10 +51,15 @@ internal fun ProgressGraphPage(
 
 @Composable
 private fun ProgressGraphPageContent(uiState: ProgressUiState.Success) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+    ) {
         WalkingProgressGraphContainer(
             data = uiState.currentWeek.values.toList(),
             title = stringResource(R.string.current_week_progress),
+            subtitle = stringResource(R.string.your_progress_for_this_week),
             xAxisLabels = uiState.currentWeek.keys.toList(),
             selectedValueTitle = { record ->
                 LocalDate
@@ -69,9 +75,12 @@ private fun ProgressGraphPageContent(uiState: ProgressUiState.Success) {
             },
         )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         WalkingProgressGraphContainer(
             data = uiState.lastWeeks.values.toList(),
             title = stringResource(R.string.weekly_progress),
+            subtitle = stringResource(R.string.your_progress_for_the_last_12_weeks),
             selectedValueTitle = { record ->
                 val startDate = LocalDate.parse(record.recordDate)
                 val endDate = startDate.plusDays(6)
@@ -87,94 +96,74 @@ private fun ProgressGraphPageContent(uiState: ProgressUiState.Success) {
 private fun WalkingProgressGraphContainer(
     data: List<DailyStepRecord>,
     title: String,
+    subtitle: String,
     xAxisLabels: List<String> = emptyList(),
     selectedValueTitle: (DailyStepRecord) -> String,
     selectedInitial: DailyStepRecord? = data.lastOrNull(),
 ) {
-    val selected = remember {
+    var selectedRecord by remember {
         mutableStateOf(selectedInitial)
     }
 
-    val graphTitle = if (selected.value != null) {
-        selectedValueTitle(selected.value!!)
+    val subtitleText = if (selectedRecord != null) {
+        selectedValueTitle(selectedRecord!!)
     } else {
-        title
+        subtitle
     }
 
-    Column(
+    OutlinedCard(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start,
+            .padding(horizontal = 16.dp),
     ) {
-        Text(
-            modifier = Modifier.padding(bottom = 16.dp),
-            text = graphTitle,
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.ExtraBold,
-        )
-
-        DailyStepRecordTexts(selected = selected)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Column {
-            ProgressGraph(
-                modifier = Modifier
-                    .height(200.dp)
-                    .fillMaxWidth(),
-                data = data
-                    .map { it.totalSteps }
-                    .ifEmpty {
-                        List(xAxisLabels.size) { 0 }
-                    },
-                xAxisLabels = xAxisLabels,
-                onSelectedIndexChange = { index ->
-                    selected.value = data.getOrNull(index)
-                },
-                selected = data.indexOf(selected.value),
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start,
+        ) {
+            Text(
+                modifier = Modifier.padding(bottom = 6.dp),
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.ExtraBold,
             )
+
+            Text(
+                modifier = Modifier.padding(bottom = 16.dp),
+                text = subtitleText,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Light,
+            )
+
+            TextLabelWithDivider(
+                data = listOf(
+                    "Steps" to (selectedRecord?.totalSteps ?: 0),
+                    "Calories" to "${(selectedRecord?.caloriesBurned ?: 0)} kcal",
+                    "Distance" to String.format("%.2f km", selectedRecord?.totalDistance ?: 0f),
+                ),
+                horizontalArrangement = Arrangement.Start,
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Column {
+                ProgressGraph(
+                    modifier = Modifier
+                        .height(200.dp)
+                        .fillMaxWidth(),
+                    data = data
+                        .map { it.totalSteps }
+                        .ifEmpty {
+                            List(xAxisLabels.size) { 0 }
+                        },
+                    xAxisLabels = xAxisLabels,
+                    onSelectedIndexChange = { index ->
+                        selectedRecord = data.getOrNull(index)
+                    },
+                    selected = data.indexOf(selectedRecord),
+                )
+            }
         }
-    }
-}
-
-@Composable
-private fun DailyStepRecordTexts(selected: MutableState<DailyStepRecord?>) {
-    val record = selected.value ?: DailyStepRecord()
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start,
-    ) {
-        TextWithLabel(
-            label = "Steps",
-            text = record.totalSteps.toString(),
-        )
-
-        VerticalDivider(
-            modifier = Modifier
-                .height(18.dp)
-                .padding(horizontal = 12.dp),
-            thickness = 1.dp,
-        )
-
-        TextWithLabel(
-            label = "Calories",
-            text = record.caloriesBurned?.toString() ?: "0",
-        )
-
-        VerticalDivider(
-            modifier = Modifier
-                .height(18.dp)
-                .padding(horizontal = 12.dp),
-            thickness = 1.dp,
-        )
-
-        TextWithLabel(
-            label = "Distance",
-            text = String.format("%.2f", record.totalDistance),
-        )
     }
 }

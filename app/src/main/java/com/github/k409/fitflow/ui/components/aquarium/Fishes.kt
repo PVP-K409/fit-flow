@@ -2,6 +2,7 @@ package com.github.k409.fitflow.ui.components.aquarium
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -24,9 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -44,11 +47,11 @@ fun FishImage(
     @DrawableRes fishDrawableId: Int = R.drawable.primary_fish,
     fishSize: Dp = 100.dp,
 ) {
-    val primaryFishPainter = painterResource(id = fishDrawableId)
+    val fishVector = ImageVector.vectorResource(id = fishDrawableId)
 
     Image(
-        painter = primaryFishPainter,
-        contentDescription = "Primary Fish",
+        imageVector = fishVector,
+        contentDescription = "Fish",
         modifier = modifier.width(fishSize),
     )
 }
@@ -65,10 +68,6 @@ fun DraggableFishBox(
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize(),
-        /*.border(
-            width = 1.dp,
-            color = Color.Red
-        )*/
     ) {
         val parentWidth = constraints.maxWidth
         val parentHeight = constraints.maxHeight
@@ -79,16 +78,27 @@ fun DraggableFishBox(
         var fishHeight by remember(fishSize) { mutableFloatStateOf(fishSize.value) }
         var fishWidth by remember(fishSize) { mutableFloatStateOf(fishSize.value) }
 
-        /*Text(
-            text = "x: $offsetX, y: $offsetY\nparentWidth: $parentWidth, parentHeight: $parentHeight",
-            modifier = Modifier.align(Alignment.TopStart)
-        )*/
+        val transition = rememberInfiniteTransition(label = "")
+        val translationY by transition.animateFloat(
+            initialValue = 0f,
+            targetValue = -30f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 3000, easing = EaseInOut),
+                repeatMode = RepeatMode.Reverse,
+            ),
+            label = "",
+        )
 
         FishImage(
             fishSize = fishSize,
             fishDrawableId = fishDrawableId,
             modifier = fishModifier
-                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                .offset {
+                    IntOffset(
+                        offsetX.roundToInt(),
+                        offsetY.roundToInt() + translationY.roundToInt(),
+                    )
+                }
                 .align(Alignment.TopStart)
                 .pointerInput(fishSize) {
                     val boxSize = this.size
@@ -104,10 +114,6 @@ fun DraggableFishBox(
                         )
                     }
                 }
-                /*.border(
-                    width = 1.dp,
-                    color = Color.Blue
-                )*/
                 .onSizeChanged { size ->
                     fishHeight = size.height.toFloat()
                     fishWidth = size.width.toFloat()

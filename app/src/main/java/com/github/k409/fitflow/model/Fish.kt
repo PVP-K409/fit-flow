@@ -16,10 +16,10 @@ enum class Fish(
         "The primary fish is the most common fish in the aquarium.",
         100,
         mapOf(
-            FishPhase.Regular to R.drawable.primary_fish,
-            FishPhase.Strong to R.drawable.primary_fish,
-            FishPhase.Dying to R.drawable.primary_fish,
-            FishPhase.Dead to R.drawable.primary_fish,
+            FishPhase.Regular to R.drawable.clown_fish_regular,
+            FishPhase.Strong to R.drawable.clown_fish_strong,
+            FishPhase.Dying to R.drawable.clown_fish_dying,
+            FishPhase.Dead to R.drawable.clown_fish_dead,
         ),
     ),
     Secondary(
@@ -28,10 +28,10 @@ enum class Fish(
         "The secondary fish is the second most common fish in the aquarium.",
         200,
         mapOf(
-            FishPhase.Regular to R.drawable.secondary_fish,
-            FishPhase.Strong to R.drawable.secondary_fish,
-            FishPhase.Dying to R.drawable.secondary_fish,
-            FishPhase.Dead to R.drawable.secondary_fish,
+            FishPhase.Regular to R.drawable.angel_fish_regular,
+            FishPhase.Strong to R.drawable.angel_fish_strong,
+            FishPhase.Dying to R.drawable.angel_fish_dying,
+            FishPhase.Dead to R.drawable.angel_fish_dead,
         ),
     ),
     Third(
@@ -40,10 +40,10 @@ enum class Fish(
         "The third fish is the third most common fish in the aquarium.",
         300,
         mapOf(
-            FishPhase.Regular to R.drawable.third_fish_regular,
-            FishPhase.Strong to R.drawable.third_fish_strong,
-            FishPhase.Dying to R.drawable.third_fish_dying,
-            FishPhase.Dead to R.drawable.third_fish_dead,
+            FishPhase.Regular to R.drawable.gold_fish_regular,
+            FishPhase.Strong to R.drawable.gold_fish_strong,
+            FishPhase.Dying to R.drawable.gold_fish_dying,
+            FishPhase.Dead to R.drawable.gold_fish_dead,
         ),
     ),
     ;
