@@ -4,12 +4,11 @@ import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CurrencyBitcoin
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -18,8 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.components.item.CategorySelectHeader
 import com.github.k409.fitflow.ui.components.item.InventoryItemCard
@@ -60,7 +62,7 @@ fun MarketScreen() {
                 painter = item.imageResId,
                 name = item.name,
                 description = item.description,
-                removeButtonText = "Sell for: 5",
+                removeButtonText = "Sell for 5",
                 onRemoveClick =
                 {
                     showDialog = true
@@ -68,7 +70,7 @@ fun MarketScreen() {
                     dialogText = "Are you sure you want to sell " + item.name + "?"
                     selectedItem = item
                 },
-                addButtonText = "Buy for: 10",
+                addButtonText = "Buy for 10",
                 onAddClick =
                 {
                     showDialog = true
@@ -76,8 +78,16 @@ fun MarketScreen() {
                     dialogText = "Are you sure you want to buy " + item.name + "?"
                     selectedItem = item
                 },
-                // Replace with designed coin icon later
-                coinIcon = { Icon(Icons.Filled.CurrencyBitcoin, "", tint = MaterialTheme.colorScheme.onPrimary) },
+                coinIcon = {
+                    Icon(
+                        modifier = Modifier
+                            .padding(start = 4.dp)
+                            .size(20.dp),
+                        painter = painterResource(id = R.drawable.coin),
+                        tint = Color.Unspecified,
+                        contentDescription = "",
+                    )
+                },
             )
         }
     }

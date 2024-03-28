@@ -179,7 +179,9 @@ private fun GoalCard(
             Spacer(Modifier.height(18.dp))
             Progress(
                 goal = goal,
-                color = if (goal.completed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                color = if (goal.completed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(
+                    alpha = 0.5f
+                ),
             )
             Spacer(Modifier.height(16.dp))
         }
@@ -225,9 +227,12 @@ fun Progress(
     goal: GoalRecord,
     color: Color,
 ) {
-    val unit = if (goal.type == stringResource(R.string.walking)) stringResource(R.string.steps) else "km"
-    var displayProgress = if (unit == stringResource(R.string.steps)) goal.currentProgress.toLong().toString() else goal.currentProgress.toString()
-    val displayTarget = if (unit == stringResource(R.string.steps)) goal.target.toLong().toString() else goal.target.toString()
+    val unit =
+        if (goal.type == stringResource(R.string.walking)) stringResource(R.string.steps) else "km"
+    var displayProgress = if (unit == stringResource(R.string.steps)) goal.currentProgress.toLong()
+        .toString() else goal.currentProgress.toString()
+    val displayTarget = if (unit == stringResource(R.string.steps)) goal.target.toLong()
+        .toString() else goal.target.toString()
 
     if (goal.completed) displayProgress = displayTarget
 
@@ -248,29 +253,31 @@ fun Progress(
             Row(
                 modifier = Modifier
                     .padding(end = 18.dp),
-                verticalAlignment = Alignment.Bottom,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
+                    modifier = Modifier.padding(end = 4.dp),
                     text = "${goal.points}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Icon(
-                    painter = painterResource(id = R.drawable.money),
+                    painter = painterResource(id = R.drawable.coin),
                     contentDescription = "Goal",
-                    tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.80f),
+                    tint = Color.Unspecified,
                     modifier = Modifier.size(20.dp),
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
+                    modifier = Modifier.padding(end = 4.dp),
                     text = "${goal.xp}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Icon(
-                    painter = painterResource(id = R.drawable.star),
+                    painter = painterResource(id = R.drawable.xp),
                     contentDescription = "Goal",
-                    tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.80f),
+                    tint = Color.Unspecified,
                     modifier = Modifier.size(20.dp),
                 )
             }
