@@ -1,9 +1,6 @@
 package com.github.k409.fitflow.data
 
 import android.util.Log
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
-import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.GoalRecord
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference

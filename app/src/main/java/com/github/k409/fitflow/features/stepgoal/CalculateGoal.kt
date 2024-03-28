@@ -1,7 +1,6 @@
 
 package com.github.k409.fitflow.features.stepgoal
 
-import com.github.k409.fitflow.R
 import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.model.GoalRecord
 import java.math.BigDecimal

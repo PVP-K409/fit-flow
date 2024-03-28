@@ -1,7 +1,5 @@
 package com.github.k409.fitflow.model
 
-import com.github.k409.fitflow.R
-
 data class GoalRecord(
     var description: String = "",
     var type: String = "",
