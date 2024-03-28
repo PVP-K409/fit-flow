@@ -197,7 +197,7 @@ fun FitFlowTopBar(
                     }
                 },
                 actions = {
-                    PointsAndLevelIndicatorRow(
+                    PointsAndXPIndicatorRow(
                         modifier = Modifier.padding(end = 16.dp),
                         points = user.points,
                         xp = user.xp,
@@ -246,7 +246,7 @@ fun FitFlowTopBar(
 }
 
 @Composable
-private fun PointsAndLevelIndicatorRow(
+private fun PointsAndXPIndicatorRow(
     modifier: Modifier = Modifier,
     points: Int,
     xp: Int,
@@ -277,9 +277,9 @@ private fun PointsAndLevelIndicatorRow(
             trailingIcon = {
                 Icon(
                     modifier = Modifier.size(16.dp),
-                    painter = painterResource(id = R.drawable.coins),
+                    painter = painterResource(id = R.drawable.coin),
                     contentDescription = null,
-                    tint = Color(0xFFFFC107),
+                    tint = Color.Unspecified,
                 )
             },
         )
@@ -300,8 +300,7 @@ private fun PointsAndLevelIndicatorRow(
                     modifier = Modifier.size(16.dp),
                     painter = painterResource(id = R.drawable.xp),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-//                    tint = Color(0xFF673AB7)
+                    tint = Color.Unspecified,
                 )
             },
         )
