@@ -22,8 +22,6 @@ fun AquariumScreen(
         is AquariumUiState.Success -> {
             AquariumContent(
                 uiState = state,
-                onHealthLevelChanged = viewModel::updateHealthLevel,
-                onWaterLevelChanged = viewModel::updateWaterLevel,
                 navController = navController,
             )
         }

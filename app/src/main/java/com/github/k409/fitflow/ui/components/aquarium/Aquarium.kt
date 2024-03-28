@@ -47,8 +47,6 @@ import kotlin.math.roundToInt
 fun AquariumContent(
     modifier: Modifier = Modifier,
     uiState: AquariumUiState.Success,
-    onWaterLevelChanged: (Float) -> Unit,
-    onHealthLevelChanged: (Float) -> Unit,
     aquariumBackground: Brush = AquariumTokens.AquariumBackground,
     navController: NavController,
 ) {
@@ -85,8 +83,6 @@ fun AquariumContent(
         fishSize = fishSize,
         uiState = uiState,
         navController = navController,
-        onWaterLevelChanged = onWaterLevelChanged,
-        onHealthLevelChanged = onHealthLevelChanged,
     )
 }
 
@@ -101,8 +97,6 @@ private fun AquariumLayout(
     fishSize: Dp,
     uiState: AquariumUiState.Success,
     navController: NavController,
-    onWaterLevelChanged: (Float) -> Unit,
-    onHealthLevelChanged: (Float) -> Unit,
 ) {
     Column(
         modifier = modifier
