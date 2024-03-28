@@ -73,4 +73,6 @@
     <string name="Running">Running</string>
     <string name="Biking">Biking</string>
     <string name="add_goal">Add Goal</string>
+    <string name="todays_goals">Today\'s Goals</string>
+    <string name="weekly_goals">Weekly Goals</string>
 </resources>

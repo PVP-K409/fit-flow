@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.screens.goals
 
-import android.util.Log
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.DistanceRecord
@@ -83,7 +82,6 @@ class GoalsViewModel @Inject constructor(
                     startDate = formattedToday,
                     endDate = if (type == weekly) today.plusDays(7).format(dateFormatter) else today.plusDays(1).format(dateFormatter),
                 )
-                Log.d("goals", "${goals?.keys?.contains(walking).toString()} - $type")
                 addGoal(type, goal)
             } else {
                 when (type) {
@@ -122,12 +120,16 @@ class GoalsViewModel @Inject constructor(
                 description = "$goalType $exerciseType",
                 type = exerciseType,
                 target = distance,
-                currentProgress = 0.0,
+                currentProgress = healthStatsManager.getTotalExerciseDistance(
+                    getValidExerciseTypesByType(goalType),
+                    startDate.toString(),
+                    endDate.toString()
+                ),
                 points = calculatePoints(distance, healthConnectGoal?.boost?: 1.0),
                 xp = calculateXp(distance, healthConnectGoal?.boost?: 1.0),
                 startDate = startDate.toString(),
                 endDate = endDate.toString(),
-                completed = false
+                completed = false,
             )
 
             addGoal(goalType, goal)
