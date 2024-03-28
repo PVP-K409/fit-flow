@@ -111,10 +111,10 @@ fun FitFlowApp(
                 navController = navController,
                 currentScreen = currentScreen,
                 visible = !(
-                        navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                            currentScreen,
-                        )
-                        ) && bottomBarState.value,
+                    navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                        currentScreen,
+                    )
+                    ) && bottomBarState.value,
                 containerColor = if (currentScreen == NavRoutes.Aquarium) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
             )
         },
@@ -203,12 +203,13 @@ fun FitFlowTopBar(
                         xp = user.xp,
                     )
 
-                    IconButton(onClick = {
-                        navController.navigate(NavRoutes.Settings.route) {
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
+                    IconButton(
+                        onClick = {
+                            navController.navigate(NavRoutes.Settings.route) {
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
                     ) {
                         SubcomposeAsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
@@ -253,7 +254,7 @@ private fun PointsAndLevelIndicatorRow(
     fun formatShortNumber(number: Number): String {
         return CompactDecimalFormat.getInstance(
             Locale.getDefault(),
-            CompactDecimalFormat.CompactStyle.SHORT
+            CompactDecimalFormat.CompactStyle.SHORT,
         ).format(number)
     }
 
@@ -272,16 +273,15 @@ private fun PointsAndLevelIndicatorRow(
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
                 )
-
             },
             trailingIcon = {
                 Icon(
                     modifier = Modifier.size(16.dp),
                     painter = painterResource(id = R.drawable.coins),
                     contentDescription = null,
-                    tint = Color(0xFFFFC107)
+                    tint = Color(0xFFFFC107),
                 )
-            }
+            },
         )
 
         ElevatedAssistChip(
@@ -300,10 +300,10 @@ private fun PointsAndLevelIndicatorRow(
                     modifier = Modifier.size(16.dp),
                     painter = painterResource(id = R.drawable.xp),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
 //                    tint = Color(0xFF673AB7)
                 )
-            }
+            },
         )
     }
 }
