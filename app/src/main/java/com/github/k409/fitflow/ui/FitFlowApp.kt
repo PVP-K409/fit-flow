@@ -2,9 +2,12 @@
 
 package com.github.k409.fitflow.ui
 
+import android.icu.text.CompactDecimalFormat
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,10 +15,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.PersonOutline
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,12 +39,15 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -49,9 +58,11 @@ import coil.request.ImageRequest
 import com.exyte.animatednavbar.AnimatedNavigationBar
 import com.exyte.animatednavbar.animation.balltrajectory.Teleport
 import com.exyte.animatednavbar.items.dropletbutton.DropletButton
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
+import java.util.Locale
 
 @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -186,12 +197,20 @@ fun FitFlowTopBar(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        navController.navigate(NavRoutes.Settings.route) {
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }) {
+                    PointsAndXPIndicatorRow(
+                        modifier = Modifier.padding(end = 16.dp),
+                        points = user.points,
+                        xp = user.xp,
+                    )
+
+                    IconButton(
+                        onClick = {
+                            navController.navigate(NavRoutes.Settings.route) {
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                    ) {
                         SubcomposeAsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
                                 .data(user.photoUrl)
@@ -223,6 +242,68 @@ fun FitFlowTopBar(
                 },
             )
         }
+    }
+}
+
+@Composable
+private fun PointsAndXPIndicatorRow(
+    modifier: Modifier = Modifier,
+    points: Int,
+    xp: Int,
+) {
+    fun formatShortNumber(number: Number): String {
+        return CompactDecimalFormat.getInstance(
+            Locale.getDefault(),
+            CompactDecimalFormat.CompactStyle.SHORT,
+        ).format(number)
+    }
+
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        ElevatedAssistChip(
+            onClick = { },
+            border = AssistChipDefaults.assistChipBorder(enabled = false),
+            shape = RoundedCornerShape(100),
+            label = {
+                Text(
+                    text = formatShortNumber(points),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            trailingIcon = {
+                Icon(
+                    modifier = Modifier.size(16.dp),
+                    painter = painterResource(id = R.drawable.coin),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                )
+            },
+        )
+
+        ElevatedAssistChip(
+            onClick = { },
+            border = AssistChipDefaults.assistChipBorder(enabled = false),
+            shape = RoundedCornerShape(100),
+            label = {
+                Text(
+                    text = formatShortNumber(xp),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            trailingIcon = {
+                Icon(
+                    modifier = Modifier.size(16.dp),
+                    painter = painterResource(id = R.drawable.xp),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                )
+            },
+        )
     }
 }
 
