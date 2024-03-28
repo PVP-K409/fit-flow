@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.records.DistanceRecord
 import androidx.health.connect.client.records.ExerciseSessionRecord
+import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.request.ReadRecordsRequest
@@ -39,6 +40,24 @@ class HealthConnectService @Inject constructor(
         }
     }
 
+    suspend fun aggregateTotalSteps(
+        startTime: Instant,
+        endTime: Instant,
+    ): Double {
+        return try {
+            val response = client.aggregate(
+                AggregateRequest(
+                    metrics = setOf(StepsRecord.COUNT_TOTAL),
+                    timeRangeFilter = TimeRangeFilter.Companion.between(startTime, endTime),
+                ),
+            )
+            response[StepsRecord.COUNT_TOTAL]?.toDouble() ?: 0.0
+        } catch (e: Exception) {
+            Log.d("Aggregate Steps", "Steps could not be read")
+            0.0
+        }
+    }
+
     suspend fun aggregateTotalCalories(
         startTime: Instant,
         endTime: Instant,
@@ -58,25 +77,7 @@ class HealthConnectService @Inject constructor(
         }
     }
 
-    suspend fun aggregateRunningDistance(
-        startTime: Instant,
-        endTime: Instant,
-    ): Double {
-        val exerciseTypeRunning = 56
-        val exerciseTypeRunningTreadmill = 57
-        return aggregateDistanceByExerciseTypes(startTime, endTime, setOf(exerciseTypeRunning, exerciseTypeRunningTreadmill))
-    }
-
-    suspend fun aggregateBikingDistance(
-        startTime: Instant,
-        endTime: Instant,
-    ): Double {
-        val exerciseTypeBiking = 8
-        val exerciseTypeBikingStationary = 9
-        return aggregateDistanceByExerciseTypes(startTime, endTime, setOf(exerciseTypeBiking, exerciseTypeBikingStationary))
-    }
-
-    private suspend fun aggregateDistanceByExerciseTypes(
+    suspend fun aggregateDistanceByExerciseTypes(
         startTime: Instant,
         endTime: Instant,
         validExerciseTypes: Set<Int>,
@@ -104,7 +105,6 @@ class HealthConnectService @Inject constructor(
                     }
                 }
             }
-
             BigDecimal(totalDistance / 1000).setScale(
                 2,
                 RoundingMode.CEILING,

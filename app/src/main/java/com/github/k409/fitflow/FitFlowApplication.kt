@@ -7,8 +7,10 @@ import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ListenableWorker
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.github.k409.fitflow.features.goalupdater.GoalUpdaterWorker
 import com.github.k409.fitflow.features.stepcounter.StepCounterWorker
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
@@ -24,45 +26,29 @@ class FitFlowApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
 
-        val myWork = PeriodicWorkRequestBuilder<StepCounterWorker>(
-            180,
-            TimeUnit.MINUTES,
-        ).build()
+        // workers for StepCounter
+        scheduleWork<StepCounterWorker>("PeriodicStepWorker", 180, TimeUnit.MINUTES)
+        scheduleWork<StepCounterWorker>("MidnightStepWorker", 24, TimeUnit.HOURS, calculateInitialDelayUntilMidnight())
+        scheduleWork<StepCounterWorker>("BeforeMidnightStepWorker", 24, TimeUnit.HOURS, calculateInitialDelayBeforeMidnight())
 
-        WorkManager.getInstance(this)
-            .enqueueUniquePeriodicWork(
-                "UpdateStepsWorker",
-                ExistingPeriodicWorkPolicy.UPDATE,
-                myWork,
-            )
+        // workers for GoalUpdater
+        scheduleWork<GoalUpdaterWorker>("PeriodicGoalUpdater", 180, TimeUnit.MINUTES)
+        scheduleWork<GoalUpdaterWorker>("MidnightGoalUpdater", 24, TimeUnit.HOURS, calculateInitialDelayUntilMidnight())
+        scheduleWork<GoalUpdaterWorker>("BeforeMidnightGoalUpdater", 24, TimeUnit.HOURS, calculateInitialDelayBeforeMidnight())
+    }
 
-        val midnightWorkRequest =
-            PeriodicWorkRequestBuilder<StepCounterWorker>(
-                24,
-                TimeUnit.HOURS,
-                1,
-                TimeUnit.MINUTES,
-            ).setInitialDelay(calculateInitialDelayUntilMidnight(), TimeUnit.MILLISECONDS)
-                .build()
+    private inline fun <reified T : ListenableWorker> scheduleWork(workerName: String, repeatInterval: Long, timeUnit: TimeUnit, initialDelay: Long = 0L) {
+        val workRequest = PeriodicWorkRequestBuilder<T>(repeatInterval, timeUnit)
+            .apply {
+                if (initialDelay > 0) {
+                    setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+                }
+            }.build()
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-            "MidnightWorker",
+            workerName,
             ExistingPeriodicWorkPolicy.UPDATE,
-            midnightWorkRequest,
-        )
-
-        val beforeMidnightWorkRequest =
-            PeriodicWorkRequestBuilder<StepCounterWorker>(
-                24,
-                TimeUnit.HOURS,
-                1,
-                TimeUnit.MINUTES,
-            ).setInitialDelay(calculateInitialDelayBeforeMidnight(), TimeUnit.MILLISECONDS).build()
-
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-            "BeforeMidnightWorker",
-            ExistingPeriodicWorkPolicy.UPDATE,
-            beforeMidnightWorkRequest,
+            workRequest,
         )
     }
 
@@ -85,8 +71,7 @@ class FitFlowApplication : Application(), Configuration.Provider {
 
         calendar.add(Calendar.DAY_OF_YEAR, 1)
         calendar.set(Calendar.HOUR_OF_DAY, 23)
-        val minuteOffset = 58
-        calendar.set(Calendar.MINUTE, minuteOffset)
+        calendar.set(Calendar.MINUTE, 58)
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
 

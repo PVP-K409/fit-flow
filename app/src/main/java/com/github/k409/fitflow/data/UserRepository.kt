@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.data
 
+import android.util.Log
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.toUser
 import com.google.firebase.auth.FirebaseAuth
@@ -80,6 +81,30 @@ class UserRepository @Inject constructor(
                 .toObject<User>()
         } catch (e: Exception) {
             null
+        }
+    }
+
+    suspend fun addCoinsAndXp(coins: Long, xp: Long) {
+        val currentUser = auth.currentUser
+        val uid = currentUser!!.uid
+
+        val userDocumentReference = getUserDocumentReference(uid)
+
+        try {
+            val userSnapshot = userDocumentReference.get().await()
+            val user = userSnapshot.toObject(User::class.java) ?: return
+
+            val updatedCoins = user.points + coins
+            val updatedXp = user.xp + xp
+
+            userDocumentReference.update(
+                mapOf(
+                    "points" to updatedCoins,
+                    "xp" to updatedXp,
+                ),
+            ).await()
+        } catch (e: Exception) {
+            Log.e("User Repository", "Error updating user coins and xp")
         }
     }
 

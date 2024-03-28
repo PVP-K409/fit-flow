@@ -41,25 +41,43 @@ class HealthStatsManager @Inject constructor(
         logTag = "Total Distance",
     )
 
-    suspend fun getTotalBikingDistance(): Double = fetchData(
-        fetchFunction = {
-            healthConnectService.aggregateBikingDistance(
-                startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
-                endTime = Instant.now(),
-            )
-        },
-        default = 0.0,
-        logTag = "Biking Distance",
-    )
+    suspend fun getTotalSteps(
+        startDateString: String,
+        endDateString: String,
+    ): Double {
+        val zoneId = ZoneId.systemDefault()
+        val startDate = LocalDate.parse(startDateString).atStartOfDay(zoneId).toInstant()
 
-    suspend fun getTotalRunningDistance(): Double = fetchData(
-        fetchFunction = {
-            healthConnectService.aggregateRunningDistance(
-                startTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant(),
-                endTime = Instant.now(),
-            )
-        },
-        default = 0.0,
-        logTag = "Running Distance",
-    )
+        val endDate = if (LocalDate.parse(endDateString).isEqual(LocalDate.now())) {
+            Instant.now()
+        } else {
+            LocalDate.parse(endDateString).atTime(23, 59, 59).atZone(zoneId).toInstant()
+        }
+
+        return healthConnectService.aggregateTotalSteps(
+            startTime = startDate,
+            endTime = endDate,
+        )
+    }
+
+    suspend fun getTotalExerciseDistance(
+        validExerciseTypes: Set<Int>,
+        startDateString: String,
+        endDateString: String,
+    ): Double {
+        val zoneId = ZoneId.systemDefault()
+        val startDate = LocalDate.parse(startDateString).atStartOfDay(zoneId).toInstant()
+
+        val endDate = if (LocalDate.parse(endDateString).isEqual(LocalDate.now())) { // if same day
+            Instant.now()
+        } else {
+            LocalDate.parse(endDateString).atStartOfDay(zoneId).toInstant() // if not same day
+        }
+
+        return healthConnectService.aggregateDistanceByExerciseTypes(
+            startTime = startDate,
+            endTime = endDate,
+            validExerciseTypes = validExerciseTypes,
+        )
+    }
 }

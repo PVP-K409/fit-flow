@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.screens.activity.ActivityScreen
 import com.github.k409.fitflow.ui.screens.aquarium.AquariumScreen
+import com.github.k409.fitflow.ui.screens.goals.GoalCreation
 import com.github.k409.fitflow.ui.screens.goals.GoalsScreen
 import com.github.k409.fitflow.ui.screens.hydration.WaterLoggingScreen
 import com.github.k409.fitflow.ui.screens.inventory.InventoryScreen
@@ -34,12 +35,14 @@ fun FitFlowNavGraph(
             ActivityScreen()
         }
         composable(NavRoutes.Goals.route) {
-            GoalsScreen()
+            GoalsScreen(navController = navController)
         }
         composable(NavRoutes.Marketplace.route) {
             MarketScreen()
         }
-
+        composable(NavRoutes.GoalCreation.route) {
+            GoalCreation(navController = navController)
+        }
         composable(NavRoutes.Hydration.route) {
             WaterLoggingScreen()
         }

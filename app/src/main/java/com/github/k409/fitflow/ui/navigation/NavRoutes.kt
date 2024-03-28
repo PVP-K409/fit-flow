@@ -3,6 +3,7 @@ package com.github.k409.fitflow.ui.navigation
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Adjust
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Home
@@ -32,6 +33,7 @@ sealed class NavRoutes(
             ProfileCreation,
             Settings,
             Inventory,
+            GoalCreation,
             Marketplace,
         )
         val bottomNavBarItems = listOf(Aquarium, Activity, Hydration, Goals, Marketplace)
@@ -65,4 +67,6 @@ sealed class NavRoutes(
     data object Settings : NavRoutes("settings", R.string.settings, Icons.Outlined.Settings)
 
     data object Inventory : NavRoutes("inventory", R.string.inventory, Icons.Outlined.Inventory2)
+
+    data object GoalCreation : NavRoutes("goalCreation", R.string.goal_creation, Icons.Outlined.Add)
 }
