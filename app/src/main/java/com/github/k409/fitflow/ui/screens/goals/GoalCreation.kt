@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.common.DropdownMenu
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 
@@ -116,11 +116,10 @@ fun GoalCreation(
             }
 
             if (showConfirmationDialog) {
-                ConfirmationDialog(
-                    selectedGoal,
-                    selectedExercise,
-                    selectedDistance,
-                    onDismissRequest = { showConfirmationDialog = false },
+                ConfirmDialog(
+                    dialogTitle = "Are you sure you want to create this goal?",
+                    dialogText = "$selectedGoal\n$selectedExercise\n$selectedDistance",
+                    onDismiss = { showConfirmationDialog = false },
                     onConfirm = {
                         goalsViewModel.submitGoalAsync(selectedGoal, selectedExercise, selectedDistance.filter { it.isDigit() || it == '.' }.toDoubleOrNull() ?: 0.0)
                         showConfirmationDialog = false
@@ -154,27 +153,4 @@ fun NoValidGoalsMessage() {
     )
 }
 
-@Composable
-fun ConfirmationDialog(
-    selectedGoal: String,
-    selectedExercise: String,
-    selectedDistance: String,
-    onDismissRequest: () -> Unit,
-    onConfirm: () -> Unit,
-) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        title = { Text("Are you sure you want to create this goal?") },
-        text = { Text("$selectedGoal\n$selectedExercise\n$selectedDistance") },
-        confirmButton = {
-            Button(onClick = onConfirm) {
-                Text("Confirm")
-            }
-        },
-        dismissButton = {
-            Button(onClick = onDismissRequest) {
-                Text("Cancel")
-            }
-        },
-    )
-}
+
