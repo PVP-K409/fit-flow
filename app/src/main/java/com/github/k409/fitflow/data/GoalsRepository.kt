@@ -83,7 +83,7 @@ class GoalsRepository @Inject constructor(
 
                     val goalRecord = goalMap.toGoalRecord()
 
-                    if(!goalMap.keys.contains(key) && goalRecord.endDate > endDate.toString()) goalsMap[key] = goalRecord
+                    if(!goalsMap.keys.contains(key) && goalRecord.endDate > endDate.toString()) goalsMap[key] = goalRecord
                 }
             }
         }
