@@ -48,16 +48,14 @@ class HealthConnectService @Inject constructor(
             val response = client.aggregate(
                 AggregateRequest(
                     metrics = setOf(StepsRecord.COUNT_TOTAL),
-                    timeRangeFilter = TimeRangeFilter.Companion.between(startTime, endTime)
-                )
+                    timeRangeFilter = TimeRangeFilter.Companion.between(startTime, endTime),
+                ),
             )
             response[StepsRecord.COUNT_TOTAL]?.toDouble() ?: 0.0
-        } catch  (e: Exception){
+        } catch (e: Exception) {
             Log.d("Aggregate Steps", "Steps could not be read")
             0.0
-
         }
-
     }
 
     suspend fun aggregateTotalCalories(
@@ -111,7 +109,6 @@ class HealthConnectService @Inject constructor(
                 2,
                 RoundingMode.CEILING,
             ).toDouble()
-
         } catch (e: Exception) {
             Log.e("HealthConnectService", "Failed to aggregate exercise distance")
             0.0

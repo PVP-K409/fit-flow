@@ -23,7 +23,6 @@ private const val daily = "Daily"
 private const val weekly = "Weekly"
 private const val walking = "Walking"
 
-
 @HiltWorker
 class GoalUpdaterWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
@@ -32,7 +31,7 @@ class GoalUpdaterWorker @AssistedInject constructor(
     private val userRepository: UserRepository,
     private val healthStatsManager: HealthStatsManager,
     private val client: HealthConnectClient,
-): CoroutineWorker(appContext, workerParams) {
+) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
         try {
@@ -87,12 +86,12 @@ class GoalUpdaterWorker @AssistedInject constructor(
                         }
                     }
 
-                    goalsRepository.updateGoals(goalsToUpdate,LocalDate.now().toString(), period)
+                    goalsRepository.updateGoals(goalsToUpdate, LocalDate.now().toString(), period)
                 }
             }
 
             return Result.success()
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.e(TAG, "GoalUpdaterWorker failed to update")
             return Result.retry()
         }

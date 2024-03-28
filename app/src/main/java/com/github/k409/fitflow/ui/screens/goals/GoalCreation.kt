@@ -27,7 +27,6 @@ import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.DropdownMenu
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 
-
 @Composable
 fun GoalCreation(
     goalsViewModel: GoalsViewModel = hiltViewModel(),
@@ -42,7 +41,6 @@ fun GoalCreation(
     var selectedDistance by remember { mutableStateOf("") }
     var showConfirmationDialog by remember { mutableStateOf(false) }
     var showInlineError by remember { mutableStateOf(false) }
-
 
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Column(
@@ -64,7 +62,7 @@ fun GoalCreation(
                     selectedGoal = it
                     selectedDistance = ""
                     selectedExercise = ""
-                }
+                },
             )
 
             InlineError(selectedGoal.isEmpty() && showInlineError)
@@ -72,7 +70,6 @@ fun GoalCreation(
             Spacer(modifier = Modifier.height(24.dp))
 
             if (selectedGoal.isNotEmpty()) {
-
                 val exerciseOptions = goalsViewModel.getValidExerciseTypes(selectedGoal)
 
                 if (exerciseOptions.isNotEmpty()) {
@@ -80,7 +77,7 @@ fun GoalCreation(
                         options = exerciseOptions,
                         selectedOption = selectedExercise,
                         label = "Select Exercise",
-                        onOptionSelected = { selectedExercise = it }
+                        onOptionSelected = { selectedExercise = it },
                     )
 
                     InlineError(selectedExercise.isEmpty() && showInlineError)
@@ -97,18 +94,15 @@ fun GoalCreation(
                         options = distanceOptions,
                         selectedOption = selectedDistance,
                         label = "Select Distance",
-                        onOptionSelected = { selectedDistance = it }
+                        onOptionSelected = { selectedDistance = it },
                     )
 
                     InlineError(selectedDistance.isEmpty() && showInlineError)
 
                     Spacer(modifier = Modifier.height(24.dp))
-                }
-                else {
+                } else {
                     NoValidGoalsMessage()
                 }
-
-
             }
 
             Button(onClick = {
@@ -131,7 +125,7 @@ fun GoalCreation(
                         goalsViewModel.submitGoalAsync(selectedGoal, selectedExercise, selectedDistance.filter { it.isDigit() || it == '.' }.toDoubleOrNull() ?: 0.0)
                         showConfirmationDialog = false
                         navController.navigate(NavRoutes.Goals.route)
-                    }
+                    },
                 )
             }
         }
@@ -145,7 +139,7 @@ fun InlineError(show: Boolean) {
             text = "Please select this field",
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(start = 16.dp, top = 2.dp)
+            modifier = Modifier.padding(start = 16.dp, top = 2.dp),
         )
     }
 }
@@ -156,10 +150,9 @@ fun NoValidGoalsMessage() {
         text = "No valid exercises are available for the selected goal period.",
         color = MaterialTheme.colorScheme.error,
         style = MaterialTheme.typography.bodyLarge,
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(16.dp),
     )
 }
-
 
 @Composable
 fun ConfirmationDialog(
@@ -167,7 +160,7 @@ fun ConfirmationDialog(
     selectedExercise: String,
     selectedDistance: String,
     onDismissRequest: () -> Unit,
-    onConfirm: () -> Unit
+    onConfirm: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -182,17 +175,6 @@ fun ConfirmationDialog(
             Button(onClick = onDismissRequest) {
                 Text("Cancel")
             }
-        }
+        },
     )
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -112,7 +112,7 @@ fun GoalsScreen(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(bottom = 32.dp)
-                    .padding(end = 24.dp)
+                    .padding(end = 24.dp),
             ) {
                 Icon(
                     NavRoutes.GoalCreation.icon,
@@ -121,15 +121,15 @@ fun GoalsScreen(
             }
         }
     }
-
 }
+
 @Composable
 fun GoalsHeader(title: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
     ) {
         Text(
             text = title,
@@ -152,7 +152,7 @@ private fun GoalsList(
         }
         AnimatedVisibility(
             visible = visible,
-            enter = fadeIn(animationSpec = tween(durationMillis = 500))
+            enter = fadeIn(animationSpec = tween(durationMillis = 500)),
         ) {
             GoalCard(goal = goal)
         }
@@ -170,10 +170,10 @@ private fun GoalCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(end = 15.dp, start = 10.dp, bottom = 10.dp, top = 10.dp),
-        shape = RoundedCornerShape(6.dp)
+        shape = RoundedCornerShape(6.dp),
     ) {
         Column(
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 8.dp),
         ) {
             GoalHeader(goal.description, getIconByType(goal.type), adjustedEndDate)
             Spacer(Modifier.height(18.dp))
@@ -191,14 +191,14 @@ fun GoalHeader(
     title: String,
     icon: Int,
     endDate: String,
-    color: Color = MaterialTheme.colorScheme.primary
+    color: Color = MaterialTheme.colorScheme.primary,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(12.dp)
+            .padding(12.dp),
     ) {
         Icon(
             painter = painterResource(id = icon),
@@ -215,7 +215,7 @@ fun GoalHeader(
         Text(
             text = endDate,
             color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
         )
     }
 }
@@ -226,11 +226,10 @@ fun Progress(
     color: Color,
 ) {
     val unit = if (goal.type == stringResource(R.string.walking)) stringResource(R.string.steps) else "km"
-    var displayProgress = if (unit ==  stringResource(R.string.steps)) goal.currentProgress.toLong().toString() else goal.currentProgress.toString()
-    val displayTarget = if (unit ==  stringResource(R.string.steps)) goal.target.toLong().toString() else goal.target.toString()
+    var displayProgress = if (unit == stringResource(R.string.steps)) goal.currentProgress.toLong().toString() else goal.currentProgress.toString()
+    val displayTarget = if (unit == stringResource(R.string.steps)) goal.target.toLong().toString() else goal.target.toString()
 
     if (goal.completed) displayProgress = displayTarget
-
 
     Column {
         Row(
@@ -238,47 +237,46 @@ fun Progress(
                 .fillMaxWidth()
                 .padding(start = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
+            horizontalArrangement = Arrangement.Start,
         ) {
             Text(
                 text = "$displayProgress / $displayTarget $unit",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
             Spacer(Modifier.weight(1f))
             Row(
                 modifier = Modifier
                     .padding(end = 18.dp),
-                verticalAlignment = Alignment.Bottom
+                verticalAlignment = Alignment.Bottom,
             ) {
                 Text(
                     text = "${goal.points}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.money),
                     contentDescription = "Goal",
                     tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.80f),
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp),
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = "${goal.xp}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.star),
                     contentDescription = "Goal",
                     tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.80f),
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp),
                 )
             }
-
         }
         LinearProgressIndicator(
-            progress = { (goal.currentProgress/goal.target).toFloat() },
+            progress = { (goal.currentProgress / goal.target).toFloat() },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -289,4 +287,3 @@ fun Progress(
         )
     }
 }
-

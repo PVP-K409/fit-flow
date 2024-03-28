@@ -25,7 +25,7 @@ fun DropdownMenu(
     selectedOption: String,
     label: String,
     onOptionSelected: (String) -> Unit,
-    maxDisplayedItems: Int = 5
+    maxDisplayedItems: Int = 5,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val displayedItemsCount = if (options.size > maxDisplayedItems) maxDisplayedItems else options.size
@@ -35,7 +35,7 @@ fun DropdownMenu(
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             TextField(
                 value = selectedOption.ifEmpty { label },
@@ -46,13 +46,13 @@ fun DropdownMenu(
                     .menuAnchor(),
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                }
+                },
             )
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
-                    .heightIn(max = menuHeight)
+                    .heightIn(max = menuHeight),
             ) {
                 options.forEach { option ->
                     DropdownMenuItem(
@@ -60,12 +60,10 @@ fun DropdownMenu(
                         onClick = {
                             onOptionSelected(option)
                             expanded = false
-                        }
+                        },
                     )
                 }
             }
         }
     }
 }
-
-

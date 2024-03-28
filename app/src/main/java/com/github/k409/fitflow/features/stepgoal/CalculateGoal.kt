@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import kotlin.math.round
 
-suspend fun calculateStepGoal (
+suspend fun calculateStepGoal(
     stepsRepository: StepsRepository,
     description: String,
     type: String,
@@ -42,7 +42,6 @@ private suspend fun calculateStepTarget(
     daysToCheck: Long = 7,
     roundToNearest: Int = 250,
 ): Double {
-
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     val endDateToCheck = LocalDate.parse(startDate, dateFormatter).minusDays(1)
@@ -76,13 +75,13 @@ private suspend fun calculateStepTarget(
 fun calculatePoints(
     distance: Double,
     boost: Double,
-) : Long {
+): Long {
     return round(distance * boost).toLong()
 }
 
 fun calculateXp(
     distance: Double,
     boost: Double,
-) : Long {
+): Long {
     return round(distance * boost).toLong()
 }

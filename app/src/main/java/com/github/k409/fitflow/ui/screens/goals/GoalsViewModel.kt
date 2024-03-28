@@ -63,12 +63,12 @@ class GoalsViewModel @Inject constructor(
         return granted.containsAll(permissions)
     }
 
-     fun loadGoals(type: String) {
+    fun loadGoals(type: String) {
         viewModelScope.launch {
             val today = LocalDate.now()
             val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             val formattedToday = today.format(dateFormatter)
-            val goals: MutableMap<String, GoalRecord>? = when(type) {
+            val goals: MutableMap<String, GoalRecord>? = when (type) {
                 daily -> goalsRepository.getDailyGoals(formattedToday)
                 weekly -> goalsRepository.getWeeklyGoals(formattedToday)
                 else -> null
@@ -123,10 +123,10 @@ class GoalsViewModel @Inject constructor(
                 currentProgress = healthStatsManager.getTotalExerciseDistance(
                     getValidExerciseTypesByType(goalType),
                     startDate.toString(),
-                    endDate.toString()
+                    endDate.toString(),
                 ),
-                points = calculatePoints(distance, healthConnectGoal?.boost?: 1.0),
-                xp = calculateXp(distance, healthConnectGoal?.boost?: 1.0),
+                points = calculatePoints(distance, healthConnectGoal?.boost ?: 1.0),
+                xp = calculateXp(distance, healthConnectGoal?.boost ?: 1.0),
                 startDate = startDate.toString(),
                 endDate = endDate.toString(),
                 completed = false,
@@ -136,7 +136,7 @@ class GoalsViewModel @Inject constructor(
         }
     }
 
-    fun getValidExerciseTypes(goalType: String) : List<String> {
+    fun getValidExerciseTypes(goalType: String): List<String> {
         val allGoalTypes = getGoalTypes()
 
         val goalsInUseMap: Map<String, GoalRecord>? = when (goalType) {
@@ -150,9 +150,7 @@ class GoalsViewModel @Inject constructor(
         return allGoalTypes.filter { it !in goalsInUse }
     }
 
-
     private suspend fun updateGoals(type: String) {
-
         val goalsToUpdate: MutableMap<String, GoalRecord>? = when (type) {
             daily -> _todayGoals.value
             weekly -> _weeklyGoals.value
@@ -160,7 +158,7 @@ class GoalsViewModel @Inject constructor(
         }
 
         if (!goalsToUpdate.isNullOrEmpty()) {
-            for (key in goalsToUpdate.keys ) {
+            for (key in goalsToUpdate.keys) {
                 val goal = goalsToUpdate[key]
 
                 if (key == walking) {
@@ -185,7 +183,7 @@ class GoalsViewModel @Inject constructor(
                 }
             }
 
-            goalsRepository.updateGoals(goalsToUpdate,LocalDate.now().toString(), type)
+            goalsRepository.updateGoals(goalsToUpdate, LocalDate.now().toString(), type)
         }
 
         when (type) {

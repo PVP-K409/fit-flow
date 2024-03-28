@@ -131,7 +131,6 @@ class StepsRepository @Inject constructor(
         return Pair(totalSum, count)
     }
 
-
     fun getStepRecordLastWeeks(weeksCount: Int): Flow<Map<String, DailyStepRecord>> {
         val today = LocalDate.now()
         val periodStart = today

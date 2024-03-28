@@ -26,17 +26,15 @@ class FitFlowApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
 
-        //workers for StepCounter
+        // workers for StepCounter
         scheduleWork<StepCounterWorker>("PeriodicStepWorker", 180, TimeUnit.MINUTES)
         scheduleWork<StepCounterWorker>("MidnightStepWorker", 24, TimeUnit.HOURS, calculateInitialDelayUntilMidnight())
         scheduleWork<StepCounterWorker>("BeforeMidnightStepWorker", 24, TimeUnit.HOURS, calculateInitialDelayBeforeMidnight())
 
-        //workers for GoalUpdater
+        // workers for GoalUpdater
         scheduleWork<GoalUpdaterWorker>("PeriodicGoalUpdater", 180, TimeUnit.MINUTES)
         scheduleWork<GoalUpdaterWorker>("MidnightGoalUpdater", 24, TimeUnit.HOURS, calculateInitialDelayUntilMidnight())
         scheduleWork<GoalUpdaterWorker>("BeforeMidnightGoalUpdater", 24, TimeUnit.HOURS, calculateInitialDelayBeforeMidnight())
-
-
     }
 
     private inline fun <reified T : ListenableWorker> scheduleWork(workerName: String, repeatInterval: Long, timeUnit: TimeUnit, initialDelay: Long = 0L) {

@@ -94,14 +94,15 @@ class UserRepository @Inject constructor(
             val userSnapshot = userDocumentReference.get().await()
             val user = userSnapshot.toObject(User::class.java) ?: return
 
-
             val updatedCoins = user.points + coins
             val updatedXp = user.xp + xp
 
-            userDocumentReference.update(mapOf(
-                "points" to updatedCoins,
-                "xp" to updatedXp,
-            )).await()
+            userDocumentReference.update(
+                mapOf(
+                    "points" to updatedCoins,
+                    "xp" to updatedXp,
+                ),
+            ).await()
         } catch (e: Exception) {
             Log.e("User Repository", "Error updating user coins and xp")
         }

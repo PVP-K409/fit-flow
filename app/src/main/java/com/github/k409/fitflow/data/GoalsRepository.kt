@@ -54,7 +54,6 @@ class GoalsRepository @Inject constructor(
     suspend fun getWeeklyGoals(
         date: String,
     ): MutableMap<String, GoalRecord>? {
-
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val endDate = LocalDate.parse(date, dateFormatter)
         val dayCount: Long = 6
@@ -83,12 +82,11 @@ class GoalsRepository @Inject constructor(
 
                     val goalRecord = goalMap.toGoalRecord()
 
-                    if(!goalsMap.keys.contains(key) && goalRecord.endDate > endDate.toString()) goalsMap[key] = goalRecord
+                    if (!goalsMap.keys.contains(key) && goalRecord.endDate > endDate.toString()) goalsMap[key] = goalRecord
                 }
             }
         }
         return goalsMap.ifEmpty { null }
-
     }
 
     suspend fun updateGoals(
@@ -111,7 +109,7 @@ class GoalsRepository @Inject constructor(
 
                 goalsDocumentReference.set(
                     filteredGoals,
-                    SetOptions.merge()
+                    SetOptions.merge(),
                 ).await()
             } catch (e: FirebaseFirestoreException) {
                 Log.e("Goals Repository", "Error updating goals", e)
@@ -126,8 +124,8 @@ class GoalsRepository @Inject constructor(
     ): DocumentReference {
         return db.collection(GOALS_COLLECTION)
             .document(uid)
-            .collection(period).
-            document(recordDate)
+            .collection(period)
+            .document(recordDate)
     }
 
     private fun Map<String, Any>.toGoalRecord(): GoalRecord {
@@ -141,6 +139,6 @@ class GoalsRepository @Inject constructor(
             startDate = this["startDate"] as? String ?: "",
             endDate = this["endDate"] as? String ?: "",
             completed = this["completed"] as? Boolean ?: false,
-         )
+        )
     }
 }

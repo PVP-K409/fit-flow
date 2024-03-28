@@ -68,5 +68,5 @@ sealed class NavRoutes(
 
     data object Inventory : NavRoutes("inventory", R.string.inventory, Icons.Outlined.Inventory2)
 
-    data object GoalCreation: NavRoutes("goalCreation",R.string.goal_creation, Icons.Outlined.Add )
+    data object GoalCreation : NavRoutes("goalCreation", R.string.goal_creation, Icons.Outlined.Add)
 }

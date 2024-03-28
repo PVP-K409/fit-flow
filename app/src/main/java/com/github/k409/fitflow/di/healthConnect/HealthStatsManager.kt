@@ -74,13 +74,10 @@ class HealthStatsManager @Inject constructor(
             LocalDate.parse(endDateString).atStartOfDay(zoneId).toInstant() // if not same day
         }
 
-
         return healthConnectService.aggregateDistanceByExerciseTypes(
             startTime = startDate,
             endTime = endDate,
             validExerciseTypes = validExerciseTypes,
         )
     }
-
-
 }

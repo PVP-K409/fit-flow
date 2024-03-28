@@ -53,7 +53,7 @@ class ActivityViewModel @Inject constructor(
         HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class),
         HealthPermission.getReadPermission(DistanceRecord::class),
         HealthPermission.getReadPermission(ExerciseSessionRecord::class),
-        HealthPermission.getReadPermission(StepsRecord::class)
+        HealthPermission.getReadPermission(StepsRecord::class),
     )
 
     init {

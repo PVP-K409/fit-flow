@@ -4,13 +4,13 @@ import com.github.k409.fitflow.R
 
 enum class HealthConnectGoals(
     val healthConnectGoal: HealthConnectGoal,
-    ) {
+) {
     Running(
         healthConnectGoal = HealthConnectGoal(
             type = "Running",
             icon = R.drawable.run,
             boost = 20.0,
-            validExerciseTypes =  setOf(56, 57)
+            validExerciseTypes = setOf(56, 57),
         ),
     ),
     Biking(
@@ -18,10 +18,9 @@ enum class HealthConnectGoals(
             type = "Biking",
             icon = R.drawable.bike,
             boost = 10.0,
-            validExerciseTypes = setOf(8, 9)
+            validExerciseTypes = setOf(8, 9),
         ),
     ),
-
 }
 data class HealthConnectGoal(
     val type: String,
@@ -43,6 +42,5 @@ fun getValidExerciseTypesByType(type: String): Set<Int> {
 }
 
 fun getIconByType(type: String): Int {
-    return HealthConnectGoals.entries.find { it.healthConnectGoal.type == type }?.healthConnectGoal?.icon ?:  R.drawable.walk
+    return HealthConnectGoals.entries.find { it.healthConnectGoal.type == type }?.healthConnectGoal?.icon ?: R.drawable.walk
 }
-
