@@ -18,12 +18,12 @@ data class User(
 
 fun FirebaseUser.toUser(): User {
     val name = (
-        if (displayName.isNullOrEmpty()) {
-            email
-        } else {
-            displayName
-        }
-        ) ?: ""
+            if (displayName.isNullOrEmpty()) {
+                email
+            } else {
+                displayName
+            }
+            ) ?: ""
 
     return User(
         uid = uid,
@@ -31,4 +31,8 @@ fun FirebaseUser.toUser(): User {
         email = email ?: "",
         photoUrl = photoUrl.toString(),
     )
+}
+
+fun User.isProfileComplete(): Boolean {
+    return gender.isNotEmpty() && dateOfBirth.isNotEmpty()
 }

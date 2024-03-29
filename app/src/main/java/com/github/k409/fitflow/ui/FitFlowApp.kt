@@ -60,6 +60,7 @@ import com.exyte.animatednavbar.animation.balltrajectory.Teleport
 import com.exyte.animatednavbar.items.dropletbutton.DropletButton
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
+import com.github.k409.fitflow.model.isProfileComplete
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import java.util.Locale
@@ -74,15 +75,18 @@ fun FitFlowApp(
     val currentDestination = navBackStackEntry?.destination
     val user = sharedUiState.user
 
-    val currentScreen =
-        NavRoutes.navRoutes.find { it.route == currentDestination?.route } ?: NavRoutes.Default
+    val currentScreen = NavRoutes.navRoutes
+        .find { it.route == currentDestination?.route } ?: NavRoutes.Default
+
     val startDestination = if (user.uid.isEmpty()) {
         NavRoutes.Login.route
-    } else if (user.gender.isEmpty() || user.dateOfBirth.isEmpty()) {
+    } else if (!user.isProfileComplete()) {
         NavRoutes.ProfileCreation.route
     } else {
         NavRoutes.Aquarium.route
     }
+
+    val pointsAndXpVisible = currentScreen == NavRoutes.Marketplace
 
     val bottomBarState = rememberSaveable { (mutableStateOf(false)) }
     val topBarState = rememberSaveable { (mutableStateOf(false)) }
@@ -96,7 +100,7 @@ fun FitFlowApp(
     Scaffold(
         topBar = {
             FitFlowTopBar(
-                topBarState = topBarState.value,
+                visible = topBarState.value,
                 currentRoute = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
                     currentScreen,
@@ -104,6 +108,7 @@ fun FitFlowApp(
                 navigateUp = { navController.navigateUp() },
                 navController = navController,
                 user = user,
+                pointsAndXpVisible = pointsAndXpVisible,
             )
         },
         bottomBar = {
@@ -111,10 +116,10 @@ fun FitFlowApp(
                 navController = navController,
                 currentScreen = currentScreen,
                 visible = !(
-                    navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                        currentScreen,
-                    )
-                    ) && bottomBarState.value,
+                        navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                            currentScreen,
+                        )
+                        ) && bottomBarState.value,
                 containerColor = if (currentScreen == NavRoutes.Aquarium) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
             )
         },
@@ -167,81 +172,84 @@ private fun UpdateTopAndBottomBarVisibility(
 @Composable
 fun FitFlowTopBar(
     modifier: Modifier = Modifier,
-    topBarState: Boolean,
+    visible: Boolean,
     currentRoute: NavRoutes,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     navController: NavController,
     user: User,
+    pointsAndXpVisible: Boolean,
 ) {
-    if (topBarState) {
-        Surface {
-            TopAppBar(
-                modifier = modifier,
-                colors = TopAppBarDefaults.topAppBarColors()
-                    .copy(containerColor = Color.Transparent),
-                title = {
-                    Text(
-                        text = stringResource(id = currentRoute.stringRes),
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                },
-                navigationIcon = {
-                    if (canNavigateBack) {
-                        IconButton(onClick = navigateUp) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = null,
-                            )
-                        }
+    if (!visible) return
+
+    Surface {
+        TopAppBar(
+            modifier = modifier,
+            colors = TopAppBarDefaults.topAppBarColors()
+                .copy(containerColor = Color.Transparent),
+            title = {
+                Text(
+                    text = stringResource(id = currentRoute.stringRes),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            },
+            navigationIcon = {
+                if (canNavigateBack) {
+                    IconButton(onClick = navigateUp) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                        )
                     }
-                },
-                actions = {
+                }
+            },
+            actions = {
+                if (pointsAndXpVisible) {
                     PointsAndXPIndicatorRow(
                         modifier = Modifier.padding(end = 16.dp),
                         points = user.points,
                         xp = user.xp,
                     )
+                }
 
-                    IconButton(
-                        onClick = {
-                            navController.navigate(NavRoutes.Settings.route) {
-                                launchSingleTop = true
-                                restoreState = true
-                            }
+                IconButton(
+                    onClick = {
+                        navController.navigate(NavRoutes.Settings.route) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                ) {
+                    SubcomposeAsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(user.photoUrl)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        error = {
+                            Icon(
+                                modifier = Modifier.padding(3.dp),
+                                imageVector = Icons.Outlined.PersonOutline,
+                                contentDescription = null,
+                            )
                         },
-                    ) {
-                        SubcomposeAsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(user.photoUrl)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            error = {
-                                Icon(
-                                    modifier = Modifier.padding(3.dp),
-                                    imageVector = Icons.Outlined.PersonOutline,
-                                    contentDescription = null,
-                                )
-                            },
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .size(40.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.secondaryContainer,
-                                    shape = CircleShape,
-                                )
-                                .border(
-                                    width = 2.dp,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                                    shape = CircleShape,
-                                ),
-                        )
-                    }
-                },
-            )
-        }
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(40.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                shape = CircleShape,
+                            )
+                            .border(
+                                width = 2.dp,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                                shape = CircleShape,
+                            ),
+                    )
+                }
+            },
+        )
     }
 }
 
