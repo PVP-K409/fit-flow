@@ -10,8 +10,8 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ListenableWorker
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.github.k409.fitflow.features.goalupdater.GoalUpdaterWorker
-import com.github.k409.fitflow.features.stepcounter.StepCounterWorker
+import com.github.k409.fitflow.worker.GoalUpdaterWorker
+import com.github.k409.fitflow.worker.StepCounterWorker
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

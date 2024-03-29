@@ -2,8 +2,8 @@ package com.github.k409.fitflow.data
 
 import android.content.SharedPreferences
 import android.util.Log
-import com.github.k409.fitflow.features.stepcounter.StepCounter
 import com.github.k409.fitflow.model.DailyStepRecord
+import com.github.k409.fitflow.service.StepCounterService
 import com.github.k409.fitflow.util.getShortWeekdayNames
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
@@ -28,12 +28,12 @@ private const val DATE_FIELD = "recordDate"
 class StepsRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
-    private val stepCounter: StepCounter,
+    private val stepCounterService: StepCounterService,
     private val prefs: SharedPreferences,
 ) {
 
     suspend fun setInitialSteps(uid: String) {
-        val initialSteps = stepCounter.steps()
+        val initialSteps = stepCounterService.steps()
         val today = LocalDate.now().toString()
 
         prefs.edit()

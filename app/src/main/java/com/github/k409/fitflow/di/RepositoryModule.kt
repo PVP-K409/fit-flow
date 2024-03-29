@@ -10,7 +10,7 @@ import com.github.k409.fitflow.data.ProfileRepository
 import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.data.preferences.PreferencesRepository
-import com.github.k409.fitflow.features.stepcounter.StepCounter
+import com.github.k409.fitflow.service.StepCounterService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -75,10 +75,10 @@ object RepositoryModule {
     fun provideStepsRepository(
         db: FirebaseFirestore,
         auth: FirebaseAuth,
-        stepCounter: StepCounter,
+        stepCounterService: StepCounterService,
         prefs: SharedPreferences,
     ): StepsRepository {
-        return StepsRepository(db, auth, stepCounter, prefs)
+        return StepsRepository(db, auth, stepCounterService, prefs)
     }
 
     @Provides

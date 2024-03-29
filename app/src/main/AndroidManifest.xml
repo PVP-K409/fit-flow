@@ -39,7 +39,7 @@
         </activity>
 
         <receiver
-            android:name=".ui.screens.hydration.HydrationReminder"
+            android:name=".ui.screen.hydration.HydrationReminder"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

@@ -6,16 +6,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.github.k409.fitflow.ui.screens.activity.ActivityScreen
-import com.github.k409.fitflow.ui.screens.aquarium.AquariumScreen
-import com.github.k409.fitflow.ui.screens.goals.GoalCreation
-import com.github.k409.fitflow.ui.screens.goals.GoalsScreen
-import com.github.k409.fitflow.ui.screens.hydration.WaterLoggingScreen
-import com.github.k409.fitflow.ui.screens.inventory.InventoryScreen
-import com.github.k409.fitflow.ui.screens.login.LoginScreen
-import com.github.k409.fitflow.ui.screens.market.MarketScreen
-import com.github.k409.fitflow.ui.screens.profile.ProfileCreationScreen
-import com.github.k409.fitflow.ui.screens.settings.SettingsScreen
+import com.github.k409.fitflow.ui.screen.activity.ActivityScreen
+import com.github.k409.fitflow.ui.screen.aquarium.AquariumScreen
+import com.github.k409.fitflow.ui.screen.goals.GoalCreation
+import com.github.k409.fitflow.ui.screen.goals.GoalsScreen
+import com.github.k409.fitflow.ui.screen.hydration.WaterLoggingScreen
+import com.github.k409.fitflow.ui.screen.inventory.InventoryScreen
+import com.github.k409.fitflow.ui.screen.login.LoginScreen
+import com.github.k409.fitflow.ui.screen.market.MarketScreen
+import com.github.k409.fitflow.ui.screen.profile.ProfileCreationScreen
+import com.github.k409.fitflow.ui.screen.settings.SettingsScreen
 
 @Composable
 fun FitFlowNavGraph(
@@ -62,15 +62,7 @@ fun FitFlowNavGraph(
             SettingsScreen(navController = navController)
         }
         composable(NavRoutes.Login.route) {
-            LoginScreen(
-                onSuccessfulSignIn = {
-                    navController.navigate(NavRoutes.Aquarium.route) {
-                        popUpTo(NavRoutes.Aquarium.route) {
-                            inclusive = false
-                        }
-                    }
-                },
-            )
+            LoginScreen()
         }
     }
 }
