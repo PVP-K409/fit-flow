@@ -50,7 +50,7 @@ class GoalService @Inject constructor(
         return round(distance * boost).toLong()
     }
 
-    private suspend fun calculateStepTarget(
+    suspend fun calculateStepTarget(
         startDate: String,
         endDate: String,
         stepsRepository: StepsRepository,

@@ -14,6 +14,7 @@ import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.data.HealthStatsManager
 import com.github.k409.fitflow.service.StepCounterService
 import com.github.k409.fitflow.model.DailyStepRecord
+import com.github.k409.fitflow.service.GoalService
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.time.LocalDate
@@ -56,6 +57,9 @@ class StepCounterWorker @AssistedInject constructor(
             }
 
             if (dailyStepRecord == null) { // if new day
+                val goalService = GoalService(stepsRepository)
+                val stepGoal = goalService.calculateStepTarget(today, today, stepsRepository).toLong()
+
                 newDailyStepRecord = DailyStepRecord(
                     totalSteps = 0,
                     initialSteps = currentSteps,
@@ -63,6 +67,7 @@ class StepCounterWorker @AssistedInject constructor(
                     stepsBeforeReboot = 0,
                     caloriesBurned = calories,
                     totalDistance = distance,
+                    stepGoal = stepGoal,
                 )
             } else if (hasRebooted || currentSteps <= 1) { // if current day and reboot has happened
                 newDailyStepRecord = DailyStepRecord(
@@ -72,6 +77,7 @@ class StepCounterWorker @AssistedInject constructor(
                     stepsBeforeReboot = dailyStepRecord.totalSteps + currentSteps,
                     caloriesBurned = calories,
                     totalDistance = distance,
+                    stepGoal = dailyStepRecord.stepGoal,
                 )
 
                 prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
@@ -83,9 +89,17 @@ class StepCounterWorker @AssistedInject constructor(
                     stepsBeforeReboot = dailyStepRecord.totalSteps,
                     caloriesBurned = if (calories > dailyStepRecord.caloriesBurned!!) calories else dailyStepRecord.caloriesBurned,
                     totalDistance = distance,
+                    stepGoal = dailyStepRecord.stepGoal,
                 )
             } else {
                 // if current day and no reboot
+                var stepGoal = dailyStepRecord.stepGoal
+
+                if (stepGoal == 0L) {
+                    val goalService = GoalService(stepsRepository)
+                    stepGoal = goalService.calculateStepTarget(today, today, stepsRepository).toLong()
+                }
+
                 newDailyStepRecord = DailyStepRecord(
                     totalSteps = currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot,
                     initialSteps = dailyStepRecord.initialSteps,
@@ -93,6 +107,7 @@ class StepCounterWorker @AssistedInject constructor(
                     stepsBeforeReboot = dailyStepRecord.stepsBeforeReboot,
                     caloriesBurned = calories,
                     totalDistance = distance,
+                    stepGoal = stepGoal,
                 )
             }
 
