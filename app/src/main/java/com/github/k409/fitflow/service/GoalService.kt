@@ -66,7 +66,7 @@ class GoalService @Inject constructor(
 
         val (totalStepsSum, recordsCounted) = stepsRepository.stepSumAndCountInPeriod(
             startDateToCheck,
-            endDateToCheck
+            endDateToCheck,
         )
 
         val startLocalDate = LocalDate.parse(startDate, dateFormatter)

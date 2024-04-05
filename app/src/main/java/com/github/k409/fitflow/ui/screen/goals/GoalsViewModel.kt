@@ -85,8 +85,10 @@ class GoalsViewModel @Inject constructor(
                     description = "$type $walking",
                     type = walking,
                     startDate = formattedToday,
-                    endDate = if (type == weekly) today.plusDays(7)
-                        .format(dateFormatter) else today.plusDays(1).format(dateFormatter),
+                    endDate = if (type == weekly) {
+                        today.plusDays(7)
+                            .format(dateFormatter)
+                    } else today.plusDays(1).format(dateFormatter),
                 )
 
                 addGoal(type, goal)
@@ -105,7 +107,7 @@ class GoalsViewModel @Inject constructor(
 
     private suspend fun addGoal(
         type: String,
-        goal: GoalRecord
+        goal: GoalRecord,
     ) {
         val currentGoals = when (type) {
             daily -> _todayGoals.value ?: mutableMapOf()
@@ -126,7 +128,7 @@ class GoalsViewModel @Inject constructor(
     fun submitGoalAsync(
         goalType: String,
         exerciseType: String,
-        distance: Double
+        distance: Double,
     ) {
         viewModelScope.launch {
             val healthConnectGoal = getGoalByType(exerciseType)

@@ -31,6 +31,7 @@ object Pink {
     private val md_theme_light_inverseOnSurface = Color(0xFFFAEEEF)
     private val md_theme_light_inverseSurface = Color(0xFF352F30)
     private val md_theme_light_inversePrimary = Color(0xFFFFB0C8)
+
     // val md_theme_light_shadow = Color(0xFF000000)
     private val md_theme_light_surfaceTint = Color(0xFFAF2363)
     private val md_theme_light_outlineVariant = Color(0xFFD5C2C6)
@@ -62,12 +63,13 @@ object Pink {
     private val md_theme_dark_inverseOnSurface = Color(0xFF201A1B)
     private val md_theme_dark_inverseSurface = Color(0xFFEBE0E1)
     private val md_theme_dark_inversePrimary = Color(0xFFAF2363)
-    //val md_theme_dark_shadow = Color(0xFF000000)
+
+    // val md_theme_dark_shadow = Color(0xFF000000)
     private val md_theme_dark_surfaceTint = Color(0xFFFFB0C8)
     private val md_theme_dark_outlineVariant = Color(0xFF514347)
     private val md_theme_dark_scrim = Color(0xFF000000)
 
-    //val seed = Color(0xFF92004D)
+    // val seed = Color(0xFF92004D)
 
     val PinkLightColorScheme = lightColorScheme(
         primary = md_theme_light_primary,

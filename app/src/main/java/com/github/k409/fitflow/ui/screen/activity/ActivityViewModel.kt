@@ -9,10 +9,10 @@ import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.data.HealthStatsManager
-import com.github.k409.fitflow.service.StepCounterService
+import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.model.DailyStepRecord
+import com.github.k409.fitflow.service.StepCounterService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
