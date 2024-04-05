@@ -10,11 +10,11 @@ import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.data.HealthStatsManager
-import com.github.k409.fitflow.service.StepCounterService
+import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.model.DailyStepRecord
 import com.github.k409.fitflow.service.GoalService
+import com.github.k409.fitflow.service.StepCounterService
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.time.LocalDate

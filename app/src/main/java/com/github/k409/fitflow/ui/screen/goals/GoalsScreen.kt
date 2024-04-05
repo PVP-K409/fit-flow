@@ -179,8 +179,10 @@ private fun GoalCard(
             Spacer(Modifier.height(18.dp))
             Progress(
                 goal = goal,
-                color = if (goal.completed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(
-                    alpha = 0.5f
+                color = if (goal.completed) {
+                    MaterialTheme.colorScheme.primary
+                } else MaterialTheme.colorScheme.primary.copy(
+                    alpha = 0.5f,
                 ),
             )
             Spacer(Modifier.height(16.dp))
@@ -229,10 +231,14 @@ fun Progress(
 ) {
     val unit =
         if (goal.type == stringResource(R.string.walking)) stringResource(R.string.steps) else "km"
-    var displayProgress = if (unit == stringResource(R.string.steps)) goal.currentProgress.toLong()
-        .toString() else goal.currentProgress.toString()
-    val displayTarget = if (unit == stringResource(R.string.steps)) goal.target.toLong()
-        .toString() else goal.target.toString()
+    var displayProgress = if (unit == stringResource(R.string.steps)) {
+        goal.currentProgress.toLong()
+            .toString()
+    } else goal.currentProgress.toString()
+    val displayTarget = if (unit == stringResource(R.string.steps)) {
+        goal.target.toLong()
+            .toString()
+    } else goal.target.toString()
 
     if (goal.completed) displayProgress = displayTarget
 

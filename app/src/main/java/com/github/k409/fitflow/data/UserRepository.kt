@@ -74,7 +74,7 @@ class UserRepository @Inject constructor(
 
     suspend fun addCoinsAndXp(
         coins: Long,
-        xp: Long
+        xp: Long,
     ) {
         val uid = auth.currentUser!!.uid
 
@@ -84,7 +84,7 @@ class UserRepository @Inject constructor(
                     mapOf(
                         "points" to FieldValue.increment(coins),
                         "xp" to FieldValue.increment(xp),
-                    )
+                    ),
                 ).await()
         } catch (e: Exception) {
             Log.e("User Repository", "Error updating user coins and xp")

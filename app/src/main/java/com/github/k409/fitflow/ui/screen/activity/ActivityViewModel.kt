@@ -9,11 +9,11 @@ import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.data.HealthStatsManager
-import com.github.k409.fitflow.service.StepCounterService
+import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.model.DailyStepRecord
 import com.github.k409.fitflow.service.GoalService
+import com.github.k409.fitflow.service.StepCounterService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -129,7 +129,7 @@ class ActivityViewModel @Inject constructor(
                 stepsBeforeReboot = dailyStepRecord.totalSteps + currentSteps,
                 caloriesBurned = calories,
                 totalDistance = distance,
-                stepGoal = dailyStepRecord.stepGoal
+                stepGoal = dailyStepRecord.stepGoal,
             )
 
             prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
@@ -141,7 +141,7 @@ class ActivityViewModel @Inject constructor(
                 stepsBeforeReboot = dailyStepRecord.totalSteps,
                 caloriesBurned = if (calories > dailyStepRecord.caloriesBurned!!) calories else dailyStepRecord.caloriesBurned,
                 totalDistance = distance,
-                stepGoal = dailyStepRecord.stepGoal
+                stepGoal = dailyStepRecord.stepGoal,
             )
         } else {
             // if current day and no reboot

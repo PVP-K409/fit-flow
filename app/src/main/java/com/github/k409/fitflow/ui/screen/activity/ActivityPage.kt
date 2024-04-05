@@ -24,9 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.health.connect.client.PermissionController
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.DailyStepRecord
-import com.github.k409.fitflow.ui.common.TextWithLabel
 import com.github.k409.fitflow.ui.common.CalendarView
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
+import com.github.k409.fitflow.ui.common.TextWithLabel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -66,8 +66,7 @@ internal fun ActivityPage(activityViewModel: ActivityViewModel) {
 
     if (loading) {
         FitFlowCircularProgressIndicator()
-    }
-    else {
+    } else {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -136,5 +135,4 @@ internal fun ActivityPage(activityViewModel: ActivityViewModel) {
             }
         }
     }
-
 }
