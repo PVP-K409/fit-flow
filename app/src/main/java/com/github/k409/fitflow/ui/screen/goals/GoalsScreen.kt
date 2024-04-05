@@ -48,8 +48,6 @@ import com.github.k409.fitflow.model.GoalRecord
 import com.github.k409.fitflow.model.getIconByType
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.navigation.NavRoutes
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -65,7 +63,7 @@ fun GoalsScreen(
 
     val weekly = "Weekly"
     val daily = "Daily"
-    var showProgress by remember { mutableStateOf(true) }
+    val loading by goalsViewModel.loading.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
     val permissionContract = PermissionController.createRequestPermissionResultContract()
@@ -81,15 +79,12 @@ fun GoalsScreen(
             launcher.launch(goalsViewModel.permissions)
         }
 
-        val updateDaily = async { goalsViewModel.loadGoals(daily) }
-        val updateWeekly = async { goalsViewModel.loadGoals(weekly) }
+        goalsViewModel.loadGoals(daily)
+        goalsViewModel.loadGoals(weekly)
 
-        awaitAll(updateDaily, updateWeekly)
-
-        showProgress = false
     }
 
-    if (showProgress) {
+    if (loading) {
         FitFlowCircularProgressIndicator()
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
