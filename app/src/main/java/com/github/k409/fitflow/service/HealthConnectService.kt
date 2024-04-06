@@ -134,8 +134,7 @@ class HealthConnectService @Inject constructor(
             exerciseSessions.records.forEach { record ->
                 val exerciseTypeInt = record.exerciseType
 
-                val healthConnectExercise = HealthConnectExercises.findByExerciseType(exerciseTypeInt)
-                val exerciseType = healthConnectExercise?.type ?: "Unknown Exercise Type"
+                val exerciseType = HealthConnectExercises.findTypeByExerciseType(exerciseTypeInt) ?: "Unknown Exercise Type"
 
                 var exerciseRoute: androidx.health.connect.client.records.ExerciseRoute? = null
 
