@@ -1,7 +1,5 @@
 package com.github.k409.fitflow.ui.screen.goals
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
