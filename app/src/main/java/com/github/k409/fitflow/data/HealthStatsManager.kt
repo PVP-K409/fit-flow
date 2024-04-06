@@ -91,10 +91,6 @@ class HealthStatsManager @Inject constructor(
 
         val endDate = LocalDate.parse(endDateString).atTime(23, 59, 59).atZone(zoneId).toInstant()
 
-
-        Log.d("start", startDate.toString())
-        Log.d("end", endDate.toString())
-
         return healthConnectService.getExerciseRecords(startDate, endDate)
     }
 }
