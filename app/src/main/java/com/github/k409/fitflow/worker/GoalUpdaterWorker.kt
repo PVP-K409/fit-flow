@@ -11,8 +11,8 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.github.k409.fitflow.data.GoalsRepository
-import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.data.HealthStatsManager
+import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.model.getValidExerciseTypesByType
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
