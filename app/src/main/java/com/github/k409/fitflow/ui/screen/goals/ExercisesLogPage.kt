@@ -46,7 +46,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun ExercisesLogPage(
     exerciseLogViewModel: ExercisesLogViewModel = hiltViewModel(),
-){
+) {
     val exerciseRecords  by exerciseLogViewModel.exerciseRecords.collectAsState()
     val loading by exerciseLogViewModel.loading.collectAsState()
 
