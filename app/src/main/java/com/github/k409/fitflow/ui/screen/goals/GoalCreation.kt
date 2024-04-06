@@ -76,9 +76,8 @@ fun GoalCreation(
             HorizontalDivider(
                 thickness = 1.dp,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
-                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
+                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
             )
-
 
             GoalDropdownMenu(
                 options = goalOptions,
@@ -123,7 +122,6 @@ fun GoalCreation(
                     )
 
                     InlineError(selectedDistance.isEmpty() && showInlineError)
-
                 } else {
                     NoValidGoalsMessage()
                 }
@@ -206,37 +204,37 @@ fun GoalDropdownMenu(
         ) {
             Text(
                 text = label,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
             )
 
             Text(
                 text = selectedOption.ifEmpty { "Select an option" },
                 style = MaterialTheme.typography.labelLarge,
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically),
             )
         }
     }
 
     if (isExpanded) {
         Dialog(
-            onDismissRequest = { isExpanded = false }
+            onDismissRequest = { isExpanded = false },
         ) {
             Box(
                 modifier = Modifier
                     .background(
                         MaterialTheme.colorScheme.background,
-                        shape = RoundedCornerShape(6.dp)
+                        shape = RoundedCornerShape(6.dp),
                     )
                     .wrapContentSize(Alignment.Center)
-                    .sizeIn(maxHeight = 300.dp)
+                    .sizeIn(maxHeight = 300.dp),
             ) {
                 LazyColumn(
                     modifier = Modifier
                         .shadow(4.dp)
                         .background(
                             MaterialTheme.colorScheme.surface,
-                            shape = RoundedCornerShape(6.dp)
-                        )
+                            shape = RoundedCornerShape(6.dp),
+                        ),
                 ) {
                     items(options) { option ->
                         DropdownOption(
@@ -244,7 +242,7 @@ fun GoalDropdownMenu(
                             onOptionSelected = {
                                 onOptionSelected(option)
                                 isExpanded = false
-                            }
+                            },
                         )
                     }
                 }
@@ -280,13 +278,13 @@ fun ExerciseDropdownMenu(
         ) {
             Text(
                 text = label,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
             )
 
             Text(
                 text = selectedOption.ifEmpty { "Select an option" },
                 style = MaterialTheme.typography.labelLarge,
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically),
             )
         }
     }
@@ -297,18 +295,18 @@ fun ExerciseDropdownMenu(
                 modifier = Modifier
                     .background(
                         MaterialTheme.colorScheme.background,
-                        shape = RoundedCornerShape(6.dp)
+                        shape = RoundedCornerShape(6.dp),
                     )
                     .wrapContentSize(Alignment.Center)
-                    .sizeIn(maxHeight = 300.dp)
+                    .sizeIn(maxHeight = 300.dp),
             ) {
                 LazyColumn(
                     modifier = Modifier
                         .shadow(4.dp)
                         .background(
                             MaterialTheme.colorScheme.surface,
-                            shape = RoundedCornerShape(6.dp)
-                        )
+                            shape = RoundedCornerShape(6.dp),
+                        ),
                 ) {
                     options.forEach { option ->
                         item {
@@ -320,7 +318,7 @@ fun ExerciseDropdownMenu(
                                         onOptionSelected(option)
                                         isExpanded = false
                                     }
-                                    .padding(16.dp)
+                                    .padding(16.dp),
                             ) {
                                 Icon(
                                     painter = painterResource(id = getIconByType(option)),
@@ -330,10 +328,9 @@ fun ExerciseDropdownMenu(
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = option,
-                                    style = MaterialTheme.typography.bodyLarge
+                                    style = MaterialTheme.typography.bodyLarge,
                                 )
                             }
-
                         }
                     }
                 }
@@ -345,7 +342,7 @@ fun ExerciseDropdownMenu(
 @Composable
 fun DropdownOption(
     option: String,
-    onOptionSelected: () -> Unit
+    onOptionSelected: () -> Unit,
 ) {
     Text(
         text = option,
@@ -353,7 +350,7 @@ fun DropdownOption(
             .fillMaxWidth()
             .clickable { onOptionSelected() }
             .padding(16.dp),
-        style = MaterialTheme.typography.bodyLarge
+        style = MaterialTheme.typography.bodyLarge,
     )
 }
 
