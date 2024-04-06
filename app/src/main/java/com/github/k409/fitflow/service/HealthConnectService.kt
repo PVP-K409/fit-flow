@@ -94,7 +94,6 @@ class HealthConnectService @Inject constructor(
             var totalDistance = 0.0
             exerciseSessions.records.forEach { exerciseRecord ->
                 if (validExerciseTypes.contains(exerciseRecord.exerciseType)) {
-
                     val response = client.aggregate(
                         AggregateRequest(
                             metrics = setOf(DistanceRecord.DISTANCE_TOTAL),
@@ -103,7 +102,6 @@ class HealthConnectService @Inject constructor(
                     )
                     val distance = response[DistanceRecord.DISTANCE_TOTAL]?.inMeters ?: 0.0
                     totalDistance += distance
-
                 }
             }
             BigDecimal(totalDistance / 1000).setScale(
@@ -120,7 +118,6 @@ class HealthConnectService @Inject constructor(
         startTime: Instant,
         endTime: Instant,
     ): MutableList<ExerciseRecord> {
-
         try {
             val exercisesList: MutableList<ExerciseRecord> = mutableListOf()
 
@@ -141,18 +138,16 @@ class HealthConnectService @Inject constructor(
                     exerciseType = exerciseType,
                     calories = aggregateTotalCalories(record.startTime, record.endTime),
                     distance = aggregateTotalDistance(record.startTime, record.endTime),
-                    icon = HealthConnectExercises.getIconByType(exerciseType)
+                    icon = HealthConnectExercises.getIconByType(exerciseType),
                 )
 
                 exercisesList.add(exerciseRecord)
             }
 
             return exercisesList.sortedByDescending { it.startTime }.toMutableList()
-
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.e("Read Exercises", "Unable to read Exercise sessions")
             return mutableListOf()
         }
-
     }
 }

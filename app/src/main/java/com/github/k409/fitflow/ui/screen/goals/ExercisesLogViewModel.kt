@@ -13,8 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExercisesLogViewModel @Inject constructor(
-    private val healthStatsManager: HealthStatsManager
-): ViewModel() {
+    private val healthStatsManager: HealthStatsManager,
+) : ViewModel() {
     private val _exerciseRecords = MutableStateFlow<List<ExerciseRecord>>(mutableListOf())
     val exerciseRecords: StateFlow<List<ExerciseRecord>> = _exerciseRecords
 
@@ -31,5 +31,4 @@ class ExercisesLogViewModel @Inject constructor(
             _loading.value = false
         }
     }
-
 }

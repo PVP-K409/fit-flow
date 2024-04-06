@@ -100,7 +100,7 @@ enum class HealthConnectExercises(
     Racquetball("Racquetball", R.drawable.racquetball, setOf(EXERCISE_TYPE_RACQUETBALL)),
     RockClimbing("Rock Climbing", R.drawable.climbing, setOf(EXERCISE_TYPE_ROCK_CLIMBING)),
     RollerHockey("Roller Hockey", R.drawable.roller_blades, setOf(EXERCISE_TYPE_ROLLER_HOCKEY)),
-    Rowing("Rowing", R.drawable.canoe, setOf(EXERCISE_TYPE_ROWING,EXERCISE_TYPE_ROWING_MACHINE)),
+    Rowing("Rowing", R.drawable.canoe, setOf(EXERCISE_TYPE_ROWING, EXERCISE_TYPE_ROWING_MACHINE)),
     Rugby("Rugby", R.drawable.american_football, setOf(EXERCISE_TYPE_RUGBY)),
     Running("Running", R.drawable.run, setOf(EXERCISE_TYPE_RUNNING, EXERCISE_TYPE_RUNNING_TREADMILL)),
     Sailing("Sailing", R.drawable.sailing, setOf(EXERCISE_TYPE_SAILING)),
@@ -124,7 +124,8 @@ enum class HealthConnectExercises(
     WaterPolo("Water Polo", R.drawable.water_polo, setOf(EXERCISE_TYPE_WATER_POLO)),
     Weightlifting("Weightlifting", R.drawable.weightlifting, setOf(EXERCISE_TYPE_WEIGHTLIFTING)),
     Wheelchair("Wheelchair", R.drawable.wheelchair, setOf(EXERCISE_TYPE_WHEELCHAIR)),
-    Yoga("Yoga", R.drawable.yoga, setOf(EXERCISE_TYPE_YOGA));
+    Yoga("Yoga", R.drawable.yoga, setOf(EXERCISE_TYPE_YOGA)),
+    ;
     companion object {
 
         fun findTypeByExerciseType(exerciseType: Int): String? {
@@ -135,7 +136,3 @@ enum class HealthConnectExercises(
         }
     }
 }
-
-
-
-
