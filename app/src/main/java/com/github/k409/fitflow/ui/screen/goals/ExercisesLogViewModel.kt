@@ -12,7 +12,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class ExerciseLogViewModel @Inject constructor(
+class ExercisesLogViewModel @Inject constructor(
     private val healthStatsManager: HealthStatsManager
 ): ViewModel() {
     private val _exerciseRecords = MutableStateFlow<List<ExerciseRecord>>(mutableListOf())
