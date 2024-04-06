@@ -56,10 +56,14 @@ class StepCounterWorker @AssistedInject constructor(
                 distance = healthStatsManager.getTotalDistance()
             }
 
-            if (dailyStepRecord == null) { // if new day
+            val stepGoal = if (dailyStepRecord == null || dailyStepRecord.stepGoal == 0L) {
                 val goalService = GoalService(stepsRepository)
-                val stepGoal = goalService.calculateStepTarget(today, today, stepsRepository).toLong()
+                goalService.calculateStepTarget(today, today, stepsRepository).toLong()
+            } else {
+                dailyStepRecord.stepGoal
+            }
 
+            if (dailyStepRecord == null) { // if new day
                 newDailyStepRecord = DailyStepRecord(
                     totalSteps = 0,
                     initialSteps = currentSteps,
@@ -77,7 +81,7 @@ class StepCounterWorker @AssistedInject constructor(
                     stepsBeforeReboot = dailyStepRecord.totalSteps + currentSteps,
                     caloriesBurned = calories,
                     totalDistance = distance,
-                    stepGoal = dailyStepRecord.stepGoal,
+                    stepGoal = stepGoal,
                 )
 
                 prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
@@ -89,17 +93,10 @@ class StepCounterWorker @AssistedInject constructor(
                     stepsBeforeReboot = dailyStepRecord.totalSteps,
                     caloriesBurned = if (calories > dailyStepRecord.caloriesBurned!!) calories else dailyStepRecord.caloriesBurned,
                     totalDistance = distance,
-                    stepGoal = dailyStepRecord.stepGoal,
+                    stepGoal = stepGoal,
                 )
             } else {
                 // if current day and no reboot
-                var stepGoal = dailyStepRecord.stepGoal
-
-                if (stepGoal == 0L) {
-                    val goalService = GoalService(stepsRepository)
-                    stepGoal = goalService.calculateStepTarget(today, today, stepsRepository).toLong()
-                }
-
                 newDailyStepRecord = DailyStepRecord(
                     totalSteps = currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot,
                     initialSteps = dailyStepRecord.initialSteps,
