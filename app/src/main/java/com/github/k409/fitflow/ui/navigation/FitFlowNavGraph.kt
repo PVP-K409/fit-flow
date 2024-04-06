@@ -6,41 +6,53 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.github.k409.fitflow.ui.screens.activity.ActivityScreen
-import com.github.k409.fitflow.ui.screens.goals.GoalsScreen
-import com.github.k409.fitflow.ui.screens.home.HomeScreen
-import com.github.k409.fitflow.ui.screens.hydration.WaterLoggingScreen
-import com.github.k409.fitflow.ui.screens.login.LoginScreen
-import com.github.k409.fitflow.ui.screens.market.MarketScreen
-import com.github.k409.fitflow.ui.screens.profile.ProfileCreationScreen
-import com.github.k409.fitflow.ui.screens.settings.SettingsScreen
+import com.github.k409.fitflow.ui.screen.activity.ActivityScreen
+import com.github.k409.fitflow.ui.screen.aquarium.AquariumScreen
+import com.github.k409.fitflow.ui.screen.goals.GoalCreation
+import com.github.k409.fitflow.ui.screen.goals.GoalsScreen
+import com.github.k409.fitflow.ui.screen.hydration.WaterLoggingScreen
+import com.github.k409.fitflow.ui.screen.inventory.InventoryScreen
+import com.github.k409.fitflow.ui.screen.login.LoginScreen
+import com.github.k409.fitflow.ui.screen.market.MarketScreen
+import com.github.k409.fitflow.ui.screen.profile.ProfileCreationScreen
+import com.github.k409.fitflow.ui.screen.settings.SettingsScreen
 
 @Composable
 fun FitFlowNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = NavRoutes.Home.route,
+    startDestination: String = NavRoutes.Aquarium.route,
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        composable(NavRoutes.Home.route) {
-            HomeScreen()
+        composable(NavRoutes.Aquarium.route) {
+            AquariumScreen(navController = navController)
         }
         composable(NavRoutes.Activity.route) {
             ActivityScreen()
         }
         composable(NavRoutes.Goals.route) {
-            GoalsScreen()
+            GoalsScreen(navController = navController)
         }
         composable(NavRoutes.Marketplace.route) {
             MarketScreen()
         }
-
+        composable(NavRoutes.GoalCreation.route) {
+            GoalCreation(navController = navController)
+        }
         composable(NavRoutes.Hydration.route) {
             WaterLoggingScreen()
+        }
+
+        composable(NavRoutes.Inventory.route) {
+            InventoryScreen()
+        }
+
+        composable(NavRoutes.Marketplace.route) {
+            MarketScreen()
         }
 
         composable(NavRoutes.ProfileCreation.route) {
@@ -50,15 +62,7 @@ fun FitFlowNavGraph(
             SettingsScreen(navController = navController)
         }
         composable(NavRoutes.Login.route) {
-            LoginScreen(
-                onSuccessfulSignIn = {
-                    navController.navigate(NavRoutes.Home.route) {
-                        popUpTo(NavRoutes.Home.route) {
-                            inclusive = false
-                        }
-                    }
-                },
-            )
+            LoginScreen()
         }
     }
 }

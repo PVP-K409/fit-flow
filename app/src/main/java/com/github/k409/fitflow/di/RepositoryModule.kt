@@ -1,16 +1,22 @@
 package com.github.k409.fitflow.di
 
+import android.content.Context
 import android.content.SharedPreferences
+import com.github.k409.fitflow.data.AquariumRepository
 import com.github.k409.fitflow.data.AuthRepository
+import com.github.k409.fitflow.data.GoalsRepository
 import com.github.k409.fitflow.data.HydrationRepository
 import com.github.k409.fitflow.data.ProfileRepository
+import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.data.UserRepository
-import com.github.k409.fitflow.features.stepcounter.StepCounter
+import com.github.k409.fitflow.data.preferences.PreferencesRepository
+import com.github.k409.fitflow.service.StepCounterService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -31,10 +37,9 @@ object RepositoryModule {
     fun provideUserRepository(
         db: FirebaseFirestore,
         auth: FirebaseAuth,
-        stepCounter: StepCounter,
-        prefs: SharedPreferences,
+        stepsRepository: StepsRepository,
     ): UserRepository {
-        return UserRepository(db, auth, stepCounter, prefs)
+        return UserRepository(db, auth, stepsRepository)
     }
 
     @Provides
@@ -48,11 +53,46 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideWaterRepository(
+    fun provideGoalRepository(
+        db: FirebaseFirestore,
+        auth: FirebaseAuth,
+    ): GoalsRepository {
+        return GoalsRepository(db, auth)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHydrationRepository(
         userRepository: UserRepository,
         db: FirebaseFirestore,
         auth: FirebaseAuth,
     ): HydrationRepository {
         return HydrationRepository(userRepository, db, auth)
+    }
+
+    @Provides
+    @Singleton
+    fun provideStepsRepository(
+        db: FirebaseFirestore,
+        auth: FirebaseAuth,
+        stepCounterService: StepCounterService,
+        prefs: SharedPreferences,
+    ): StepsRepository {
+        return StepsRepository(db, auth, stepCounterService, prefs)
+    }
+
+    @Provides
+    @Singleton
+    fun providePreferencesRepository(@ApplicationContext context: Context): PreferencesRepository {
+        return PreferencesRepository(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAquariumRepository(
+        db: FirebaseFirestore,
+        auth: FirebaseAuth,
+    ): AquariumRepository {
+        return AquariumRepository(db, auth)
     }
 }

@@ -2,9 +2,12 @@
 
 package com.github.k409.fitflow.ui
 
+import android.icu.text.CompactDecimalFormat
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,10 +15,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.PersonOutline
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,18 +32,22 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -48,9 +58,12 @@ import coil.request.ImageRequest
 import com.exyte.animatednavbar.AnimatedNavigationBar
 import com.exyte.animatednavbar.animation.balltrajectory.Teleport
 import com.exyte.animatednavbar.items.dropletbutton.DropletButton
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
+import com.github.k409.fitflow.model.isProfileComplete
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
+import java.util.Locale
 
 @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -62,15 +75,18 @@ fun FitFlowApp(
     val currentDestination = navBackStackEntry?.destination
     val user = sharedUiState.user
 
-    val currentScreen =
-        NavRoutes.navRoutes.find { it.route == currentDestination?.route } ?: NavRoutes.Default
+    val currentScreen = NavRoutes.navRoutes
+        .find { it.route == currentDestination?.route } ?: NavRoutes.Default
+
     val startDestination = if (user.uid.isEmpty()) {
         NavRoutes.Login.route
-    } else if (user.gender.isEmpty() || user.dateOfBirth.isEmpty()) {
+    } else if (!user.isProfileComplete()) {
         NavRoutes.ProfileCreation.route
     } else {
-        NavRoutes.Home.route
+        NavRoutes.Aquarium.route
     }
+
+    val pointsAndXpVisible = currentScreen == NavRoutes.Marketplace
 
     val bottomBarState = rememberSaveable { (mutableStateOf(false)) }
     val topBarState = rememberSaveable { (mutableStateOf(false)) }
@@ -84,7 +100,7 @@ fun FitFlowApp(
     Scaffold(
         topBar = {
             FitFlowTopBar(
-                topBarState = topBarState.value,
+                visible = topBarState.value,
                 currentRoute = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
                     currentScreen,
@@ -92,6 +108,7 @@ fun FitFlowApp(
                 navigateUp = { navController.navigateUp() },
                 navController = navController,
                 user = user,
+                pointsAndXpVisible = pointsAndXpVisible,
             )
         },
         bottomBar = {
@@ -103,12 +120,12 @@ fun FitFlowApp(
                         currentScreen,
                     )
                     ) && bottomBarState.value,
-                containerColor = if (currentScreen == NavRoutes.Home) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
+                containerColor = if (currentScreen == NavRoutes.Aquarium) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
             )
         },
     ) { innerPadding ->
         val topPadding =
-            if (currentScreen == NavRoutes.Home) 0.dp else innerPadding.calculateTopPadding()
+            if (currentScreen == NavRoutes.Aquarium) 0.dp else innerPadding.calculateTopPadding()
         val bottomPadding = innerPadding.calculateBottomPadding().minus(10.dp).coerceAtLeast(0.dp)
 
         FitFlowNavGraph(
@@ -139,7 +156,7 @@ private fun UpdateTopAndBottomBarVisibility(
             topBarState.value = true
         }
 
-        NavRoutes.Home -> {
+        NavRoutes.Aquarium -> {
             bottomBarState.value = true
             topBarState.value = false
         }
@@ -155,71 +172,146 @@ private fun UpdateTopAndBottomBarVisibility(
 @Composable
 fun FitFlowTopBar(
     modifier: Modifier = Modifier,
-    topBarState: Boolean,
+    visible: Boolean,
     currentRoute: NavRoutes,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     navController: NavController,
     user: User,
+    pointsAndXpVisible: Boolean,
 ) {
-    if (topBarState) {
-        Surface {
-            TopAppBar(
-                modifier = modifier,
-                title = {
-                    Text(
-                        text = stringResource(id = currentRoute.stringRes),
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                },
-                navigationIcon = {
-                    if (canNavigateBack) {
-                        IconButton(onClick = navigateUp) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = null,
-                            )
-                        }
+    if (!visible) return
+
+    Surface {
+        TopAppBar(
+            modifier = modifier,
+            colors = TopAppBarDefaults.topAppBarColors()
+                .copy(containerColor = Color.Transparent),
+            title = {
+                Text(
+                    text = stringResource(id = currentRoute.stringRes),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            },
+            navigationIcon = {
+                if (canNavigateBack) {
+                    IconButton(onClick = navigateUp) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                        )
                     }
-                },
-                actions = {
-                    IconButton(onClick = {
+                }
+            },
+            actions = {
+                if (pointsAndXpVisible) {
+                    PointsAndXPIndicatorRow(
+                        modifier = Modifier.padding(end = 16.dp),
+                        points = user.points,
+                        xp = user.xp,
+                    )
+                }
+
+                IconButton(
+                    onClick = {
                         navController.navigate(NavRoutes.Settings.route) {
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }) {
-                        SubcomposeAsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(user.photoUrl)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            error = {
-                                Icon(
-                                    modifier = Modifier.padding(3.dp),
-                                    imageVector = Icons.Outlined.PersonOutline,
-                                    contentDescription = null,
-                                )
-                            },
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .size(40.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.secondaryContainer,
-                                    shape = CircleShape,
-                                )
-                                .border(
-                                    width = 2.dp,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                                    shape = CircleShape,
-                                ),
-                        )
-                    }
-                },
-            )
-        }
+                    },
+                ) {
+                    SubcomposeAsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(user.photoUrl)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        error = {
+                            Icon(
+                                modifier = Modifier.padding(3.dp),
+                                imageVector = Icons.Outlined.PersonOutline,
+                                contentDescription = null,
+                            )
+                        },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(40.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                shape = CircleShape,
+                            )
+                            .border(
+                                width = 2.dp,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                                shape = CircleShape,
+                            ),
+                    )
+                }
+            },
+        )
+    }
+}
+
+@Composable
+private fun PointsAndXPIndicatorRow(
+    modifier: Modifier = Modifier,
+    points: Int,
+    xp: Int,
+) {
+    fun formatShortNumber(number: Number): String {
+        return CompactDecimalFormat.getInstance(
+            Locale.getDefault(),
+            CompactDecimalFormat.CompactStyle.SHORT,
+        ).format(number)
+    }
+
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        ElevatedAssistChip(
+            onClick = { },
+            border = AssistChipDefaults.assistChipBorder(enabled = false),
+            shape = RoundedCornerShape(100),
+            label = {
+                Text(
+                    text = formatShortNumber(points),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            trailingIcon = {
+                Icon(
+                    modifier = Modifier.size(16.dp),
+                    painter = painterResource(id = R.drawable.coin),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                )
+            },
+        )
+
+        ElevatedAssistChip(
+            onClick = { },
+            border = AssistChipDefaults.assistChipBorder(enabled = false),
+            shape = RoundedCornerShape(100),
+            label = {
+                Text(
+                    text = formatShortNumber(xp),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            trailingIcon = {
+                Icon(
+                    modifier = Modifier.size(16.dp),
+                    painter = painterResource(id = R.drawable.xp),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                )
+            },
+        )
     }
 }
 

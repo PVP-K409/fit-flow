@@ -15,7 +15,6 @@ class ProfileRepository @Inject constructor(
         gender: String,
         weight: Int,
         height: Int,
-        fitnessLevel: String,
     ): Boolean {
         try {
             val updatedData = hashMapOf<String, Any>(
@@ -24,7 +23,6 @@ class ProfileRepository @Inject constructor(
                 "gender" to gender,
                 "weight" to weight,
                 "height" to height,
-                "fitnessLevel" to fitnessLevel,
             )
 
             val userDocRef = db.collection("users").document(uid)

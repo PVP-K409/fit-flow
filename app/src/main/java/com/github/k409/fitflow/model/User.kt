@@ -32,3 +32,7 @@ fun FirebaseUser.toUser(): User {
         photoUrl = photoUrl.toString(),
     )
 }
+
+fun User.isProfileComplete(): Boolean {
+    return gender.isNotEmpty() && dateOfBirth.isNotEmpty()
+}

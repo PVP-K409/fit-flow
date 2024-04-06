@@ -3,9 +3,11 @@ package com.github.k409.fitflow.ui.navigation
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Adjust
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Store
@@ -22,7 +24,7 @@ sealed class NavRoutes(
 ) {
     companion object {
         val navRoutes = listOf(
-            Home,
+            Aquarium,
             Activity,
             Goals,
             Marketplace,
@@ -30,13 +32,16 @@ sealed class NavRoutes(
             Login,
             ProfileCreation,
             Settings,
+            Inventory,
+            GoalCreation,
+            Marketplace,
         )
-        val bottomNavBarItems = listOf(Home, Activity, Hydration, Goals, Marketplace)
+        val bottomNavBarItems = listOf(Aquarium, Activity, Hydration, Goals, Marketplace)
     }
 
     data object Default : NavRoutes("default", R.string.app_name)
 
-    data object Home : NavRoutes("home", R.string.home, Icons.Outlined.Home, R.drawable.home_24px)
+    data object Aquarium : NavRoutes("aquarium", R.string.home, Icons.Outlined.Home, R.drawable.home_24px)
 
     data object Activity : NavRoutes(
         "activity",
@@ -60,4 +65,8 @@ sealed class NavRoutes(
     data object Login : NavRoutes("login", R.string.user)
 
     data object Settings : NavRoutes("settings", R.string.settings, Icons.Outlined.Settings)
+
+    data object Inventory : NavRoutes("inventory", R.string.inventory, Icons.Outlined.Inventory2)
+
+    data object GoalCreation : NavRoutes("goalCreation", R.string.goal_creation, Icons.Outlined.Add)
 }

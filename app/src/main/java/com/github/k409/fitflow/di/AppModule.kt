@@ -3,9 +3,9 @@ package com.github.k409.fitflow.di
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.health.connect.client.HealthConnectClient
-import com.github.k409.fitflow.di.healthConnect.HealthStatsManager
-import com.github.k409.fitflow.di.services.HealthConnectService
-import com.github.k409.fitflow.features.stepcounter.StepCounter
+import com.github.k409.fitflow.data.HealthStatsManager
+import com.github.k409.fitflow.service.HealthConnectService
+import com.github.k409.fitflow.service.StepCounterService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,8 +18,8 @@ import javax.inject.Singleton
 class AppModule {
     @Provides
     @Singleton
-    fun provideStepCounter(@ApplicationContext context: Context): StepCounter {
-        return StepCounter(context)
+    fun provideStepCounter(@ApplicationContext context: Context): StepCounterService {
+        return StepCounterService(context)
     }
 
     @Provides
