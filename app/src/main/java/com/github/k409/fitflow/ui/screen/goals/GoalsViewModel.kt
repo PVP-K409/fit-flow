@@ -39,6 +39,9 @@ class GoalsViewModel @Inject constructor(
     val todayGoals: StateFlow<MutableMap<String, GoalRecord>?> = _todayGoals.asStateFlow()
     val weeklyGoals: StateFlow<MutableMap<String, GoalRecord>?> = _weeklyGoals.asStateFlow()
 
+    private val _loading = MutableStateFlow(false)
+    val loading: StateFlow<Boolean> = _loading
+
     private val weekly = "Weekly"
     private val daily = "Daily"
     private val walking = "Walking"
@@ -61,8 +64,13 @@ class GoalsViewModel @Inject constructor(
         return granted.containsAll(permissions)
     }
 
+    private fun checkForWalkingGoals() {
+        _loading.value = !_todayGoals.value?.keys?.contains(walking)!! || !_weeklyGoals.value?.keys?.contains(walking)!!
+    }
+
     fun loadGoals(type: String) {
         viewModelScope.launch {
+            checkForWalkingGoals()
             val today = LocalDate.now()
             val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             val formattedToday = today.format(dateFormatter)
@@ -92,6 +100,8 @@ class GoalsViewModel @Inject constructor(
             }
 
             updateGoals(type)
+
+            checkForWalkingGoals()
         }
     }
 
