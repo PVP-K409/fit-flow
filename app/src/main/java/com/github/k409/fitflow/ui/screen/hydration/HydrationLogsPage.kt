@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.screen.hydration
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -123,6 +124,7 @@ private fun HydrationRecordCard(
 
     Card(
         modifier = modifier.fillMaxWidth(),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Row(
             modifier = Modifier
@@ -159,6 +161,7 @@ private fun HydrationRecordCard(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     LinearProgressIndicator(
+                        trackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f),
                         progress = { progress },
                         modifier = Modifier
                             .weight(1f)
