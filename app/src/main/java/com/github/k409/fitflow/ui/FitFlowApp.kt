@@ -63,6 +63,7 @@ import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.isProfileComplete
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
+import com.github.k409.fitflow.ui.screens.userLevel.levels
 import java.util.Locale
 
 @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
@@ -151,7 +152,7 @@ private fun UpdateTopAndBottomBarVisibility(
             topBarState.value = false
         }
 
-        NavRoutes.Settings, NavRoutes.ProfileCreation -> {
+        NavRoutes.Settings, NavRoutes.ProfileCreation, NavRoutes.Levels -> {
             bottomBarState.value = false
             topBarState.value = true
         }
@@ -212,6 +213,12 @@ fun FitFlowTopBar(
                     )
                 }
 
+                UserLevel(
+                    modifier = Modifier.padding(end = 8.dp),
+                    xp = user.xp,
+                    navController,
+                )
+
                 IconButton(
                     onClick = {
                         navController.navigate(NavRoutes.Settings.route) {
@@ -246,6 +253,34 @@ fun FitFlowTopBar(
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
                                 shape = CircleShape,
                             ),
+                    )
+                }
+            },
+        )
+    }
+}
+
+@Composable
+fun UserLevel(
+    modifier: Modifier = Modifier,
+    xp: Int,
+    navController: NavController
+) {
+    val userLevel = levels.firstOrNull { xp in it.minXP..it.maxXP }
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        ElevatedAssistChip(
+            border = AssistChipDefaults.assistChipBorder(enabled = false),
+            shape = RoundedCornerShape(100),
+            onClick = {navController.navigate(NavRoutes.Levels.route)},
+            label = {
+                userLevel?.let {
+                    Text(
+                        text = it.name,
+                        style = MaterialTheme.typography.labelLarge,
                     )
                 }
             },

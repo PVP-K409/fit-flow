@@ -16,6 +16,7 @@ import com.github.k409.fitflow.ui.screens.login.LoginScreen
 import com.github.k409.fitflow.ui.screens.market.MarketScreen
 import com.github.k409.fitflow.ui.screens.profile.ProfileCreationScreen
 import com.github.k409.fitflow.ui.screens.settings.SettingsScreen
+import com.github.k409.fitflow.ui.screens.userLevel.LevelScreen
 
 @Composable
 fun FitFlowNavGraph(
@@ -49,6 +50,10 @@ fun FitFlowNavGraph(
 
         composable(NavRoutes.Inventory.route) {
             InventoryScreen()
+        }
+
+        composable(NavRoutes.Levels.route) {
+            LevelScreen()
         }
 
         composable(NavRoutes.Marketplace.route) {
