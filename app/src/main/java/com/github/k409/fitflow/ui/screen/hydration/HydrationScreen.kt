@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.screen.hydration
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ModeEditOutline
 import androidx.compose.material3.ButtonDefaults
@@ -149,7 +151,7 @@ private fun DrinkButton(
     onDrink: () -> Unit = {},
 ) {
     val context = LocalContext.current
-    val colors = ButtonDefaults.filledTonalButtonColors()
+    val colorScheme = MaterialTheme.colorScheme
 
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = LocalSnackbarHostState.current
@@ -174,16 +176,16 @@ private fun DrinkButton(
                     onDrink()
                 },
             )
-            .background(colors.containerColor)
-            .border(ButtonDefaults.outlinedButtonBorder, ButtonDefaults.filledTonalShape)
-            .padding(ButtonDefaults.ContentPadding),
+            .background(colorScheme.secondaryContainer)
+            .border(BorderStroke(1.0.dp, colorScheme.outline), CircleShape)
+            .padding(horizontal = 24.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     )
     {
         Text(
             text = stringResource(R.string.drink_ml, cupSize),
-            color = colors.contentColor,
+            color = colorScheme.onSecondaryContainer,
             style = LocalTextStyle.current.merge(MaterialTheme.typography.labelLarge)
         )
     }

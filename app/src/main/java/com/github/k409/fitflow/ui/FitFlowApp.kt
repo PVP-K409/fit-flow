@@ -4,6 +4,7 @@ package com.github.k409.fitflow.ui
 
 import android.icu.text.CompactDecimalFormat
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -19,9 +20,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,12 +33,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberSwipeToDismissBoxState
@@ -52,6 +58,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -137,7 +144,12 @@ fun FitFlowApp(
                     content = {
                         SnackbarHost(
                             hostState = snackbarHostState,
-                            modifier = Modifier.imePadding()
+                            modifier = Modifier.imePadding(),
+                            snackbar = {
+                                FitFlowSnackbar(
+                                    snackbarData = it
+                                )
+                            },
                         )
                     },
                 )
@@ -184,6 +196,68 @@ fun FitFlowApp(
         }
     }
 }
+
+@Composable
+fun FitFlowSnackbar(
+    snackbarData: SnackbarData,
+    modifier: Modifier = Modifier,
+    actionOnNewLine: Boolean = false,
+    borderStroke: BorderStroke = BorderStroke(
+        width = 1.0.dp,
+        color = MaterialTheme.colorScheme.outline
+    ),
+    shape: Shape = MaterialTheme.shapes.medium,
+    containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    actionColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    actionContentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    dismissActionContentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+) {
+    val actionLabel = snackbarData.visuals.actionLabel
+    val actionComposable: (@Composable () -> Unit)? = if (actionLabel != null) {
+        @Composable {
+            TextButton(
+                colors = ButtonDefaults.textButtonColors(contentColor = actionColor),
+                onClick = { snackbarData.performAction() },
+                content = { Text(actionLabel) }
+            )
+        }
+    } else {
+        null
+    }
+    val dismissActionComposable: (@Composable () -> Unit)? =
+        if (snackbarData.visuals.withDismissAction) {
+            @Composable {
+                IconButton(
+                    onClick = { snackbarData.dismiss() },
+                    content = {
+                        Icon(
+                            Icons.Filled.Close,
+                            contentDescription = stringResource(R.string.dismiss_snackbar),
+                        )
+                    }
+                )
+            }
+        } else {
+            null
+        }
+
+    Snackbar(
+        modifier = modifier
+            .padding(12.dp)
+            .border(borderStroke, shape),
+        action = actionComposable,
+        dismissAction = dismissActionComposable,
+        actionOnNewLine = actionOnNewLine,
+        shape = shape,
+        containerColor = containerColor,
+        contentColor = contentColor,
+        actionContentColor = actionContentColor,
+        dismissActionContentColor = dismissActionContentColor,
+        content = { Text(snackbarData.visuals.message) }
+    )
+}
+
 
 @Composable
 private fun UpdateTopAndBottomBarVisibility(
