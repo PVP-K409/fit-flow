@@ -69,6 +69,11 @@
     <string name="add_goal">Add Goal</string>
     <string name="todays_goals">Today\'s Goals</string>
     <string name="weekly_goals">Weekly Goals</string>
+    <string name="create_goal">Create Goal</string>
+    <string name="period">Period</string>
+    <string name="exercise">Exercise</string>
+    <string name="create">Create</string>
+    <string name="select_an_option">Select an option</string>
     <string name="hold_drink_button_message">Press and hold the button to drink</string>
     <string name="dismiss_snackbar">Dismiss snackbar</string>
 </resources>
