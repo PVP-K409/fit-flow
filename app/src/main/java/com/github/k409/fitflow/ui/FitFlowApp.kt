@@ -133,8 +133,8 @@ fun FitFlowApp(
 
     CompositionLocalProvider(
         values = arrayOf(
-            LocalSnackbarHostState provides snackbarHostState
-        )
+            LocalSnackbarHostState provides snackbarHostState,
+        ),
     ) {
         Scaffold(
             snackbarHost = {
@@ -147,7 +147,7 @@ fun FitFlowApp(
                             modifier = Modifier.imePadding(),
                             snackbar = {
                                 FitFlowSnackbar(
-                                    snackbarData = it
+                                    snackbarData = it,
                                 )
                             },
                         )
@@ -172,10 +172,10 @@ fun FitFlowApp(
                     navController = navController,
                     currentScreen = currentScreen,
                     visible = !(
-                            navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                                currentScreen,
-                            )
-                            ) && bottomBarState.value,
+                        navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                            currentScreen,
+                        )
+                        ) && bottomBarState.value,
                     containerColor = if (currentScreen == NavRoutes.Aquarium) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
                 )
             },
@@ -204,7 +204,7 @@ fun FitFlowSnackbar(
     actionOnNewLine: Boolean = false,
     borderStroke: BorderStroke = BorderStroke(
         width = 1.0.dp,
-        color = MaterialTheme.colorScheme.outline
+        color = MaterialTheme.colorScheme.outline,
     ),
     shape: Shape = MaterialTheme.shapes.medium,
     containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
@@ -219,7 +219,7 @@ fun FitFlowSnackbar(
             TextButton(
                 colors = ButtonDefaults.textButtonColors(contentColor = actionColor),
                 onClick = { snackbarData.performAction() },
-                content = { Text(actionLabel) }
+                content = { Text(actionLabel) },
             )
         }
     } else {
@@ -235,7 +235,7 @@ fun FitFlowSnackbar(
                             Icons.Filled.Close,
                             contentDescription = stringResource(R.string.dismiss_snackbar),
                         )
-                    }
+                    },
                 )
             }
         } else {
@@ -254,10 +254,9 @@ fun FitFlowSnackbar(
         contentColor = contentColor,
         actionContentColor = actionContentColor,
         dismissActionContentColor = dismissActionContentColor,
-        content = { Text(snackbarData.visuals.message) }
+        content = { Text(snackbarData.visuals.message) },
     )
 }
-
 
 @Composable
 private fun UpdateTopAndBottomBarVisibility(

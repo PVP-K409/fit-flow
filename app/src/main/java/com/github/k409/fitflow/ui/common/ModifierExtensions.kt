@@ -34,9 +34,8 @@ fun Modifier.noRippleClickable(
 fun Modifier.timedClick(
     timeInMillis: Long,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    onClick: (Boolean) -> Unit
+    onClick: (Boolean) -> Unit,
 ) = composed {
-
     var timeOfTouch = -1L
 
     LaunchedEffect(key1 = timeInMillis, key2 = interactionSource) {
@@ -56,7 +55,6 @@ fun Modifier.timedClick(
                         onClick(false)
                     }
                 }
-
             }
             .launchIn(this)
     }
@@ -64,6 +62,6 @@ fun Modifier.timedClick(
     Modifier.clickable(
         interactionSource = interactionSource,
         indication = null,
-        onClick = {}
+        onClick = {},
     )
 }

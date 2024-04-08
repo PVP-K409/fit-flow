@@ -85,7 +85,7 @@ fun WaterLoggingScreen(
                     onDrink = {
                         viewModel.addWaterCup()
                         HydrationReminder().scheduleWaterReminder(context)
-                    }
+                    },
                 )
 
                 IconButton(
@@ -160,7 +160,7 @@ private fun DrinkButton(
         modifier = modifier
             .defaultMinSize(
                 minWidth = ButtonDefaults.MinWidth,
-                minHeight = ButtonDefaults.MinHeight
+                minHeight = ButtonDefaults.MinHeight,
             )
             .clip(ButtonDefaults.filledTonalShape)
             .combinedClickable(
@@ -168,7 +168,7 @@ private fun DrinkButton(
                     coroutineScope.launch {
                         snackbarHostState.showSnackbar(
                             message = context.getString(R.string.hold_drink_button_message),
-                            withDismissAction = true
+                            withDismissAction = true,
                         )
                     }
                 },
@@ -181,13 +181,11 @@ private fun DrinkButton(
             .padding(horizontal = 24.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
-    )
-    {
+    ) {
         Text(
             text = stringResource(R.string.drink_ml, cupSize),
             color = colorScheme.onSecondaryContainer,
-            style = LocalTextStyle.current.merge(MaterialTheme.typography.labelLarge)
+            style = LocalTextStyle.current.merge(MaterialTheme.typography.labelLarge),
         )
     }
 }
-
