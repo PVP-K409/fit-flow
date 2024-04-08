@@ -68,7 +68,7 @@ fun GoalCreation(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "Create Goal",
+                text = stringResource(R.string.create_goal),
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier.align(Alignment.Start),
             )
@@ -82,7 +82,7 @@ fun GoalCreation(
             GoalDropdownMenu(
                 options = goalOptions,
                 selectedOption = selectedGoal,
-                label = "Period",
+                label = stringResource(R.string.period),
                 onOptionSelected = {
                     selectedGoal = it
                     selectedDistance = ""
@@ -100,7 +100,7 @@ fun GoalCreation(
                     ExerciseDropdownMenu(
                         options = exerciseOptions,
                         selectedOption = selectedExercise,
-                        label = "Exercise",
+                        label = stringResource(R.string.exercise),
                         onOptionSelected = { selectedExercise = it },
                         expandedState = expandedDropdown == ExpandedDropdown.EXERCISE,
                     )
@@ -116,7 +116,7 @@ fun GoalCreation(
                     GoalDropdownMenu(
                         options = distanceOptions,
                         selectedOption = selectedDistance,
-                        label = "Distance",
+                        label = stringResource(id = R.string.distance),
                         onOptionSelected = { selectedDistance = it },
                         expandedState = expandedDropdown == ExpandedDropdown.DISTANCE,
                     )
@@ -136,7 +136,7 @@ fun GoalCreation(
                     showInlineError = true
                 }
             }) {
-                Text("Create")
+                Text(stringResource(R.string.create))
             }
 
             if (showConfirmationDialog) {
@@ -208,7 +208,7 @@ fun GoalDropdownMenu(
             )
 
             Text(
-                text = selectedOption.ifEmpty { "Select an option" },
+                text = selectedOption.ifEmpty { stringResource(R.string.select_an_option) },
                 style = MaterialTheme.typography.labelLarge,
                 modifier = Modifier.align(Alignment.CenterVertically),
             )
@@ -282,7 +282,7 @@ fun ExerciseDropdownMenu(
             )
 
             Text(
-                text = selectedOption.ifEmpty { "Select an option" },
+                text = selectedOption.ifEmpty { stringResource(R.string.select_an_option) },
                 style = MaterialTheme.typography.labelLarge,
                 modifier = Modifier.align(Alignment.CenterVertically),
             )
