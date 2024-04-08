@@ -93,18 +93,18 @@ fun InventoryItemCard(
                 // TODO : disable remove button if item is not in aquarium / was not purchased
                 // TODO : disable add button if item is in aquarium and no more in inventory (also, can user purchase multiple fishes of single type?)
                 Button(
-                    onClick = onAddClick,
-                    colors = ButtonDefaults.buttonColors(colors.primary),
-                ) {
-                    Text(text = addButtonText)
-                    coinIcon()
-                }
-
-                Button(
                     onClick = onRemoveClick,
                     colors = ButtonDefaults.buttonColors(colors.error),
                 ) {
                     Text(text = removeButtonText)
+                    coinIcon()
+                }
+
+                Button(
+                    onClick = onAddClick,
+                    colors = ButtonDefaults.buttonColors(colors.primary),
+                ) {
+                    Text(text = addButtonText)
                     coinIcon()
                 }
             }
