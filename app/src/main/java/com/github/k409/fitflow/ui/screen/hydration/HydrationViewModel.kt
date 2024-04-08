@@ -4,10 +4,15 @@ import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.HydrationRepository
+import com.github.k409.fitflow.model.HydrationRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,6 +26,17 @@ class HydrationViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(HydrationUiState())
     val uiState = _uiState.asStateFlow()
+
+    val hydrationLogsUiState: StateFlow<HydrationLogsUiState> = combine(
+        hydrationRepository.getHydrationRecordsGroupedByMonth(),
+        hydrationRepository.getWaterIntakeGoal()
+    ) { records, goal ->
+        HydrationLogsUiState.Success(records, goal)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = HydrationLogsUiState.Loading,
+    )
 
     init {
         getTodayWaterIntake()
@@ -93,4 +109,13 @@ class HydrationViewModel @Inject constructor(
             it.copy(cupSize = prefs.getInt("cupSize", 250))
         }
     }
+}
+
+sealed interface HydrationLogsUiState {
+    data object Loading : HydrationLogsUiState
+
+    data class Success(
+        val groupedRecords: Map<String, List<HydrationRecord>> = emptyMap(),
+        val goal: Int = 0,
+    ) : HydrationLogsUiState
 }

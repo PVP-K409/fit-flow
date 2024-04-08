@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.screen.hydration
+package com.github.k409.fitflow.ui.screen.hydration.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

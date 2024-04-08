@@ -125,4 +125,27 @@ class HydrationRepository @Inject constructor(
                 )
             }
     }
+
+    fun getHydrationRecordsGroupedByMonth(): Flow<Map<String, List<HydrationRecord>>> {
+        val uid = auth.currentUser!!.uid
+
+        return db.collection(JOURNAL_COLLECTION)
+            .document(uid)
+            .collection(HYDRATION_COLLECTION)
+            .orderBy(
+                DATE_FIELD,
+                Query.Direction.ASCENDING,
+            )
+            .snapshots()
+            .map { snapshot ->
+                snapshot.documents.map { document ->
+                    document.toObject<HydrationRecord>() ?: HydrationRecord()
+                }
+            }
+            .map { records ->
+                records.groupBy { record ->
+                    record.date.substring(0, 7)
+                }
+            }
+    }
 }
