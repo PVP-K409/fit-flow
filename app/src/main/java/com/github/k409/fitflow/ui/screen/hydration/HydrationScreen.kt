@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.screen.hydration
 
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -39,7 +39,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.ui.common.LocalSnackbarHostState
 import com.github.k409.fitflow.ui.common.NumberPickerDialog
+import kotlinx.coroutines.launch
 
 @Composable
 fun WaterLoggingScreen(
@@ -149,6 +151,9 @@ private fun DrinkButton(
     val context = LocalContext.current
     val colors = ButtonDefaults.filledTonalButtonColors()
 
+    val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = LocalSnackbarHostState.current
+
     Row(
         modifier = modifier
             .defaultMinSize(
@@ -158,13 +163,12 @@ private fun DrinkButton(
             .clip(ButtonDefaults.filledTonalShape)
             .combinedClickable(
                 onClick = {
-                    Toast
-                        .makeText(
-                            context,
-                            context.getString(R.string.hold_drink_button_message),
-                            Toast.LENGTH_SHORT
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = context.getString(R.string.hold_drink_button_message),
+                            withDismissAction = true
                         )
-                        .show()
+                    }
                 },
                 onLongClick = {
                     onDrink()
