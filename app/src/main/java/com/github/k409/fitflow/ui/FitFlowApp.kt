@@ -146,10 +146,10 @@ fun FitFlowApp(
                     navController = navController,
                     currentScreen = currentScreen,
                     visible = !(
-                            navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                                currentScreen,
-                            )
-                            ) && bottomBarState.value,
+                        navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                            currentScreen,
+                        )
+                        ) && bottomBarState.value,
                     containerColor = if (currentScreen == NavRoutes.Aquarium) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
                 )
             },
@@ -171,7 +171,6 @@ fun FitFlowApp(
     }
 }
 
-
 @Composable
 fun SwipeableSnackbar(
     snackbarHostState: SnackbarHostState,
@@ -184,7 +183,8 @@ fun SwipeableSnackbar(
             } else {
                 false
             }
-        }),
+        },
+    ),
 ) {
     LaunchedEffect(dismissSnackbarState.currentValue) {
         if (dismissSnackbarState.currentValue != SwipeToDismissBoxValue.Settled) {
