@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.HealthStatsManager
 import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.model.DailyStepRecord
+import com.github.k409.fitflow.service.GoalService
 import com.github.k409.fitflow.service.StepCounterService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +35,9 @@ class ActivityViewModel @Inject constructor(
 
     private val _todaySteps = MutableStateFlow<DailyStepRecord?>(null)
     val todaySteps: StateFlow<DailyStepRecord?> = _todaySteps
+
+    private val _loading = MutableStateFlow<Boolean>(false)
+    val loading: StateFlow<Boolean> = _loading
 
     val progressUiState: StateFlow<ProgressUiState> = combine(
         stepsRepository.getStepRecordCurrentWeek(),
@@ -101,6 +105,14 @@ class ActivityViewModel @Inject constructor(
             distance = healthStatsManager.getTotalDistance()
         }
 
+        val stepGoal = if (dailyStepRecord == null || dailyStepRecord.stepGoal == 0L) {
+            val goalService = GoalService(stepsRepository)
+            _loading.value = true
+            goalService.calculateStepTarget(today, today, stepsRepository).toLong()
+        } else {
+            dailyStepRecord.stepGoal
+        }
+
         if (dailyStepRecord == null) { // if new day
             newDailyStepRecord = DailyStepRecord(
                 totalSteps = 0,
@@ -109,6 +121,7 @@ class ActivityViewModel @Inject constructor(
                 stepsBeforeReboot = 0,
                 caloriesBurned = calories,
                 totalDistance = distance,
+                stepGoal = stepGoal,
 
             )
         } else if (hasRebooted || currentSteps <= 1) { // if current day and reboot has happened
@@ -119,6 +132,7 @@ class ActivityViewModel @Inject constructor(
                 stepsBeforeReboot = dailyStepRecord.totalSteps + currentSteps,
                 caloriesBurned = calories,
                 totalDistance = distance,
+                stepGoal = stepGoal,
             )
 
             prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
@@ -130,6 +144,7 @@ class ActivityViewModel @Inject constructor(
                 stepsBeforeReboot = dailyStepRecord.totalSteps,
                 caloriesBurned = if (calories > dailyStepRecord.caloriesBurned!!) calories else dailyStepRecord.caloriesBurned,
                 totalDistance = distance,
+                stepGoal = stepGoal,
             )
         } else {
             // if current day and no reboot
@@ -140,13 +155,15 @@ class ActivityViewModel @Inject constructor(
                 stepsBeforeReboot = dailyStepRecord.stepsBeforeReboot,
                 caloriesBurned = calories,
                 totalDistance = distance,
+                stepGoal = stepGoal,
             )
         }
         prefs.edit().putString("lastDate", today).apply() // saving last update day
 
-        stepsRepository.updateSteps(newDailyStepRecord)
-
         _todaySteps.value = newDailyStepRecord
+
+        stepsRepository.updateSteps(newDailyStepRecord)
+        _loading.value = false
     }
 
     suspend fun getStepRecord(date: LocalDate): DailyStepRecord? {
