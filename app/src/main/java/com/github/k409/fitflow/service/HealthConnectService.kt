@@ -3,12 +3,15 @@ package com.github.k409.fitflow.service
 import android.util.Log
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.records.DistanceRecord
+import androidx.health.connect.client.records.ExerciseRouteResult
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.request.ReadRecordsRequest
 import androidx.health.connect.client.time.TimeRangeFilter
+import com.github.k409.fitflow.model.ExerciseRecord
+import com.github.k409.fitflow.model.HealthConnectExercises
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.Instant
@@ -92,17 +95,14 @@ class HealthConnectService @Inject constructor(
             var totalDistance = 0.0
             exerciseSessions.records.forEach { exerciseRecord ->
                 if (validExerciseTypes.contains(exerciseRecord.exerciseType)) {
-                    val distanceRecords = client.readRecords(
-                        ReadRecordsRequest<DistanceRecord>(
-                            timeRangeFilter = TimeRangeFilter.between(
-                                exerciseRecord.startTime,
-                                exerciseRecord.endTime,
-                            ),
+                    val response = client.aggregate(
+                        AggregateRequest(
+                            metrics = setOf(DistanceRecord.DISTANCE_TOTAL),
+                            timeRangeFilter = TimeRangeFilter.between(exerciseRecord.startTime, exerciseRecord.endTime),
                         ),
                     )
-                    totalDistance += distanceRecords.records.sumOf { distanceRecord ->
-                        distanceRecord.distance.inMeters
-                    }
+                    val distance = response[DistanceRecord.DISTANCE_TOTAL]?.inMeters ?: 0.0
+                    totalDistance += distance
                 }
             }
             BigDecimal(totalDistance / 1000).setScale(
@@ -112,6 +112,51 @@ class HealthConnectService @Inject constructor(
         } catch (e: Exception) {
             Log.e("HealthConnectService", "Failed to aggregate exercise distance")
             0.0
+        }
+    }
+
+    suspend fun getExerciseRecords(
+        startTime: Instant,
+        endTime: Instant,
+    ): MutableList<ExerciseRecord> {
+        try {
+            val exercisesList: MutableList<ExerciseRecord> = mutableListOf()
+
+            val exerciseSessions = client.readRecords(
+                ReadRecordsRequest<ExerciseSessionRecord>(
+                    timeRangeFilter = TimeRangeFilter.between(startTime, endTime),
+                ),
+            )
+
+            exerciseSessions.records.forEach { record ->
+                val exerciseTypeInt = record.exerciseType
+
+                val exerciseType = HealthConnectExercises.findTypeByExerciseType(exerciseTypeInt) ?: "Unknown Exercise Type"
+
+                var exerciseRoute: androidx.health.connect.client.records.ExerciseRoute? = null
+
+                when (val exerciseRouteResult = record.exerciseRouteResult) {
+                    is ExerciseRouteResult.Data ->
+                        exerciseRoute = exerciseRouteResult.exerciseRoute
+                }
+
+                val exerciseRecord = ExerciseRecord(
+                    startTime = record.startTime,
+                    endTime = record.endTime,
+                    exerciseType = exerciseType,
+                    calories = aggregateTotalCalories(record.startTime, record.endTime),
+                    distance = aggregateTotalDistance(record.startTime, record.endTime),
+                    icon = HealthConnectExercises.getIconByType(exerciseType),
+                    exerciseRoute = exerciseRoute,
+                )
+
+                exercisesList.add(exerciseRecord)
+            }
+
+            return exercisesList.sortedByDescending { it.startTime }.toMutableList()
+        } catch (e: Exception) {
+            Log.e("Read Exercises", "Unable to read Exercise sessions")
+            return mutableListOf()
         }
     }
 }
