@@ -42,12 +42,11 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-
 @Composable
 fun ExercisesLogPage(
     exerciseLogViewModel: ExercisesLogViewModel = hiltViewModel(),
 ) {
-    val exerciseRecords  by exerciseLogViewModel.exerciseRecords.collectAsState()
+    val exerciseRecords by exerciseLogViewModel.exerciseRecords.collectAsState()
     val loading by exerciseLogViewModel.loading.collectAsState()
 
     LaunchedEffect(key1 = Unit) {
@@ -55,7 +54,7 @@ fun ExercisesLogPage(
     }
 
     if (loading) {
-       FitFlowCircularProgressIndicator()
+        FitFlowCircularProgressIndicator()
     } else {
         LazyColumn {
             items(exerciseRecords) { record ->
@@ -63,21 +62,18 @@ fun ExercisesLogPage(
             }
         }
     }
-
 }
 
 @Composable
 fun ExerciseRecordCard(record: ExerciseRecord) {
-
     OutlinedCard(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
         val title = record.exerciseType ?: "Exercise"
         ExerciseCardHeader(title = title, record.startTime)
         ExerciseRecordView(record)
     }
-
 }
 
 @Composable
@@ -116,14 +112,14 @@ fun ExerciseRecordView(record: ExerciseRecord) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.Start,
     ) {
         Box(
             modifier = Modifier
                 .size(100.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5F)),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Icon(
                 painter = painterResource(id = record.icon),
@@ -137,17 +133,17 @@ fun ExerciseRecordView(record: ExerciseRecord) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(start = 24.dp)
+                .padding(start = 24.dp),
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
-            ){
+            ) {
                 Text(
                     text = "${timeFormatter.format(startLocalDateTime)} - ${timeFormatter.format(endLocalDateTime)}",
                     fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.85F)
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.85F),
                 )
             }
             Spacer(modifier = Modifier.height(18.dp))
@@ -156,19 +152,18 @@ fun ExerciseRecordView(record: ExerciseRecord) {
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
-            ){
+            ) {
                 val duration = Duration.between(record.startTime, record.endTime)
                 val hours = duration.toHours().toString()
                 val minutes = (duration.toMinutes() % 60).toString()
                 val calories = "${record.calories}"
                 val distance = "${record.distance}"
 
-                MetricColumn(icon = R.drawable.mode_heat_24px,text = "$calories Cal")
+                MetricColumn(icon = R.drawable.mode_heat_24px, text = "$calories Cal")
                 Spacer(modifier = Modifier.width(12.dp))
                 MetricColumn(icon = R.drawable.distance_24px, text = "$distance km")
                 Spacer(modifier = Modifier.width(12.dp))
                 MetricColumn(icon = R.drawable.clock, text = "$hours h $minutes min")
-
             }
         }
     }
@@ -178,7 +173,7 @@ fun ExerciseRecordView(record: ExerciseRecord) {
 fun MetricColumn(
     icon: Int,
     text: String,
-    color: Color = MaterialTheme.colorScheme.primary
+    color: Color = MaterialTheme.colorScheme.primary,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -194,7 +189,7 @@ fun MetricColumn(
             text = text,
             textAlign = TextAlign.Center,
             color = color.copy(alpha = 0.85F),
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }

@@ -2,7 +2,7 @@ package com.github.k409.fitflow.model
 
 import java.time.Instant
 
-class ExerciseRecord (
+class ExerciseRecord(
     var startTime: Instant,
     var endTime: Instant,
     var distance: Double,
