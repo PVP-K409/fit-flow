@@ -39,6 +39,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -110,21 +111,6 @@ fun FitFlowApp(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val dismissSnackbarState = rememberSwipeToDismissBoxState(confirmValueChange = { value ->
-        if (value != SwipeToDismissBoxValue.Settled) {
-            snackbarHostState.currentSnackbarData?.dismiss()
-            true
-        } else {
-            false
-        }
-    })
-
-    LaunchedEffect(dismissSnackbarState.currentValue) {
-        if (dismissSnackbarState.currentValue != SwipeToDismissBoxValue.Settled) {
-            dismissSnackbarState.reset()
-        }
-    }
-
     UpdateTopAndBottomBarVisibility(
         currentScreen = currentScreen,
         bottomBarState = bottomBarState,
@@ -138,20 +124,8 @@ fun FitFlowApp(
     ) {
         Scaffold(
             snackbarHost = {
-                SwipeToDismissBox(
-                    state = dismissSnackbarState,
-                    backgroundContent = {},
-                    content = {
-                        SnackbarHost(
-                            hostState = snackbarHostState,
-                            modifier = Modifier.imePadding(),
-                            snackbar = {
-                                FitFlowSnackbar(
-                                    snackbarData = it,
-                                )
-                            },
-                        )
-                    },
+                SwipeableSnackbar(
+                    snackbarHostState = snackbarHostState,
                 )
             },
             topBar = {
@@ -172,10 +146,10 @@ fun FitFlowApp(
                     navController = navController,
                     currentScreen = currentScreen,
                     visible = !(
-                        navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                            currentScreen,
-                        )
-                        ) && bottomBarState.value,
+                            navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                                currentScreen,
+                            )
+                            ) && bottomBarState.value,
                     containerColor = if (currentScreen == NavRoutes.Aquarium) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
                 )
             },
@@ -195,6 +169,45 @@ fun FitFlowApp(
             )
         }
     }
+}
+
+
+@Composable
+fun SwipeableSnackbar(
+    snackbarHostState: SnackbarHostState,
+    modifier: Modifier = Modifier,
+    dismissSnackbarState: SwipeToDismissBoxState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            if (value != SwipeToDismissBoxValue.Settled) {
+                snackbarHostState.currentSnackbarData?.dismiss()
+                false
+            } else {
+                false
+            }
+        }),
+) {
+    LaunchedEffect(dismissSnackbarState.currentValue) {
+        if (dismissSnackbarState.currentValue != SwipeToDismissBoxValue.Settled) {
+            dismissSnackbarState.reset()
+        }
+    }
+
+    SwipeToDismissBox(
+        modifier = modifier,
+        state = dismissSnackbarState,
+        backgroundContent = {},
+        content = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.imePadding(),
+                snackbar = {
+                    FitFlowSnackbar(
+                        snackbarData = it,
+                    )
+                },
+            )
+        },
+    )
 }
 
 @Composable
