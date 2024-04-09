@@ -75,4 +75,6 @@
     <string name="create">Create</string>
     <string name="select_an_option">Select an option</string>
     <string name="hydration_logs">Hydration Logs</string>
+    <string name="hold_drink_button_message">Press and hold the button to drink</string>
+    <string name="dismiss_snackbar">Dismiss snackbar</string>
 </resources>

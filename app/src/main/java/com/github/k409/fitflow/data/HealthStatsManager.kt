@@ -1,6 +1,7 @@
 package com.github.k409.fitflow.data
 
 import android.util.Log
+import com.github.k409.fitflow.model.ExerciseRecord
 import com.github.k409.fitflow.service.HealthConnectService
 import java.time.Instant
 import java.time.LocalDate
@@ -79,5 +80,17 @@ class HealthStatsManager @Inject constructor(
             endTime = endDate,
             validExerciseTypes = validExerciseTypes,
         )
+    }
+
+    suspend fun getExerciseRecords(
+        startDateString: String,
+        endDateString: String,
+    ): List<ExerciseRecord> {
+        val zoneId = ZoneId.systemDefault()
+        val startDate = LocalDate.parse(startDateString).atStartOfDay(zoneId).toInstant()
+
+        val endDate = LocalDate.parse(endDateString).atTime(23, 59, 59).atZone(zoneId).toInstant()
+
+        return healthConnectService.getExerciseRecords(startDate, endDate)
     }
 }
