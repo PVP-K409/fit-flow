@@ -45,7 +45,8 @@ fun SwipeableSnackbar(
             } else {
                 false
             }
-        }),
+        },
+    ),
 ) {
     LaunchedEffect(dismissSnackbarState.currentValue) {
         if (dismissSnackbarState.currentValue != SwipeToDismissBoxValue.Settled) {
@@ -137,7 +138,7 @@ suspend fun SnackbarHostState.showSnackbarIfNotVisible(
     actionLabel: String? = null,
     withDismissAction: Boolean = false,
     duration: SnackbarDuration =
-        if (actionLabel == null) SnackbarDuration.Short else SnackbarDuration.Indefinite
+        if (actionLabel == null) SnackbarDuration.Short else SnackbarDuration.Indefinite,
 ) {
     if (this.currentSnackbarData?.visuals?.message != message) {
         this.showSnackbar(
