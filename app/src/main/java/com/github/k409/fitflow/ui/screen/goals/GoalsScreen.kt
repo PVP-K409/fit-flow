@@ -35,7 +35,7 @@ fun GoalsScreen(
         ) { page ->
             when (page) {
                 0 -> {
-                    GoalsPage(navController = navController,)
+                    GoalsPage(navController = navController)
                 }
 
                 1 -> {

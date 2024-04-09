@@ -3,6 +3,7 @@ package com.github.k409.fitflow.service
 import android.util.Log
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.records.DistanceRecord
+import androidx.health.connect.client.records.ExerciseRouteResult
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
@@ -135,13 +136,21 @@ class HealthConnectService @Inject constructor(
 
                 val exerciseType = HealthConnectExercises.findTypeByExerciseType(exerciseTypeInt) ?: "Unknown Exercise Type"
 
+                var exerciseRoute: androidx.health.connect.client.records.ExerciseRoute? = null
+
+                when (val exerciseRouteResult = record.exerciseRouteResult) {
+                    is ExerciseRouteResult.Data ->
+                        exerciseRoute = exerciseRouteResult.exerciseRoute
+                }
+
                 val exerciseRecord = ExerciseRecord(
                     startTime = record.startTime,
                     endTime = record.endTime,
                     exerciseType = exerciseType,
                     calories = aggregateTotalCalories(record.startTime, record.endTime),
                     distance = aggregateTotalDistance(record.startTime, record.endTime),
-                    icon = HealthConnectExercises.getIconByType(exerciseType)
+                    icon = HealthConnectExercises.getIconByType(exerciseType),
+                    exerciseRoute = exerciseRoute,
                 )
 
                 exercisesList.add(exerciseRecord)
