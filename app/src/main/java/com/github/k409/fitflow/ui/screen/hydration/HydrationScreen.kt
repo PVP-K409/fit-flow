@@ -43,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.LocalSnackbarHostState
 import com.github.k409.fitflow.ui.common.NumberPickerDialog
+import com.github.k409.fitflow.ui.common.showSnackbarIfNotVisible
 import kotlinx.coroutines.launch
 
 @Composable
@@ -166,7 +167,7 @@ private fun DrinkButton(
             .combinedClickable(
                 onClick = {
                     coroutineScope.launch {
-                        snackbarHostState.showSnackbar(
+                        snackbarHostState.showSnackbarIfNotVisible(
                             message = context.getString(R.string.hold_drink_button_message),
                             withDismissAction = true,
                         )
