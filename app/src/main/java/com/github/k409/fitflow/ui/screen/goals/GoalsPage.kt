@@ -117,7 +117,6 @@ fun GoalsPage(
     }
 }
 
-
 @Composable
 fun GoalsHeader(title: String) {
     Row(
