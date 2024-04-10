@@ -257,7 +257,7 @@ fun FitFlowTopBar(
                         },
                         modifier = Modifier
                             .clip(CircleShape)
-                            .size(40.dp)
+                            .size(38.dp)
                             .background(
                                 color = MaterialTheme.colorScheme.secondaryContainer,
                                 shape = CircleShape,
