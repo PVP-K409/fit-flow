@@ -14,6 +14,7 @@ hiltAndroidCompiler = "2.50"
 hiltAndroid = "2.50"
 hiltWork = "1.2.0"
 kotlin = "1.9.20"
+kotlinxSerializationJson = "1.6.0"
 ksp = "1.9.20-1.0.14"
 core-ktx = "1.12.0"
 junit = "4.13.2"
@@ -58,6 +59,7 @@ google-services = { module = "com.google.gms:google-services", version.ref = "go
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
@@ -98,3 +100,4 @@ daggerHilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPluginGradle" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

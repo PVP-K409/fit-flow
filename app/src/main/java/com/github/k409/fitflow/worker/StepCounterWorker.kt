@@ -32,6 +32,10 @@ class StepCounterWorker @AssistedInject constructor(
     private val healthStatsManager: HealthStatsManager,
 ) : CoroutineWorker(appContext, workerParams) {
 
+    companion object {
+        const val WORKER_NAME = "com.github.k409.fitflow.worker.StepCounterWorker"
+    }
+
     override suspend fun doWork(): Result {
         val hasRebooted = prefs.getBoolean("rebooted", false)
         val lastDate = prefs.getString("lastDate", "") // last update day

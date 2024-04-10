@@ -151,4 +151,5 @@ dependencies {
     implementation(libs.firebase.messaging)
 
     implementation(libs.animated.navigation.bar)
+    implementation(libs.kotlinx.serialization.json)
 }

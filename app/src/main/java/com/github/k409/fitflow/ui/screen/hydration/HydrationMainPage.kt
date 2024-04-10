@@ -51,8 +51,6 @@ import kotlinx.coroutines.launch
 fun HydrationMainPage(
     viewModel: HydrationViewModel,
 ) {
-    val context = LocalContext.current
-
     val uiState by viewModel.uiState.collectAsState()
     val editCupSizeDialogState = remember { mutableStateOf(false) }
 
@@ -83,7 +81,7 @@ fun HydrationMainPage(
             ) {
                 DrinkButton(cupSize = uiState.cupSize) {
                     viewModel.addWaterCup()
-                    HydrationReminder().scheduleWaterReminder(context)
+                    viewModel.scheduleWaterReminder()
                 }
 
                 IconButton(

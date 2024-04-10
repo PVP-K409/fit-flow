@@ -161,6 +161,11 @@ private fun HydrationRecordCard(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     LinearProgressIndicator(
+                        color = if (progress >= 1) {
+                            MaterialTheme.colorScheme.primary
+                        } else MaterialTheme.colorScheme.primary.copy(
+                            alpha = 0.5f,
+                        ),
                         trackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f),
                         progress = { progress },
                         modifier = Modifier

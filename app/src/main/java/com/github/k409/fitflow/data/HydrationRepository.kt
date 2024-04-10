@@ -1,5 +1,7 @@
 package com.github.k409.fitflow.data
 
+import com.github.k409.fitflow.data.preferences.PreferenceKeys
+import com.github.k409.fitflow.data.preferences.PreferencesRepository
 import com.github.k409.fitflow.model.HydrationRecord
 import com.github.k409.fitflow.model.HydrationStats
 import com.google.firebase.auth.FirebaseAuth
@@ -25,6 +27,7 @@ class HydrationRepository @Inject constructor(
     private val userRepository: UserRepository,
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
+    private val preferencesRepository: PreferencesRepository,
 ) {
     suspend fun addWaterIntake(waterIntake: Int) {
         val currentUser = auth.currentUser
@@ -147,5 +150,13 @@ class HydrationRepository @Inject constructor(
                     record.date.substring(0, 7)
                 }
             }
+    }
+
+    suspend fun setCupSize(size: Int) {
+        preferencesRepository.putPreference(PreferenceKeys.CUP_SIZE, size)
+    }
+
+    fun getCupSize(): Flow<Int> {
+        return preferencesRepository.getPreference(PreferenceKeys.CUP_SIZE, 250)
     }
 }

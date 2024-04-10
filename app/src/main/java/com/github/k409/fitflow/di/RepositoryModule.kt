@@ -66,8 +66,9 @@ object RepositoryModule {
         userRepository: UserRepository,
         db: FirebaseFirestore,
         auth: FirebaseAuth,
+        preferencesRepository: PreferencesRepository,
     ): HydrationRepository {
-        return HydrationRepository(userRepository, db, auth)
+        return HydrationRepository(userRepository, db, auth, preferencesRepository)
     }
 
     @Provides

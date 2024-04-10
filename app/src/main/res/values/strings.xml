@@ -77,4 +77,6 @@
     <string name="hydration_logs">Hydration Logs</string>
     <string name="hold_drink_button_message">Press and hold the button to drink</string>
     <string name="dismiss_snackbar">Dismiss snackbar</string>
+    <string name="hydration_notification_progress">Today\'s progress:</string>
+    <string name="today__progress_liters">Today\'s progress: %1$s/%2$s liters</string>
 </resources>

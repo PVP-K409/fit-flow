@@ -33,6 +33,10 @@ class GoalUpdaterWorker @AssistedInject constructor(
     private val client: HealthConnectClient,
 ) : CoroutineWorker(appContext, workerParams) {
 
+    companion object {
+        const val WORKER_NAME = "com.github.k409.fitflow.worker.GoalUpdaterWorker"
+    }
+
     override suspend fun doWork(): Result {
         try {
             val stepPermission = setOf(
@@ -69,11 +73,12 @@ class GoalUpdaterWorker @AssistedInject constructor(
                             )
                         } else if (grantedStepsPermission) {
                             val validExerciseTypes = getValidExerciseTypesByType(key)
-                            goalsToUpdate[key]?.currentProgress = healthStatsManager.getTotalExerciseDistance(
-                                validExerciseTypes = validExerciseTypes,
-                                startDateString = goal?.startDate ?: "",
-                                endDateString = goal?.endDate ?: "",
-                            )
+                            goalsToUpdate[key]?.currentProgress =
+                                healthStatsManager.getTotalExerciseDistance(
+                                    validExerciseTypes = validExerciseTypes,
+                                    startDateString = goal?.startDate ?: "",
+                                    endDateString = goal?.endDate ?: "",
+                                )
                         } else {
                             continue
                         }
