@@ -14,7 +14,9 @@ import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 import javax.inject.Inject
 
 private const val JOURNAL_COLLECTION = "journal"
@@ -130,6 +132,29 @@ class HydrationRepository @Inject constructor(
     }
 
     fun getHydrationRecordsGroupedByMonth(): Flow<Map<String, List<HydrationRecord>>> {
+        return getHydrationRecords()
+            .map { records ->
+                records.groupBy { record ->
+                    record.date.substring(0, 7)
+                }
+            }
+    }
+
+    fun getHydrationRecordsGroupedByWeek(): Flow<Map<String, List<HydrationRecord>>> {
+        return getHydrationRecords()
+            .map { records ->
+                records.groupBy { record ->
+                    val date = LocalDate.parse(record.date)
+
+                    val startOfWeek = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                    val endOfWeek = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+
+                    "$startOfWeek - $endOfWeek"
+                }
+            }
+    }
+
+    private fun getHydrationRecords(orderDirection: Query.Direction = Query.Direction.DESCENDING): Flow<List<HydrationRecord>> {
         val uid = auth.currentUser!!.uid
 
         return db.collection(JOURNAL_COLLECTION)
@@ -137,17 +162,12 @@ class HydrationRepository @Inject constructor(
             .collection(HYDRATION_COLLECTION)
             .orderBy(
                 DATE_FIELD,
-                Query.Direction.ASCENDING,
+                orderDirection,
             )
             .snapshots()
             .map { snapshot ->
                 snapshot.documents.map { document ->
                     document.toObject<HydrationRecord>() ?: HydrationRecord()
-                }
-            }
-            .map { records ->
-                records.groupBy { record ->
-                    record.date.substring(0, 7)
                 }
             }
     }

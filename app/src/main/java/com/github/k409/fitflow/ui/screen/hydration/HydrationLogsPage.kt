@@ -13,11 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.outlined.WaterDrop
 import androidx.compose.material3.Card
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.HydrationRecord
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
+import java.time.LocalDate
 import java.time.Month
 import java.time.format.TextStyle
 import java.util.Locale
@@ -60,8 +64,6 @@ fun HydrationLogsPage(viewModel: HydrationViewModel) {
 
 @Composable
 private fun HydrationLogsContent(uiState: HydrationLogsUiState.Success) {
-    val groupedRecords = uiState.groupedRecords
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
@@ -69,22 +71,23 @@ private fun HydrationLogsContent(uiState: HydrationLogsUiState.Success) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item(key = "header") {
-            Text(
-                modifier = Modifier
-                    .fillMaxSize(),
-                text = stringResource(R.string.hydration_logs),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Start
-            )
+            FilterChip(
+                selected = true,
+                border = null,
+                shape = CircleShape,
+                onClick = { },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
+                ),
+                label = { Text(text = stringResource(R.string.hydration_logs)) })
         }
 
-        groupedRecords.forEach { (date, logs) ->
+        uiState.groupedRecords.forEach { (date, logs) ->
             item(key = date) {
                 Text(
                     modifier = Modifier
                         .fillMaxSize(),
-                    text = formatDate(date),
+                    text = formatDateRange(date),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Start
@@ -97,7 +100,7 @@ private fun HydrationLogsContent(uiState: HydrationLogsUiState.Success) {
             ) { hydrationRecord ->
                 HydrationRecordCard(
                     hydrationRecord = hydrationRecord,
-                    goal = 500,
+                    goal = uiState.goal,
                 )
             }
 
@@ -187,15 +190,29 @@ private fun HydrationRecordCard(
     }
 }
 
-private fun formatDate(date: String): String {
-    val yearPart = date.substring(0, 4)
-    val monthPart = date.substring(5, 7)
+private fun formatDateRange(date: String): String {
+    val startDate = LocalDate.parse(date.substring(0, 10))
+    val endDate = LocalDate.parse(date.substring(13, 23))
 
-    val month = Month.of(monthPart.toInt())
-        .getDisplayName(
-            TextStyle.FULL,
-            Locale.getDefault()
-        )
+    val startDay = startDate.dayOfMonth
+    val endDay = endDate.dayOfMonth
 
-    return "$month $yearPart"
+    val startMonthName =
+        Month.of(startDate.monthValue).getDisplayName(TextStyle.FULL, Locale.getDefault())
+    val endMonthName =
+        Month.of(endDate.monthValue).getDisplayName(TextStyle.FULL, Locale.getDefault())
+
+    val startYearString = if (startDate.year != endDate.year) {
+        " $startDate.year"
+    } else {
+        ""
+    }
+
+    val endYearString = if (startDate.year != endDate.year) {
+        " $endDate.year"
+    } else {
+        ""
+    }
+
+    return "$startMonthName $startDay$startYearString - $endMonthName $endDay$endYearString"
 }

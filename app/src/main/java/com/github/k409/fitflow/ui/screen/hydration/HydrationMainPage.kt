@@ -11,13 +11,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ModeEditOutline
 import androidx.compose.material3.ButtonDefaults
@@ -54,17 +55,19 @@ fun HydrationMainPage(
     val uiState by viewModel.uiState.collectAsState()
     val editCupSizeDialogState = remember { mutableStateOf(false) }
 
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.6f),
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -76,7 +79,7 @@ fun HydrationMainPage(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp),
+                    .padding(top = 16.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 DrinkButton(cupSize = uiState.cupSize) {
@@ -103,6 +106,7 @@ fun HydrationMainPage(
 
         Box(
             modifier = Modifier
+                .padding(top = 32.dp)
                 .fillMaxSize(),
         ) {
             Column(
