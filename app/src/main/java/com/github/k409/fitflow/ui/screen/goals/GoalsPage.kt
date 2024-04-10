@@ -69,8 +69,12 @@ fun GoalsPage(
     val permissionContract = PermissionController.createRequestPermissionResultContract()
     val launcher = rememberLauncherForActivityResult(permissionContract) {
         coroutineScope.launch {
-            goalsViewModel.loadGoals(daily)
-            goalsViewModel.loadGoals(weekly)
+            if (goalsViewModel.permissionsGranted()) {
+                goalsViewModel.loadGoals(daily)
+                goalsViewModel.loadGoals(weekly)
+            } else {
+                navController.navigate(NavRoutes.Aquarium.route)
+            }
         }
     }
 
