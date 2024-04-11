@@ -108,7 +108,7 @@ class NotificationService @Inject constructor(
         val pendingIntent = PendingIntent.getActivity(
             context, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
-        
+
         val notificationAndroid =
             NotificationCompat.Builder(context, notification.channel.channelId)
                 .setContentTitle(notification.title)
@@ -117,6 +117,7 @@ class NotificationService @Inject constructor(
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(notification.text))
                 .build()
 
         val manager = NotificationManagerCompat.from(context)

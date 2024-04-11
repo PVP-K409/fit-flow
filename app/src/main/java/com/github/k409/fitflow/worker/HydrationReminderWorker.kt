@@ -92,25 +92,31 @@ class DrinkReminderWorker @AssistedInject constructor(
     ) {
         val remainingIntakeGoal = intakeGoal - todayWaterIntake
         val count = remainingIntakeGoal / cupSize
-        // TODO: move 8 and 21 to preferences
+        // TODO migrate to settings
         val startHour = 8
         val endHour = 21
-        val totalDuration = Duration.ofHours((endHour - startHour).toLong())
-        val intervalDuration = totalDuration.dividedBy(count.toLong())
-        var notificationTime = LocalTime.of(startHour, 0)
+        val currentTime = LocalTime.now()
+        var notificationTime =
+            if (currentTime.hour < startHour) LocalTime.of(startHour, 0) else currentTime
+        val remainingHoursToday = Duration.between(notificationTime, LocalTime.of(endHour, 0))
+        val intervalDuration = remainingHoursToday.dividedBy(count.toLong())
 
-        repeat(count) {
+        if (notificationTime == currentTime) {
+            notificationTime = notificationTime.plus(intervalDuration)
+        }
+
+        repeat(count) { index ->
             val notification = Notification(
+                id = index,
                 channel = NotificationChannel.HydrationReminder,
                 title = context.getString(R.string.hydration_notification_title),
-                text = context.getString(R.string.hydration_notification_text) + ". " +
-                        context.getString(
-                            R.string.today__progress_liters,
-                            "%.1f".format(todayWaterIntake / 1000.0),
-                            "%.1f".format(
-                                intakeGoal / 1000.0
-                            )
-                        )
+                text = context.getString(
+                    R.string.today__progress_liters,
+                    "%.1f".format(todayWaterIntake / 1000.0),
+                    "%.1f".format(
+                        intakeGoal / 1000.0
+                    )
+                )
             )
 
             scheduledNotificationIds.add(notification.id)
@@ -119,6 +125,8 @@ class DrinkReminderWorker @AssistedInject constructor(
                 notification = notification,
                 time = notificationTime
             )
+
+            println("Scheduled notification at $notificationTime notification: $notification")
 
             notificationTime = notificationTime.plus(intervalDuration)
         }
