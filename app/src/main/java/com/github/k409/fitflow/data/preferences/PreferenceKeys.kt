@@ -12,4 +12,6 @@ object PreferenceKeys {
     // TODO: Implement in future
     val NOTICATION_INTERVAL_START = stringPreferencesKey("notification_interval_start")
     val NOTICATION_INTERVAL_END = stringPreferencesKey("notification_interval_end")
+
+    val FCM_TOKEN = stringPreferencesKey("fcm_token")
 }

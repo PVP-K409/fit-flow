@@ -12,6 +12,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import java.time.DayOfWeek
@@ -67,7 +68,8 @@ class HydrationRepository @Inject constructor(
     }
 
     fun getTodayWaterIntake(): Flow<HydrationRecord> {
-        val uid = auth.currentUser!!.uid
+        val uid = auth.currentUser?.uid ?: return flowOf(HydrationRecord())
+
         val todayDate = LocalDate.now().toString()
 
         return db.collection(JOURNAL_COLLECTION)
