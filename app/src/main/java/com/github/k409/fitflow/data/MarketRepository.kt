@@ -2,11 +2,13 @@ package com.github.k409.fitflow.data
 
 import android.util.Log
 import com.github.k409.fitflow.model.Item
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
+import com.google.firebase.storage.storage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
@@ -86,5 +88,9 @@ class MarketRepository @Inject constructor(
         } catch (e: FirebaseFirestoreException) {
             Log.e("Market Repository", "Error updating inventory", e)
         }
+    }
+    suspend fun getImageDownloadUrl(imageUrl: String): String {
+        // Convert cloud storage url to download url
+        return Firebase.storage.getReferenceFromUrl(imageUrl).downloadUrl.await().toString()
     }
 }

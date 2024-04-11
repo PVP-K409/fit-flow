@@ -7,11 +7,13 @@ import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.model.Item
 import com.github.k409.fitflow.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,6 +52,13 @@ class MarketViewModel @Inject constructor(
         viewModelScope.launch {
             marketRepository.removeItemFromUser(item)
         }
+    }
+    suspend fun getImageDownloadUrl(imageUrl: String) : String {
+        var url: String
+        withContext(Dispatchers.IO) {
+            url = marketRepository.getImageDownloadUrl(imageUrl)
+        }
+        return url
     }
 }
 sealed interface MarketUiState {

@@ -76,4 +76,5 @@
     <string name="select_an_option">Select an option</string>
     <string name="hold_drink_button_message">Press and hold the button to drink</string>
     <string name="dismiss_snackbar">Dismiss snackbar</string>
+    <string name="are_you_sure">Are you sure?</string>
 </resources>

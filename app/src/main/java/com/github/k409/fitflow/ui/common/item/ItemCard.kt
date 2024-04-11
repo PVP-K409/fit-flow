@@ -1,7 +1,6 @@
 package com.github.k409.fitflow.ui.common.item
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,14 +29,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.github.k409.fitflow.R
-import com.google.firebase.Firebase
-import com.google.firebase.storage.storage
+import com.github.k409.fitflow.ui.screen.market.MarketViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
@@ -53,12 +51,13 @@ fun InventoryItemCard(
     onRemoveClick: () -> Unit = {},
     removeButtonEnabled: Boolean,
     coinIcon: @Composable () -> Unit,
+    marketViewModel: MarketViewModel = hiltViewModel(),
 ) {
     val colors = MaterialTheme.colorScheme
     val coroutineScope = rememberCoroutineScope()
-    var image by remember { mutableStateOf("") }
+    var imageDownloadUrl by remember { mutableStateOf("") }
     coroutineScope.launch {
-        image = getImageHttpUrl(imageUrl)
+        imageDownloadUrl = marketViewModel.getImageDownloadUrl(imageUrl)
     }
 
     Box(
@@ -81,11 +80,11 @@ fun InventoryItemCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                if (image.isNotEmpty()) {
-                    Log.d("ItemCard", "Composing $image")
+                if (imageDownloadUrl.isNotEmpty()) {
+                    //Log.d("ItemCard", "Composing $imageDownloadUrl")
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(image)
+                            .data(imageDownloadUrl)
                             .decoderFactory(SvgDecoder.Factory())
                             .build(),
                         error = painterResource(R.drawable.error_24px),
@@ -119,8 +118,6 @@ fun InventoryItemCard(
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                // TODO : disable remove button if item is not in aquarium / was not purchased
-                // TODO : disable add button if item is in aquarium and no more in inventory (also, can user purchase multiple fishes of single type?)
                 Button(
                     enabled = removeButtonEnabled,
                     onClick = onRemoveClick,
@@ -142,7 +139,4 @@ fun InventoryItemCard(
         }
     }
 }
-suspend fun getImageHttpUrl(imageUrl: String): String {
-    // Reference to an image file in Cloud Storage
-    return Firebase.storage.getReferenceFromUrl(imageUrl).downloadUrl.await().toString()
-}
+
