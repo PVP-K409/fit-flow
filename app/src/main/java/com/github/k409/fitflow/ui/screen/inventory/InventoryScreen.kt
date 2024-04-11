@@ -45,9 +45,9 @@ fun InventoryScreen() {
             )
         }
         items(items) { item ->
-            InventoryItemCard(
+            /*InventoryItemCard(
                 modifier = Modifier,
-                painter = item.imageResId,
+                imageUrl = item.imageResId,
                 name = item.name,
                 description = item.description,
                 removeButtonText = "Remove",
@@ -69,7 +69,7 @@ fun InventoryScreen() {
                     ).show()
                 },
                 coinIcon = {},
-            )
+            )*/
         }
     }
 }

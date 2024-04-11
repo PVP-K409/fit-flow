@@ -107,6 +107,7 @@ android {
 dependencies {
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.firebase.appcheck.debug)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
@@ -151,4 +152,6 @@ dependencies {
     implementation(libs.firebase.messaging)
 
     implementation(libs.animated.navigation.bar)
+
+    implementation(libs.firebase.ui.storage)
 }

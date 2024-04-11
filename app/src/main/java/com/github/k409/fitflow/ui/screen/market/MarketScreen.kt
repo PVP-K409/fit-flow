@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.screen.market
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -21,17 +22,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.data.MarketRepository
+import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.ui.common.ConfirmDialog
+import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.item.CategorySelectHeader
 import com.github.k409.fitflow.ui.common.item.InventoryItemCard
 import com.github.k409.fitflow.ui.common.item.Item
 import com.github.k409.fitflow.ui.common.item.mockDecorations
 import com.github.k409.fitflow.ui.common.item.mockFishes
+import com.github.k409.fitflow.ui.screen.settings.SettingsUiState
+import com.github.k409.fitflow.ui.screen.settings.SettingsViewModel
+import java.io.Console
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MarketScreen() {
+fun MarketScreen(
+    marketViewModel: MarketViewModel = hiltViewModel(),
+) {
     val context = LocalContext.current
 
     var selectedCategoryIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -39,11 +50,24 @@ fun MarketScreen() {
     var showDialog by remember { mutableStateOf(false) }
     var dialogText by remember { mutableStateOf("") }
     var addClicked by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf(Item()) }
+    var selectedItem by remember { mutableStateOf(com.github.k409.fitflow.model.Item()) }
+
+    val marketUiState by marketViewModel.marketUiState.collectAsStateWithLifecycle()
+
+    if (marketUiState is MarketUiState.Loading) {
+        FitFlowCircularProgressIndicator()
+        return
+    }
+
+    val allItems = (marketUiState as MarketUiState.Success).items
+
+    val fishes = allItems[0]
+    Log.d("MarketScreen", fishes.size.toString())
+    Log.d("MarketScreen", fishes[0].phases?.get("Regular") ?: "")
 
     val items = when (selectedCategoryIndex) {
-        0 -> mockFishes // Replace with fishes from db later
-        1 -> mockDecorations // Replace with decorations from db later
+        0 -> fishes // Replace with fishes from db later
+        1 -> fishes // Replace with decorations from db later
         else -> emptyList()
     }
     LazyColumn(
@@ -59,23 +83,23 @@ fun MarketScreen() {
         items(items) { item ->
             InventoryItemCard(
                 modifier = Modifier,
-                painter = item.imageResId,
-                name = item.name,
+                imageUrl = item.phases?.get("Regular") ?: "",
+                name = item.title,
                 description = item.description,
-                removeButtonText = "Sell for 5",
+                removeButtonText = "Sell for ${item.price / 2}",
                 onRemoveClick =
                 {
                     showDialog = true
                     addClicked = false
-                    dialogText = "Are you sure you want to sell " + item.name + "?"
+                    dialogText = "Are you sure you want to sell ${item.title}?"
                     selectedItem = item
                 },
-                addButtonText = "Buy for 10",
+                addButtonText = "Buy for ${item.price}",
                 onAddClick =
                 {
                     showDialog = true
                     addClicked = true
-                    dialogText = "Are you sure you want to buy " + item.name + "?"
+                    dialogText = "Are you sure you want to buy ${item.title}?"
                     selectedItem = item
                 },
                 coinIcon = {
@@ -88,6 +112,7 @@ fun MarketScreen() {
                         contentDescription = "",
                     )
                 },
+                context = context,
             )
         }
     }
@@ -99,13 +124,13 @@ fun MarketScreen() {
                 if (addClicked) {
                     Toast.makeText(
                         context,
-                        selectedItem.name + " has been added to your inventory",
+                        "${selectedItem.title} has been added to your inventory",
                         Toast.LENGTH_SHORT,
                     ).show()
                 } else {
                     Toast.makeText(
                         context,
-                        selectedItem.name + " has been sold",
+                        "${selectedItem.title} has been sold",
                         Toast.LENGTH_SHORT,
                     ).show()
                 }
