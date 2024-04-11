@@ -22,12 +22,11 @@ class MarketViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ) : ViewModel() {
 
-    val marketUiState: StateFlow<MarketUiState> = combine (
+    val marketUiState: StateFlow<MarketUiState> = combine(
         userRepository.currentUser,
         marketRepository.getMarketItems(),
         marketRepository.getUserOwnedItems(),
-    )
-     { user, items, ownedItems ->
+    ) { user, items, ownedItems ->
         MarketUiState.Success(
             user = user,
             items = items,
@@ -38,22 +37,22 @@ class MarketViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = MarketUiState.Loading,
     )
-    fun updateUserCoinBalance(coinsAmount : Long) {
+    fun updateUserCoinBalance(coinsAmount: Long) {
         viewModelScope.launch {
             userRepository.addCoinsAndXp(coinsAmount, 0)
         }
     }
-    fun addItemToUserInventory(item : Item) {
+    fun addItemToUserInventory(item: Item) {
         viewModelScope.launch {
             marketRepository.addItemToUser(item)
         }
     }
-    fun removeItemFromUserInventory(item : Item) {
+    fun removeItemFromUserInventory(item: Item) {
         viewModelScope.launch {
             marketRepository.removeItemFromUser(item)
         }
     }
-    suspend fun getImageDownloadUrl(imageUrl: String) : String {
+    suspend fun getImageDownloadUrl(imageUrl: String): String {
         var url: String
         withContext(Dispatchers.IO) {
             url = marketRepository.getImageDownloadUrl(imageUrl)

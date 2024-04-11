@@ -81,7 +81,7 @@ fun InventoryItemCard(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 if (imageDownloadUrl.isNotEmpty()) {
-                    //Log.d("ItemCard", "Composing $imageDownloadUrl")
+                    // Log.d("ItemCard", "Composing $imageDownloadUrl")
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(imageDownloadUrl)
@@ -139,4 +139,3 @@ fun InventoryItemCard(
         }
     }
 }
-

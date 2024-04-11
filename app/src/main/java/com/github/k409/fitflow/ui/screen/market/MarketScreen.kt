@@ -57,8 +57,8 @@ fun MarketScreen(
     val user = (marketUiState as MarketUiState.Success).user
 
     val items = when (selectedCategoryIndex) {
-        0 -> allItems.filter { it.type == "fish"}
-        1 -> allItems.filter { it.type == "decoration"}
+        0 -> allItems.filter { it.type == "fish" }
+        1 -> allItems.filter { it.type == "decoration" }
         else -> emptyList()
     }
     LazyColumn(

@@ -44,7 +44,7 @@ class MarketRepository @Inject constructor(
                 }
             }
     }
-    suspend fun addItemToUser(item : Item) {
+    suspend fun addItemToUser(item: Item) {
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
 
@@ -71,7 +71,7 @@ class MarketRepository @Inject constructor(
             Log.e("Market Repository", "Error updating inventory", e)
         }
     }
-    suspend fun removeItemFromUser(item : Item) {
+    suspend fun removeItemFromUser(item: Item) {
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
 
