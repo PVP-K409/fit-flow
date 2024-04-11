@@ -48,8 +48,10 @@ fun InventoryItemCard(
     description: String,
     addButtonText: String,
     onAddClick: () -> Unit = {},
+    addButtonEnabled: Boolean,
     removeButtonText: String,
     onRemoveClick: () -> Unit = {},
+    removeButtonEnabled: Boolean,
     coinIcon: @Composable () -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
@@ -120,6 +122,7 @@ fun InventoryItemCard(
                 // TODO : disable remove button if item is not in aquarium / was not purchased
                 // TODO : disable add button if item is in aquarium and no more in inventory (also, can user purchase multiple fishes of single type?)
                 Button(
+                    enabled = removeButtonEnabled,
                     onClick = onRemoveClick,
                     colors = ButtonDefaults.buttonColors(colors.error),
                 ) {
@@ -128,6 +131,7 @@ fun InventoryItemCard(
                 }
 
                 Button(
+                    enabled = addButtonEnabled,
                     onClick = onAddClick,
                     colors = ButtonDefaults.buttonColors(colors.primary),
                 ) {

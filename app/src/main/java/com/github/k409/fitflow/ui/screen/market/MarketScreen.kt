@@ -50,8 +50,8 @@ fun MarketScreen(
         return
     }
 
-    val allItems = (marketUiState as MarketUiState.Success).items[0]
-
+    val allItems = (marketUiState as MarketUiState.Success).items
+    val user = (marketUiState as MarketUiState.Success).user
     //Log.d("MarketScreen", allItems.size.toString())
     //Log.d("MarketScreen", allItems[0].phases?.get("Regular") ?: "")
 
@@ -84,6 +84,7 @@ fun MarketScreen(
                     dialogText = "Are you sure you want to sell ${item.title}?"
                     selectedItem = item
                 },
+                removeButtonEnabled = true, // false if user does not own this item
                 addButtonText = "Buy for ${item.price}",
                 onAddClick =
                 {
@@ -92,6 +93,7 @@ fun MarketScreen(
                     dialogText = "Are you sure you want to buy ${item.title}?"
                     selectedItem = item
                 },
+                addButtonEnabled = user.points >= item.price,
                 coinIcon = {
                     Icon(
                         modifier = Modifier
@@ -102,7 +104,6 @@ fun MarketScreen(
                         contentDescription = "",
                     )
                 },
-                //context = context,
             )
         }
     }
