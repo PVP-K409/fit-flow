@@ -6,4 +6,6 @@ data class Item(
     val description: String = "",
     val price: Int = -1,
     val phases: Map<String, String>? = emptyMap(),
+    val type: String = "",
+    val image: String = "",
 )

@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.screen.market
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -25,18 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.k409.fitflow.R
-import com.github.k409.fitflow.data.MarketRepository
-import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.item.CategorySelectHeader
 import com.github.k409.fitflow.ui.common.item.InventoryItemCard
-import com.github.k409.fitflow.ui.common.item.Item
-import com.github.k409.fitflow.ui.common.item.mockDecorations
-import com.github.k409.fitflow.ui.common.item.mockFishes
-import com.github.k409.fitflow.ui.screen.settings.SettingsUiState
-import com.github.k409.fitflow.ui.screen.settings.SettingsViewModel
-import java.io.Console
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -59,15 +50,14 @@ fun MarketScreen(
         return
     }
 
-    val allItems = (marketUiState as MarketUiState.Success).items
+    val allItems = (marketUiState as MarketUiState.Success).items[0]
 
-    val fishes = allItems[0]
-    Log.d("MarketScreen", fishes.size.toString())
-    Log.d("MarketScreen", fishes[0].phases?.get("Regular") ?: "")
+    //Log.d("MarketScreen", allItems.size.toString())
+    //Log.d("MarketScreen", allItems[0].phases?.get("Regular") ?: "")
 
     val items = when (selectedCategoryIndex) {
-        0 -> fishes // Replace with fishes from db later
-        1 -> fishes // Replace with decorations from db later
+        0 -> allItems.filter { it.type == "fish"} // Replace with fishes from db later
+        1 -> allItems.filter { it.type == "decoration"} // Replace with decorations from db later
         else -> emptyList()
     }
     LazyColumn(
@@ -83,7 +73,7 @@ fun MarketScreen(
         items(items) { item ->
             InventoryItemCard(
                 modifier = Modifier,
-                imageUrl = item.phases?.get("Regular") ?: "",
+                imageUrl = item.phases?.get("Regular") ?: item.image,
                 name = item.title,
                 description = item.description,
                 removeButtonText = "Sell for ${item.price / 2}",
@@ -112,7 +102,7 @@ fun MarketScreen(
                         contentDescription = "",
                     )
                 },
-                context = context,
+                //context = context,
             )
         }
     }

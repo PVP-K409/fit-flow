@@ -122,6 +122,7 @@ dependencies {
     implementation(libs.androidx.work.runtime)
     implementation(libs.accompanist.permissions)
     implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
 
     implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.androidx.datastore.preferences)
@@ -150,8 +151,7 @@ dependencies {
     implementation(libs.firebase.ui.auth)
     implementation(libs.androidx.activity)
     implementation(libs.firebase.messaging)
+    implementation(libs.firebase.ui.storage)
 
     implementation(libs.animated.navigation.bar)
-
-    implementation(libs.firebase.ui.storage)
 }
