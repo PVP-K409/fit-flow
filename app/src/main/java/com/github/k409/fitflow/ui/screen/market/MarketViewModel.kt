@@ -11,34 +11,52 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MarketViewModel @Inject constructor(
-    marketRepository: MarketRepository,
-    userRepository: UserRepository,
+    private val marketRepository: MarketRepository,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
-    //val currentUser = userRepository.currentUser
 
     val marketUiState: StateFlow<MarketUiState> = combine (
         userRepository.currentUser,
-        marketRepository.getAllItems(),
+        marketRepository.getMarketItems(),
+        marketRepository.getUserOwnedItems(),
     )
-     { user, items ->
+     { user, items, ownedItems ->
         MarketUiState.Success(
             user = user,
             items = items,
+            ownedItems = ownedItems,
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = MarketUiState.Loading,
     )
+    fun updateUserCoinBalance(coinsAmount : Long) {
+        viewModelScope.launch {
+            userRepository.addCoinsAndXp(coinsAmount, 0)
+        }
+    }
+    fun addItemToUserInventory(item : Item) {
+        viewModelScope.launch {
+            marketRepository.addItemToUser(item)
+        }
+    }
+    fun removeItemFromUserInventory(item : Item) {
+        viewModelScope.launch {
+            marketRepository.removeItemFromUser(item)
+        }
+    }
 }
 sealed interface MarketUiState {
     data object Loading : MarketUiState
     data class Success(
         val user: User,
         val items: List<Item>,
+        val ownedItems: List<Item>,
     ) : MarketUiState
 }

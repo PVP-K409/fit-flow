@@ -51,6 +51,7 @@ fun MarketScreen(
     }
 
     val allItems = (marketUiState as MarketUiState.Success).items
+    val ownedItems = (marketUiState as MarketUiState.Success).ownedItems
     val user = (marketUiState as MarketUiState.Success).user
     //Log.d("MarketScreen", allItems.size.toString())
     //Log.d("MarketScreen", allItems[0].phases?.get("Regular") ?: "")
@@ -84,7 +85,7 @@ fun MarketScreen(
                     dialogText = "Are you sure you want to sell ${item.title}?"
                     selectedItem = item
                 },
-                removeButtonEnabled = true, // false if user does not own this item
+                removeButtonEnabled = ownedItems.find { it.id == item.id } != null,
                 addButtonText = "Buy for ${item.price}",
                 onAddClick =
                 {
@@ -93,7 +94,7 @@ fun MarketScreen(
                     dialogText = "Are you sure you want to buy ${item.title}?"
                     selectedItem = item
                 },
-                addButtonEnabled = user.points >= item.price,
+                addButtonEnabled = user.points >= item.price && ownedItems.find { it.id == item.id } == null,
                 coinIcon = {
                     Icon(
                         modifier = Modifier
@@ -113,12 +114,16 @@ fun MarketScreen(
             dialogText = dialogText,
             onConfirm = {
                 if (addClicked) {
+                    marketViewModel.updateUserCoinBalance((-selectedItem.price).toLong())
+                    marketViewModel.addItemToUserInventory(selectedItem)
                     Toast.makeText(
                         context,
                         "${selectedItem.title} has been added to your inventory",
                         Toast.LENGTH_SHORT,
                     ).show()
                 } else {
+                    marketViewModel.updateUserCoinBalance((selectedItem.price / 2).toLong())
+                    marketViewModel.removeItemFromUserInventory(selectedItem)
                     Toast.makeText(
                         context,
                         "${selectedItem.title} has been sold",
