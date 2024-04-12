@@ -68,7 +68,7 @@ class HydrationRepository @Inject constructor(
         }
     }
 
-    suspend fun updateWaterIntakeGoal(weight: Int) {
+    suspend fun updateWaterIntakeGoal() {
         scheduleHydrationNotifications()
     }
 

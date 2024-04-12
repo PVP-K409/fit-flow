@@ -30,7 +30,7 @@ class ProfileRepository @Inject constructor(
 
             userDocRef.update(updatedData).await()
 
-            hydrationRepository.updateWaterIntakeGoal(weight)
+            hydrationRepository.updateWaterIntakeGoal()
         } catch (e: Exception) {
             e.printStackTrace()
             success = false
