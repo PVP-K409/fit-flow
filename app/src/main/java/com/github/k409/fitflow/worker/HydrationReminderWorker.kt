@@ -1,35 +1,19 @@
 package com.github.k409.fitflow.worker
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.github.k409.fitflow.R
 import com.github.k409.fitflow.data.HydrationRepository
-import com.github.k409.fitflow.model.Notification
-import com.github.k409.fitflow.model.NotificationChannel
-import com.github.k409.fitflow.service.NotificationService
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import java.time.Duration
-import java.time.LocalTime
 
-private const val NOTIFICATION_IDS_KEY = "notification_ids"
 
 @HiltWorker
 class DrinkReminderWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters,
-    private val notificationService: NotificationService,
-    private val sharedPreferences: SharedPreferences,
     private val hydrationRepository: HydrationRepository,
 ) : CoroutineWorker(
     context,
@@ -40,141 +24,48 @@ class DrinkReminderWorker @AssistedInject constructor(
         const val WORKER_NAME = "com.github.k409.fitflow.worker.DrinkReminderWorker"
     }
 
-    private val scope = CoroutineScope(Dispatchers.IO)
-    private var scheduledNotificationIds = mutableListOf<Int>()
-
-    init {
-        scheduledNotificationIds = getScheduledNotificationIds()
-    }
-
     override suspend fun doWork(): Result {
-        initializeReminderListener()
+        try {
+            hydrationRepository.scheduleHydrationNotifications()
+        } catch (e: Exception) {
+            Log.e("DrinkReminderWorker", "Failed to schedule notifications", e)
+
+            return Result.failure()
+        }
 
         return Result.success()
     }
 
-    private suspend fun initializeReminderListener(): Result {
-        val stateFlow =
-            combine(
-                hydrationRepository.getWaterIntakeGoal(),
-                hydrationRepository.getCupSize(),
-                hydrationRepository.getTodayWaterIntake(),
-            ) { goal, cupSize, record ->
-                DrinkReminderState(
-                    cupSize = cupSize,
-                    intakeGoal = goal,
-                    todayWaterIntake = record.waterIntake
-                )
-            }
-                .stateIn(
-                    scope = scope,
-                    started = SharingStarted.Eagerly,
-                    initialValue = DrinkReminderState()
-                )
-
-        stateFlow.collect { state ->
-            if (state.intakeGoal != 0 && state.cupSize != 0) {
-                cancelScheduledNotifications()
-
-                scheduleNotifications(
-                    intakeGoal = state.intakeGoal,
-                    cupSize = state.cupSize,
-                    todayWaterIntake = state.todayWaterIntake
-                )
-            }
-        }
-    }
-
-    private fun scheduleNotifications(
-        intakeGoal: Int,
-        cupSize: Int,
-        todayWaterIntake: Int
-    ) {
-        val remainingIntakeGoal = intakeGoal - todayWaterIntake
-        val count = remainingIntakeGoal / cupSize
-        // TODO migrate to settings
-        val startHour = 8
-        val endHour = 21
-        val currentTime = LocalTime.now()
-        var notificationTime =
-            if (currentTime.hour < startHour) LocalTime.of(startHour, 0) else currentTime
-        val remainingHoursToday = Duration.between(notificationTime, LocalTime.of(endHour, 0))
-        val intervalDuration = remainingHoursToday.dividedBy(count.toLong())
-
-        if (notificationTime == currentTime) {
-            notificationTime = notificationTime.plus(intervalDuration)
-        }
-
-        repeat(count) { index ->
-            val notification = Notification(
-                id = index,
-                channel = NotificationChannel.HydrationReminder,
-                title = context.getString(R.string.hydration_notification_title),
-                text = context.getString(
-                    R.string.today__progress_liters,
-                    "%.1f".format(todayWaterIntake / 1000.0),
-                    "%.1f".format(
-                        intakeGoal / 1000.0
+    /*    private suspend fun initializeReminderListener(): Result {
+            val stateFlow =
+                combine(
+                    hydrationRepository.getWaterIntakeGoal(),
+                    hydrationRepository.getCupSize(),
+                    hydrationRepository.getTodayWaterIntake(),
+                ) { goal, cupSize, record ->
+                    DrinkReminderState(
+                        cupSize = cupSize,
+                        intakeGoal = goal,
+                        todayWaterIntake = record.waterIntake
                     )
-                )
-            )
+                }
+                    .stateIn(
+                        scope = scope,
+                        started = SharingStarted.Eagerly,
+                        initialValue = DrinkReminderState()
+                    )
 
-            scheduledNotificationIds.add(notification.id)
+            stateFlow.collect { state ->
+                if (state.intakeGoal != 0 && state.cupSize != 0) {
+                    cancelScheduledNotifications()
 
-            notificationService.post(
-                notification = notification,
-                time = notificationTime
-            )
-
-            println("Scheduled notification at $notificationTime notification: $notification")
-
-            notificationTime = notificationTime.plus(intervalDuration)
-        }
-
-        saveScheduledNotificationIds()
-    }
-
-    private fun cancelScheduledNotifications() {
-        for (notificationId in scheduledNotificationIds) {
-            notificationService.cancel(notificationId)
-        }
-
-        scheduledNotificationIds.clear()
-        saveScheduledNotificationIds()
-    }
-
-    private fun saveScheduledNotificationIds() {
-        val notificationIdsJson = Json.encodeToString(scheduledNotificationIds)
-
-        sharedPreferences
-            .edit()
-            .putString(
-                NOTIFICATION_IDS_KEY,
-                notificationIdsJson
-            ).apply()
-    }
-
-    private fun getScheduledNotificationIds(): MutableList<Int> {
-        val ids = mutableListOf<Int>()
-
-        val notificationIdsJson = sharedPreferences
-            .getString(
-                NOTIFICATION_IDS_KEY,
-                null
-            )
-
-        val json = Json { ignoreUnknownKeys = true }
-
-        notificationIdsJson?.let {
-            ids.addAll(json.decodeFromString<List<Int>>(it))
-        }
-
-        return ids
-    }
+                    scheduleNotifications(
+                        intakeGoal = state.intakeGoal,
+                        cupSize = state.cupSize,
+                        todayWaterIntake = state.todayWaterIntake
+                    )
+                }
+            }
+        }*/
 }
 
-data class DrinkReminderState(
-    val cupSize: Int = 0,
-    val intakeGoal: Int = 0,
-    val todayWaterIntake: Int = 0
-)

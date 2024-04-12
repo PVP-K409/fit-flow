@@ -2,8 +2,10 @@ package com.github.k409.fitflow.data
 
 import com.github.k409.fitflow.data.preferences.PreferenceKeys
 import com.github.k409.fitflow.data.preferences.PreferencesRepository
+import com.github.k409.fitflow.model.DrinkReminderState
 import com.github.k409.fitflow.model.HydrationRecord
 import com.github.k409.fitflow.model.HydrationStats
+import com.github.k409.fitflow.service.HydrationNotificationService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -12,6 +14,8 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
@@ -31,6 +35,7 @@ class HydrationRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
     private val preferencesRepository: PreferencesRepository,
+    private val hydrationNotificationService: HydrationNotificationService,
 ) {
     suspend fun addWaterIntake(waterIntake: Int) {
         val currentUser = auth.currentUser
@@ -53,17 +58,25 @@ class HydrationRepository @Inject constructor(
                 SetOptions.merge(),
             )
             .await()
+
+        scheduleHydrationNotifications()
     }
 
     fun getWaterIntakeGoal(): Flow<Int> {
         return userRepository.currentUser.map {
-            val userWeight = it.weight
+            calculateWaterIntakeGoal(it.weight)
+        }
+    }
 
-            if (userWeight == 0.0) {
-                2000
-            } else {
-                (userWeight * 30).toInt()
-            }
+    suspend fun updateWaterIntakeGoal(weight: Int) {
+        scheduleHydrationNotifications()
+    }
+
+    private fun calculateWaterIntakeGoal(weight: Double): Int {
+        return if (weight == 0.0) {
+            2000
+        } else {
+            (weight * 30).toInt()
         }
     }
 
@@ -176,9 +189,32 @@ class HydrationRepository @Inject constructor(
 
     suspend fun setCupSize(size: Int) {
         preferencesRepository.putPreference(PreferenceKeys.CUP_SIZE, size)
+        scheduleHydrationNotifications()
     }
 
     fun getCupSize(): Flow<Int> {
         return preferencesRepository.getPreference(PreferenceKeys.CUP_SIZE, 250)
+    }
+
+    private fun getDrinkReminderState(): Flow<DrinkReminderState> {
+        return combine(
+            getWaterIntakeGoal(),
+            getCupSize(),
+            getTodayWaterIntake(),
+        ) { goal, cupSize, record ->
+            DrinkReminderState(
+                cupSize = cupSize,
+                intakeGoal = goal,
+                todayWaterIntake = record.waterIntake
+            )
+        }
+    }
+
+    suspend fun scheduleHydrationNotifications() {
+        auth.currentUser?.uid ?: return
+
+        val state = getDrinkReminderState().first()
+
+        hydrationNotificationService.scheduleNotifications(state)
     }
 }

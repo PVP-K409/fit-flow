@@ -6,6 +6,7 @@ import javax.inject.Inject
 
 class ProfileRepository @Inject constructor(
     private val db: FirebaseFirestore,
+    private val hydrationRepository: HydrationRepository,
     var success: Boolean = true,
 ) {
     suspend fun submitProfile(
@@ -28,6 +29,8 @@ class ProfileRepository @Inject constructor(
             val userDocRef = db.collection("users").document(uid)
 
             userDocRef.update(updatedData).await()
+
+            hydrationRepository.updateWaterIntakeGoal(weight)
         } catch (e: Exception) {
             e.printStackTrace()
             success = false
