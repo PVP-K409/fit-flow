@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.screen.market
 
-import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -31,7 +30,6 @@ import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.item.CategorySelectHeader
 import com.github.k409.fitflow.ui.common.item.InventoryItemCard
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MarketScreen(
@@ -77,21 +75,22 @@ fun MarketScreen(
                 imageUrl = item.phases?.get("Regular") ?: item.image,
                 name = item.title,
                 description = item.description,
-                removeButtonText = "Sell for ${item.price / 2}",
+                removeButtonText = "${stringResource(R.string.sell_for)} ${item.price / 2}",
                 onRemoveClick =
                 {
                     showDialog = true
                     addClicked = false
-                    dialogText = "Are you sure you want to sell ${item.title}?"
+                    dialogText = "${context.getString(R.string.are_you_sure_you_want_to_sell)} ${item.title}?"
                     selectedItem = item
                 },
                 removeButtonEnabled = ownedItems.find { it.id == item.id } != null,
-                addButtonText = "Buy for ${item.price}",
+                addButtonText = "${stringResource(R.string.buy_for)} ${item.price}",
                 onAddClick =
                 {
                     showDialog = true
                     addClicked = true
-                    dialogText = "Are you sure you want to buy ${item.title}?"
+                    dialogText =
+                        "${context.getString(R.string.are_you_sure_you_want_to_buy)} ${item.title}?"
                     selectedItem = item
                 },
                 addButtonEnabled = user.points >= item.price && ownedItems.find { it.id == item.id } == null,
@@ -105,6 +104,7 @@ fun MarketScreen(
                         contentDescription = "",
                     )
                 },
+                selectedCategoryIndex = selectedCategoryIndex,
             )
         }
     }
@@ -118,7 +118,7 @@ fun MarketScreen(
                     marketViewModel.addItemToUserInventory(selectedItem)
                     Toast.makeText(
                         context,
-                        "${selectedItem.title} has been added to your inventory",
+                        "${selectedItem.title} ${context.getString(R.string.has_been_added_to_your_inventory)}",
                         Toast.LENGTH_SHORT,
                     ).show()
                 } else {
@@ -126,7 +126,7 @@ fun MarketScreen(
                     marketViewModel.removeItemFromUserInventory(selectedItem)
                     Toast.makeText(
                         context,
-                        "${selectedItem.title} has been sold",
+                        "${selectedItem.title} ${context.getString(R.string.has_been_sold)}",
                         Toast.LENGTH_SHORT,
                     ).show()
                 }

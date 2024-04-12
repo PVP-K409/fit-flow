@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.common.item
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,10 +16,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,9 +34,7 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.screen.market.MarketViewModel
-import kotlinx.coroutines.launch
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun InventoryItemCard(
     modifier: Modifier,
@@ -52,11 +49,13 @@ fun InventoryItemCard(
     removeButtonEnabled: Boolean,
     coinIcon: @Composable () -> Unit,
     marketViewModel: MarketViewModel = hiltViewModel(),
+    selectedCategoryIndex: Int,
 ) {
     val colors = MaterialTheme.colorScheme
-    val coroutineScope = rememberCoroutineScope()
     var imageDownloadUrl by remember { mutableStateOf("") }
-    coroutineScope.launch {
+
+    // Trigger image recomposition when selected item category changes
+    LaunchedEffect(key1 = selectedCategoryIndex) {
         imageDownloadUrl = marketViewModel.getImageDownloadUrl(imageUrl)
     }
 
@@ -81,7 +80,8 @@ fun InventoryItemCard(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 if (imageDownloadUrl.isNotEmpty()) {
-                    // Log.d("ItemCard", "Composing $imageDownloadUrl")
+                    //Log.d("ItemCard", "Composing $name")
+                    //Log.d("ItemCard", "Composing $imageDownloadUrl")
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(imageDownloadUrl)

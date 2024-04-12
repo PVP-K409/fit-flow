@@ -56,11 +56,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import coil.ImageLoader
 import coil.compose.SubcomposeAsyncImage
-import coil.decode.SvgDecoder
-import coil.disk.DiskCache
-import coil.memory.MemoryCache
 import coil.request.ImageRequest
 import com.exyte.animatednavbar.AnimatedNavigationBar
 import com.exyte.animatednavbar.animation.balltrajectory.Teleport
@@ -74,6 +70,7 @@ import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FitFlowApp(
@@ -101,25 +98,6 @@ fun FitFlowApp(
     val topBarState = rememberSaveable { (mutableStateOf(false)) }
 
     val snackbarHostState = remember { SnackbarHostState() }
-
-    val context = LocalContext.current
-    // ImageLoader has its own memory cache, disk cache, and OkHttpClient so it should be initialized only once in app
-    ImageLoader.Builder(context)
-        .components {
-            add(SvgDecoder.Factory())
-        }
-        .memoryCache {
-            MemoryCache.Builder(context)
-                .maxSizePercent(0.25)
-                .build()
-        }
-        .diskCache {
-            DiskCache.Builder()
-                .directory(context.cacheDir.resolve("image_cache"))
-                .maxSizePercent(0.02)
-                .build()
-        }
-        .build()
 
     UpdateTopAndBottomBarVisibility(
         currentScreen = currentScreen,
