@@ -8,6 +8,7 @@ datastorePreferences = "1.0.0"
 datastorePreferencesCore = "1.0.0"
 firebaseMessaging = "23.4.1"
 firebaseUiAuth = "8.0.0"
+firebaseUiStorage = "7.2.0"
 googleServices = "4.4.1"
 hilt = "2.50"
 hiltAndroidCompiler = "2.50"
@@ -33,6 +34,7 @@ firebase-bom = "32.8.0"
 workRuntimeKtx = "2.9.0"
 accompanist = "0.32.0"
 lifecycleRuntimeCompose = "2.7.0"
+firebaseAppcheckDebug = "17.1.2"
 
 
 
@@ -49,7 +51,9 @@ androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedat
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "workRuntimeKtx" }
 animated-navigation-bar = { module = "com.exyte:animated-navigation-bar", version.ref = "animatedNavigationBar" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coilCompose" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+firebase-ui-storage = { module = "com.firebaseui:firebase-ui-storage", version.ref = "firebaseUiStorage" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "activity-compose" }
@@ -82,6 +86,7 @@ firebase-storage = { module = "com.google.firebase:firebase-storage" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging" }
 firebase-config = { module = "com.google.firebase:firebase-config" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug", version.ref = "firebaseAppcheckDebug" }
 
 [bundles]
 firebase = ["firebase-auth",

@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.common.item
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,26 +16,48 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
+import com.github.k409.fitflow.R
+import com.github.k409.fitflow.ui.screen.market.MarketViewModel
 
 @Composable
 fun InventoryItemCard(
     modifier: Modifier,
-    painter: Int,
+    imageUrl: String,
     name: String,
     description: String,
     addButtonText: String,
     onAddClick: () -> Unit = {},
+    addButtonEnabled: Boolean,
     removeButtonText: String,
     onRemoveClick: () -> Unit = {},
+    removeButtonEnabled: Boolean,
     coinIcon: @Composable () -> Unit,
+    marketViewModel: MarketViewModel = hiltViewModel(),
+    selectedCategoryIndex: Int,
 ) {
     val colors = MaterialTheme.colorScheme
+    var imageDownloadUrl by remember { mutableStateOf("") }
+
+    // Trigger image recomposition when selected item category changes
+    LaunchedEffect(key1 = selectedCategoryIndex) {
+        imageDownloadUrl = marketViewModel.getImageDownloadUrl(imageUrl)
+    }
 
     Box(
         modifier = modifier
@@ -58,13 +79,21 @@ fun InventoryItemCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                Image(
-                    modifier = modifier
-                        .padding(8.dp)
-                        .size(80.dp),
-                    painter = painterResource(id = painter),
-                    contentDescription = name,
-                )
+                if (imageDownloadUrl.isNotEmpty()) {
+                    // Log.d("ItemCard", "Composing $name")
+                    // Log.d("ItemCard", "Composing $imageDownloadUrl")
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(imageDownloadUrl)
+                            .decoderFactory(SvgDecoder.Factory())
+                            .build(),
+                        error = painterResource(R.drawable.error_24px),
+                        contentDescription = name,
+                        modifier = modifier
+                            .padding(8.dp)
+                            .size(80.dp),
+                    )
+                }
 
                 Column(modifier = modifier.padding(8.dp)) {
                     Text(
@@ -82,7 +111,6 @@ fun InventoryItemCard(
                     )
                 }
             }
-
             Spacer(modifier = modifier.height(16.dp))
 
             Row(
@@ -90,9 +118,8 @@ fun InventoryItemCard(
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                // TODO : disable remove button if item is not in aquarium / was not purchased
-                // TODO : disable add button if item is in aquarium and no more in inventory (also, can user purchase multiple fishes of single type?)
                 Button(
+                    enabled = removeButtonEnabled,
                     onClick = onRemoveClick,
                     colors = ButtonDefaults.buttonColors(colors.error),
                 ) {
@@ -101,6 +128,7 @@ fun InventoryItemCard(
                 }
 
                 Button(
+                    enabled = addButtonEnabled,
                     onClick = onAddClick,
                     colors = ButtonDefaults.buttonColors(colors.primary),
                 ) {

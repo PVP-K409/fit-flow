@@ -10,6 +10,11 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ListenableWorker
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.decode.SvgDecoder
+import coil.disk.DiskCache
+import coil.memory.MemoryCache
 import com.github.k409.fitflow.worker.GoalUpdaterWorker
 import com.github.k409.fitflow.worker.StepCounterWorker
 import dagger.hilt.android.HiltAndroidApp
@@ -18,7 +23,27 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 @RequiresApi(Build.VERSION_CODES.S)
-class FitFlowApplication : Application(), Configuration.Provider {
+class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFactory {
+
+    // ImageLoader has its own memory cache, disk cache, and OkHttpClient so it should be initialized only once in app
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this)
+            .components {
+                add(SvgDecoder.Factory())
+            }
+            .memoryCache {
+                MemoryCache.Builder(this)
+                    .maxSizePercent(0.25)
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(this.cacheDir.resolve("image_cache"))
+                    .maxSizePercent(0.02)
+                    .build()
+            }
+            .build()
+    }
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
