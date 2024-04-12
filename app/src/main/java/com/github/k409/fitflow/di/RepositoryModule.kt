@@ -77,7 +77,7 @@ object RepositoryModule {
             db,
             auth,
             preferencesRepository,
-            hydrationNotificationService
+            hydrationNotificationService,
         )
     }
 

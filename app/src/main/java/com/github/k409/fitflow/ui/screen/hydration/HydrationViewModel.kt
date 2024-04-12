@@ -36,7 +36,7 @@ class HydrationViewModel @Inject constructor(
 
     val hydrationLogsUiState: StateFlow<HydrationLogsUiState> = combine(
         hydrationRepository.getHydrationRecordsGroupedByWeek(),
-        hydrationRepository.getWaterIntakeGoal()
+        hydrationRepository.getWaterIntakeGoal(),
     ) { records, goal ->
         HydrationLogsUiState.Success(records, goal)
     }.stateIn(

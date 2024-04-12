@@ -27,7 +27,7 @@ class HydrationNotificationService @Inject constructor(
             scheduleNotifications(
                 intakeGoal = state.intakeGoal,
                 cupSize = state.cupSize,
-                todayWaterIntake = state.todayWaterIntake
+                todayWaterIntake = state.todayWaterIntake,
             )
         }
     }
@@ -35,7 +35,7 @@ class HydrationNotificationService @Inject constructor(
     private fun scheduleNotifications(
         intakeGoal: Int,
         cupSize: Int,
-        todayWaterIntake: Int
+        todayWaterIntake: Int,
     ) {
         val remainingIntakeGoal = intakeGoal - todayWaterIntake
         val count = remainingIntakeGoal / cupSize
@@ -71,16 +71,16 @@ class HydrationNotificationService @Inject constructor(
                     R.string.today__progress_liters,
                     "%.1f".format(todayWaterIntake / 1000.0),
                     "%.1f".format(
-                        intakeGoal / 1000.0
-                    )
-                )
+                        intakeGoal / 1000.0,
+                    ),
+                ),
             )
 
             scheduledNotificationIds.add(notification.id)
 
             notificationService.post(
                 notification = notification,
-                time = notificationTime
+                time = notificationTime,
             )
 
             println("Scheduled notification at $notificationTime notification: $notification")
@@ -102,7 +102,7 @@ class HydrationNotificationService @Inject constructor(
     }
 
     private fun saveScheduledNotificationIds(
-        scheduledNotificationIds: List<Int>
+        scheduledNotificationIds: List<Int>,
     ) {
         val notificationIdsJson = Json.encodeToString(scheduledNotificationIds)
 
@@ -110,7 +110,7 @@ class HydrationNotificationService @Inject constructor(
             .edit()
             .putString(
                 NOTIFICATION_IDS_KEY,
-                notificationIdsJson
+                notificationIdsJson,
             ).apply()
     }
 
@@ -120,7 +120,7 @@ class HydrationNotificationService @Inject constructor(
         val notificationIdsJson = sharedPreferences
             .getString(
                 NOTIFICATION_IDS_KEY,
-                null
+                null,
             )
 
         val json = Json { ignoreUnknownKeys = true }
@@ -132,4 +132,3 @@ class HydrationNotificationService @Inject constructor(
         return ids
     }
 }
-

@@ -205,7 +205,7 @@ class HydrationRepository @Inject constructor(
             DrinkReminderState(
                 cupSize = cupSize,
                 intakeGoal = goal,
-                todayWaterIntake = record.waterIntake
+                todayWaterIntake = record.waterIntake,
             )
         }
     }

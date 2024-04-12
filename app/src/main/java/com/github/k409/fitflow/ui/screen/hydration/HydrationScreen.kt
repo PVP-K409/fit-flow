@@ -36,13 +36,13 @@ fun HydrationScreen(
             when (page) {
                 0 -> {
                     HydrationMainPage(
-                        viewModel = viewModel
+                        viewModel = viewModel,
                     )
                 }
 
                 1 -> {
                     HydrationLogsPage(
-                        viewModel = viewModel
+                        viewModel = viewModel,
                     )
                 }
             }

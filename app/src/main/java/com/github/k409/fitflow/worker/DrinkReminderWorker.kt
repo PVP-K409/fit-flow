@@ -9,7 +9,6 @@ import com.github.k409.fitflow.data.HydrationRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
-
 @HiltWorker
 class DrinkReminderWorker @AssistedInject constructor(
     @Assisted private val context: Context,
@@ -17,7 +16,7 @@ class DrinkReminderWorker @AssistedInject constructor(
     private val hydrationRepository: HydrationRepository,
 ) : CoroutineWorker(
     context,
-    workerParams
+    workerParams,
 ) {
 
     companion object {
@@ -36,4 +35,3 @@ class DrinkReminderWorker @AssistedInject constructor(
         return Result.success()
     }
 }
-

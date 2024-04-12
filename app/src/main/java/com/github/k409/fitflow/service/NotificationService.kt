@@ -26,48 +26,52 @@ import java.time.ZoneId
 import javax.inject.Inject
 
 class NotificationService @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
 ) {
 
     fun post(
         notification: Notification,
-        delay: Duration
+        delay: Duration,
     ) {
         postNotification(
-            notification, System.currentTimeMillis() + delay.toMillis()
+            notification,
+            System.currentTimeMillis() + delay.toMillis(),
         )
     }
 
     fun post(
         notification: Notification,
-        dateTime: LocalDateTime
+        dateTime: LocalDateTime,
     ) {
         postNotification(
-            notification, dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            notification,
+            dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
         )
     }
 
     fun post(
         notification: Notification,
-        time: LocalTime
+        time: LocalTime,
     ) {
         val dateTime = time.atDate(LocalDate.now())
 
         postNotification(
-            notification, dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            notification,
+            dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
         )
     }
 
     private fun postNotification(
         notification: Notification,
-        triggerAtMillis: Long
+        triggerAtMillis: Long,
     ) {
         if (triggerAtMillis <= System.currentTimeMillis()) {
             return
         }
 
         val intent = Intent(
-            context, NotificationReceiver::class.java
+            context,
+            NotificationReceiver::class.java,
         ).apply {
             putExtra(NOTIFICATION_INTENT_ID, notification.id)
             putExtra(NOTIFICATION_INTENT_CHANNEL_ID, notification.channel.channelId)
@@ -79,34 +83,41 @@ class NotificationService @Inject constructor(
             context,
             notification.id,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
         )
 
         val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         manager.setExact(
-            AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent
+            AlarmManager.RTC_WAKEUP,
+            triggerAtMillis,
+            pendingIntent,
         )
     }
 
     fun show(
-        notification: Notification
+        notification: Notification,
     ) {
         if (ActivityCompat.checkSelfPermission(
-                context, Manifest.permission.POST_NOTIFICATIONS
+                context,
+                Manifest.permission.POST_NOTIFICATIONS,
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             return
         }
 
         val intent = Intent(
-            context, Activity::class.java
+            context,
+            Activity::class.java,
         ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 
         val pendingIntent = PendingIntent.getActivity(
-            context, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
 
         val notificationAndroid =
@@ -123,31 +134,36 @@ class NotificationService @Inject constructor(
         val manager = NotificationManagerCompat.from(context)
 
         manager.notify(
-            notification.id, notificationAndroid
+            notification.id,
+            notificationAndroid,
         )
     }
 
     fun cancel(
-        notification: Notification
+        notification: Notification,
     ) {
         cancelNotification(id = notification.id)
     }
 
     fun cancel(
-        id: Int
+        id: Int,
     ) {
         cancelNotification(id = id)
     }
 
     private fun cancelNotification(
-        id: Int
+        id: Int,
     ) {
         val intent = Intent(
-            context, NotificationReceiver::class.java
+            context,
+            NotificationReceiver::class.java,
         )
 
         val pendingIntent = PendingIntent.getBroadcast(
-            context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            context,
+            id,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
         )
 
         pendingIntent?.let {

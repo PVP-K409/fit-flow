@@ -41,7 +41,7 @@ class FirebaseCloudMessagingService : FirebaseMessagingService() {
         val notification = Notification(
             channel = NotificationChannel.Default,
             title = remoteNotification.title ?: "",
-            text = remoteNotification.body ?: ""
+            text = remoteNotification.body ?: "",
         )
 
         notificationService.show(notification)
@@ -60,7 +60,7 @@ class FirebaseCloudMessagingService : FirebaseMessagingService() {
         coroutineScope.launch {
             preferencesRepository.putPreference(
                 key = PreferenceKeys.FCM_TOKEN,
-                value = token
+                value = token,
             )
         }
     }

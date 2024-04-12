@@ -77,9 +77,10 @@ private fun HydrationLogsContent(uiState: HydrationLogsUiState.Success) {
                 shape = CircleShape,
                 onClick = { },
                 colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
+                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                 ),
-                label = { Text(text = stringResource(R.string.hydration_logs)) })
+                label = { Text(text = stringResource(R.string.hydration_logs)) },
+            )
         }
 
         uiState.groupedRecords.forEach { (date, logs) ->
@@ -90,20 +91,19 @@ private fun HydrationLogsContent(uiState: HydrationLogsUiState.Success) {
                     text = formatDateRange(date),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
                 )
             }
 
             items(
                 items = logs,
-                key = { it.date }
+                key = { it.date },
             ) { hydrationRecord ->
                 HydrationRecordCard(
                     hydrationRecord = hydrationRecord,
                     goal = uiState.goal,
                 )
             }
-
         }
     }
 }
@@ -118,7 +118,7 @@ private fun HydrationRecordCard(
 
     val goalText = buildAnnotatedString {
         withStyle(
-            SpanStyle(fontWeight = FontWeight.Bold)
+            SpanStyle(fontWeight = FontWeight.Bold),
         ) {
             append("${hydrationRecord.waterIntake}")
         }
@@ -134,7 +134,7 @@ private fun HydrationRecordCard(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Icon(
                 modifier = Modifier.padding(end = 8.dp),
@@ -161,7 +161,7 @@ private fun HydrationRecordCard(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     LinearProgressIndicator(
                         color = if (progress >= 1) {
@@ -186,7 +186,6 @@ private fun HydrationRecordCard(
                 }
             }
         }
-
     }
 }
 

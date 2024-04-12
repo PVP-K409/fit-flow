@@ -55,7 +55,7 @@ class AppModule {
     @Singleton
     fun provideWorkManager(
         @ApplicationContext
-        context: Context
+        context: Context,
     ): WorkManager {
         return WorkManager.getInstance(context)
     }

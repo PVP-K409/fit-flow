@@ -80,13 +80,13 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
             "MidnightStepWorker",
             24,
             TimeUnit.HOURS,
-            calculateInitialDelayUntilMidnight()
+            calculateInitialDelayUntilMidnight(),
         )
         scheduleWork<StepCounterWorker>(
             "BeforeMidnightStepWorker",
             24,
             TimeUnit.HOURS,
-            calculateInitialDelayBeforeMidnight()
+            calculateInitialDelayBeforeMidnight(),
         )
     }
 
@@ -96,27 +96,27 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
             "MidnightGoalUpdater",
             24,
             TimeUnit.HOURS,
-            calculateInitialDelayUntilMidnight()
+            calculateInitialDelayUntilMidnight(),
         )
         scheduleWork<GoalUpdaterWorker>(
             "BeforeMidnightGoalUpdater",
             24,
             TimeUnit.HOURS,
-            calculateInitialDelayBeforeMidnight()
+            calculateInitialDelayBeforeMidnight(),
         )
     }
 
     private fun scheduleHydrationReminderWorker() {
         val drinkWorkerRequest = PeriodicWorkRequestBuilder<DrinkReminderWorker>(
             repeatInterval = 1,
-            repeatIntervalTimeUnit = TimeUnit.DAYS
+            repeatIntervalTimeUnit = TimeUnit.DAYS,
         )
             .build()
 
         workManager.enqueueUniquePeriodicWork(
             DrinkReminderWorker.WORKER_NAME,
             ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
-            drinkWorkerRequest
+            drinkWorkerRequest,
         )
     }
 
@@ -124,7 +124,7 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
         workerName: String,
         repeatInterval: Long,
         timeUnit: TimeUnit,
-        initialDelay: Long = 0L
+        initialDelay: Long = 0L,
     ) {
         val workRequest = PeriodicWorkRequestBuilder<T>(repeatInterval, timeUnit)
             .apply {
@@ -162,7 +162,7 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
                 val notificationChannel = android.app.NotificationChannel(
                     it.channelId,
                     it.channelId,
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_DEFAULT,
                 )
 
                 manager.createNotificationChannel(notificationChannel)

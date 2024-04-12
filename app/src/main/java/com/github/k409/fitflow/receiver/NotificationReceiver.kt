@@ -21,7 +21,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(
         context: Context,
-        intent: Intent
+        intent: Intent,
     ) {
         val id = intent.getIntExtra(NOTIFICATION_INTENT_ID, 0)
         val channelId = intent.getStringExtra(NOTIFICATION_INTENT_CHANNEL_ID) ?: ""
@@ -35,8 +35,8 @@ class NotificationReceiver : BroadcastReceiver() {
                 id = id,
                 channel = channel,
                 title = title,
-                text = text
-            )
+                text = text,
+            ),
         )
     }
 }
