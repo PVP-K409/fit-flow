@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.screen.hydration
+package com.github.k409.fitflow.ui.screen.hydration.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.HydrationStats
 import com.github.k409.fitflow.ui.common.TextLabelWithDivider
+import java.util.Locale
 
 @Composable
 fun HydrationStatisticsCard(
@@ -121,12 +122,14 @@ fun HydrationStatisticsCard(
                     data = listOf(
                         stringResource(R.string.this_week) to "${
                             String.format(
+                                Locale.getDefault(),
                                 "%.2f",
                                 stats.thisWeekTotalAmount.toFloat().div(7).div(1000),
                             )
                         } l",
                         stringResource(R.string.this_month) to "${
                             String.format(
+                                Locale.getDefault(),
                                 "%.2f",
                                 stats.thisMonthTotalAmount.toFloat().div(30).div(1000),
                             )

@@ -1,9 +1,11 @@
 package com.github.k409.fitflow
 
 import android.app.Application
-import android.icu.util.Calendar
+import android.app.NotificationManager
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationManagerCompat
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -15,9 +17,14 @@ import coil.ImageLoaderFactory
 import coil.decode.SvgDecoder
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
+import com.github.k409.fitflow.model.NotificationChannel
+import com.github.k409.fitflow.worker.DrinkReminderWorker
 import com.github.k409.fitflow.worker.GoalUpdaterWorker
 import com.github.k409.fitflow.worker.StepCounterWorker
 import dagger.hilt.android.HiltAndroidApp
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -25,7 +32,29 @@ import javax.inject.Inject
 @RequiresApi(Build.VERSION_CODES.S)
 class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFactory {
 
-    // ImageLoader has its own memory cache, disk cache, and OkHttpClient so it should be initialized only once in app
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    @Inject
+    lateinit var workManager: WorkManager
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration
+            .Builder()
+            .setMinimumLoggingLevel(Log.DEBUG)
+            .setWorkerFactory(workerFactory)
+            .build()
+
+    override fun onCreate() {
+        super.onCreate()
+
+        createNotificationChannels()
+
+        scheduleStepCounterWorkers()
+        scheduleGoalUpdaterWorkers()
+        scheduleHydrationReminderWorker()
+    }
+
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
             .components {
@@ -45,24 +74,58 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
             .build()
     }
 
-    @Inject
-    lateinit var workerFactory: HiltWorkerFactory
-
-    override fun onCreate() {
-        super.onCreate()
-
-        // workers for StepCounter
+    private fun scheduleStepCounterWorkers() {
         scheduleWork<StepCounterWorker>("PeriodicStepWorker", 180, TimeUnit.MINUTES)
-        scheduleWork<StepCounterWorker>("MidnightStepWorker", 24, TimeUnit.HOURS, calculateInitialDelayUntilMidnight())
-        scheduleWork<StepCounterWorker>("BeforeMidnightStepWorker", 24, TimeUnit.HOURS, calculateInitialDelayBeforeMidnight())
-
-        // workers for GoalUpdater
-        scheduleWork<GoalUpdaterWorker>("PeriodicGoalUpdater", 180, TimeUnit.MINUTES)
-        scheduleWork<GoalUpdaterWorker>("MidnightGoalUpdater", 24, TimeUnit.HOURS, calculateInitialDelayUntilMidnight())
-        scheduleWork<GoalUpdaterWorker>("BeforeMidnightGoalUpdater", 24, TimeUnit.HOURS, calculateInitialDelayBeforeMidnight())
+        scheduleWork<StepCounterWorker>(
+            "MidnightStepWorker",
+            24,
+            TimeUnit.HOURS,
+            calculateInitialDelayUntilMidnight(),
+        )
+        scheduleWork<StepCounterWorker>(
+            "BeforeMidnightStepWorker",
+            24,
+            TimeUnit.HOURS,
+            calculateInitialDelayBeforeMidnight(),
+        )
     }
 
-    private inline fun <reified T : ListenableWorker> scheduleWork(workerName: String, repeatInterval: Long, timeUnit: TimeUnit, initialDelay: Long = 0L) {
+    private fun scheduleGoalUpdaterWorkers() {
+        scheduleWork<GoalUpdaterWorker>("PeriodicGoalUpdater", 180, TimeUnit.MINUTES)
+        scheduleWork<GoalUpdaterWorker>(
+            "MidnightGoalUpdater",
+            24,
+            TimeUnit.HOURS,
+            calculateInitialDelayUntilMidnight(),
+        )
+        scheduleWork<GoalUpdaterWorker>(
+            "BeforeMidnightGoalUpdater",
+            24,
+            TimeUnit.HOURS,
+            calculateInitialDelayBeforeMidnight(),
+        )
+    }
+
+    private fun scheduleHydrationReminderWorker() {
+        val drinkWorkerRequest = PeriodicWorkRequestBuilder<DrinkReminderWorker>(
+            repeatInterval = 1,
+            repeatIntervalTimeUnit = TimeUnit.DAYS,
+        )
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            DrinkReminderWorker.WORKER_NAME,
+            ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+            drinkWorkerRequest,
+        )
+    }
+
+    private inline fun <reified T : ListenableWorker> scheduleWork(
+        workerName: String,
+        repeatInterval: Long,
+        timeUnit: TimeUnit,
+        initialDelay: Long = 0L,
+    ) {
         val workRequest = PeriodicWorkRequestBuilder<T>(repeatInterval, timeUnit)
             .apply {
                 if (initialDelay > 0) {
@@ -70,7 +133,7 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
                 }
             }.build()
 
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+        workManager.enqueueUniquePeriodicWork(
             workerName,
             ExistingPeriodicWorkPolicy.UPDATE,
             workRequest,
@@ -78,34 +141,32 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
     }
 
     private fun calculateInitialDelayUntilMidnight(): Long {
-        val calendar = Calendar.getInstance()
-        val now = calendar.timeInMillis
+        val now = LocalDateTime.now()
+        val nextMidnight = LocalDateTime.of(now.toLocalDate().plusDays(1), LocalTime.MIDNIGHT)
 
-        calendar.add(Calendar.DAY_OF_YEAR, 1)
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-
-        return calendar.timeInMillis - now
+        return Duration.between(now, nextMidnight).toMillis()
     }
 
     private fun calculateInitialDelayBeforeMidnight(): Long {
-        val calendar = Calendar.getInstance()
-        val now = calendar.timeInMillis
+        val now = LocalDateTime.now()
+        val beforeMidnight = LocalDateTime.of(now.toLocalDate().plusDays(1), LocalTime.of(23, 58))
 
-        calendar.add(Calendar.DAY_OF_YEAR, 1)
-        calendar.set(Calendar.HOUR_OF_DAY, 23)
-        calendar.set(Calendar.MINUTE, 58)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-
-        return calendar.timeInMillis - now
+        return Duration.between(now, beforeMidnight).toMillis()
     }
 
-    override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder()
-            .setMinimumLoggingLevel(android.util.Log.DEBUG)
-            .setWorkerFactory(workerFactory)
-            .build()
+    private fun createNotificationChannels() {
+        val manager = NotificationManagerCompat.from(this)
+
+        NotificationChannel.entries.forEach {
+            if (it != null) {
+                val notificationChannel = android.app.NotificationChannel(
+                    it.channelId,
+                    it.channelId,
+                    NotificationManager.IMPORTANCE_DEFAULT,
+                )
+
+                manager.createNotificationChannel(notificationChannel)
+            }
+        }
+    }
 }

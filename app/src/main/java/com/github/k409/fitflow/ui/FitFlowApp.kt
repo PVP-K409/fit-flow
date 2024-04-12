@@ -52,6 +52,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -211,6 +212,7 @@ fun FitFlowTopBar(
                 Text(
                     text = stringResource(id = currentRoute.stringRes),
                     style = MaterialTheme.typography.titleLarge,
+                    fontSize = 20.sp,
                 )
             },
             navigationIcon = {
@@ -256,7 +258,7 @@ fun FitFlowTopBar(
                         },
                         modifier = Modifier
                             .clip(CircleShape)
-                            .size(40.dp)
+                            .size(38.dp)
                             .background(
                                 color = MaterialTheme.colorScheme.secondaryContainer,
                                 shape = CircleShape,

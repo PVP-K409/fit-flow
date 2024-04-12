@@ -74,6 +74,7 @@
     <string name="exercise">Exercise</string>
     <string name="create">Create</string>
     <string name="select_an_option">Select an option</string>
+    <string name="hydration_logs">Hydration Logs</string>
     <string name="hold_drink_button_message">Press and hold the button to drink</string>
     <string name="dismiss_snackbar">Dismiss snackbar</string>
     <string name="are_you_sure">Are you sure?</string>
@@ -83,4 +84,7 @@
     <string name="are_you_sure_you_want_to_buy">Are you sure you want to buy</string>
     <string name="has_been_added_to_your_inventory">has been added to your inventory</string>
     <string name="has_been_sold">has been sold</string>
+    <string name="hydration_notification_progress">Today\'s progress:</string>
+    <string name="today__progress_liters">Today\'s progress is %1$s/%2$s liters</string>
+    <string name="default_notification_channel_id">Default</string>
 </resources>

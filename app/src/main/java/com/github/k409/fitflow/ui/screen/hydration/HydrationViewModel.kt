@@ -1,26 +1,49 @@
 package com.github.k409.fitflow.ui.screen.hydration
 
-import android.content.SharedPreferences
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.data.HydrationRepository
+import com.github.k409.fitflow.model.HydrationRecord
+import com.github.k409.fitflow.model.Notification
+import com.github.k409.fitflow.model.NotificationChannel
+import com.github.k409.fitflow.service.NotificationService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.Duration
 import javax.inject.Inject
 
 @HiltViewModel
 class HydrationViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val hydrationRepository: HydrationRepository,
-    private val prefs: SharedPreferences,
+    private val notificationService: NotificationService,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HydrationUiState())
     val uiState = _uiState.asStateFlow()
+
+    val hydrationLogsUiState: StateFlow<HydrationLogsUiState> = combine(
+        hydrationRepository.getHydrationRecordsGroupedByWeek(),
+        hydrationRepository.getWaterIntakeGoal(),
+    ) { records, goal ->
+        HydrationLogsUiState.Success(records, goal)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = HydrationLogsUiState.Loading,
+    )
 
     init {
         getTodayWaterIntake()
@@ -38,12 +61,12 @@ class HydrationViewModel @Inject constructor(
     }
 
     fun setCupSize(size: Int) {
-        prefs.edit()
-            .putInt("cupSize", size)
-            .apply()
+        viewModelScope.launch {
+            hydrationRepository.setCupSize(size)
 
-        _uiState.update {
-            it.copy(cupSize = size)
+            _uiState.update {
+                it.copy(cupSize = size)
+            }
         }
     }
 
@@ -89,8 +112,32 @@ class HydrationViewModel @Inject constructor(
     }
 
     private fun getCupSize() {
-        _uiState.update {
-            it.copy(cupSize = prefs.getInt("cupSize", 250))
+        viewModelScope.launch {
+            hydrationRepository.getCupSize().collect { cupSize ->
+                _uiState.update {
+                    it.copy(cupSize = cupSize)
+                }
+            }
         }
     }
+
+    fun scheduleWaterReminder() {
+        notificationService.post(
+            notification = Notification(
+                channel = NotificationChannel.HydrationReminder,
+                title = context.getString(R.string.hydration_notification_title),
+                text = context.getString(R.string.hydration_notification_text),
+            ),
+            delay = Duration.ofSeconds(10),
+        )
+    }
+}
+
+sealed interface HydrationLogsUiState {
+    data object Loading : HydrationLogsUiState
+
+    data class Success(
+        val groupedRecords: Map<String, List<HydrationRecord>> = emptyMap(),
+        val goal: Int = 0,
+    ) : HydrationLogsUiState
 }

@@ -20,6 +20,8 @@ fun PermissionsHandler() {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+        permissions.add(Manifest.permission.USE_EXACT_ALARM)
+        permissions.add(Manifest.permission.SCHEDULE_EXACT_ALARM)
     }
 
     val permissionState = rememberMultiplePermissionsState(

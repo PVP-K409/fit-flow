@@ -154,4 +154,5 @@ dependencies {
     implementation(libs.firebase.ui.storage)
 
     implementation(libs.animated.navigation.bar)
+    implementation(libs.kotlinx.serialization.json)
 }

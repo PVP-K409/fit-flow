@@ -14,6 +14,7 @@ data class User(
     var weight: Double = 0.0,
     var gender: String = "",
     var fitnessLevel: String = "",
+    var fcmToken: String = "",
 )
 
 fun FirebaseUser.toUser(): User {

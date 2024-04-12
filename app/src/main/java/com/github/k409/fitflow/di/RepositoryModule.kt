@@ -10,6 +10,7 @@ import com.github.k409.fitflow.data.ProfileRepository
 import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.data.preferences.PreferencesRepository
+import com.github.k409.fitflow.service.HydrationNotificationService
 import com.github.k409.fitflow.service.StepCounterService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,8 +29,10 @@ object RepositoryModule {
     @Singleton
     fun provideProfileRepository(
         db: FirebaseFirestore,
+        hydrationRepository: HydrationRepository,
     ): ProfileRepository = ProfileRepository(
         db,
+        hydrationRepository,
     )
 
     @Provides
@@ -66,8 +69,16 @@ object RepositoryModule {
         userRepository: UserRepository,
         db: FirebaseFirestore,
         auth: FirebaseAuth,
+        preferencesRepository: PreferencesRepository,
+        hydrationNotificationService: HydrationNotificationService,
     ): HydrationRepository {
-        return HydrationRepository(userRepository, db, auth)
+        return HydrationRepository(
+            userRepository,
+            db,
+            auth,
+            preferencesRepository,
+            hydrationNotificationService,
+        )
     }
 
     @Provides

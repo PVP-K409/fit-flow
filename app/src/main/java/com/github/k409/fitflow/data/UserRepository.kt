@@ -91,6 +91,19 @@ class UserRepository @Inject constructor(
         }
     }
 
+    suspend fun updateFcmToken(token: String) {
+        val uid = auth.currentUser?.uid ?: return
+
+        try {
+            getUserDocumentReference(uid)
+                .update("fcmToken", token)
+                .await()
+        } catch (e: Exception) {
+            Log.e("User Repository", "Error updating user FCM token")
+            Log.e("User Repository", e.toString())
+        }
+    }
+
     private fun getUserDocumentReference(uid: String) =
         db.collection(USERS_COLLECTION)
             .document(uid)
