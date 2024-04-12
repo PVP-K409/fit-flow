@@ -69,8 +69,12 @@ fun GoalsPage(
     val permissionContract = PermissionController.createRequestPermissionResultContract()
     val launcher = rememberLauncherForActivityResult(permissionContract) {
         coroutineScope.launch {
-            goalsViewModel.loadGoals(daily)
-            goalsViewModel.loadGoals(weekly)
+            if (goalsViewModel.permissionsGranted()) {
+                goalsViewModel.loadGoals(daily)
+                goalsViewModel.loadGoals(weekly)
+            } else {
+                navController.navigate(NavRoutes.Aquarium.route)
+            }
         }
     }
 
@@ -90,7 +94,7 @@ fun GoalsPage(
             LazyColumn(
                 modifier = Modifier
                     .matchParentSize()
-                    .padding(end = 16.dp, bottom = 16.dp),
+                    .padding(bottom = 16.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -163,7 +167,7 @@ private fun GoalCard(
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(end = 15.dp, start = 10.dp, bottom = 10.dp, top = 10.dp),
+            .padding(16.dp),
         shape = RoundedCornerShape(6.dp),
     ) {
         Column(

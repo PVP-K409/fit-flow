@@ -36,7 +36,7 @@ class ActivityViewModel @Inject constructor(
     private val _todaySteps = MutableStateFlow<DailyStepRecord?>(null)
     val todaySteps: StateFlow<DailyStepRecord?> = _todaySteps
 
-    private val _loading = MutableStateFlow<Boolean>(false)
+    private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
     val progressUiState: StateFlow<ProgressUiState> = combine(
@@ -97,10 +97,12 @@ class ActivityViewModel @Inject constructor(
         val dailyStepRecord: DailyStepRecord? = stepsRepository.getSteps(today)
         val currentSteps = stepCounterService.steps()
         val newDailyStepRecord: DailyStepRecord
-        var calories = 0L
-        var distance = 0.0
+        var calories = dailyStepRecord?.caloriesBurned ?: 0L
+        var distance = dailyStepRecord?.totalDistance ?: 0.0
+        val permissionsGranted = permissionsGranted()
+        val healthConnectSteps = healthStatsManager.getTotalSteps(today, today).toLong()
 
-        if (permissionsGranted()) {
+        if (permissionsGranted) {
             calories = healthStatsManager.getTotalCalories()
             distance = healthStatsManager.getTotalDistance()
         }
@@ -115,7 +117,8 @@ class ActivityViewModel @Inject constructor(
 
         if (dailyStepRecord == null) { // if new day
             newDailyStepRecord = DailyStepRecord(
-                totalSteps = 0,
+                totalSteps = if (permissionsGranted) healthConnectSteps else 0L,
+                stepCounterSteps = 0,
                 initialSteps = currentSteps,
                 recordDate = today,
                 stepsBeforeReboot = 0,
@@ -126,10 +129,11 @@ class ActivityViewModel @Inject constructor(
             )
         } else if (hasRebooted || currentSteps <= 1) { // if current day and reboot has happened
             newDailyStepRecord = DailyStepRecord(
-                totalSteps = dailyStepRecord.totalSteps + currentSteps,
+                totalSteps = if (permissionsGranted) healthConnectSteps else dailyStepRecord.stepCounterSteps + currentSteps,
+                stepCounterSteps = dailyStepRecord.stepCounterSteps + currentSteps,
                 initialSteps = currentSteps,
                 recordDate = today,
-                stepsBeforeReboot = dailyStepRecord.totalSteps + currentSteps,
+                stepsBeforeReboot = dailyStepRecord.stepCounterSteps + currentSteps,
                 caloriesBurned = calories,
                 totalDistance = distance,
                 stepGoal = stepGoal,
@@ -138,10 +142,11 @@ class ActivityViewModel @Inject constructor(
             prefs.edit().putBoolean("rebooted", false).apply() // we have handled reboot
         } else if (today != lastDate) {
             newDailyStepRecord = DailyStepRecord(
-                totalSteps = dailyStepRecord.totalSteps,
+                totalSteps = if (permissionsGranted) healthConnectSteps else dailyStepRecord.stepCounterSteps,
+                stepCounterSteps = dailyStepRecord.stepCounterSteps,
                 initialSteps = currentSteps,
                 recordDate = today,
-                stepsBeforeReboot = dailyStepRecord.totalSteps,
+                stepsBeforeReboot = dailyStepRecord.stepCounterSteps,
                 caloriesBurned = if (calories > dailyStepRecord.caloriesBurned!!) calories else dailyStepRecord.caloriesBurned,
                 totalDistance = distance,
                 stepGoal = stepGoal,
@@ -149,7 +154,8 @@ class ActivityViewModel @Inject constructor(
         } else {
             // if current day and no reboot
             newDailyStepRecord = DailyStepRecord(
-                totalSteps = currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot,
+                totalSteps = if (permissionsGranted) healthConnectSteps else currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot,
+                stepCounterSteps = currentSteps - dailyStepRecord.initialSteps + dailyStepRecord.stepsBeforeReboot,
                 initialSteps = dailyStepRecord.initialSteps,
                 recordDate = today,
                 stepsBeforeReboot = dailyStepRecord.stepsBeforeReboot,
