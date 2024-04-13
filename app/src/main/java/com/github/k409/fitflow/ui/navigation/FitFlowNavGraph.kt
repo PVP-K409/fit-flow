@@ -16,7 +16,7 @@ import com.github.k409.fitflow.ui.screens.login.LoginScreen
 import com.github.k409.fitflow.ui.screens.market.MarketScreen
 import com.github.k409.fitflow.ui.screens.profile.ProfileCreationScreen
 import com.github.k409.fitflow.ui.screens.settings.SettingsScreen
-import com.github.k409.fitflow.ui.screens.userLevel.LevelScreen
+import com.github.k409.fitflow.ui.screens.level.LevelScreen
 
 @Composable
 fun FitFlowNavGraph(

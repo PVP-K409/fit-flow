@@ -63,7 +63,7 @@ import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.isProfileComplete
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
-import com.github.k409.fitflow.ui.screens.userLevel.levels
+import com.github.k409.fitflow.ui.screens.level.levels
 import java.util.Locale
 
 @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
@@ -211,13 +211,15 @@ fun FitFlowTopBar(
                         points = user.points,
                         xp = user.xp,
                     )
+                } else {
+                    UserLevel(
+                        modifier = Modifier.padding(end = 8.dp),
+                        xp = user.xp,
+                        navController,
+                    )
                 }
 
-                UserLevel(
-                    modifier = Modifier.padding(end = 8.dp),
-                    xp = user.xp,
-                    navController,
-                )
+
 
                 IconButton(
                     onClick = {
@@ -279,7 +281,7 @@ fun UserLevel(
             label = {
                 userLevel?.let {
                     Text(
-                        text = it.name,
+                        text = it.id.toString(),
                         style = MaterialTheme.typography.labelLarge,
                     )
                 }
