@@ -14,16 +14,17 @@ data class User(
     var weight: Double = 0.0,
     var gender: String = "",
     var fitnessLevel: String = "",
+    var fcmToken: String = "",
 )
 
 fun FirebaseUser.toUser(): User {
     val name = (
-            if (displayName.isNullOrEmpty()) {
-                email
-            } else {
-                displayName
-            }
-            ) ?: ""
+        if (displayName.isNullOrEmpty()) {
+            email
+        } else {
+            displayName
+        }
+        ) ?: ""
 
     return User(
         uid = uid,

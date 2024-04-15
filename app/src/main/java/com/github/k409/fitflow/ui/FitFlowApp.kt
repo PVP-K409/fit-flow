@@ -29,15 +29,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +52,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -61,11 +65,14 @@ import com.exyte.animatednavbar.items.dropletbutton.DropletButton
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.isProfileComplete
+import com.github.k409.fitflow.ui.common.LocalSnackbarHostState
+import com.github.k409.fitflow.ui.common.SwipeableSnackbar
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screens.level.levels
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FitFlowApp(
@@ -92,51 +99,65 @@ fun FitFlowApp(
     val bottomBarState = rememberSaveable { (mutableStateOf(false)) }
     val topBarState = rememberSaveable { (mutableStateOf(false)) }
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     UpdateTopAndBottomBarVisibility(
         currentScreen = currentScreen,
         bottomBarState = bottomBarState,
         topBarState = topBarState,
     )
 
-    Scaffold(
-        topBar = {
-            FitFlowTopBar(
-                visible = topBarState.value,
-                currentRoute = currentScreen,
-                canNavigateBack = navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                    currentScreen,
-                ),
-                navigateUp = { navController.navigateUp() },
-                navController = navController,
-                user = user,
-                pointsAndXpVisible = pointsAndXpVisible,
-            )
-        },
-        bottomBar = {
-            FitFlowBottomBar(
-                navController = navController,
-                currentScreen = currentScreen,
-                visible = !(
+    CompositionLocalProvider(
+        values = arrayOf(
+            LocalSnackbarHostState provides snackbarHostState,
+        ),
+    ) {
+        Scaffold(
+            snackbarHost = {
+                SwipeableSnackbar(
+                    snackbarHostState = snackbarHostState,
+                )
+            },
+            topBar = {
+                FitFlowTopBar(
+                    visible = topBarState.value,
+                    currentRoute = currentScreen,
+                    canNavigateBack = navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                        currentScreen,
+                    ),
+                    navigateUp = { navController.navigateUp() },
+                    navController = navController,
+                    user = user,
+                    pointsAndXpVisible = pointsAndXpVisible,
+                )
+            },
+            bottomBar = {
+                FitFlowBottomBar(
+                    navController = navController,
+                    currentScreen = currentScreen,
+                    visible = !(
                         navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
                             currentScreen,
                         )
                         ) && bottomBarState.value,
-                containerColor = if (currentScreen == NavRoutes.Aquarium) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
-            )
-        },
-    ) { innerPadding ->
-        val topPadding =
-            if (currentScreen == NavRoutes.Aquarium) 0.dp else innerPadding.calculateTopPadding()
-        val bottomPadding = innerPadding.calculateBottomPadding().minus(10.dp).coerceAtLeast(0.dp)
+                    containerColor = if (currentScreen == NavRoutes.Aquarium) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
+                )
+            },
+        ) { innerPadding ->
+            val topPadding =
+                if (currentScreen == NavRoutes.Aquarium) 0.dp else innerPadding.calculateTopPadding()
+            val bottomPadding =
+                innerPadding.calculateBottomPadding().minus(10.dp).coerceAtLeast(0.dp)
 
-        FitFlowNavGraph(
-            modifier = Modifier.padding(
-                bottom = bottomPadding,
-                top = topPadding,
-            ),
-            navController = navController,
-            startDestination = startDestination,
-        )
+            FitFlowNavGraph(
+                modifier = Modifier.padding(
+                    bottom = bottomPadding,
+                    top = topPadding,
+                ),
+                navController = navController,
+                startDestination = startDestination,
+            )
+        }
     }
 }
 
@@ -192,6 +213,7 @@ fun FitFlowTopBar(
                 Text(
                     text = stringResource(id = currentRoute.stringRes),
                     style = MaterialTheme.typography.titleLarge,
+                    fontSize = 20.sp,
                 )
             },
             navigationIcon = {
@@ -245,7 +267,7 @@ fun FitFlowTopBar(
                         },
                         modifier = Modifier
                             .clip(CircleShape)
-                            .size(40.dp)
+                            .size(38.dp)
                             .background(
                                 color = MaterialTheme.colorScheme.secondaryContainer,
                                 shape = CircleShape,

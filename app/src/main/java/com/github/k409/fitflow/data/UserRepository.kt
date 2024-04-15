@@ -5,6 +5,7 @@ import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.toUser
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
@@ -52,7 +53,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    fun getUser(uid: String): Flow<User> =
+    private fun getUser(uid: String): Flow<User> =
         getUserDocumentReference(uid)
             .snapshots()
             .map { it.toObject<User>() ?: User() }
@@ -71,40 +72,35 @@ class UserRepository @Inject constructor(
         }
     }
 
-    suspend fun getUser(): User? {
-        val currentUser = auth.currentUser ?: return null
+    suspend fun addCoinsAndXp(
+        coins: Long,
+        xp: Long,
+    ) {
+        val uid = auth.currentUser!!.uid
 
-        return try {
-            getUserDocumentReference(currentUser.uid)
-                .get()
-                .await()
-                .toObject<User>()
+        try {
+            getUserDocumentReference(uid)
+                .update(
+                    mapOf(
+                        "points" to FieldValue.increment(coins),
+                        "xp" to FieldValue.increment(xp),
+                    ),
+                ).await()
         } catch (e: Exception) {
-            null
+            Log.e("User Repository", "Error updating user coins and xp")
         }
     }
 
-    suspend fun addCoinsAndXp(coins: Long, xp: Long) {
-        val currentUser = auth.currentUser
-        val uid = currentUser!!.uid
-
-        val userDocumentReference = getUserDocumentReference(uid)
+    suspend fun updateFcmToken(token: String) {
+        val uid = auth.currentUser?.uid ?: return
 
         try {
-            val userSnapshot = userDocumentReference.get().await()
-            val user = userSnapshot.toObject(User::class.java) ?: return
-
-            val updatedCoins = user.points + coins
-            val updatedXp = user.xp + xp
-
-            userDocumentReference.update(
-                mapOf(
-                    "points" to updatedCoins,
-                    "xp" to updatedXp,
-                ),
-            ).await()
+            getUserDocumentReference(uid)
+                .update("fcmToken", token)
+                .await()
         } catch (e: Exception) {
-            Log.e("User Repository", "Error updating user coins and xp")
+            Log.e("User Repository", "Error updating user FCM token")
+            Log.e("User Repository", e.toString())
         }
     }
 
