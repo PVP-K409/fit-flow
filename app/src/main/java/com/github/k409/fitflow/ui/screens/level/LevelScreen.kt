@@ -12,7 +12,7 @@ import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 
 @Composable
 fun LevelScreen(
-    viewModel: LevelViewModel = hiltViewModel()
+    viewModel: LevelViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.levelUiState.collectAsState()
 

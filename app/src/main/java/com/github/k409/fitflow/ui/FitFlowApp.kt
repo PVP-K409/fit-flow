@@ -241,8 +241,6 @@ fun FitFlowTopBar(
                     )
                 }
 
-
-
                 IconButton(
                     onClick = {
                         navController.navigate(NavRoutes.Settings.route) {
@@ -288,7 +286,7 @@ fun FitFlowTopBar(
 fun UserLevel(
     modifier: Modifier = Modifier,
     xp: Int,
-    navController: NavController
+    navController: NavController,
 ) {
     val userLevel = levels.firstOrNull { xp in it.minXP..it.maxXP }
     Row(
@@ -299,7 +297,7 @@ fun UserLevel(
         ElevatedAssistChip(
             border = AssistChipDefaults.assistChipBorder(enabled = false),
             shape = RoundedCornerShape(100),
-            onClick = {navController.navigate(NavRoutes.Levels.route)},
+            onClick = { navController.navigate(NavRoutes.Levels.route) },
             label = {
                 userLevel?.let {
                     Text(

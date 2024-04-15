@@ -8,28 +8,28 @@ internal val levels = listOf(
         R.drawable.coin,
         "Beginner",
         0,
-        499
+        499,
     ),
     Level(
         2,
         R.drawable.coin,
         "Novice",
         500,
-        2499
+        2499,
     ),
     Level(
         3,
         R.drawable.coin,
         "Intermediate",
         2500,
-        4999
+        4999,
     ),
     Level(
         4,
         R.drawable.coin,
         "Expert",
         5000,
-        7499
+        7499,
     ),
     Level(
         5,

@@ -51,15 +51,14 @@ fun LevelCard(
                     shape = CardDefaults.shape,
                 ),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = "Level badge",
                 tint = Color.Unspecified,
-                modifier = Modifier.size(80.dp).
-                padding(start = 12.dp),
+                modifier = Modifier.size(80.dp)
+                    .padding(start = 12.dp),
             )
 
             Column(modifier = modifier.padding(12.dp)) {
@@ -69,7 +68,7 @@ fun LevelCard(
                     fontWeight = FontWeight.Bold,
                     color = colors.primary,
                 )
-                if(userXp in minXp..maxXp) {
+                if (userXp in minXp..maxXp) {
                     Column {
                         Row(
                             modifier = Modifier
@@ -80,22 +79,20 @@ fun LevelCard(
                         ) {
                             Text(
                                 text =
-                                if(maxXp == Int.MAX_VALUE)
+                                if (maxXp == Int.MAX_VALUE) {
                                     "$userXp / ..."
-                                else
-                                    "$userXp / $maxXp",
+                                } else {
+                                    "$userXp / $maxXp"
+                                },
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = colors.primary,
-                                modifier = Modifier.padding(end = 1.dp)
+                                modifier = Modifier.padding(end = 1.dp),
                             )
                             Spacer(Modifier.weight(1f))
                         }
                         LinearProgressIndicator(
                             progress = {
-                                if(maxXp == Int.MAX_VALUE)
-                                { userXp.toFloat() / userXp.toFloat() }
-                                else
-                                { userXp.toFloat() / maxXp.toFloat() }
+                                if (maxXp == Int.MAX_VALUE) { userXp.toFloat() / userXp.toFloat() } else { userXp.toFloat() / maxXp.toFloat() }
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -106,7 +103,7 @@ fun LevelCard(
                             color = colors.primary,
                         )
                     }
-                } else if(maxXp == Int.MAX_VALUE) {
+                } else if (maxXp == Int.MAX_VALUE) {
                     Text(
                         text = "$minXp++",
                         style = MaterialTheme.typography.bodyLarge,
