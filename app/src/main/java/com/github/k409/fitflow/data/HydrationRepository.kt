@@ -36,6 +36,7 @@ class HydrationRepository @Inject constructor(
     private val auth: FirebaseAuth,
     private val preferencesRepository: PreferencesRepository,
     private val hydrationNotificationService: HydrationNotificationService,
+    private val aquariumRepository: AquariumRepository,
 ) {
     suspend fun addWaterIntake(waterIntake: Int) {
         val currentUser = auth.currentUser
@@ -60,6 +61,15 @@ class HydrationRepository @Inject constructor(
             .await()
 
         scheduleHydrationNotifications()
+
+        val goal = getWaterIntakeGoal().first()
+
+        val updatedWaterIntake = getTodayWaterIntake().first().waterIntake
+        val previousWaterIntake = updatedWaterIntake - waterIntake
+
+        if (previousWaterIntake < goal && updatedWaterIntake >= goal) {
+            aquariumRepository.changeWaterLevel(0.1f)
+        }
     }
 
     fun getWaterIntakeGoal(): Flow<Int> {

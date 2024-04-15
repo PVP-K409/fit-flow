@@ -15,6 +15,7 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 private const val AQUARIUM_COLLECTION = "aquarium"
+private const val TAG = "AquariumRepository"
 
 class AquariumRepository @Inject constructor(
     private val db: FirebaseFirestore,
@@ -51,6 +52,47 @@ class AquariumRepository @Inject constructor(
             ).await()
         } catch (e: FirebaseFirestoreException) {
             Log.e("Aquarium Repository", "Error updating aquarium stats", e)
+        }
+    }
+
+    fun changeWaterLevel(changeValue: Float) {
+        val uid = auth.currentUser?.uid ?: return
+
+        val ref = getDocumentReference(uid)
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(ref)
+
+            val fieldName = AquariumStats::waterLevel.name
+
+            val newWaterLevel =
+                snapshot.getDouble(fieldName)!! + changeValue
+
+            if (newWaterLevel > 1.0 || newWaterLevel < 0.0) {
+                return@runTransaction
+            }
+
+            transaction.update(ref, fieldName, newWaterLevel)
+        }
+    }
+
+    fun changeHealthLevel(changeValue: Float) {
+        val uid = auth.currentUser?.uid ?: return
+
+        val ref = getDocumentReference(uid)
+        val fieldName = AquariumStats::healthLevel.name
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(ref)
+
+            val newHealthLevel =
+                snapshot.getDouble(fieldName)!! + changeValue
+
+            if (newHealthLevel > 1.0 || newHealthLevel < 0.0) {
+                return@runTransaction
+            }
+
+            transaction.update(ref, fieldName, newHealthLevel)
         }
     }
 
