@@ -10,6 +10,7 @@ import androidx.health.connect.client.records.StepsRecord
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.github.k409.fitflow.data.AquariumRepository
 import com.github.k409.fitflow.data.GoalsRepository
 import com.github.k409.fitflow.data.HealthStatsManager
 import com.github.k409.fitflow.data.UserRepository
@@ -29,6 +30,7 @@ class GoalUpdaterWorker @AssistedInject constructor(
     @Assisted workerParams: WorkerParameters,
     private val goalsRepository: GoalsRepository,
     private val userRepository: UserRepository,
+    private val aquariumRepository: AquariumRepository,
     private val healthStatsManager: HealthStatsManager,
     private val client: HealthConnectClient,
 ) : CoroutineWorker(appContext, workerParams) {
@@ -88,6 +90,9 @@ class GoalUpdaterWorker @AssistedInject constructor(
                         if (updatedGoal?.completed == false && updatedGoal.currentProgress > updatedGoal.target) {
                             goalsToUpdate[key]?.completed = true
                             userRepository.addCoinsAndXp(updatedGoal.points, updatedGoal.xp)
+
+                            val changeValue = if (period == weekly) 0.25f else 0.1f
+                            aquariumRepository.changeHealthLevel(changeValue)
                         }
                     }
 

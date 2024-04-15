@@ -59,20 +59,13 @@ class AquariumRepository @Inject constructor(
         val uid = auth.currentUser?.uid ?: return
 
         val ref = getDocumentReference(uid)
+        val fieldName = AquariumStats::waterLevel.name
 
         db.runTransaction { transaction ->
             val snapshot = transaction.get(ref)
+            val newWaterLevel = snapshot.getDouble(fieldName)!! + changeValue
 
-            val fieldName = AquariumStats::waterLevel.name
-
-            val newWaterLevel =
-                snapshot.getDouble(fieldName)!! + changeValue
-
-            if (newWaterLevel > 1.0 || newWaterLevel < 0.0) {
-                return@runTransaction
-            }
-
-            transaction.update(ref, fieldName, newWaterLevel)
+            transaction.update(ref, fieldName, newWaterLevel.coerceIn(0.0, 1.0))
         }
     }
 
@@ -84,15 +77,9 @@ class AquariumRepository @Inject constructor(
 
         db.runTransaction { transaction ->
             val snapshot = transaction.get(ref)
+            val newHealthLevel = snapshot.getDouble(fieldName)!! + changeValue
 
-            val newHealthLevel =
-                snapshot.getDouble(fieldName)!! + changeValue
-
-            if (newHealthLevel > 1.0 || newHealthLevel < 0.0) {
-                return@runTransaction
-            }
-
-            transaction.update(ref, fieldName, newHealthLevel)
+            transaction.update(ref, fieldName, newHealthLevel.coerceIn(0.0, 1.0))
         }
     }
 
