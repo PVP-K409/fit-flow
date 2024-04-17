@@ -135,7 +135,7 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
         workManager.enqueueUniquePeriodicWork(
             AquariumMetricsUpdaterWorker.WORKER_NAME,
             ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
-            aquariumWorkerRequest
+            aquariumWorkerRequest,
         )
     }
 
@@ -169,7 +169,7 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
 
     private fun calculateInitialDelayUntil(
         targetHour: Int,
-        targetMinute: Int
+        targetMinute: Int,
     ): Long {
         val now = LocalDateTime.now()
         var targetDate = now.toLocalDate()

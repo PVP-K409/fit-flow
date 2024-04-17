@@ -54,10 +54,11 @@ class AquariumMetricsUpdaterWorker @AssistedInject constructor(
                     aquariumRepository.changeHealthLevel(-HEALTH_LEVEL_CHANGE_DAILY)
                 }
             }
-
         } catch (e: Exception) {
             Log.e(
-                WORKER_NAME, "Failed to update aquarium metrics", e
+                WORKER_NAME,
+                "Failed to update aquarium metrics",
+                e,
             )
 
             return Result.failure()

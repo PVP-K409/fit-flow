@@ -71,7 +71,7 @@ class GoalsViewModel @Inject constructor(
     private fun checkForWalkingGoals() {
         _loading.value =
             !_todayGoals.value?.keys?.contains(walking)!! || !_weeklyGoals.value?.keys?.contains(
-                walking
+                walking,
             )!!
     }
 
