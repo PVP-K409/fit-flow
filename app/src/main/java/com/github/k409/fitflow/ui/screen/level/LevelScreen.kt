@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.screens.level
+package com.github.k409.fitflow.ui.screen.level
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn

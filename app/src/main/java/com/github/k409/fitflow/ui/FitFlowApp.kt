@@ -69,7 +69,7 @@ import com.github.k409.fitflow.ui.common.LocalSnackbarHostState
 import com.github.k409.fitflow.ui.common.SwipeableSnackbar
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
-import com.github.k409.fitflow.ui.screens.level.levels
+import com.github.k409.fitflow.ui.screen.level.levels
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)

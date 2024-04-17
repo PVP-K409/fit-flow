@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.screens.level
+package com.github.k409.fitflow.ui.screen.level
 
 import com.github.k409.fitflow.R
 
