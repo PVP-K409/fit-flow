@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.common
 
-import android.view.ViewGroup.FOCUS_BLOCK_DESCENDANTS
 import android.widget.NumberPicker
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -170,7 +169,7 @@ fun NumberPickerDialog(
                             this.displayedValues = displayedValues
                         }
                         // Disable manual user input on number pickers
-                        this.descendantFocusability = FOCUS_BLOCK_DESCENDANTS
+                        // this.descendantFocusability = FOCUS_BLOCK_DESCENDANTS
                         // Needs API 29+
                         this.textColor = themeColor.toArgb()
                     }

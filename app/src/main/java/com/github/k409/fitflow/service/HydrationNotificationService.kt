@@ -40,18 +40,15 @@ class HydrationNotificationService @Inject constructor(
         val remainingIntakeGoal = intakeGoal - todayWaterIntake
         val count = remainingIntakeGoal / cupSize
 
-        // TODO migrate to settings and allow user to modify
+        if (remainingIntakeGoal <= 0 || count <= 0) {
+            return
+        }
+
         val startLocalTime = LocalTime.of(8, 0)
         val endLocalTime = LocalTime.of(21, 0)
 
         val currentTime = LocalTime.now()
-
-        var notificationTime =
-            if (currentTime.isBefore(startLocalTime)) {
-                startLocalTime
-            } else {
-                currentTime
-            }
+        var notificationTime = startLocalTime
 
         val remainingHoursToday = Duration.between(notificationTime, endLocalTime)
         val intervalDuration = remainingHoursToday.dividedBy(count.toLong())

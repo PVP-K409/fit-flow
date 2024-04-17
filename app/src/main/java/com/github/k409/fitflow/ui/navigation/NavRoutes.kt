@@ -8,6 +8,7 @@ import androidx.compose.material.icons.outlined.Adjust
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Inventory2
+import androidx.compose.material.icons.outlined.LocalPlay
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.StackedLineChart
@@ -36,9 +37,11 @@ sealed class NavRoutes(
             Inventory,
             GoalCreation,
             Marketplace,
+            Levels,
             You,
         )
-        val bottomNavBarItems = listOf(Aquarium, Activity, Hydration, Goals, Marketplace, You)
+        val bottomNavBarItems =
+            listOf(Aquarium, Activity, Hydration, Goals, Marketplace, You, Levels)
     }
 
     data object Default : NavRoutes("default", R.string.app_name)
@@ -78,6 +81,8 @@ sealed class NavRoutes(
     data object Settings : NavRoutes("settings", R.string.settings, Icons.Outlined.Settings)
 
     data object Inventory : NavRoutes("inventory", R.string.inventory, Icons.Outlined.Inventory2)
+
+    data object Levels : NavRoutes("levels", R.string.levels, Icons.Outlined.LocalPlay)
 
     data object GoalCreation : NavRoutes("goalCreation", R.string.goal_creation, Icons.Outlined.Add)
 }

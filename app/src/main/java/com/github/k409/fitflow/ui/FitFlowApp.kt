@@ -69,6 +69,7 @@ import com.github.k409.fitflow.ui.common.LocalSnackbarHostState
 import com.github.k409.fitflow.ui.common.SwipeableSnackbar
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
+import com.github.k409.fitflow.ui.screen.level.levels
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -172,7 +173,7 @@ private fun UpdateTopAndBottomBarVisibility(
             topBarState.value = false
         }
 
-        NavRoutes.Settings, NavRoutes.ProfileCreation -> {
+        NavRoutes.Settings, NavRoutes.ProfileCreation, NavRoutes.Levels -> {
             bottomBarState.value = false
             topBarState.value = true
         }
@@ -232,6 +233,12 @@ fun FitFlowTopBar(
                         points = user.points,
                         xp = user.xp,
                     )
+                } else {
+                    UserLevel(
+                        modifier = Modifier.padding(end = 8.dp),
+                        xp = user.xp,
+                        navController,
+                    )
                 }
 
                 IconButton(
@@ -268,6 +275,34 @@ fun FitFlowTopBar(
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
                                 shape = CircleShape,
                             ),
+                    )
+                }
+            },
+        )
+    }
+}
+
+@Composable
+fun UserLevel(
+    modifier: Modifier = Modifier,
+    xp: Int,
+    navController: NavController,
+) {
+    val userLevel = levels.firstOrNull { xp in it.minXP..it.maxXP }
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        ElevatedAssistChip(
+            border = AssistChipDefaults.assistChipBorder(enabled = false),
+            shape = RoundedCornerShape(100),
+            onClick = { navController.navigate(NavRoutes.Levels.route) },
+            label = {
+                userLevel?.let {
+                    Text(
+                        text = it.id.toString(),
+                        style = MaterialTheme.typography.labelLarge,
                     )
                 }
             },
