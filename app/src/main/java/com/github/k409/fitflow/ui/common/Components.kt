@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun FitFlowCircularProgressIndicator(
@@ -106,5 +107,30 @@ fun HorizontalPagerIndicator(
                     .size(defaultRadius),
             )
         }
+    }
+}
+
+@Composable
+fun UnderConstructionContent() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(text = "🚧", fontSize = 48.sp)
+        Text(
+            modifier = Modifier
+                .padding(top = 16.dp),
+            text = "Sorry, this page is under construction!",
+            style = MaterialTheme.typography.titleMedium,
+            fontSize = 20.sp,
+        )
+        Text(
+            modifier = Modifier
+                .padding(top = 8.dp),
+            text = "Be careful, there are some dangerous tools here!",
+            fontSize = 14.sp
+        )
     }
 }

@@ -16,6 +16,7 @@ import com.github.k409.fitflow.ui.screen.login.LoginScreen
 import com.github.k409.fitflow.ui.screen.market.MarketScreen
 import com.github.k409.fitflow.ui.screen.profile.ProfileCreationScreen
 import com.github.k409.fitflow.ui.screen.settings.SettingsScreen
+import com.github.k409.fitflow.ui.screen.you.YouScreen
 
 @Composable
 fun FitFlowNavGraph(
@@ -31,18 +32,23 @@ fun FitFlowNavGraph(
         composable(NavRoutes.Aquarium.route) {
             AquariumScreen(navController = navController)
         }
+
         composable(NavRoutes.Activity.route) {
             ActivityScreen()
         }
+
         composable(NavRoutes.Goals.route) {
             GoalsScreen(navController = navController)
         }
+
         composable(NavRoutes.Marketplace.route) {
             MarketScreen()
         }
+
         composable(NavRoutes.GoalCreation.route) {
             GoalCreation(navController = navController)
         }
+
         composable(NavRoutes.Hydration.route) {
             HydrationScreen()
         }
@@ -58,11 +64,17 @@ fun FitFlowNavGraph(
         composable(NavRoutes.ProfileCreation.route) {
             ProfileCreationScreen(navController)
         }
+
         composable(NavRoutes.Settings.route) {
             SettingsScreen(navController = navController)
         }
+
         composable(NavRoutes.Login.route) {
             LoginScreen()
+        }
+
+        composable(NavRoutes.You.route) {
+            YouScreen(navController = navController)
         }
     }
 }

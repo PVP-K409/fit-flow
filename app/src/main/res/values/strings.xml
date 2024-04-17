@@ -87,4 +87,16 @@
     <string name="hydration_notification_progress">Today\'s progress:</string>
     <string name="today__progress_liters">Today\'s progress is %1$s/%2$s liters</string>
     <string name="default_notification_channel_id">Default</string>
+    <string name="you">You</string>
+    <string name="progress_tab_title">PROGRESS</string>
+    <string name="activities_tab_title">ACTIVITIES</string>
+    <string name="current_month_progress">Current Month Progress</string>
+    <string name="your_progress_for_this_month">Your progress for this month</string>
+    <string name="best_efforts_title">Best Efforts</string>
+    <string name="best_efforts_subtitle">See your best efforts for current month</string>
+    <string name="most_steps">Most Steps</string>
+    <string name="most_calories">Most Calories</string>
+    <string name="kcal">kcal</string>
+    <string name="most_distance">Most Distance</string>
+    <string name="km">km</string>
 </resources>

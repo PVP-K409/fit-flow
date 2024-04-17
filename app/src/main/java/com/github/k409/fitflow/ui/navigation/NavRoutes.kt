@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.StackedLineChart
 import androidx.compose.material.icons.outlined.Store
 import androidx.compose.material.icons.outlined.ViewTimeline
 import androidx.compose.material.icons.outlined.WaterDrop
@@ -35,13 +36,15 @@ sealed class NavRoutes(
             Inventory,
             GoalCreation,
             Marketplace,
+            You,
         )
-        val bottomNavBarItems = listOf(Aquarium, Activity, Hydration, Goals, Marketplace)
+        val bottomNavBarItems = listOf(Aquarium, Activity, Hydration, Goals, Marketplace, You)
     }
 
     data object Default : NavRoutes("default", R.string.app_name)
 
-    data object Aquarium : NavRoutes("aquarium", R.string.home, Icons.Outlined.Home, R.drawable.home_24px)
+    data object Aquarium :
+        NavRoutes("aquarium", R.string.home, Icons.Outlined.Home, R.drawable.home_24px)
 
     data object Activity : NavRoutes(
         "activity",
@@ -57,7 +60,15 @@ sealed class NavRoutes(
         NavRoutes("marketplace", R.string.marketplace, Icons.Outlined.Store, R.drawable.store_24px)
 
     data object Hydration :
-        NavRoutes("hydration", R.string.waterLogging, Icons.Outlined.WaterDrop, R.drawable.water_drop_24px)
+        NavRoutes(
+            "hydration",
+            R.string.waterLogging,
+            Icons.Outlined.WaterDrop,
+            R.drawable.water_drop_24px
+        )
+
+    data object You :
+        NavRoutes("you", R.string.you, Icons.Outlined.StackedLineChart, R.drawable.analytics_48px)
 
     data object ProfileCreation :
         NavRoutes("profileCreation", R.string.profile_creation, Icons.Outlined.PersonOutline)
