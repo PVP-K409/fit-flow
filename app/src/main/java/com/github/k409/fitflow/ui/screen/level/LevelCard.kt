@@ -78,28 +78,28 @@ fun LevelCard(
 
                     Spacer(modifier = Modifier.weight(1f))
 
-                    Text(
-                        text = "$minXp",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Normal,
-                        color = colors.primary,
-                    )
-
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowRightAlt,
-                        contentDescription = null,
-                        tint = colors.primary,
-                        modifier = Modifier.size(18.dp),
-                    )
-
                     if (maxXp == Int.MAX_VALUE) {
                         Text(
-                            text = "∞",
+                            text = "$minXp+",
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Normal,
                             color = colors.primary,
                         )
                     } else {
+                        Text(
+                            text = "$minXp",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Normal,
+                            color = colors.primary,
+                        )
+
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowRightAlt,
+                            contentDescription = null,
+                            tint = colors.primary,
+                            modifier = Modifier.size(18.dp),
+                        )
+
                         Text(
                             text = "$maxXp",
                             style = MaterialTheme.typography.labelLarge,
@@ -113,9 +113,9 @@ fun LevelCard(
                     Text(
                         text =
                         if(maxXp == Int.MAX_VALUE) {
-                            "${userXp}/∞"
+                            "$minXp+"
                         } else {
-                            "${userXp}/${maxXp}"
+                            "$userXp/$maxXp"
                         },
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Normal,
