@@ -8,7 +8,6 @@ import androidx.work.WorkerParameters
 import com.github.k409.fitflow.data.AquariumRepository
 import com.github.k409.fitflow.data.GoalsRepository
 import com.github.k409.fitflow.data.HEALTH_LEVEL_CHANGE_DAILY
-import com.github.k409.fitflow.data.HEALTH_LEVEL_CHANGE_WEEKLY
 import com.github.k409.fitflow.data.HydrationRepository
 import com.github.k409.fitflow.data.WATER_LEVEL_CHANGE_DAILY
 import dagger.assisted.Assisted
@@ -49,20 +48,10 @@ class AquariumMetricsUpdaterWorker @AssistedInject constructor(
             // activity goals
             val dailyActivityGoals =
                 goalsRepository.getDailyGoals(yesterday.toString()) ?: emptyMap()
-            val weeklyActivityGoals =
-                goalsRepository.getWeeklyGoals(yesterday.toString()) ?: emptyMap()
 
-            // TODO: validate logic below
             for (goal in dailyActivityGoals) {
                 if (!goal.value.completed) {
                     aquariumRepository.changeHealthLevel(-HEALTH_LEVEL_CHANGE_DAILY)
-                }
-            }
-
-            // TODO: validate logic below
-            for (goal in weeklyActivityGoals) {
-                if (!goal.value.completed) {
-                    aquariumRepository.changeHealthLevel(-HEALTH_LEVEL_CHANGE_WEEKLY)
                 }
             }
 
