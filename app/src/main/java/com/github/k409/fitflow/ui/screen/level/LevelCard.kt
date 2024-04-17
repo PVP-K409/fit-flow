@@ -111,7 +111,7 @@ fun LevelCard(
                 Column {
                     Text(
                         text =
-                        if(maxXp == Int.MAX_VALUE) {
+                        if (maxXp == Int.MAX_VALUE) {
                             "$minXp+"
                         } else {
                             "$userXp/$maxXp"
