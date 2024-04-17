@@ -38,14 +38,14 @@ fun LevelCard(
 ) {
     val colors = MaterialTheme.colorScheme
 
-    Column (
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .background(colors.primaryContainer)
-            .padding(4.dp)
+            .padding(4.dp),
     ) {
-        Row (
+        Row(
             modifier = modifier
                 .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
@@ -56,14 +56,14 @@ fun LevelCard(
                 contentDescription = "Level badge",
                 tint = Color.Unspecified,
                 modifier = Modifier
-                    .size(58.dp)
-                    //.padding(start = 8.dp, end = 8.dp),
+                    .size(58.dp),
+                // .padding(start = 8.dp, end = 8.dp),
             )
-            Column (
+            Column(
                 modifier = modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             ) {
-                Row (
+                Row(
                     modifier = modifier
                         .fillMaxSize(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -112,10 +112,10 @@ fun LevelCard(
                 Column {
                     Text(
                         text =
-                        if(maxXp == Int.MAX_VALUE) {
-                            "${userXp}/∞"
+                        if (maxXp == Int.MAX_VALUE) {
+                            "$userXp/∞"
                         } else {
-                            "${userXp}/${maxXp}"
+                            "$userXp/$maxXp"
                         },
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Normal,

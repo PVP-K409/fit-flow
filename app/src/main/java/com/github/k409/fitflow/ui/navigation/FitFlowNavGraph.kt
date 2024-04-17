@@ -12,11 +12,11 @@ import com.github.k409.fitflow.ui.screen.goals.GoalCreation
 import com.github.k409.fitflow.ui.screen.goals.GoalsScreen
 import com.github.k409.fitflow.ui.screen.hydration.HydrationScreen
 import com.github.k409.fitflow.ui.screen.inventory.InventoryScreen
+import com.github.k409.fitflow.ui.screen.level.LevelScreen
 import com.github.k409.fitflow.ui.screen.login.LoginScreen
 import com.github.k409.fitflow.ui.screen.market.MarketScreen
 import com.github.k409.fitflow.ui.screen.profile.ProfileCreationScreen
 import com.github.k409.fitflow.ui.screen.settings.SettingsScreen
-import com.github.k409.fitflow.ui.screen.level.LevelScreen
 
 @Composable
 fun FitFlowNavGraph(
