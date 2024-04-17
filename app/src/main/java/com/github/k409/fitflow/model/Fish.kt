@@ -77,9 +77,9 @@ enum class FishPhase {
     companion object {
         fun getPhase(healthLevel: Float): FishPhase {
             return when {
-                healthLevel >= 0.8 -> Strong
-                healthLevel >= 0.55 -> Regular
-                healthLevel >= 0.20 -> Dying
+                healthLevel >= 1 -> Strong
+                healthLevel >= 0.5 -> Regular
+                healthLevel >= 0.25 -> Dying
                 else -> Dead
             }
         }
