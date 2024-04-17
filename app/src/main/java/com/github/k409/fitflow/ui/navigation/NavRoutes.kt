@@ -41,7 +41,7 @@ sealed class NavRoutes(
             You,
         )
         val bottomNavBarItems =
-            listOf(Aquarium, Activity, Hydration, Goals, Marketplace, You, Levels)
+            listOf(Aquarium, Activity, Hydration, Goals, Marketplace, You)
     }
 
     data object Default : NavRoutes("default", R.string.app_name)
