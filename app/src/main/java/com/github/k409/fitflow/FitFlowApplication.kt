@@ -18,6 +18,7 @@ import coil.decode.SvgDecoder
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import com.github.k409.fitflow.model.NotificationChannel
+import com.github.k409.fitflow.worker.AquariumMetricsUpdaterWorker
 import com.github.k409.fitflow.worker.DrinkReminderWorker
 import com.github.k409.fitflow.worker.GoalUpdaterWorker
 import com.github.k409.fitflow.worker.StepCounterWorker
@@ -53,6 +54,7 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
         scheduleStepCounterWorkers()
         scheduleGoalUpdaterWorkers()
         scheduleHydrationReminderWorker()
+        scheduleAquariumMetricsUpdaterWorker()
     }
 
     override fun newImageLoader(): ImageLoader {
@@ -120,6 +122,23 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
         )
     }
 
+    private fun scheduleAquariumMetricsUpdaterWorker() {
+        val aquariumWorkerRequest = PeriodicWorkRequestBuilder<AquariumMetricsUpdaterWorker>(
+            repeatInterval = 1,
+            repeatIntervalTimeUnit = TimeUnit.DAYS,
+        ).apply {
+            val initialDelay = calculateInitialDelayUntil(0, 15)
+
+            setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+        }.build()
+
+        workManager.enqueueUniquePeriodicWork(
+            AquariumMetricsUpdaterWorker.WORKER_NAME,
+            ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+            aquariumWorkerRequest,
+        )
+    }
+
     private inline fun <reified T : ListenableWorker> scheduleWork(
         workerName: String,
         repeatInterval: Long,
@@ -141,17 +160,27 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
     }
 
     private fun calculateInitialDelayUntilMidnight(): Long {
-        val now = LocalDateTime.now()
-        val nextMidnight = LocalDateTime.of(now.toLocalDate().plusDays(1), LocalTime.MIDNIGHT)
-
-        return Duration.between(now, nextMidnight).toMillis()
+        return calculateInitialDelayUntil(0, 0)
     }
 
     private fun calculateInitialDelayBeforeMidnight(): Long {
-        val now = LocalDateTime.now()
-        val beforeMidnight = LocalDateTime.of(now.toLocalDate().plusDays(1), LocalTime.of(23, 58))
+        return calculateInitialDelayUntil(23, 58)
+    }
 
-        return Duration.between(now, beforeMidnight).toMillis()
+    private fun calculateInitialDelayUntil(
+        targetHour: Int,
+        targetMinute: Int,
+    ): Long {
+        val now = LocalDateTime.now()
+        var targetDate = now.toLocalDate()
+
+        if (now.hour > targetHour || (now.hour == targetHour && now.minute >= targetMinute)) {
+            targetDate = targetDate.plusDays(1)
+        }
+
+        val targetTimeNextDay = LocalDateTime.of(targetDate, LocalTime.of(targetHour, targetMinute))
+
+        return Duration.between(now, targetTimeNextDay).toMillis()
     }
 
     private fun createNotificationChannels() {
