@@ -71,6 +71,7 @@ object RepositoryModule {
         auth: FirebaseAuth,
         preferencesRepository: PreferencesRepository,
         hydrationNotificationService: HydrationNotificationService,
+        aquariumRepository: AquariumRepository,
     ): HydrationRepository {
         return HydrationRepository(
             userRepository,
@@ -78,6 +79,7 @@ object RepositoryModule {
             auth,
             preferencesRepository,
             hydrationNotificationService,
+            aquariumRepository,
         )
     }
 

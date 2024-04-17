@@ -8,7 +8,10 @@ import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.k409.fitflow.data.AquariumRepository
 import com.github.k409.fitflow.data.GoalsRepository
+import com.github.k409.fitflow.data.HEALTH_LEVEL_CHANGE_DAILY
+import com.github.k409.fitflow.data.HEALTH_LEVEL_CHANGE_WEEKLY
 import com.github.k409.fitflow.data.HealthStatsManager
 import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.model.GoalRecord
@@ -32,6 +35,7 @@ class GoalsViewModel @Inject constructor(
     private val healthStatsManager: HealthStatsManager,
     private val userRepository: UserRepository,
     private val goalService: GoalService,
+    private val aquariumRepository: AquariumRepository,
 ) : ViewModel() {
     private val _todayGoals = MutableStateFlow<MutableMap<String, GoalRecord>?>(mutableMapOf())
     private val _weeklyGoals = MutableStateFlow<MutableMap<String, GoalRecord>?>(mutableMapOf())
@@ -65,7 +69,10 @@ class GoalsViewModel @Inject constructor(
     }
 
     private fun checkForWalkingGoals() {
-        _loading.value = !_todayGoals.value?.keys?.contains(walking)!! || !_weeklyGoals.value?.keys?.contains(walking)!!
+        _loading.value =
+            !_todayGoals.value?.keys?.contains(walking)!! || !_weeklyGoals.value?.keys?.contains(
+                walking,
+            )!!
     }
 
     fun loadGoals(type: String) {
@@ -201,6 +208,12 @@ class GoalsViewModel @Inject constructor(
                 if (updatedGoal?.completed == false && updatedGoal.currentProgress > updatedGoal.target) {
                     goalsToUpdate[key]?.completed = true
                     userRepository.addCoinsAndXp(updatedGoal.points, updatedGoal.xp)
+
+                    val period = if (type == weekly) weekly else daily
+                    val changeValue =
+                        if (period == weekly) HEALTH_LEVEL_CHANGE_WEEKLY else HEALTH_LEVEL_CHANGE_DAILY
+
+                    aquariumRepository.changeHealthLevel(changeValue)
                 }
             }
 
