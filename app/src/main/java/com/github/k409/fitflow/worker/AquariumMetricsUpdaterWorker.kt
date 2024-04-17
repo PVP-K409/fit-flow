@@ -66,9 +66,10 @@ class AquariumMetricsUpdaterWorker @AssistedInject constructor(
                 }
             }
 
-
         } catch (e: Exception) {
-            Log.e("DrinkReminderWorker", "Failed to schedule notifications", e)
+            Log.e(
+                WORKER_NAME, "Failed to update aquarium metrics", e
+            )
 
             return Result.failure()
         }
