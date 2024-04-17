@@ -127,7 +127,7 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
             repeatInterval = 1,
             repeatIntervalTimeUnit = TimeUnit.DAYS,
         ).apply {
-            val initialDelay = calculateInitialDelayUntil(0, 1)
+            val initialDelay = calculateInitialDelayUntil(0, 15)
 
             setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
         }.build()
