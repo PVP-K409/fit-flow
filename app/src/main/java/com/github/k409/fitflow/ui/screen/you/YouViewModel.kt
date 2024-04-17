@@ -2,10 +2,12 @@ package com.github.k409.fitflow.ui.screen.you
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.k409.fitflow.data.HydrationRepository
 import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.data.preferences.PreferencesRepository
 import com.github.k409.fitflow.model.DailyStepRecord
+import com.github.k409.fitflow.model.HydrationStats
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.theme.ThemePreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,8 +20,9 @@ import javax.inject.Inject
 @HiltViewModel
 class YouViewModel @Inject constructor(
     userRepository: UserRepository,
-    private val preferencesRepository: PreferencesRepository,
-    private val stepsRepository: StepsRepository,
+    preferencesRepository: PreferencesRepository,
+    stepsRepository: StepsRepository,
+    hydrationRepository: HydrationRepository,
 ) : ViewModel() {
 
     val youUiState: StateFlow<YouUiState> = combine(
@@ -40,11 +43,13 @@ class YouViewModel @Inject constructor(
         stepsRepository.getStepRecordCurrentWeek(),
         stepsRepository.getStepRecordLastWeeks(12),
         stepsRepository.getStepRecordThisMonth(),
-    ) { currentWeek, lastWeeks, thisMonth ->
+        hydrationRepository.getLastMonthStats(),
+    ) { currentWeek, lastWeeks, thisMonth, hydrationStats ->
         ProgressUiState.Success(
             currentWeek = currentWeek,
             lastWeeks = lastWeeks,
             thisMonth = thisMonth,
+            hydrationStats = hydrationStats,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -69,5 +74,6 @@ sealed interface ProgressUiState {
         val currentWeek: Map<String, DailyStepRecord> = emptyMap(),
         val thisMonth: Map<String, DailyStepRecord> = emptyMap(),
         val lastWeeks: Map<String, DailyStepRecord> = emptyMap(),
+        val hydrationStats: HydrationStats = HydrationStats(),
     ) : ProgressUiState
 }

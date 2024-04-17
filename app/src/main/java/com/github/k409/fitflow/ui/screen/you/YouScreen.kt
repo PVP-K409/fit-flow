@@ -57,7 +57,7 @@ fun YouScreen(
                 .verticalScroll(scrollState)
                 .padding(vertical = 16.dp)
                 .padding(bottom = 6.dp),
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start,
         ) {
             when (selectedTabIndex.intValue) {

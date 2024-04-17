@@ -99,4 +99,8 @@
     <string name="kcal">kcal</string>
     <string name="most_distance">Most Distance</string>
     <string name="km">km</string>
+    <string name="avg_hydration">Average Hydration</string>
+    <string name="litres">litres</string>
+    <string name="per_day">per day</string>
+    <string name="total_hydration">Total Hydration</string>
 </resources>

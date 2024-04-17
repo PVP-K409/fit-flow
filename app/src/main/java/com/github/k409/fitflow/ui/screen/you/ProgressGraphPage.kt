@@ -16,6 +16,8 @@ import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Straighten
+import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material.icons.outlined.LocalDrink
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -134,6 +136,9 @@ private fun BestEffortsCard(uiState: ProgressUiState.Success) {
     val mostCaloriesEntry = uiState.thisMonth.maxByOrNull { it.value.caloriesBurned ?: 0 }
     val mostDistanceEntry = uiState.thisMonth.maxByOrNull { it.value.totalDistance ?: 0.0 }
 
+    val hydrationMonth = uiState.hydrationStats.thisMonthTotalAmount / 1000f
+    val avgHydration = hydrationMonth / 30f
+
     OutlineCardContainer(
         title = title,
         subtitleText = subtitleText
@@ -172,6 +177,25 @@ private fun BestEffortsCard(uiState: ProgressUiState.Success) {
                 iconImageVector = Icons.Default.Straighten
             )
 
+            HorizontalDivider()
+
+            EffortRow(
+                leftLabel = stringResource(R.string.total_hydration),
+                leftValue = stringResource(R.string.this_month),
+                rightLabel = String.format(Locale.getDefault(), "%.2f", hydrationMonth),
+                rightValue = stringResource(R.string.litres),
+                iconImageVector = Icons.Default.WaterDrop
+            )
+
+            HorizontalDivider()
+
+            EffortRow(
+                leftLabel = stringResource(R.string.avg_hydration),
+                leftValue = stringResource(R.string.per_day),
+                rightLabel = String.format(Locale.getDefault(), "%.2f", avgHydration),
+                rightValue = stringResource(R.string.litres),
+                iconImageVector = Icons.Outlined.LocalDrink
+            )
         }
 
         Spacer(modifier = Modifier.height(8.dp))
