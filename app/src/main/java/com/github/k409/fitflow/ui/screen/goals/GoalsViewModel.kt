@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.AquariumRepository
 import com.github.k409.fitflow.data.GoalsRepository
+import com.github.k409.fitflow.data.HEALTH_LEVEL_CHANGE_DAILY
+import com.github.k409.fitflow.data.HEALTH_LEVEL_CHANGE_WEEKLY
 import com.github.k409.fitflow.data.HealthStatsManager
 import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.model.GoalRecord
@@ -208,7 +210,8 @@ class GoalsViewModel @Inject constructor(
                     userRepository.addCoinsAndXp(updatedGoal.points, updatedGoal.xp)
 
                     val period = if (type == weekly) weekly else daily
-                    val changeValue = if (period == weekly) 0.25f else 0.1f
+                    val changeValue =
+                        if (period == weekly) HEALTH_LEVEL_CHANGE_WEEKLY else HEALTH_LEVEL_CHANGE_DAILY
 
                     aquariumRepository.changeHealthLevel(changeValue)
                 }

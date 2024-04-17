@@ -67,8 +67,8 @@ class HydrationRepository @Inject constructor(
         val updatedWaterIntake = getTodayWaterIntake().first().waterIntake
         val previousWaterIntake = updatedWaterIntake - waterIntake
 
-        if (previousWaterIntake < goal && updatedWaterIntake >= goal) {
-            aquariumRepository.changeWaterLevel(0.1f)
+        if (goal in (previousWaterIntake + 1)..updatedWaterIntake) {
+            aquariumRepository.changeWaterLevel(WATER_LEVEL_CHANGE_DAILY)
         }
     }
 
@@ -92,13 +92,18 @@ class HydrationRepository @Inject constructor(
 
     fun getTodayWaterIntake(): Flow<HydrationRecord> {
         val uid = auth.currentUser?.uid ?: return flowOf(HydrationRecord())
-
         val todayDate = LocalDate.now().toString()
+
+        return getWaterIntake(todayDate)
+    }
+
+    fun getWaterIntake(date: String): Flow<HydrationRecord> {
+        val uid = auth.currentUser?.uid ?: return flowOf(HydrationRecord())
 
         return db.collection(JOURNAL_COLLECTION)
             .document(uid)
             .collection(HYDRATION_COLLECTION)
-            .document(todayDate)
+            .document(date)
             .snapshots()
             .map { snapshot ->
                 snapshot.toObject<HydrationRecord>() ?: HydrationRecord()

@@ -12,6 +12,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.github.k409.fitflow.data.AquariumRepository
 import com.github.k409.fitflow.data.GoalsRepository
+import com.github.k409.fitflow.data.HEALTH_LEVEL_CHANGE_DAILY
+import com.github.k409.fitflow.data.HEALTH_LEVEL_CHANGE_WEEKLY
 import com.github.k409.fitflow.data.HealthStatsManager
 import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.model.getValidExerciseTypesByType
@@ -91,7 +93,8 @@ class GoalUpdaterWorker @AssistedInject constructor(
                             goalsToUpdate[key]?.completed = true
                             userRepository.addCoinsAndXp(updatedGoal.points, updatedGoal.xp)
 
-                            val changeValue = if (period == weekly) 0.25f else 0.1f
+                            val changeValue =
+                                if (period == weekly) HEALTH_LEVEL_CHANGE_WEEKLY else HEALTH_LEVEL_CHANGE_DAILY
                             aquariumRepository.changeHealthLevel(changeValue)
                         }
                     }

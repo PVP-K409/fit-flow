@@ -17,6 +17,10 @@ import javax.inject.Inject
 private const val AQUARIUM_COLLECTION = "aquarium"
 private const val TAG = "AquariumRepository"
 
+const val WATER_LEVEL_CHANGE_DAILY = 0.1f
+const val HEALTH_LEVEL_CHANGE_DAILY = 0.05f
+const val HEALTH_LEVEL_CHANGE_WEEKLY = 0.25f
+
 class AquariumRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
