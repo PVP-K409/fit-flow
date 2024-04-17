@@ -60,8 +60,9 @@ class MarketRepository @Inject constructor(
             "phases" to (item.phases ?: emptyMap()),
             "price" to item.price,
             "title" to item.title,
-            "type" to item.title,
+            "type" to item.type,
             "image" to item.image,
+            "isPlaced" to item.isPlaced,
         )
         try {
             inventoryDocumentRef
