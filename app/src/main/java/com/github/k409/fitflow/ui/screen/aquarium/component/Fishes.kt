@@ -13,7 +13,6 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -78,7 +77,6 @@ fun DraggableFishBox(
 ) {
     var imageDownloadUrl by remember { mutableStateOf("") }
 
-    // Trigger image recomposition when selected item category changes
     LaunchedEffect(LocalContext.current) {
         imageDownloadUrl = marketViewModel.getImageDownloadUrl(itemImageStorageUrl)
     }

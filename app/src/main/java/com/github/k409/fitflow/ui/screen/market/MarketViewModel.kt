@@ -2,7 +2,7 @@ package com.github.k409.fitflow.ui.screen.market
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.k409.fitflow.data.MarketRepository
+import com.github.k409.fitflow.data.ItemRepository
 import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.model.Item
 import com.github.k409.fitflow.model.User
@@ -18,14 +18,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MarketViewModel @Inject constructor(
-    private val marketRepository: MarketRepository,
+    private val itemRepository: ItemRepository,
     private val userRepository: UserRepository,
 ) : ViewModel() {
 
     val marketUiState: StateFlow<MarketUiState> = combine(
         userRepository.currentUser,
-        marketRepository.getMarketItems(),
-        marketRepository.getUserOwnedItems(),
+        itemRepository.getMarketItems(),
+        itemRepository.getUserOwnedItems(),
     ) { user, items, ownedItems ->
         MarketUiState.Success(
             user = user,
@@ -44,18 +44,18 @@ class MarketViewModel @Inject constructor(
     }
     fun addItemToUserInventory(item: Item) {
         viewModelScope.launch {
-            marketRepository.addItemToUser(item)
+            itemRepository.addItemToUser(item)
         }
     }
     fun removeItemFromUserInventory(item: Item) {
         viewModelScope.launch {
-            marketRepository.removeItemFromUser(item)
+            itemRepository.removeItemFromUser(item)
         }
     }
     suspend fun getImageDownloadUrl(imageUrl: String): String {
         var url: String
         withContext(Dispatchers.IO) {
-            url = marketRepository.getImageDownloadUrl(imageUrl)
+            url = itemRepository.getImageDownloadUrl(imageUrl)
         }
         return url
     }

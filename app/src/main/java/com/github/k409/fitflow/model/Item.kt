@@ -8,5 +8,5 @@ data class Item(
     val phases: Map<String, String>? = emptyMap(),
     val type: String = "",
     val image: String = "",
-    val isPlaced: Boolean = false,
+    val placed: Boolean = false,
 )

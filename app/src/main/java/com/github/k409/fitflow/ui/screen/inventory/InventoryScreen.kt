@@ -1,8 +1,5 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.github.k409.fitflow.ui.screen.inventory
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.k409.fitflow.model.Item
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.item.CategorySelectHeader
 import com.github.k409.fitflow.ui.common.item.InventoryItemCard
@@ -40,7 +38,6 @@ fun InventoryScreen(
     }
     val ownedItems = (inventoryUiState as InventoryUiState.Success).ownedItems
 
-    Log.d("InventoryScreen", ownedItems[0].isPlaced.toString())
     val items = when (selectedCategoryIndex) {
         0 -> ownedItems.filter { it.type == "fish" }
         1 -> ownedItems.filter { it.type == "decoration" }
@@ -58,34 +55,36 @@ fun InventoryScreen(
             )
         }
         items(items) { item ->
-            InventoryItemCard(
-                modifier = Modifier,
-                imageUrl = item.phases?.get("Regular") ?: item.image,
-                name = item.title,
-                description = item.description,
-                removeButtonText = "Remove",
-                onRemoveClick =
-                {
-                    Toast.makeText(
-                        context,
-                        "Removed from aquarium",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                },
-                removeButtonEnabled = item.isPlaced,
-                addButtonText = "Add",
-                onAddClick =
-                {
-                    Toast.makeText(
-                        context,
-                        "Added to aquarium",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                },
-                addButtonEnabled = !item.isPlaced,
-                coinIcon = {},
-                selectedCategoryIndex = selectedCategoryIndex,
-            )
+                InventoryItemCard(
+                    modifier = Modifier,
+                    imageUrl = item.phases?.get("Regular") ?: item.image,
+                    name = item.title,
+                    description = item.description,
+                    removeButtonText = "Remove",
+                    onRemoveClick =
+                    {
+                        inventoryViewModel.updateInventoryItem(Item(item.id, item.title, item.description, item.price, item.phases, item.type, item.image, false))
+                        Toast.makeText(
+                            context,
+                            "Removed from aquarium",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    },
+                    removeButtonEnabled = item.placed,
+                    addButtonText = "Add",
+                    onAddClick =
+                    {
+                        inventoryViewModel.updateInventoryItem(Item(item.id, item.title, item.description, item.price, item.phases, item.type, item.image, true))
+                        Toast.makeText(
+                            context,
+                            "Added to aquarium",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    },
+                    addButtonEnabled = !item.placed,
+                    coinIcon = {},
+                    selectedCategoryIndex = selectedCategoryIndex,
+                )
         }
     }
 }
