@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -28,13 +30,19 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.noRippleClickable
+import com.github.k409.fitflow.ui.screen.market.MarketViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.roundToInt
@@ -61,10 +69,18 @@ fun DraggableFishBox(
     modifier: Modifier = Modifier,
     fishModifier: Modifier = Modifier,
     @DrawableRes fishDrawableId: Int = R.drawable.primary_fish,
+    itemImageStorageUrl: String = "",
     fishSize: Dp = 100.dp,
     initialOffset: Offset = Offset(0f, 0f),
     onPositionChanged: (x: Float, y: Float) -> Unit = { _, _ -> },
+    marketViewModel: MarketViewModel = hiltViewModel(),
 ) {
+    var imageDownloadUrl by remember { mutableStateOf("") }
+
+    LaunchedEffect(LocalContext.current) {
+        imageDownloadUrl = marketViewModel.getImageDownloadUrl(itemImageStorageUrl)
+    }
+
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize(),
@@ -89,7 +105,7 @@ fun DraggableFishBox(
             label = "",
         )
 
-        FishImage(
+        /*FishImage(
             fishSize = fishSize,
             fishDrawableId = fishDrawableId,
             modifier = fishModifier
@@ -126,7 +142,55 @@ fun DraggableFishBox(
 
                     onPositionChanged(offsetX, offsetY)
                 },
-        )
+        )*/
+
+        if (imageDownloadUrl.isNotEmpty()) {
+            // Log.d("ItemCard", "Composing $name")
+            // Log.d("ItemCard", "Composing $imageDownloadUrl")
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageDownloadUrl)
+                    .decoderFactory(SvgDecoder.Factory())
+                    .build(),
+                error = painterResource(id = fishDrawableId),
+                contentDescription = "",
+                modifier = fishModifier
+                    .offset {
+                        IntOffset(
+                            offsetX.roundToInt(),
+                            offsetY.roundToInt() + translationY.roundToInt(),
+                        )
+                    }
+                    .align(Alignment.TopStart)
+                    .width(fishSize)
+                    .pointerInput(fishSize) {
+                        val boxSize = this.size
+
+                        detectDragGestures { _, dragAmount ->
+                            offsetX = (offsetX + dragAmount.x).coerceIn(
+                                0f,
+                                parentWidth - boxSize.width.toFloat(),
+                            )
+                            offsetY = (offsetY + dragAmount.y).coerceIn(
+                                0f,
+                                parentHeight - boxSize.height.toFloat(),
+                            )
+
+                            onPositionChanged(offsetX, offsetY)
+                        }
+                    }
+                    .onSizeChanged { size ->
+                        fishHeight = size.height.toFloat()
+                        fishWidth = size.width.toFloat()
+
+                        // center the fish
+                        offsetX = (parentWidth - size.width) / 2f
+                        offsetY = (parentHeight - size.height) / 2f
+
+                        onPositionChanged(offsetX, offsetY)
+                    },
+            )
+        }
     }
 }
 

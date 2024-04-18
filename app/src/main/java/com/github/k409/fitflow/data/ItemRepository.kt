@@ -4,6 +4,7 @@ import android.util.Log
 import com.github.k409.fitflow.model.Item
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.snapshots
@@ -17,12 +18,16 @@ import javax.inject.Inject
 private const val MARKET_COLLECTION = "market"
 private const val INVENTORY_COLLECTION = "inventory"
 private const val ITEMS_COLLECTION = "items"
-class MarketRepository @Inject constructor(
+
+private const val PLACED_FIELD = "placed"
+private const val PRICE_FIELD = "price"
+class ItemRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
 ) {
     fun getMarketItems(): Flow<List<Item>> {
         return db.collection(MARKET_COLLECTION)
+            .orderBy(PRICE_FIELD)
             .snapshots()
             .map {
                 it.documents.map { document ->
@@ -48,11 +53,7 @@ class MarketRepository @Inject constructor(
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
 
-        val inventoryDocumentRef =
-            db.collection(INVENTORY_COLLECTION)
-                .document(uid)
-                .collection(ITEMS_COLLECTION)
-                .document(item.id.toString())
+        val inventoryDocumentRef = getInventoryDocumentRef(uid, item)
 
         val updatedData = hashMapOf(
             "description" to item.description,
@@ -62,7 +63,7 @@ class MarketRepository @Inject constructor(
             "title" to item.title,
             "type" to item.type,
             "image" to item.image,
-            "isPlaced" to item.isPlaced,
+            "placed" to item.placed,
         )
         try {
             inventoryDocumentRef
@@ -76,11 +77,7 @@ class MarketRepository @Inject constructor(
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
 
-        val inventoryDocumentRef =
-            db.collection(INVENTORY_COLLECTION)
-                .document(uid)
-                .collection(ITEMS_COLLECTION)
-                .document(item.id.toString())
+        val inventoryDocumentRef = getInventoryDocumentRef(uid, item)
 
         try {
             inventoryDocumentRef
@@ -89,6 +86,30 @@ class MarketRepository @Inject constructor(
         } catch (e: FirebaseFirestoreException) {
             Log.e("Market Repository", "Error updating inventory", e)
         }
+    }
+    fun getAquariumItems(): Flow<List<Item>> {
+        val currentUser = auth.currentUser
+        val uid = currentUser!!.uid
+
+        return db.collection(INVENTORY_COLLECTION)
+            .document(uid)
+            .collection(ITEMS_COLLECTION)
+            .whereEqualTo(PLACED_FIELD, true)
+            .snapshots()
+            .map {
+                it.documents.map { document ->
+                    document.toObject<Item>() ?: Item()
+                }
+            }
+    }
+    private fun getInventoryDocumentRef(
+        uid: String,
+        item: Item,
+    ): DocumentReference {
+        return db.collection(INVENTORY_COLLECTION)
+            .document(uid)
+            .collection(ITEMS_COLLECTION)
+            .document(item.id.toString())
     }
     suspend fun getImageDownloadUrl(imageUrl: String): String {
         // Convert cloud storage url to download url
