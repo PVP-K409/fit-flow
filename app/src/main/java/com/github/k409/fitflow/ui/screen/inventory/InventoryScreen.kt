@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -38,6 +39,8 @@ fun InventoryScreen(
     }
     val ownedItems = (inventoryUiState as InventoryUiState.Success).ownedItems
 
+    var placedItemCount by remember { mutableIntStateOf(ownedItems.filter { it.placed }.size) }
+
     val items = when (selectedCategoryIndex) {
         0 -> ownedItems.filter { it.type == "fish" }
         1 -> ownedItems.filter { it.type == "decoration" }
@@ -55,36 +58,68 @@ fun InventoryScreen(
             )
         }
         items(items) { item ->
-                InventoryItemCard(
-                    modifier = Modifier,
-                    imageUrl = item.phases?.get("Regular") ?: item.image,
-                    name = item.title,
-                    description = item.description,
-                    removeButtonText = "Remove",
-                    onRemoveClick =
-                    {
-                        inventoryViewModel.updateInventoryItem(Item(item.id, item.title, item.description, item.price, item.phases, item.type, item.image, false))
+            InventoryItemCard(
+                modifier = Modifier,
+                imageUrl = item.phases?.get("Regular") ?: item.image,
+                name = item.title,
+                description = item.description,
+                removeButtonText = "Remove",
+                onRemoveClick =
+                {
+                    inventoryViewModel.updateInventoryItem(
+                        Item(
+                            item.id,
+                            item.title,
+                            item.description,
+                            item.price,
+                            item.phases,
+                            item.type,
+                            item.image,
+                            false
+                        )
+                    )
+                    Toast.makeText(
+                        context,
+                        "Removed from aquarium",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    placedItemCount--
+                },
+                removeButtonEnabled = item.placed,
+                addButtonText = "Add",
+                onAddClick =
+                {
+                    if (placedItemCount >= 3) {
                         Toast.makeText(
                             context,
-                            "Removed from aquarium",
+                            "Aquarium size limit reached. Please remove some items before adding more",
                             Toast.LENGTH_SHORT,
                         ).show()
-                    },
-                    removeButtonEnabled = item.placed,
-                    addButtonText = "Add",
-                    onAddClick =
-                    {
-                        inventoryViewModel.updateInventoryItem(Item(item.id, item.title, item.description, item.price, item.phases, item.type, item.image, true))
+                    } else {
+                        inventoryViewModel.updateInventoryItem(
+                            Item(
+                                item.id,
+                                item.title,
+                                item.description,
+                                item.price,
+                                item.phases,
+                                item.type,
+                                item.image,
+                                true
+                            )
+                        )
                         Toast.makeText(
                             context,
                             "Added to aquarium",
                             Toast.LENGTH_SHORT,
                         ).show()
-                    },
-                    addButtonEnabled = !item.placed,
-                    coinIcon = {},
-                    selectedCategoryIndex = selectedCategoryIndex,
-                )
+                        placedItemCount++
+                    }
+                },
+                addButtonEnabled = !item.placed,
+                coinIcon = {},
+                selectedCategoryIndex = selectedCategoryIndex,
+            )
         }
     }
 }
