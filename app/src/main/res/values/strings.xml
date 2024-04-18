@@ -79,9 +79,9 @@
     <string name="hold_drink_button_message">Press and hold the button to drink</string>
     <string name="dismiss_snackbar">Dismiss snackbar</string>
     <string name="are_you_sure">Are you sure?</string>
-    <string name="sell_for">Sell for</string>
+    <string name="sell_for">Sell</string>
     <string name="are_you_sure_you_want_to_sell">Are you sure you want to sell</string>
-    <string name="buy_for">Buy for</string>
+    <string name="buy_for">Buy</string>
     <string name="are_you_sure_you_want_to_buy">Are you sure you want to buy</string>
     <string name="has_been_added_to_your_inventory">has been added to your inventory</string>
     <string name="has_been_sold">has been sold</string>
