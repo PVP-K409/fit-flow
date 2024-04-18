@@ -64,15 +64,14 @@ fun InventoryItemCard(
     marketViewModel: MarketViewModel = hiltViewModel(),
     selectedCategoryIndex: Int,
 ) {
-
-
     val colors = MaterialTheme.colorScheme
     var imageDownloadUrl by rememberSaveable { mutableStateOf("") }
 
     var expandedState by remember { mutableStateOf(false) }
 
     val rotationState by animateFloatAsState(
-        targetValue = if (expandedState) 180f else 0f, label = ""
+        targetValue = if (expandedState) 180f else 0f,
+        label = "",
     )
 
     LaunchedEffect(key1 = selectedCategoryIndex) {
@@ -92,7 +91,7 @@ fun InventoryItemCard(
             .fillMaxSize()
             .clip(CardDefaults.shape)
             .background(color = colors.tertiaryContainer, shape = CardDefaults.shape)
-            .noRippleClickable(onClick = { expandedState = !expandedState })
+            .noRippleClickable(onClick = { expandedState = !expandedState }),
     ) {
         Column(
             modifier = modifier
@@ -134,9 +133,11 @@ fun InventoryItemCard(
                             .rotate(rotationState),
                         onClick = {
                             expandedState = !expandedState
-                        }) {
+                        },
+                    ) {
                         Icon(
-                            imageVector = Icons.Default.ArrowDropDown, contentDescription = null,
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = null,
                         )
                     }
                 }
