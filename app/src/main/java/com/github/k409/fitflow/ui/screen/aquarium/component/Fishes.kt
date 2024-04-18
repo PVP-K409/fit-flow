@@ -39,14 +39,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.noRippleClickable
 import com.github.k409.fitflow.ui.common.thenIf
-import com.github.k409.fitflow.ui.screen.market.MarketViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.cos
@@ -79,14 +77,7 @@ fun DraggableFishBox(
     fishSize: Dp = 100.dp,
     initialOffset: Offset = Offset(0f, 0f),
     onPositionChanged: (x: Float, y: Float) -> Unit = { _, _ -> },
-    marketViewModel: MarketViewModel = hiltViewModel(),
 ) {
-//    var imageDownloadUrl by remember { mutableStateOf("") }
-
-//    LaunchedEffect(LocalContext.current) {
-//        imageDownloadUrl = marketViewModel.getImageDownloadUrl(itemImageStorageUrl)
-//    }
-
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize(),
