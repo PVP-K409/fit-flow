@@ -108,6 +108,7 @@ class StepsRepository @Inject constructor(
                 }
             }
     }
+
     suspend fun stepSumAndCountInPeriod(
         periodStart: LocalDate,
         periodEnd: LocalDate,
@@ -124,7 +125,8 @@ class StepsRepository @Inject constructor(
             .get()
             .await()
             .documents.forEach { document ->
-                val stepRecord = document.toObject(DailyStepRecord::class.java) // Convert the document to DailyStepRecord
+                val stepRecord =
+                    document.toObject(DailyStepRecord::class.java) // Convert the document to DailyStepRecord
                 totalSum += stepRecord?.totalSteps ?: 0
                 count++
             }
@@ -170,6 +172,30 @@ class StepsRepository @Inject constructor(
                         )
 
                     recordsMap[day] = record
+                }
+
+                recordsMap
+            }
+    }
+
+    fun getStepRecordThisMonth(): Flow<Map<String, DailyStepRecord>> {
+        val today = LocalDate.now()
+        val periodStart = today.withDayOfMonth(1)
+        val periodEnd = today.withDayOfMonth(LocalDate.now().lengthOfMonth())
+
+        return getStepRecords(periodStart, periodEnd)
+            .map { records ->
+                val recordsMap = mutableMapOf<String, DailyStepRecord>()
+
+                for (i in 1..periodEnd.dayOfMonth) {
+                    val recordDate = periodEnd.withDayOfMonth(i)
+
+                    val record =
+                        records.find { it.recordDate == recordDate.toString() } ?: DailyStepRecord(
+                            recordDate = recordDate.toString(),
+                        )
+
+                    recordsMap[recordDate.toString()] = record
                 }
 
                 recordsMap
