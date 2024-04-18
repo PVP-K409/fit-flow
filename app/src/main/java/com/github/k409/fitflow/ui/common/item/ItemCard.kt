@@ -1,5 +1,7 @@
 package com.github.k409.fitflow.ui.common.item
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,22 +21,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
-import com.github.k409.fitflow.R
+import coil.size.Size
 import com.github.k409.fitflow.ui.screen.market.MarketViewModel
 
+@SuppressLint("RememberReturnType")
 @Composable
 fun InventoryItemCard(
     modifier: Modifier,
@@ -52,13 +54,20 @@ fun InventoryItemCard(
     selectedCategoryIndex: Int,
 ) {
     val colors = MaterialTheme.colorScheme
-    var imageDownloadUrl by remember { mutableStateOf("") }
+    var imageDownloadUrl by rememberSaveable { mutableStateOf("") }
 
     // Trigger image recomposition when selected item category changes
     LaunchedEffect(key1 = selectedCategoryIndex) {
-        imageDownloadUrl = marketViewModel.getImageDownloadUrl(imageUrl)
+        //if (imageDownloadUrl.isEmpty())
+            imageDownloadUrl = marketViewModel.getImageDownloadUrl(imageUrl)
     }
-
+    val painter = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(imageDownloadUrl)
+            .size(Size.ORIGINAL)
+            .decoderFactory(SvgDecoder.Factory())
+            .build()
+    )
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -73,44 +82,41 @@ fun InventoryItemCard(
                 modifier = modifier
                     .fillMaxSize()
                     .background(
-                        color = colors.tertiary,
+                        color = colors.onTertiary,
                         shape = CardDefaults.shape,
                     ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                if (imageDownloadUrl.isNotEmpty()) {
+                //if (imageDownloadUrl.isNotEmpty()) {
                     // Log.d("ItemCard", "Composing $name")
                     // Log.d("ItemCard", "Composing $imageDownloadUrl")
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(imageDownloadUrl)
-                            .decoderFactory(SvgDecoder.Factory())
-                            .build(),
-                        error = painterResource(R.drawable.error_24px),
+                    Image(
+                        painter = painter,
                         contentDescription = name,
                         modifier = modifier
                             .padding(8.dp)
                             .size(80.dp),
                     )
-                }
-
+                //}
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.tertiary,
+                )
+            }
                 Column(modifier = modifier.padding(8.dp)) {
-                    Text(
-                        text = name,
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = colors.onTertiary,
-                    )
                     Text(
                         text = description,
                         style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Normal,
-                        color = colors.onTertiary,
+
+                        fontWeight = FontWeight.Light,
+                        color = colors.onTertiaryContainer,
                         textAlign = TextAlign.Justify,
                     )
                 }
-            }
+
             Spacer(modifier = modifier.height(16.dp))
 
             Row(

@@ -20,12 +20,14 @@ private const val INVENTORY_COLLECTION = "inventory"
 private const val ITEMS_COLLECTION = "items"
 
 private const val PLACED_FIELD = "placed"
+private const val PRICE_FIELD = "price"
 class ItemRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
 ) {
     fun getMarketItems(): Flow<List<Item>> {
         return db.collection(MARKET_COLLECTION)
+            .orderBy(PRICE_FIELD)
             .snapshots()
             .map {
                 it.documents.map { document ->
@@ -105,9 +107,9 @@ class ItemRepository @Inject constructor(
         item: Item,
     ): DocumentReference {
         return db.collection(INVENTORY_COLLECTION)
-                .document(uid)
-                .collection(ITEMS_COLLECTION)
-                .document(item.id.toString())
+            .document(uid)
+            .collection(ITEMS_COLLECTION)
+            .document(item.id.toString())
     }
     suspend fun getImageDownloadUrl(imageUrl: String): String {
         // Convert cloud storage url to download url
