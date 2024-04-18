@@ -54,7 +54,7 @@ class GoalService @Inject constructor(
         startDate: String,
         endDate: String,
         stepsRepository: StepsRepository,
-        defaultValue: Double = 5000.0,
+        defaultValue: Double = 3000.0,
         multiplier: Double = 1.05,
         daysToCheck: Long = 7,
         roundToNearest: Int = 250,

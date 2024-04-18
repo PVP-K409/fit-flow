@@ -67,6 +67,7 @@ import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.isProfileComplete
 import com.github.k409.fitflow.ui.common.LocalSnackbarHostState
 import com.github.k409.fitflow.ui.common.SwipeableSnackbar
+import com.github.k409.fitflow.ui.common.noRippleClickable
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screen.level.levels
@@ -294,19 +295,23 @@ fun UserLevel(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        ElevatedAssistChip(
-            border = AssistChipDefaults.assistChipBorder(enabled = false),
-            shape = RoundedCornerShape(100),
-            onClick = { navController.navigate(NavRoutes.Levels.route) },
-            label = {
-                userLevel?.let {
-                    Text(
-                        text = it.id.toString(),
-                        style = MaterialTheme.typography.labelLarge,
-                    )
-                }
-            },
-        )
+        userLevel?.let {
+            Icon(
+                painter = painterResource(id = userLevel.icon),
+                contentDescription = "Level badge",
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .size(36.dp)
+                    .noRippleClickable(
+                        onClick = {
+                            navController.navigate(NavRoutes.Levels.route) {
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                    ),
+            )
+        }
     }
 }
 

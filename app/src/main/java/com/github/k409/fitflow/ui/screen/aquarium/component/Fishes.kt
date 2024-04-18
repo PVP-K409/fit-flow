@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -35,14 +37,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.noRippleClickable
-import com.github.k409.fitflow.ui.screen.market.MarketViewModel
+import com.github.k409.fitflow.ui.common.thenIf
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.roundToInt
@@ -70,17 +73,11 @@ fun DraggableFishBox(
     fishModifier: Modifier = Modifier,
     @DrawableRes fishDrawableId: Int = R.drawable.primary_fish,
     itemImageStorageUrl: String = "",
+    imageDownloadUrl: String = "",
     fishSize: Dp = 100.dp,
     initialOffset: Offset = Offset(0f, 0f),
     onPositionChanged: (x: Float, y: Float) -> Unit = { _, _ -> },
-    marketViewModel: MarketViewModel = hiltViewModel(),
 ) {
-    var imageDownloadUrl by remember { mutableStateOf("") }
-
-    LaunchedEffect(LocalContext.current) {
-        imageDownloadUrl = marketViewModel.getImageDownloadUrl(itemImageStorageUrl)
-    }
-
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize(),
@@ -105,48 +102,7 @@ fun DraggableFishBox(
             label = "",
         )
 
-        /*FishImage(
-            fishSize = fishSize,
-            fishDrawableId = fishDrawableId,
-            modifier = fishModifier
-                .offset {
-                    IntOffset(
-                        offsetX.roundToInt(),
-                        offsetY.roundToInt() + translationY.roundToInt(),
-                    )
-                }
-                .align(Alignment.TopStart)
-                .pointerInput(fishSize) {
-                    val boxSize = this.size
-
-                    detectDragGestures { _, dragAmount ->
-                        offsetX = (offsetX + dragAmount.x).coerceIn(
-                            0f,
-                            parentWidth - boxSize.width.toFloat(),
-                        )
-                        offsetY = (offsetY + dragAmount.y).coerceIn(
-                            0f,
-                            parentHeight - boxSize.height.toFloat(),
-                        )
-
-                        onPositionChanged(offsetX, offsetY)
-                    }
-                }
-                .onSizeChanged { size ->
-                    fishHeight = size.height.toFloat()
-                    fishWidth = size.width.toFloat()
-
-                    // center the fish
-                    offsetX = (parentWidth - size.width) / 2f
-                    offsetY = (parentHeight - size.height) / 2f
-
-                    onPositionChanged(offsetX, offsetY)
-                },
-        )*/
-
         if (imageDownloadUrl.isNotEmpty()) {
-            // Log.d("ItemCard", "Composing $name")
-            // Log.d("ItemCard", "Composing $imageDownloadUrl")
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(imageDownloadUrl)
@@ -307,4 +263,128 @@ fun AnimatedPrimaryFish(
                 }
             }),
     )
+}
+
+@Composable
+fun BouncingDraggableFish(
+    modifier: Modifier = Modifier,
+    fishDrawableId: Int = R.drawable.primary_fish,
+    imageDownloadUrl: String = "",
+    bounceEnabled: Boolean = true,
+    dragEnabled: Boolean = true,
+    initialFishSize: Dp = 100.dp,
+    initialVelocity: Offset = Offset(2f, 2f),
+) {
+    val coroutineScope = rememberCoroutineScope()
+
+    BoxWithConstraints(
+        modifier = modifier.fillMaxSize(),
+    ) {
+        var fishSize by remember { mutableStateOf(IntSize(0, 0)) }
+
+        // TODO possible bug when water level changes
+        val containerWidth by remember { derivedStateOf { constraints.maxWidth.toFloat() - fishSize.width } }
+        val containerHeight by remember { derivedStateOf { constraints.maxHeight.toFloat() - fishSize.height } }
+
+        // TODO: Fix the random position
+        val randomX = Random.nextInt(0, containerWidth.toInt().coerceAtLeast(1)).toFloat()
+        val randomY = Random.nextInt(0, containerHeight.toInt().coerceAtLeast(1)).toFloat()
+
+        var isDragging by remember { mutableStateOf(false) }
+        var position by remember { mutableStateOf(Offset(randomX, randomY)) }
+        val flipFish = remember { mutableStateOf(false) }
+
+        val animatedRotation by animateFloatAsState(
+            targetValue = if (flipFish.value) 180f else 0f,
+            animationSpec = tween(durationMillis = 200),
+            label = "Fish Rotation Animation",
+        )
+
+        if (bounceEnabled) {
+            LaunchedEffect(Unit) {
+                coroutineScope.launch {
+                    var velocity = initialVelocity
+
+                    while (true) {
+                        if (!isDragging) {
+                            position += velocity
+
+                            position = Offset(
+                                position.x.coerceIn(0f, containerWidth),
+                                position.y.coerceIn(0f, containerHeight),
+                            )
+
+                            if (position.x >= containerWidth || position.x <= 0) {
+                                velocity = Offset(-velocity.x, velocity.y)
+                            }
+
+                            if (position.y >= containerHeight || position.y <= 0) {
+                                velocity = Offset(velocity.x, -velocity.y)
+                            }
+
+                            // moving to the right, don't flip the fish
+                            if (velocity.x > 0) {
+                                flipFish.value = false
+                            }
+
+                            // if moving to the left, flip the fish
+                            if (velocity.x < 0) {
+                                flipFish.value = true
+                            }
+                        }
+
+                        delay(16) // (60fps) => 1000ms / 60 = 16ms
+                    }
+                }
+            }
+        }
+
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageDownloadUrl)
+                .decoderFactory(SvgDecoder.Factory())
+                .build(),
+            error = painterResource(id = fishDrawableId),
+            contentDescription = "",
+            modifier = Modifier
+                .width(initialFishSize)
+                .offset {
+                    IntOffset(
+                        position.x
+                            .roundToInt()
+                            .coerceIn(0, containerWidth.roundToInt()),
+                        position.y
+                            .roundToInt()
+                            .coerceIn(0, containerHeight.roundToInt()),
+                    )
+                }
+                .thenIf(dragEnabled) {
+                    Modifier.pointerInput(initialFishSize) {
+                        detectDragGestures(
+                            onDragStart = { _ -> isDragging = true },
+                            onDragEnd = { isDragging = false },
+                            onDrag = { _, dragAmount ->
+                                val newOffsetX = (position.x + dragAmount.x).coerceIn(
+                                    0f,
+                                    containerWidth,
+                                )
+
+                                val newOffsetY = (position.y + dragAmount.y).coerceIn(
+                                    0f,
+                                    containerHeight,
+                                )
+
+                                position = Offset(newOffsetX, newOffsetY)
+                            },
+                        )
+                    }
+                }
+                .graphicsLayer {
+                    rotationY = animatedRotation
+                }
+                .onSizeChanged { size ->
+                    fishSize = size
+                },
+        )
+    }
 }

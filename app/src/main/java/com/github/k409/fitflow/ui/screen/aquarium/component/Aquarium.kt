@@ -129,7 +129,14 @@ private fun AquariumLayout(
             )
 
             Sand()
-            Plant()
+            CoralCuspPlant()
+
+            Crab(
+                modifier = Modifier
+                    .padding(start = 10.dp, bottom = 20.dp),
+                alignment = Alignment.BottomStart,
+                height = 70.dp,
+            )
 
             InventoryButton(
                 modifier = Modifier
@@ -155,11 +162,12 @@ private fun AquariumLayout(
                         .fillMaxHeight(waterLevelAnimation),
                 ) {
                     val phase = getPhase(healthLevel)
-                    // loop for each item in aquarium
+
                     for (item in uiState.aquariumItems) {
-                        DraggableFishBox(
-                            fishSize = fishSize,
-                            itemImageStorageUrl = item.phases?.get(phase.name)
+                        BouncingDraggableFish(
+                            initialFishSize = fishSize,
+                            fishDrawableId = R.drawable.gold_fish_dead,
+                            imageDownloadUrl = item.phases?.get(phase.name)
                                 ?: item.image,
                         )
                     }

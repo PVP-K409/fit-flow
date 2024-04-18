@@ -65,3 +65,18 @@ fun Modifier.timedClick(
         onClick = {},
     )
 }
+
+inline fun Modifier.thenIf(
+    condition: Boolean,
+    crossinline other: Modifier.() -> Modifier,
+) = if (condition) then(other()) else this
+
+inline fun Modifier.thenIfNot(
+    condition: Boolean,
+    crossinline other: Modifier.() -> Modifier,
+) = if (!condition) then(other()) else this
+
+inline fun <T> Modifier.thenIfNotNull(
+    value: T?,
+    crossinline other: Modifier.(T) -> Modifier,
+) = if (value != null) then(other(value)) else this
