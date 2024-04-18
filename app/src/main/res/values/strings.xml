@@ -104,4 +104,11 @@
     <string name="litres">litres</string>
     <string name="per_day">per day</string>
     <string name="total_hydration">Total Hydration</string>
+    <string name="statistics_title">Statistics</string>
+    <string name="statistics_subtitle">See how you\'ve been doing this month</string>
+    <string name="total_steps">Total Steps</string>
+    <string name="total_calories">Total Calories</string>
+    <string name="total_distance">Total Distance</string>
+    <string name="most_hydration">Most Hydration</string>
+    <string name="last_12_weeks">Last 12 weeks</string>
 </resources>

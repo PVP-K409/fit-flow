@@ -110,11 +110,13 @@ class HydrationRepository @Inject constructor(
             }
     }
 
-    private fun getLastMonthRecords(): Flow<List<HydrationRecord>> {
+    private fun getThisMonthRecords(): Flow<List<HydrationRecord>> {
         val uid = auth.currentUser!!.uid
 
-        val periodStart = LocalDate.now().minusMonths(1)
-        val periodEnd = LocalDate.now()
+        val now = LocalDate.now()
+        
+        val periodStart = now.withDayOfMonth(1)
+        val periodEnd = now.withDayOfMonth(now.lengthOfMonth())
 
         return db.collection(JOURNAL_COLLECTION)
             .document(uid)
@@ -139,11 +141,13 @@ class HydrationRepository @Inject constructor(
             }
     }
 
-    fun getLastMonthStats(): Flow<HydrationStats> {
-        return getLastMonthRecords()
+    fun getThisMonthStats(): Flow<HydrationStats> {
+        return getThisMonthRecords()
             .map {
-                val yesterdayDate = LocalDate.now().minusDays(1).toString()
-                val thisWeekStart = LocalDate.now().minusDays(6).toString()
+                val now = LocalDate.now()
+
+                val yesterdayDate = now.minusDays(1).toString()
+                val thisWeekStart = now.minusDays(6).toString()
 
                 val monthIntake = it.sumOf { record -> record.waterIntake }
 
@@ -151,12 +155,18 @@ class HydrationRepository @Inject constructor(
                     record.date >= thisWeekStart
                 }.sumOf { record -> record.waterIntake }
 
-                val yesterday = it.find { record -> record.date == yesterdayDate }?.waterIntake ?: 0
+                val yesterdayIntake =
+                    it.find { record -> record.date == yesterdayDate }?.waterIntake ?: 0
+
+                val maxIntake = it.maxByOrNull { record -> record.waterIntake }?.let { record ->
+                    Pair(record.date, record.waterIntake)
+                } ?: Pair("", 0)
 
                 HydrationStats(
-                    yesterdayTotalAmount = yesterday,
+                    yesterdayTotalAmount = yesterdayIntake,
                     thisWeekTotalAmount = weekIntake,
                     thisMonthTotalAmount = monthIntake,
+                    maxIntake = maxIntake,
                 )
             }
     }

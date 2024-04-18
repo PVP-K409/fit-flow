@@ -43,7 +43,7 @@ class YouViewModel @Inject constructor(
         stepsRepository.getStepRecordCurrentWeek(),
         stepsRepository.getStepRecordLastWeeks(12),
         stepsRepository.getStepRecordThisMonth(),
-        hydrationRepository.getLastMonthStats(),
+        hydrationRepository.getThisMonthStats(),
     ) { currentWeek, lastWeeks, thisMonth, hydrationStats ->
         ProgressUiState.Success(
             currentWeek = currentWeek,

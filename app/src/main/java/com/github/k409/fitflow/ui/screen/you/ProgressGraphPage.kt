@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.outlined.LocalDrink
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -74,57 +75,83 @@ private fun ProgressGraphPageContent(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        BestEffortsCard(uiState = uiState)
+        ThisMonthSection(uiState = uiState)
 
-        // Current Week Progress
-        WalkingProgressGraphContainer(
-            data = uiState.currentWeek.values.toList(),
-            title = stringResource(R.string.current_week_progress),
-            subtitle = stringResource(R.string.your_progress_for_this_week),
-            xAxisLabels = uiState.currentWeek.keys.toList(),
-            selectedValueTitle = { record ->
-                LocalDate.parse(record.recordDate).format(
-                    DateTimeFormatter.ofLocalizedDate(
-                        FormatStyle.FULL,
-                    ),
-                )
-            },
-            selectedInitial = uiState.currentWeek.values.find {
-                it.recordDate == LocalDate.now().toString()
-            },
-        )
-
-        // Current Month Progress
-        WalkingProgressGraphContainer(
-            data = uiState.thisMonth.values.toList(),
-            title = stringResource(R.string.current_month_progress),
-            subtitle = stringResource(R.string.your_progress_for_this_month),
-            selectedValueTitle = { record ->
-                LocalDate.parse(record.recordDate).format(
-                    DateTimeFormatter.ofLocalizedDate(
-                        FormatStyle.FULL,
-                    ),
-                )
-            },
-            selectedInitial = uiState.thisMonth.values.find {
-                it.recordDate == LocalDate.now().toString()
-            },
-        )
-
-        // Last 12 Weeks Progress
-        WalkingProgressGraphContainer(
-            data = uiState.lastWeeks.values.toList(),
-            title = stringResource(R.string.weekly_progress),
-            subtitle = stringResource(R.string.your_progress_for_the_last_12_weeks),
-            selectedValueTitle = { record ->
-                val startDate = LocalDate.parse(record.recordDate)
-                val endDate = startDate.plusDays(6)
-
-                "$startDate - $endDate"
-            },
-            selectedInitial = uiState.lastWeeks.values.lastOrNull(),
-        )
+        WeeklySection(uiState = uiState)
     }
+}
+
+@Composable
+private fun WeeklySection(uiState: ProgressUiState.Success) {
+    SectionHeaderCard(
+        title = stringResource(id = R.string.weekly),
+        subtitle = stringResource(R.string.last_12_weeks),
+    )
+
+    // Current Week Progress
+    WalkingProgressGraphContainer(
+        data = uiState.currentWeek.values.toList(),
+        title = stringResource(R.string.current_week_progress),
+        subtitle = stringResource(R.string.your_progress_for_this_week),
+        xAxisLabels = uiState.currentWeek.keys.toList(),
+        selectedValueTitle = { record ->
+            LocalDate.parse(record.recordDate).format(
+                DateTimeFormatter.ofLocalizedDate(
+                    FormatStyle.FULL,
+                ),
+            )
+        },
+        selectedInitial = uiState.currentWeek.values.find {
+            it.recordDate == LocalDate.now().toString()
+        },
+    )
+
+    // Last 12 Weeks Progress
+    WalkingProgressGraphContainer(
+        data = uiState.lastWeeks.values.toList(),
+        title = stringResource(R.string.weekly_progress),
+        subtitle = stringResource(R.string.your_progress_for_the_last_12_weeks),
+        selectedValueTitle = { record ->
+            val startDate = LocalDate.parse(record.recordDate)
+            val endDate = startDate.plusDays(6)
+
+            "$startDate - $endDate"
+        },
+        selectedInitial = uiState.lastWeeks.values.lastOrNull(),
+    )
+}
+
+@Composable
+private fun ThisMonthSection(uiState: ProgressUiState.Success) {
+    val now = LocalDate.now()
+    val currentMonth = now.month.toString().lowercase()
+        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+
+    SectionHeaderCard(
+        title = currentMonth,
+        subtitle = now.year.toString(),
+    )
+
+    StatisticsCard(uiState = uiState)
+
+    BestEffortsCard(uiState = uiState)
+
+    // Current Month Progress
+    WalkingProgressGraphContainer(
+        data = uiState.thisMonth.values.toList(),
+        title = stringResource(R.string.current_month_progress),
+        subtitle = stringResource(R.string.your_progress_for_this_month),
+        selectedValueTitle = { record ->
+            LocalDate.parse(record.recordDate).format(
+                DateTimeFormatter.ofLocalizedDate(
+                    FormatStyle.FULL,
+                ),
+            )
+        },
+        selectedInitial = uiState.thisMonth.values.find {
+            it.recordDate == LocalDate.now().toString()
+        },
+    )
 }
 
 @Composable
@@ -136,8 +163,7 @@ private fun BestEffortsCard(uiState: ProgressUiState.Success) {
     val mostCaloriesEntry = uiState.thisMonth.maxByOrNull { it.value.caloriesBurned ?: 0 }
     val mostDistanceEntry = uiState.thisMonth.maxByOrNull { it.value.totalDistance ?: 0.0 }
 
-    val hydrationMonth = uiState.hydrationStats.thisMonthTotalAmount / 1000f
-    val avgHydration = hydrationMonth / 30f
+    val maxHydrationEntry = uiState.hydrationStats.maxIntake
 
     OutlineCardContainer(
         title = title,
@@ -179,6 +205,112 @@ private fun BestEffortsCard(uiState: ProgressUiState.Success) {
 
             HorizontalDivider()
 
+            // most hydration
+            EffortRow(
+                leftLabel = stringResource(R.string.most_hydration),
+                leftValue = formatDate(maxHydrationEntry.first),
+                rightLabel = String.format(
+                    Locale.getDefault(),
+                    "%.2f",
+                    maxHydrationEntry.second / 1000f
+                ),
+                rightValue = stringResource(R.string.litres),
+                iconImageVector = Icons.Default.WaterDrop
+            )
+
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+    }
+
+}
+
+@Composable
+private fun SectionHeaderCard(
+    modifier: Modifier = Modifier,
+    title: String,
+    subtitle: String,
+) {
+    OutlinedCard(
+        modifier = modifier
+            .padding(horizontal = 16.dp),
+        elevation = CardDefaults.elevatedCardElevation()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start,
+        ) {
+            Text(
+                modifier = Modifier.padding(bottom = 6.dp),
+                text = title,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.primary,
+            )
+
+            Text(
+                modifier = Modifier.padding(bottom = 0.dp),
+                text = subtitle,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.W300,
+            )
+        }
+    }
+}
+
+
+@Composable
+private fun StatisticsCard(uiState: ProgressUiState.Success) {
+    val title = stringResource(R.string.statistics_title)
+    val subtitleText = stringResource(R.string.statistics_subtitle)
+
+    val totalSteps = uiState.thisMonth.values.sumOf { it.totalSteps }
+    val totalCalories = uiState.thisMonth.values.sumOf { it.caloriesBurned ?: 0 }
+    val totalDistance = uiState.thisMonth.values.sumOf { it.totalDistance ?: 0.0 }
+
+    val hydrationMonth = uiState.hydrationStats.thisMonthTotalAmount / 1000f
+    val avgHydration = hydrationMonth / 30f
+
+    OutlineCardContainer(
+        title = title,
+        subtitleText = subtitleText
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            EffortRow(
+                leftLabel = stringResource(R.string.total_steps),
+                leftValue = stringResource(R.string.this_month),
+                rightLabel = totalSteps.toString(),
+                rightValue = stringResource(R.string.steps).lowercase(),
+                iconImageVector = Icons.AutoMirrored.Filled.DirectionsWalk
+            )
+
+            HorizontalDivider()
+
+            EffortRow(
+                leftLabel = stringResource(R.string.total_calories),
+                leftValue = stringResource(R.string.this_month),
+                rightLabel = totalCalories.toString(),
+                rightValue = stringResource(R.string.kcal),
+                iconImageVector = Icons.Default.LocalFireDepartment
+            )
+
+            HorizontalDivider()
+
+            EffortRow(
+                leftLabel = stringResource(R.string.total_distance),
+                leftValue = stringResource(R.string.this_month),
+                rightLabel = String.format(Locale.getDefault(), "%.2f", totalDistance),
+                rightValue = stringResource(R.string.km),
+                iconImageVector = Icons.Default.Straighten
+            )
+
+            HorizontalDivider()
+
             EffortRow(
                 leftLabel = stringResource(R.string.total_hydration),
                 leftValue = stringResource(R.string.this_month),
@@ -201,21 +333,6 @@ private fun BestEffortsCard(uiState: ProgressUiState.Success) {
         Spacer(modifier = Modifier.height(8.dp))
     }
 
-}
-
-private fun formatDate(
-    date: String?,
-    formatStyle: FormatStyle = FormatStyle.MEDIUM
-): String {
-    if (date.isNullOrEmpty()) {
-        return ""
-    }
-
-    return LocalDate.parse(date).format(
-        DateTimeFormatter.ofLocalizedDate(
-            formatStyle
-        ),
-    )
 }
 
 @Composable
@@ -386,4 +503,19 @@ private fun WalkingProgressGraphContainer(
             }
         }
     }
+}
+
+private fun formatDate(
+    date: String?,
+    formatStyle: FormatStyle = FormatStyle.MEDIUM
+): String {
+    if (date.isNullOrEmpty()) {
+        return ""
+    }
+
+    return LocalDate.parse(date).format(
+        DateTimeFormatter.ofLocalizedDate(
+            formatStyle
+        ),
+    )
 }
