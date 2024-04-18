@@ -87,7 +87,7 @@ class ItemRepository @Inject constructor(
             Log.e("Market Repository", "Error updating inventory", e)
         }
     }
-    fun getAquariumItems(): Flow<List<Item>>  {
+    fun getAquariumItems(): Flow<List<Item>> {
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
 

@@ -58,15 +58,15 @@ fun InventoryItemCard(
 
     // Trigger image recomposition when selected item category changes
     LaunchedEffect(key1 = selectedCategoryIndex) {
-        //if (imageDownloadUrl.isEmpty())
-            imageDownloadUrl = marketViewModel.getImageDownloadUrl(imageUrl)
+        // if (imageDownloadUrl.isEmpty())
+        imageDownloadUrl = marketViewModel.getImageDownloadUrl(imageUrl)
     }
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(imageDownloadUrl)
             .size(Size.ORIGINAL)
             .decoderFactory(SvgDecoder.Factory())
-            .build()
+            .build(),
     )
     Box(
         modifier = modifier
@@ -88,17 +88,17 @@ fun InventoryItemCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                //if (imageDownloadUrl.isNotEmpty()) {
-                    // Log.d("ItemCard", "Composing $name")
-                    // Log.d("ItemCard", "Composing $imageDownloadUrl")
-                    Image(
-                        painter = painter,
-                        contentDescription = name,
-                        modifier = modifier
-                            .padding(8.dp)
-                            .size(80.dp),
-                    )
-                //}
+                // if (imageDownloadUrl.isNotEmpty()) {
+                // Log.d("ItemCard", "Composing $name")
+                // Log.d("ItemCard", "Composing $imageDownloadUrl")
+                Image(
+                    painter = painter,
+                    contentDescription = name,
+                    modifier = modifier
+                        .padding(8.dp)
+                        .size(80.dp),
+                )
+                // }
                 Text(
                     text = name,
                     style = MaterialTheme.typography.headlineSmall,
@@ -106,16 +106,16 @@ fun InventoryItemCard(
                     color = colors.tertiary,
                 )
             }
-                Column(modifier = modifier.padding(8.dp)) {
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodyLarge,
+            Column(modifier = modifier.padding(8.dp)) {
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyLarge,
 
-                        fontWeight = FontWeight.Light,
-                        color = colors.onTertiaryContainer,
-                        textAlign = TextAlign.Justify,
-                    )
-                }
+                    fontWeight = FontWeight.Light,
+                    color = colors.onTertiaryContainer,
+                    textAlign = TextAlign.Justify,
+                )
+            }
 
             Spacer(modifier = modifier.height(16.dp))
 

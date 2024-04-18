@@ -21,14 +21,14 @@ class AquariumViewModel @Inject constructor(
         aquariumRepository.get(),
         itemRepository.getAquariumItems(),
     ) { stats, items ->
-                AquariumUiState.Success(
-                    aquariumStats = stats,
-                    aquariumItems = items,
-                )
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = AquariumUiState.Loading,
-            )
+        AquariumUiState.Success(
+            aquariumStats = stats,
+            aquariumItems = items,
+        )
+    }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = AquariumUiState.Loading,
+        )
 }

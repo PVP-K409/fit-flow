@@ -78,8 +78,8 @@ fun InventoryScreen(
                             item.phases,
                             item.type,
                             item.image,
-                            false
-                        )
+                            false,
+                        ),
                     )
                     Toast.makeText(
                         context,
@@ -112,8 +112,8 @@ fun InventoryScreen(
                                 item.phases,
                                 item.type,
                                 item.image,
-                                true
-                            )
+                                true,
+                            ),
                         )
                         Toast.makeText(
                             context,
