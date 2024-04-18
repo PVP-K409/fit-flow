@@ -100,7 +100,7 @@ class HydrationViewModel @Inject constructor(
     private fun getHistory() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                hydrationRepository.getLastMonthStats().collect { stats ->
+                hydrationRepository.getThisMonthStats().collect { stats ->
                     _uiState.update {
                         it.copy(
                             stats = stats,

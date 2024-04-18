@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.ui.common.HorizontalPagerIndicator
+import com.github.k409.fitflow.ui.common.UnderConstructionContent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -39,7 +40,7 @@ fun ActivityScreen(
                 }
 
                 1 -> {
-                    ProgressGraphPage(activityViewModel = activityViewModel)
+                    UnderConstructionContent()
                 }
             }
         }

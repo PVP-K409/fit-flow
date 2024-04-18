@@ -108,11 +108,19 @@ fun LevelCard(
                     }
                 }
 
+                val progress = if (maxXp == Int.MAX_VALUE) {
+                    userXp.toFloat() / 10000
+                } else {
+                    userXp.toFloat() / maxXp
+                }
+
                 Column {
                     Text(
                         text =
                         if (maxXp == Int.MAX_VALUE) {
                             "$minXp+"
+                        } else if (progress >= 1) {
+                            "$maxXp/$maxXp"
                         } else {
                             "$userXp/$maxXp"
                         },
@@ -122,20 +130,16 @@ fun LevelCard(
                         modifier = Modifier.padding(start = 8.dp, end = 2.dp),
                     )
 
+                    val progressColor = if (progress >= 1) colors.primary else colors.primary.copy(alpha = 0.5f)
+
                     LinearProgressIndicator(
-                        progress = {
-                            if (maxXp == Int.MAX_VALUE) {
-                                userXp.toFloat() / 10000
-                            } else {
-                                userXp.toFloat() / maxXp
-                            }
-                        },
-                        color = colors.primary,
+                        progress = { progress },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(end = 6.dp, start = 8.dp, top = 2.dp)
                             .height(12.dp)
                             .clip(RoundedCornerShape(8.dp)),
+                        color = progressColor,
                     )
                 }
             }

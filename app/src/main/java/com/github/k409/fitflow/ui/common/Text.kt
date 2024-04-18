@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,10 +34,15 @@ fun TextWithLabel(
     label: String,
     text: String,
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
-    textStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+    textStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(
+        fontWeight = FontWeight.Bold,
+    ),
     labelStyle: TextStyle = MaterialTheme.typography.labelMedium,
-
 ) {
+    val textColor = textStyle.color.takeOrElse {
+        MaterialTheme.colorScheme.primary
+    }
+
     Column(
         modifier = modifier,
         horizontalAlignment = horizontalAlignment,
@@ -48,7 +54,7 @@ fun TextWithLabel(
         Text(
             text = text,
             style = textStyle,
-            color = MaterialTheme.colorScheme.primary,
+            color = textColor,
         )
     }
 }
