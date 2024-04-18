@@ -22,7 +22,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.UnderConstructionContent
@@ -30,7 +29,6 @@ import com.github.k409.fitflow.ui.common.UnderConstructionContent
 @Composable
 fun YouScreen(
     youViewModel: YouViewModel = hiltViewModel(),
-    navController: NavHostController,
 ) {
     val youUiState by youViewModel.youUiState.collectAsStateWithLifecycle()
 
@@ -62,7 +60,7 @@ fun YouScreen(
         ) {
             when (selectedTabIndex.intValue) {
                 0 -> {
-                    ProgressGraphPage(youViewModel, scrollState)
+                    ProgressGraphPage(youViewModel)
                 }
 
                 1 -> {

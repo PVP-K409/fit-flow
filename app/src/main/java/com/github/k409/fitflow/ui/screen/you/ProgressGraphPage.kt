@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.screen.you
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.FitnessCenter
@@ -51,7 +49,6 @@ import java.util.Locale
 @Composable
 internal fun ProgressGraphPage(
     youViewModel: YouViewModel,
-    scrollState: ScrollState = rememberScrollState(),
 ) {
     val progressUiState by youViewModel.progressUiState.collectAsState()
 
@@ -61,7 +58,7 @@ internal fun ProgressGraphPage(
         }
 
         is ProgressUiState.Success -> {
-            ProgressGraphPageContent(uiState, scrollState)
+            ProgressGraphPageContent(uiState)
         }
     }
 }
@@ -69,7 +66,6 @@ internal fun ProgressGraphPage(
 @Composable
 private fun ProgressGraphPageContent(
     uiState: ProgressUiState.Success,
-    scrollState: ScrollState = rememberScrollState(),
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),

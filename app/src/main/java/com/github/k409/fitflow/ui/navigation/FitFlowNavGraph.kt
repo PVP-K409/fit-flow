@@ -79,7 +79,7 @@ fun FitFlowNavGraph(
         }
 
         composable(NavRoutes.You.route) {
-            YouScreen(navController = navController)
+            YouScreen()
         }
     }
 }
