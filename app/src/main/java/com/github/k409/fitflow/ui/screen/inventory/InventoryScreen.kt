@@ -14,9 +14,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.Item
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.item.CategorySelectHeader
@@ -32,7 +34,6 @@ fun InventoryScreen(
     var selectedCategoryIndex by rememberSaveable { mutableIntStateOf(0) }
 
     val inventoryUiState by inventoryViewModel.inventoryUiState.collectAsStateWithLifecycle()
-
     if (inventoryUiState is InventoryUiState.Loading) {
         FitFlowCircularProgressIndicator()
         return
@@ -46,6 +47,8 @@ fun InventoryScreen(
         1 -> ownedItems.filter { it.type == "decoration" }
         else -> emptyList()
     }
+    var mLastToastTime: Long = 0
+    val mNewToastInterval = 2000 // milliseconds
 
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
@@ -63,7 +66,7 @@ fun InventoryScreen(
                 imageUrl = item.phases?.get("Regular") ?: item.image,
                 name = item.title,
                 description = item.description,
-                removeButtonText = "Remove",
+                removeButtonText = stringResource(R.string.remove),
                 onRemoveClick =
                 {
                     inventoryViewModel.updateInventoryItem(
@@ -80,21 +83,25 @@ fun InventoryScreen(
                     )
                     Toast.makeText(
                         context,
-                        "Removed from aquarium",
+                        context.getString(R.string.removed_from_aquarium),
                         Toast.LENGTH_SHORT,
                     ).show()
                     placedItemCount--
                 },
                 removeButtonEnabled = item.placed,
-                addButtonText = "Add",
+                addButtonText = stringResource(R.string.add),
                 onAddClick =
                 {
                     if (placedItemCount >= 3) {
-                        Toast.makeText(
-                            context,
-                            "Aquarium size limit reached. Please remove some items before adding more",
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        // Limit toast messages in case button is spammed
+                        if (System.currentTimeMillis() - mLastToastTime > mNewToastInterval) {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.aquarium_size_limit_reached_please_remove_some_items_before_adding_more),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                            mLastToastTime = System.currentTimeMillis()
+                        }
                     } else {
                         inventoryViewModel.updateInventoryItem(
                             Item(
@@ -110,7 +117,7 @@ fun InventoryScreen(
                         )
                         Toast.makeText(
                             context,
-                            "Added to aquarium",
+                            context.getString(R.string.added_to_aquarium),
                             Toast.LENGTH_SHORT,
                         ).show()
                         placedItemCount++

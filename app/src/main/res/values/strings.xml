@@ -88,4 +88,9 @@
     <string name="hydration_notification_progress">Today\'s progress:</string>
     <string name="today__progress_liters">Today\'s progress is %1$s/%2$s liters</string>
     <string name="default_notification_channel_id">Default</string>
+    <string name="remove">Remove</string>
+    <string name="removed_from_aquarium">Removed from aquarium</string>
+    <string name="aquarium_size_limit_reached_please_remove_some_items_before_adding_more">Aquarium size limit reached. Please remove some items before adding more</string>
+    <string name="add">Add</string>
+    <string name="added_to_aquarium">Added to aquarium</string>
 </resources>
