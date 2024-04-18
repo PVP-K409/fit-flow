@@ -56,8 +56,6 @@ class YouViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = ProgressUiState.Loading,
     )
-
-
 }
 
 sealed interface YouUiState {

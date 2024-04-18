@@ -114,7 +114,7 @@ class HydrationRepository @Inject constructor(
         val uid = auth.currentUser!!.uid
 
         val now = LocalDate.now()
-        
+
         val periodStart = now.withDayOfMonth(1)
         val periodEnd = now.withDayOfMonth(now.lengthOfMonth())
 

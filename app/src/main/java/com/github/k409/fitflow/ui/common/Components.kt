@@ -130,7 +130,7 @@ fun UnderConstructionContent() {
             modifier = Modifier
                 .padding(top = 8.dp),
             text = "Be careful, there are some dangerous tools here!",
-            fontSize = 14.sp
+            fontSize = 14.sp,
         )
     }
 }

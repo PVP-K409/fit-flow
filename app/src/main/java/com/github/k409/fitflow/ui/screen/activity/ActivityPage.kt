@@ -60,7 +60,8 @@ internal fun ActivityPage(activityViewModel: ActivityViewModel) {
     }
 
     LaunchedEffect(
-        key1 = selectedDate.value, key2 = todaySteps
+        key1 = selectedDate.value,
+        key2 = todaySteps,
     ) {
         val record = activityViewModel.getStepRecord(selectedDate.value)
         selectedDateRecord = record

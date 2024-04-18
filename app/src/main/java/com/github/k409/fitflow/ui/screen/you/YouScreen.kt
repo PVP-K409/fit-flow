@@ -46,7 +46,7 @@ fun YouScreen(
         SecondaryTextTabsRow(
             titles = listOf(
                 stringResource(R.string.progress_tab_title),
-                stringResource(R.string.activities_tab_title)
+                stringResource(R.string.activities_tab_title),
             ),
             selectedTabIndex = selectedTabIndex,
         )
@@ -86,7 +86,7 @@ private fun SecondaryTextTabsRow(
             Tab(
                 selected = selectedTabIndex.intValue == index,
                 onClick = { selectedTabIndex.intValue = index },
-                text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) }
+                text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) },
             )
         }
     }

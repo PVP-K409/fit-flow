@@ -73,7 +73,7 @@ private fun ProgressGraphPageContent(
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         ThisMonthSection(uiState = uiState)
 
@@ -167,17 +167,17 @@ private fun BestEffortsCard(uiState: ProgressUiState.Success) {
 
     OutlineCardContainer(
         title = title,
-        subtitleText = subtitleText
+        subtitleText = subtitleText,
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             EffortRow(
                 leftLabel = stringResource(R.string.most_steps),
                 leftValue = formatDate(maxStepsEntry?.key),
                 rightLabel = (maxStepsEntry?.value?.totalSteps?.toString() ?: "0"),
                 rightValue = stringResource(R.string.steps).lowercase(),
-                iconImageVector = Icons.AutoMirrored.Filled.DirectionsWalk
+                iconImageVector = Icons.AutoMirrored.Filled.DirectionsWalk,
             )
 
             HorizontalDivider()
@@ -187,7 +187,7 @@ private fun BestEffortsCard(uiState: ProgressUiState.Success) {
                 leftValue = formatDate(mostCaloriesEntry?.key),
                 rightLabel = (mostCaloriesEntry?.value?.caloriesBurned?.toString() ?: "0"),
                 rightValue = stringResource(R.string.kcal),
-                iconImageVector = Icons.Default.LocalFireDepartment
+                iconImageVector = Icons.Default.LocalFireDepartment,
             )
 
             HorizontalDivider()
@@ -197,10 +197,11 @@ private fun BestEffortsCard(uiState: ProgressUiState.Success) {
                 leftValue = formatDate(mostDistanceEntry?.key),
                 rightLabel = String.format(
                     Locale.getDefault(),
-                    "%.2f", mostDistanceEntry?.value?.totalDistance ?: 0f
+                    "%.2f",
+                    mostDistanceEntry?.value?.totalDistance ?: 0f,
                 ),
                 rightValue = stringResource(R.string.km),
-                iconImageVector = Icons.Default.Straighten
+                iconImageVector = Icons.Default.Straighten,
             )
 
             HorizontalDivider()
@@ -212,17 +213,15 @@ private fun BestEffortsCard(uiState: ProgressUiState.Success) {
                 rightLabel = String.format(
                     Locale.getDefault(),
                     "%.2f",
-                    maxHydrationEntry.second / 1000f
+                    maxHydrationEntry.second / 1000f,
                 ),
                 rightValue = stringResource(R.string.litres),
-                iconImageVector = Icons.Default.WaterDrop
+                iconImageVector = Icons.Default.WaterDrop,
             )
-
         }
 
         Spacer(modifier = Modifier.height(8.dp))
     }
-
 }
 
 @Composable
@@ -234,7 +233,7 @@ private fun SectionHeaderCard(
     OutlinedCard(
         modifier = modifier
             .padding(horizontal = 16.dp),
-        elevation = CardDefaults.elevatedCardElevation()
+        elevation = CardDefaults.elevatedCardElevation(),
     ) {
         Column(
             modifier = Modifier
@@ -261,7 +260,6 @@ private fun SectionHeaderCard(
     }
 }
 
-
 @Composable
 private fun StatisticsCard(uiState: ProgressUiState.Success) {
     val title = stringResource(R.string.statistics_title)
@@ -276,17 +274,17 @@ private fun StatisticsCard(uiState: ProgressUiState.Success) {
 
     OutlineCardContainer(
         title = title,
-        subtitleText = subtitleText
+        subtitleText = subtitleText,
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             EffortRow(
                 leftLabel = stringResource(R.string.total_steps),
                 leftValue = stringResource(R.string.this_month),
                 rightLabel = totalSteps.toString(),
                 rightValue = stringResource(R.string.steps).lowercase(),
-                iconImageVector = Icons.AutoMirrored.Filled.DirectionsWalk
+                iconImageVector = Icons.AutoMirrored.Filled.DirectionsWalk,
             )
 
             HorizontalDivider()
@@ -296,7 +294,7 @@ private fun StatisticsCard(uiState: ProgressUiState.Success) {
                 leftValue = stringResource(R.string.this_month),
                 rightLabel = totalCalories.toString(),
                 rightValue = stringResource(R.string.kcal),
-                iconImageVector = Icons.Default.LocalFireDepartment
+                iconImageVector = Icons.Default.LocalFireDepartment,
             )
 
             HorizontalDivider()
@@ -306,7 +304,7 @@ private fun StatisticsCard(uiState: ProgressUiState.Success) {
                 leftValue = stringResource(R.string.this_month),
                 rightLabel = String.format(Locale.getDefault(), "%.2f", totalDistance),
                 rightValue = stringResource(R.string.km),
-                iconImageVector = Icons.Default.Straighten
+                iconImageVector = Icons.Default.Straighten,
             )
 
             HorizontalDivider()
@@ -316,7 +314,7 @@ private fun StatisticsCard(uiState: ProgressUiState.Success) {
                 leftValue = stringResource(R.string.this_month),
                 rightLabel = String.format(Locale.getDefault(), "%.2f", hydrationMonth),
                 rightValue = stringResource(R.string.litres),
-                iconImageVector = Icons.Default.WaterDrop
+                iconImageVector = Icons.Default.WaterDrop,
             )
 
             HorizontalDivider()
@@ -326,13 +324,12 @@ private fun StatisticsCard(uiState: ProgressUiState.Success) {
                 leftValue = stringResource(R.string.per_day),
                 rightLabel = String.format(Locale.getDefault(), "%.2f", avgHydration),
                 rightValue = stringResource(R.string.litres),
-                iconImageVector = Icons.Outlined.LocalDrink
+                iconImageVector = Icons.Outlined.LocalDrink,
             )
         }
 
         Spacer(modifier = Modifier.height(8.dp))
     }
-
 }
 
 @Composable
@@ -350,13 +347,13 @@ private fun EffortRow(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Icon(
                 imageVector = iconImageVector,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
             )
 
             TextWithLabel(
@@ -365,11 +362,11 @@ private fun EffortRow(
                 text = leftValue,
                 labelStyle = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 ),
                 textStyle = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 ),
             )
         }
@@ -380,11 +377,11 @@ private fun EffortRow(
             text = rightValue,
             labelStyle = MaterialTheme.typography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             ),
             textStyle = MaterialTheme.typography.labelMedium.copy(
                 fontWeight = FontWeight.Light,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             ),
         )
     }
@@ -478,7 +475,8 @@ private fun WalkingProgressGraphContainer(
                     stringResource(id = R.string.calories) to "${(selectedRecord?.caloriesBurned ?: 0)} kcal",
                     stringResource(id = R.string.distance) to String.format(
                         Locale.getDefault(),
-                        "%.2f km", selectedRecord?.totalDistance ?: 0f
+                        "%.2f km",
+                        selectedRecord?.totalDistance ?: 0f,
                     ),
                 ),
                 horizontalArrangement = Arrangement.Start,
@@ -507,7 +505,7 @@ private fun WalkingProgressGraphContainer(
 
 private fun formatDate(
     date: String?,
-    formatStyle: FormatStyle = FormatStyle.MEDIUM
+    formatStyle: FormatStyle = FormatStyle.MEDIUM,
 ): String {
     if (date.isNullOrEmpty()) {
         return ""
@@ -515,7 +513,7 @@ private fun formatDate(
 
     return LocalDate.parse(date).format(
         DateTimeFormatter.ofLocalizedDate(
-            formatStyle
+            formatStyle,
         ),
     )
 }

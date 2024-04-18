@@ -67,7 +67,7 @@ sealed class NavRoutes(
             "hydration",
             R.string.waterLogging,
             Icons.Outlined.WaterDrop,
-            R.drawable.water_drop_24px
+            R.drawable.water_drop_24px,
         )
 
     data object You :
