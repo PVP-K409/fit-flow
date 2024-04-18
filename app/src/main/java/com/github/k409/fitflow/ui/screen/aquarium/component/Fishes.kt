@@ -278,7 +278,7 @@ fun BouncingDraggableFish(
     val coroutineScope = rememberCoroutineScope()
 
     BoxWithConstraints(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
     ) {
         var fishSize by remember { mutableStateOf(IntSize(0, 0)) }
 
@@ -311,7 +311,7 @@ fun BouncingDraggableFish(
 
                             position = Offset(
                                 position.x.coerceIn(0f, containerWidth),
-                                position.y.coerceIn(0f, containerHeight)
+                                position.y.coerceIn(0f, containerHeight),
                             )
 
                             if (position.x >= containerWidth || position.x <= 0) {
@@ -375,7 +375,7 @@ fun BouncingDraggableFish(
                                 )
 
                                 position = Offset(newOffsetX, newOffsetY)
-                            }
+                            },
                         )
                     }
                 }
@@ -384,7 +384,7 @@ fun BouncingDraggableFish(
                 }
                 .onSizeChanged { size ->
                     fishSize = size
-                }
+                },
         )
     }
 }
