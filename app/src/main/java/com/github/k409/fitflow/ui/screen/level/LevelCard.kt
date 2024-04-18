@@ -58,6 +58,7 @@ fun LevelCard(
                 modifier = Modifier
                     .size(58.dp),
             )
+
             Column(
                 modifier = modifier
                     .fillMaxWidth(),
@@ -130,7 +131,8 @@ fun LevelCard(
                         modifier = Modifier.padding(start = 8.dp, end = 2.dp),
                     )
 
-                    val progressColor = if (progress >= 1) colors.primary else colors.primary.copy(alpha = 0.5f)
+                    val progressColor =
+                        if (progress >= 1) colors.primary else colors.primary.copy(alpha = 0.5f)
 
                     LinearProgressIndicator(
                         progress = { progress },

@@ -129,7 +129,14 @@ private fun AquariumLayout(
             )
 
             Sand()
-            Plant()
+            CoralCuspPlant()
+
+            Crab(
+                modifier = Modifier
+                    .padding(start = 10.dp, bottom = 20.dp),
+                alignment = Alignment.BottomStart,
+                height = 70.dp,
+            )
 
             InventoryButton(
                 modifier = Modifier

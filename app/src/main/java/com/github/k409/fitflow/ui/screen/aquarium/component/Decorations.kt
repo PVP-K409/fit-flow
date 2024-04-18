@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.R
 
@@ -32,16 +33,47 @@ fun BoxScope.Sand(
 }
 
 @Composable
-fun BoxScope.Plant(
+fun BoxScope.CoralCuspPlant(
     modifier: Modifier = Modifier,
 ) {
-    val plantVector = ImageVector.vectorResource(id = R.drawable.plant)
+    Plant(
+        modifier = modifier,
+        id = R.drawable.plant,
+        alignment = Alignment.BottomEnd,
+    )
+}
+
+@Composable
+fun BoxScope.Crab(
+    modifier: Modifier = Modifier,
+    alignment: Alignment = Alignment.BottomStart,
+    height: Dp = 150.dp,
+) {
+    val crabVector = ImageVector.vectorResource(id = R.drawable.crab)
+
+    Image(
+        imageVector = crabVector,
+        contentDescription = "Crab",
+        modifier = modifier
+            .align(alignment)
+            .height(height),
+    )
+}
+
+
+@Composable
+fun BoxScope.Plant(
+    modifier: Modifier = Modifier,
+    id: Int = R.drawable.plant,
+    alignment: Alignment = Alignment.BottomEnd,
+) {
+    val plantVector = ImageVector.vectorResource(id = id)
 
     Image(
         imageVector = plantVector,
         contentDescription = "Plant",
         modifier = modifier
-            .align(Alignment.BottomEnd)
+            .align(alignment)
             .height(150.dp),
     )
 }

@@ -10,17 +10,10 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -35,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
@@ -43,7 +35,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -300,6 +291,7 @@ fun BouncingDraggableFish(
     ) {
         var fishSize by remember { mutableStateOf(IntSize(0, 0)) }
 
+        // TODO possible bug when water level changes
         val containerWidth by remember { derivedStateOf { constraints.maxWidth.toFloat() - fishSize.width } }
         val containerHeight by remember { derivedStateOf { constraints.maxHeight.toFloat() - fishSize.height } }
 
@@ -403,47 +395,5 @@ fun BouncingDraggableFish(
                     fishSize = size
                 }
         )
-    }
-}
-
-@Preview
-@Composable
-fun BouncingFishAnimationPreview() {
-    val fishes = listOf(
-        R.drawable.gold_fish_regular,
-        R.drawable.gold_fish_dying,
-        R.drawable.angel_fish_dying,
-        R.drawable.angel_fish_regular,
-        R.drawable.clown_fish_strong,
-    )
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        Box(
-            modifier = Modifier
-                .padding(16.dp)
-                .padding(bottom = 32.dp)
-                .fillMaxWidth()
-                .fillMaxHeight(0.7f)
-                .background(Color(0xff3c1361))
-        ) {
-            fishes.forEach { fish ->
-                BouncingDraggableFish(
-                    fishDrawableId = fish,
-                    initialFishSize = 100.dp,
-                    bounceEnabled = true
-                )
-            }
-
-            BouncingDraggableFish(
-                fishDrawableId = R.drawable.coin,
-                initialFishSize = 50.dp,
-                bounceEnabled = true,
-                initialVelocity = Offset(5f, 50f),
-            )
-        }
     }
 }
