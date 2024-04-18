@@ -109,7 +109,7 @@ private fun AquariumLayout(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+        ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -155,11 +155,12 @@ private fun AquariumLayout(
                         .fillMaxHeight(waterLevelAnimation),
                 ) {
                     val phase = getPhase(healthLevel)
-                    // loop for each item in aquarium
+
                     for (item in uiState.aquariumItems) {
-                        DraggableFishBox(
-                            fishSize = fishSize,
-                            itemImageStorageUrl = item.phases?.get(phase.name)
+                        BouncingDraggableFish(
+                            initialFishSize = fishSize,
+                            fishDrawableId = R.drawable.gold_fish_dead,
+                            imageDownloadUrl = item.phases?.get(phase.name)
                                 ?: item.image,
                         )
                     }

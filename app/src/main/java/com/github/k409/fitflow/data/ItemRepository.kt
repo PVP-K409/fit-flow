@@ -21,6 +21,7 @@ private const val ITEMS_COLLECTION = "items"
 
 private const val PLACED_FIELD = "placed"
 private const val PRICE_FIELD = "price"
+
 class ItemRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
@@ -35,6 +36,7 @@ class ItemRepository @Inject constructor(
                 }
             }
     }
+
     fun getUserOwnedItems(): Flow<List<Item>> {
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
@@ -49,6 +51,7 @@ class ItemRepository @Inject constructor(
                 }
             }
     }
+
     suspend fun addItemToUser(item: Item) {
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
@@ -73,6 +76,7 @@ class ItemRepository @Inject constructor(
             Log.e("Market Repository", "Error updating inventory", e)
         }
     }
+
     suspend fun removeItemFromUser(item: Item) {
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
@@ -87,6 +91,7 @@ class ItemRepository @Inject constructor(
             Log.e("Market Repository", "Error updating inventory", e)
         }
     }
+
     fun getAquariumItems(): Flow<List<Item>> {
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
@@ -101,7 +106,19 @@ class ItemRepository @Inject constructor(
                     document.toObject<Item>() ?: Item()
                 }
             }
+            .map {
+                it.map { item ->
+                    val phases = item.phases ?: emptyMap()
+
+                    val updatedPhases = phases.mapValues { (_, imageUrl) ->
+                        getImageDownloadUrl(imageUrl)
+                    }
+
+                    item.copy(phases = updatedPhases)
+                }
+            }
     }
+
     private fun getInventoryDocumentRef(
         uid: String,
         item: Item,
@@ -111,6 +128,7 @@ class ItemRepository @Inject constructor(
             .collection(ITEMS_COLLECTION)
             .document(item.id.toString())
     }
+
     suspend fun getImageDownloadUrl(imageUrl: String): String {
         // Convert cloud storage url to download url
         return Firebase.storage.getReferenceFromUrl(imageUrl).downloadUrl.await().toString()
