@@ -1,11 +1,11 @@
 package com.github.k409.fitflow.ui.screen.level
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
@@ -29,11 +29,14 @@ fun LevelScreen(
 
 @Composable
 private fun LevelScreenContent(uiState: LevelUiState.Success) {
-    LazyColumn {
+    LazyColumn(
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
         items(levels.size) { index ->
             val level = levels[index]
+
             LevelCard(
-                modifier = Modifier.padding(8.dp),
                 id = level.id,
                 name = level.name,
                 minXp = level.minXP,

@@ -43,7 +43,6 @@ fun BoxScope.CoralCuspPlant(
     )
 }
 
-
 @Composable
 fun BoxScope.Crab(
     modifier: Modifier = Modifier,
