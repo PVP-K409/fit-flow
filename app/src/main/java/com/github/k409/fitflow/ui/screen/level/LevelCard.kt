@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun LevelCard(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     id: Int,
     name: String,
     minXp: Int,
@@ -43,10 +43,10 @@ fun LevelCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .background(colors.primaryContainer)
-            .padding(4.dp),
+            .padding(horizontal = 8.dp, vertical = 16.dp),
     ) {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -56,21 +56,22 @@ fun LevelCard(
                 contentDescription = "Level badge",
                 tint = Color.Unspecified,
                 modifier = Modifier
-                    .size(58.dp),
+                    .size(56.dp),
             )
 
             Column(
-                modifier = modifier
-                    .fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp),
             ) {
                 Row(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxSize(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
-                        text = "$id. $name",
+                        text = name,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = colors.primary,
@@ -97,7 +98,8 @@ fun LevelCard(
                             imageVector = Icons.AutoMirrored.Filled.ArrowRightAlt,
                             contentDescription = null,
                             tint = colors.primary,
-                            modifier = Modifier.size(18.dp),
+                            modifier = Modifier
+                                .size(18.dp)
                         )
 
                         Text(
@@ -128,7 +130,7 @@ fun LevelCard(
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Normal,
                         color = colors.primary,
-                        modifier = Modifier.padding(start = 8.dp, end = 2.dp),
+                        modifier = Modifier.padding(end = 2.dp),
                     )
 
                     val progressColor =
@@ -138,7 +140,7 @@ fun LevelCard(
                         progress = { progress },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(end = 6.dp, start = 8.dp, top = 2.dp)
+                            .padding(end = 6.dp, top = 2.dp)
                             .height(12.dp)
                             .clip(RoundedCornerShape(8.dp)),
                         color = progressColor,
