@@ -2,6 +2,7 @@ package com.github.k409.fitflow.service
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.DrinkReminderState
 import com.github.k409.fitflow.model.Notification
@@ -10,10 +11,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.Duration
+import java.time.LocalDateTime
 import java.time.LocalTime
 import javax.inject.Inject
 
 private const val NOTIFICATION_IDS_KEY = "notification_ids"
+private const val TAG = "HydrationNotificationService"
 
 class HydrationNotificationService @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -38,28 +41,55 @@ class HydrationNotificationService @Inject constructor(
         todayWaterIntake: Int,
     ) {
         val remainingIntakeGoal = intakeGoal - todayWaterIntake
-        val count = remainingIntakeGoal / cupSize
+        val count = intakeGoal / cupSize
 
         if (remainingIntakeGoal <= 0 || count <= 0) {
             return
         }
 
-        val startLocalTime = LocalTime.of(8, 0)
-        val endLocalTime = LocalTime.of(21, 0)
+        val startTime = LocalTime.of(8, 0)
+        val endTime = LocalTime.of(22, 0)
 
-        val currentTime = LocalTime.now()
-        var notificationTime = startLocalTime
+        val currentDateTime = LocalDateTime.now()
+        val currentTime = currentDateTime.toLocalTime()
+        val currentDate = currentDateTime.toLocalDate()
 
-        val remainingHoursToday = Duration.between(notificationTime, endLocalTime)
-        val intervalDuration = remainingHoursToday.dividedBy(count.toLong())
+        val interval = Duration.between(startTime, endTime).dividedBy(count.toLong())
+        val intervalDuration = Duration.ofMinutes(interval.toMinutes())
 
-        if (notificationTime == currentTime) {
-            notificationTime = notificationTime.plus(intervalDuration)
+        val notificationDateTimes = mutableListOf<LocalDateTime>()
+
+        var notificationTime = if (currentTime < startTime) {
+            LocalDateTime.of(currentDate, startTime)
+        } else if (currentTime > endTime) {
+            LocalDateTime.of(currentDate.plusDays(1), startTime)
+        } else {
+            if (currentTime + intervalDuration > endTime || currentTime + intervalDuration < startTime
+            ) {
+                LocalDateTime.of(currentDate.plusDays(1), startTime)
+            } else {
+                currentDateTime.plus(intervalDuration)
+            }
         }
 
-        val scheduledNotificationIds = mutableListOf<Int>()
+        repeat(count) {
+            notificationDateTimes.add(notificationTime)
 
-        repeat(count) { index ->
+            val next = notificationTime.plus(intervalDuration)
+
+            notificationTime = if (next.toLocalTime() > endTime || next.toLocalTime() < startTime) {
+                LocalDateTime.of(
+                    notificationTime.toLocalDate().plusDays(1),
+                    startTime,
+                )
+            } else {
+                next
+            }
+        }
+
+        Log.d(TAG, "Current date time: $currentDateTime")
+
+        val scheduledNotificationIds = notificationDateTimes.mapIndexed { index, dateTime ->
             val notification = Notification(
                 id = index,
                 channel = NotificationChannel.HydrationReminder,
@@ -67,22 +97,18 @@ class HydrationNotificationService @Inject constructor(
                 text = context.getString(
                     R.string.today__progress_liters,
                     "%.1f".format(todayWaterIntake / 1000.0),
-                    "%.1f".format(
-                        intakeGoal / 1000.0,
-                    ),
+                    "%.1f".format(intakeGoal / 1000.0),
                 ),
             )
 
-            scheduledNotificationIds.add(notification.id)
-
             notificationService.post(
                 notification = notification,
-                time = notificationTime,
+                dateTime = dateTime,
             )
 
-            println("Scheduled notification at $notificationTime notification: $notification")
+            Log.d(TAG, "Scheduled notification at $dateTime")
 
-            notificationTime = notificationTime.plus(intervalDuration)
+            index
         }
 
         saveScheduledNotificationIds(scheduledNotificationIds)
@@ -103,22 +129,19 @@ class HydrationNotificationService @Inject constructor(
     ) {
         val notificationIdsJson = Json.encodeToString(scheduledNotificationIds)
 
-        sharedPreferences
-            .edit()
-            .putString(
-                NOTIFICATION_IDS_KEY,
-                notificationIdsJson,
-            ).apply()
+        sharedPreferences.edit().putString(
+            NOTIFICATION_IDS_KEY,
+            notificationIdsJson,
+        ).apply()
     }
 
     private fun getScheduledNotificationIds(): MutableList<Int> {
         val ids = mutableListOf<Int>()
 
-        val notificationIdsJson = sharedPreferences
-            .getString(
-                NOTIFICATION_IDS_KEY,
-                null,
-            )
+        val notificationIdsJson = sharedPreferences.getString(
+            NOTIFICATION_IDS_KEY,
+            null,
+        )
 
         val json = Json { ignoreUnknownKeys = true }
 
