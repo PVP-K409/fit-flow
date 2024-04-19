@@ -109,7 +109,7 @@ private fun AquariumLayout(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-        ) {
+    ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
         ) {

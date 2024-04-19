@@ -99,7 +99,7 @@ fun LevelCard(
                             contentDescription = null,
                             tint = colors.primary,
                             modifier = Modifier
-                                .size(18.dp)
+                                .size(18.dp),
                         )
 
                         Text(
