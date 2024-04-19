@@ -91,7 +91,8 @@ class HydrationRepository @Inject constructor(
     }
 
     fun getTodayWaterIntake(): Flow<HydrationRecord> {
-        val uid = auth.currentUser?.uid ?: return flowOf(HydrationRecord())
+        auth.currentUser?.uid ?: return flowOf(HydrationRecord())
+
         val todayDate = LocalDate.now().toString()
 
         return getWaterIntake(todayDate)

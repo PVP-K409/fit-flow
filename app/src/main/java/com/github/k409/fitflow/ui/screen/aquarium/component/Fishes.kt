@@ -72,7 +72,6 @@ fun DraggableFishBox(
     modifier: Modifier = Modifier,
     fishModifier: Modifier = Modifier,
     @DrawableRes fishDrawableId: Int = R.drawable.primary_fish,
-    itemImageStorageUrl: String = "",
     imageDownloadUrl: String = "",
     fishSize: Dp = 100.dp,
     initialOffset: Offset = Offset(0f, 0f),
