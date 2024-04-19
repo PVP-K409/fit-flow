@@ -109,7 +109,7 @@ private fun AquariumLayout(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+        ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -135,7 +135,7 @@ private fun AquariumLayout(
                 modifier = Modifier
                     .padding(start = 10.dp, bottom = 20.dp),
                 alignment = Alignment.BottomStart,
-                height = 70.dp,
+                height = 50.dp,
             )
 
             InventoryButton(

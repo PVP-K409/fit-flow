@@ -43,6 +43,7 @@ fun BoxScope.CoralCuspPlant(
     )
 }
 
+
 @Composable
 fun BoxScope.Crab(
     modifier: Modifier = Modifier,
@@ -65,6 +66,7 @@ fun BoxScope.Plant(
     modifier: Modifier = Modifier,
     id: Int = R.drawable.plant,
     alignment: Alignment = Alignment.BottomEnd,
+    height: Dp = 150.dp,
 ) {
     val plantVector = ImageVector.vectorResource(id = id)
 
@@ -73,6 +75,6 @@ fun BoxScope.Plant(
         contentDescription = "Plant",
         modifier = modifier
             .align(alignment)
-            .height(150.dp),
+            .height(height),
     )
 }
