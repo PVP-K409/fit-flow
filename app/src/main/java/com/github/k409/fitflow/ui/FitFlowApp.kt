@@ -74,7 +74,6 @@ import com.github.k409.fitflow.ui.screen.level.levels
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Suppress("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FitFlowApp(
     sharedUiState: SharedUiState.Success,
@@ -137,10 +136,10 @@ fun FitFlowApp(
                     navController = navController,
                     currentScreen = currentScreen,
                     visible = !(
-                        navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                            currentScreen,
-                        )
-                        ) && bottomBarState.value,
+                            navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                                currentScreen,
+                            )
+                            ) && bottomBarState.value,
                     containerColor = if (currentScreen == NavRoutes.Aquarium) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
                 )
             },

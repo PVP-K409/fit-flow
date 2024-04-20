@@ -116,4 +116,10 @@
     <string name="aquarium_size_limit_reached_please_remove_some_items_before_adding_more">Aquarium size limit reached. Please remove some items before adding more</string>
     <string name="add">Add</string>
     <string name="added_to_aquarium">Added to aquarium</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="all_rights_reserved">All rights reserved</string>
+    <string name="fitflow_corporation">FitFlow Corporation</string>
+    <string name="sign_in_to_continue">Sign in to continue</string>
+    <string name="sign_in_failed">Sign in failed</string>
+    <string name="welcome">Welcome, %1$s</string>
 </resources>

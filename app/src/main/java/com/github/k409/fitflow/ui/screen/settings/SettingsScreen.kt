@@ -45,7 +45,6 @@ import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.theme.getColorScheme
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(
@@ -97,11 +96,7 @@ private fun AccountSettingsGroup(
     SettingsEntry(
         title = stringResource(R.string.log_out),
         text = stringResource(R.string.you_are_logged_in_as, currentUser.name),
-        onClick = {
-            coroutineScope.launch {
-                settingsViewModel.signOut()
-            }
-        },
+        onClick = settingsViewModel::signOut,
     )
 
     SettingsGroupSpacer()

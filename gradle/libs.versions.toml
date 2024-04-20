@@ -4,11 +4,13 @@ androidx-connectClient = "1.1.0-alpha07"
 animatedNavigationBar = "1.0.0"
 coilCompose = "2.6.0"
 coreSplashscreen = "1.0.1"
+credentials = "1.2.2"
 datastorePreferences = "1.1.0"
 datastorePreferencesCore = "1.1.0"
 firebaseMessaging = "23.4.1"
 firebaseUiAuth = "8.0.0"
 firebaseUiStorage = "7.2.0"
+googleid = "1.1.0"
 googleServices = "4.4.1"
 hilt = "2.50"
 hiltAndroidCompiler = "2.50"
@@ -42,6 +44,8 @@ firebaseAppcheckDebug = "17.1.2"
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 androidx-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "androidx-connectClient" }
+androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
+androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferencesCore" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
@@ -55,6 +59,7 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"
 coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coilCompose" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 firebase-ui-storage = { module = "com.firebaseui:firebase-ui-storage", version.ref = "firebaseUiStorage" }
+googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "activity-compose" }

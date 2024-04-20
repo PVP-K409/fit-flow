@@ -1,52 +1,58 @@
 package com.github.k409.fitflow.ui.screen.login
 
 import android.content.Context
-import android.content.Intent
 import android.widget.Toast
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.result.ActivityResult
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.data.AuthRepository
 import com.github.k409.fitflow.data.SignInResult
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
-    suspend fun firebaseAuthWithGoogle(
-        context: Context,
-        idToken: String,
-    ) {
-        val signInResult = authRepository.firebaseAuthWithGoogle(idToken)
 
-        showSignInStateToast(context, signInResult)
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState: StateFlow<LoginUiState> = _uiState
+
+    fun loginWithGoogle() {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(isLoading = true)
+            }
+
+            val signInResult = authRepository.signInWithGoogle()
+
+            showSignInStateMessage(signInResult)
+
+            _uiState.update {
+                it.copy(isLoading = false)
+            }
+        }
     }
 
-    fun signInWithGoogle(
-        signInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
-        googleSignInClient: GoogleSignInClient,
-    ) {
-        authRepository.signInWithGoogle(signInLauncher, googleSignInClient)
-    }
-
-    private fun showSignInStateToast(
-        context: Context,
+    private fun showSignInStateMessage(
         signInResult: SignInResult,
     ) {
-        if (signInResult.user != null) {
-            Toast.makeText(context, "Welcome, ${signInResult.user.name}", Toast.LENGTH_SHORT)
-                .show()
-
-            return
+        val message = when {
+            signInResult.user != null -> context.getString(R.string.welcome, signInResult.user.name)
+            signInResult.errorMessage != null -> signInResult.errorMessage
+            else -> context.getString(R.string.sign_in_failed)
         }
 
-        if (signInResult.errorMessage != null) {
-            Toast.makeText(context, signInResult.errorMessage, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "Sign in failed", Toast.LENGTH_SHORT).show()
-        }
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }
+
+data class LoginUiState(
+    val isLoading: Boolean = false
+)

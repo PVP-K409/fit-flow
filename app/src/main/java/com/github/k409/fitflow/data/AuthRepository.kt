@@ -1,37 +1,73 @@
 package com.github.k409.fitflow.data
 
-import android.content.Intent
-import androidx.activity.result.ActivityResultLauncher
+import android.content.Context
+import android.util.Log
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.GetCredentialException
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.toUser
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
-data class SignInResult(
-    val user: User?,
-    val errorMessage: String?,
-)
+private const val TAG = "AuthRepository"
 
 class AuthRepository @Inject constructor(
     private val auth: FirebaseAuth,
     private val userRepository: UserRepository,
+    private val credentialManager: CredentialManager,
+    private val getCredentialRequest: GetCredentialRequest,
+    @ApplicationContext private val context: Context,
 ) {
-    fun signInWithGoogle(
-        signInLauncher: ActivityResultLauncher<Intent>,
-        googleSignInClient: GoogleSignInClient,
-    ) {
-        googleSignInClient.signOut().addOnCompleteListener {
-            val signInIntent = googleSignInClient.signInIntent
+    suspend fun signInWithGoogle(): SignInResult {
+        try {
+            val result = credentialManager.getCredential(context, getCredentialRequest)
 
-            signInLauncher.launch(signInIntent)
+            return handleSignIn(result)
+        } catch (e: GetCredentialException) {
+            Log.e(TAG, "GetCredentialException", e)
+        } catch (e: Exception) {
+            Log.e(TAG, "Exception", e)
         }
+
+        return SignInResult(null, context.getString(R.string.sign_in_failed))
     }
 
-    suspend fun firebaseAuthWithGoogle(
+    private suspend fun handleSignIn(result: GetCredentialResponse): SignInResult {
+        when (val credential = result.credential) {
+            is CustomCredential -> {
+                if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                    try {
+                        val googleIdTokenCredential =
+                            GoogleIdTokenCredential.createFrom(credential.data)
+
+                        return signInWithGoogleCredentialFirebase(googleIdTokenCredential.idToken)
+                    } catch (e: GoogleIdTokenParsingException) {
+                        Log.e(TAG, "handleSignIn:", e)
+                    }
+                } else {
+                    Log.e(TAG, "Unexpected type of credential")
+                }
+            }
+
+            else -> {
+                Log.e(TAG, "Unexpected type of credential")
+            }
+        }
+
+        return SignInResult(null, context.getString(R.string.sign_in_failed))
+    }
+
+    private suspend fun signInWithGoogleCredentialFirebase(
         idToken: String,
     ): SignInResult {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
@@ -58,3 +94,8 @@ class AuthRepository @Inject constructor(
         }
     }
 }
+
+data class SignInResult(
+    val user: User?,
+    val errorMessage: String?,
+)
