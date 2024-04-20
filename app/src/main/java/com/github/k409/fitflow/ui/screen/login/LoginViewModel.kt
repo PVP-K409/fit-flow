@@ -54,5 +54,5 @@ class LoginViewModel @Inject constructor(
 }
 
 data class LoginUiState(
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
 )

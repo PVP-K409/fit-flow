@@ -61,7 +61,7 @@ object RepositoryModule {
             userRepository,
             credentialManager,
             getCredentialRequest,
-            context
+            context,
         )
     }
 

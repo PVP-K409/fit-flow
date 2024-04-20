@@ -74,7 +74,7 @@ private fun SignInContent(
                     modifier = Modifier
                         .size(120.dp),
 
-                    )
+                )
                 Text(
                     text = stringResource(R.string.sign_in_to_continue),
                     style = MaterialTheme.typography.titleLarge,
@@ -125,8 +125,8 @@ private fun GoogleLoginButton(
         modifier = modifier.animateContentSize(
             animationSpec = tween(
                 durationMillis = 300,
-                easing = LinearOutSlowInEasing
-            )
+                easing = LinearOutSlowInEasing,
+            ),
         ),
         onClick = onClick,
         shape = MaterialTheme.shapes.extraLarge,
@@ -135,7 +135,7 @@ private fun GoogleLoginButton(
         Icon(
             painter = painterResource(id = R.drawable.ic_google_logo),
             contentDescription = null,
-            tint = Color.Unspecified
+            tint = Color.Unspecified,
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -150,7 +150,7 @@ private fun GoogleLoginButton(
                     .height(16.dp)
                     .width(16.dp),
                 strokeWidth = 2.dp,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }

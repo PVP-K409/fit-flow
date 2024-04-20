@@ -20,7 +20,7 @@ object SnackbarManager {
         _messages.update { currentMessages ->
             currentMessages + Message(
                 id = UUID.randomUUID().mostSignificantBits,
-                message = message
+                message = message,
             )
         }
     }
