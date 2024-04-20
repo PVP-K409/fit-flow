@@ -28,9 +28,9 @@ class AuthRepository @Inject constructor(
     private val getCredentialRequest: GetCredentialRequest,
     @ApplicationContext private val context: Context,
 ) {
-    suspend fun signInWithGoogle(): SignInResult {
+    suspend fun signInWithGoogle(activityContext: Context): SignInResult {
         try {
-            val result = credentialManager.getCredential(context, getCredentialRequest)
+            val result = credentialManager.getCredential(activityContext, getCredentialRequest)
 
             return handleSignIn(result)
         } catch (e: GetCredentialException) {
@@ -39,7 +39,7 @@ class AuthRepository @Inject constructor(
             Log.e(TAG, "Exception", e)
         }
 
-        return SignInResult(null, context.getString(R.string.sign_in_failed))
+        return SignInResult(null, activityContext.getString(R.string.sign_in_failed))
     }
 
     private suspend fun handleSignIn(result: GetCredentialResponse): SignInResult {

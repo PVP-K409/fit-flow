@@ -24,13 +24,13 @@ class LoginViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState
 
-    fun loginWithGoogle() {
+    fun loginWithGoogle(context: Context) {
         viewModelScope.launch {
             _uiState.update {
                 it.copy(isLoading = true)
             }
 
-            val signInResult = authRepository.signInWithGoogle()
+            val signInResult = authRepository.signInWithGoogle(context)
 
             showSignInStateMessage(signInResult)
 
