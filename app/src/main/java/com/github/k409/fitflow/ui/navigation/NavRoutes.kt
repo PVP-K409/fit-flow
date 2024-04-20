@@ -25,7 +25,7 @@ sealed class NavRoutes(
     @DrawableRes val iconRes: Int = R.drawable.error_24px,
 ) {
     companion object {
-        val navRoutes = listOf(
+        private val navRoutes = listOf(
             Aquarium,
             Activity,
             Goals,
@@ -42,6 +42,10 @@ sealed class NavRoutes(
         )
         val bottomNavBarItems =
             listOf(Aquarium, Activity, Hydration, Goals, Marketplace, You)
+
+        fun getRoute(route: String?): NavRoutes {
+            return navRoutes.find { it.route == route } ?: Default
+        }
     }
 
     data object Default : NavRoutes("default", R.string.app_name)

@@ -39,7 +39,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -80,20 +79,17 @@ import java.util.Locale
 fun FitFlowApp(
     sharedUiState: SharedUiState.Success,
 ) {
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
     val user = sharedUiState.user
 
-    val currentScreen = NavRoutes.navRoutes
-        .find { it.route == currentDestination?.route } ?: NavRoutes.Default
+    val navController = rememberNavController()
 
-    val startDestination = if (user.uid.isEmpty()) {
-        NavRoutes.Login.route
-    } else if (!user.isProfileComplete()) {
-        NavRoutes.ProfileCreation.route
-    } else {
-        NavRoutes.Aquarium.route
+    val currentDestination = navController.currentBackStackEntryAsState().value?.destination
+    val currentScreen = NavRoutes.getRoute(currentDestination?.route)
+
+    val startDestination = when {
+        user.uid.isEmpty() -> NavRoutes.Login.route
+        !user.isProfileComplete() -> NavRoutes.ProfileCreation.route
+        else -> NavRoutes.Aquarium.route
     }
 
     val pointsAndXpVisible = currentScreen == NavRoutes.Marketplace
@@ -115,17 +111,7 @@ fun FitFlowApp(
             LocalSnackbarHostState provides snackbarHostState,
         ),
     ) {
-        LaunchedEffect(Unit) {
-            SnackbarManager.messages.collect { currentMessages ->
-                if (currentMessages.isNotEmpty()) {
-                    val message = currentMessages[0]
-                    val text = message.message
-
-                    SnackbarManager.setMessageShown(messageId = message.id)
-                    snackbarHostState.showSnackbar(message = text, withDismissAction = true)
-                }
-            }
-        }
+        SnackbarManagerLaunchedEffect(snackbarHostState = snackbarHostState)
 
         Scaffold(
             snackbarHost = {
@@ -172,6 +158,21 @@ fun FitFlowApp(
                 navController = navController,
                 startDestination = startDestination,
             )
+        }
+    }
+}
+
+@Composable
+private fun SnackbarManagerLaunchedEffect(snackbarHostState: SnackbarHostState) {
+    LaunchedEffect(Unit) {
+        SnackbarManager.messages.collect { currentMessages ->
+            if (currentMessages.isNotEmpty()) {
+                val message = currentMessages[0]
+                val text = message.message
+
+                SnackbarManager.setMessageShown(messageId = message.id)
+                snackbarHostState.showSnackbar(message = text, withDismissAction = true)
+            }
         }
     }
 }
@@ -249,10 +250,15 @@ fun FitFlowTopBar(
                         xp = user.xp,
                     )
                 } else {
-                    UserLevel(
+                    UserLevelBadge(
                         modifier = Modifier.padding(end = 8.dp),
                         xp = user.xp,
-                        navController,
+                        onClick = {
+                            navController.navigate(NavRoutes.Levels.route) {
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
                     )
                 }
 
@@ -298,34 +304,32 @@ fun FitFlowTopBar(
 }
 
 @Composable
-fun UserLevel(
+fun UserLevelBadge(
     modifier: Modifier = Modifier,
     xp: Int,
-    navController: NavController,
+    onClick: () -> Unit,
 ) {
     val userLevel = levels.firstOrNull { xp in it.minXP..it.maxXP }
+
+    if (userLevel == null) {
+        return
+    }
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        userLevel?.let {
-            Icon(
-                painter = painterResource(id = userLevel.icon),
-                contentDescription = "Level badge",
-                tint = Color.Unspecified,
-                modifier = Modifier
-                    .size(36.dp)
-                    .noRippleClickable(
-                        onClick = {
-                            navController.navigate(NavRoutes.Levels.route) {
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                    ),
-            )
-        }
+        Icon(
+            painter = painterResource(id = userLevel.icon),
+            contentDescription = "Level badge",
+            tint = Color.Unspecified,
+            modifier = Modifier
+                .size(36.dp)
+                .noRippleClickable(
+                    onClick = onClick,
+                ),
+        )
     }
 }
 
