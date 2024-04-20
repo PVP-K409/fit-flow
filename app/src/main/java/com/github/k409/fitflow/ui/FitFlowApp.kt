@@ -37,6 +37,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,6 +66,7 @@ import com.exyte.animatednavbar.items.dropletbutton.DropletButton
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.isProfileComplete
+import com.github.k409.fitflow.service.SnackbarManager
 import com.github.k409.fitflow.ui.common.LocalSnackbarHostState
 import com.github.k409.fitflow.ui.common.SwipeableSnackbar
 import com.github.k409.fitflow.ui.common.noRippleClickable
@@ -107,11 +109,24 @@ fun FitFlowApp(
         topBarState = topBarState,
     )
 
+
     CompositionLocalProvider(
         values = arrayOf(
             LocalSnackbarHostState provides snackbarHostState,
         ),
     ) {
+        LaunchedEffect(Unit) {
+            SnackbarManager.messages.collect { currentMessages ->
+                if (currentMessages.isNotEmpty()) {
+                    val message = currentMessages[0]
+                    val text = message.message
+
+                    SnackbarManager.setMessageShown(messageId = message.id)
+                    snackbarHostState.showSnackbar(message = text, withDismissAction = true)
+                }
+            }
+        }
+
         Scaffold(
             snackbarHost = {
                 SwipeableSnackbar(

@@ -1,12 +1,12 @@
 package com.github.k409.fitflow.ui.screen.login
 
 import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.data.AuthRepository
 import com.github.k409.fitflow.data.SignInResult
+import com.github.k409.fitflow.service.SnackbarManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,7 +49,7 @@ class LoginViewModel @Inject constructor(
             else -> context.getString(R.string.sign_in_failed)
         }
 
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        SnackbarManager.showMessage(message)
     }
 }
 
