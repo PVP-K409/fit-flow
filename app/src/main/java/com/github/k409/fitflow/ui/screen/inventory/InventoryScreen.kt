@@ -63,7 +63,7 @@ fun InventoryScreen(
         items(items) { item ->
             InventoryItemCard(
                 modifier = Modifier,
-                imageUrl = item.phases?.get("Regular") ?: item.image,
+                imageDownloadUrl = item.phases?.get("Regular") ?: item.image,
                 name = item.title,
                 description = item.description,
                 removeButtonText = stringResource(R.string.remove),
