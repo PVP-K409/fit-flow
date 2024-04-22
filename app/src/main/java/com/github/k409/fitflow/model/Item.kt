@@ -1,6 +1,6 @@
 package com.github.k409.fitflow.model
 
-data class Item(
+data class MarketItem(
     val id: Int = -1,
     val title: String = "",
     val description: String = "",
@@ -8,5 +8,9 @@ data class Item(
     val phases: Map<String, String>? = emptyMap(),
     val type: String = "",
     val image: String = "",
+)
+
+data class InventoryItem(
+    val item: MarketItem,
     val placed: Boolean = false,
 )

@@ -26,7 +26,7 @@ class AquariumRepository @Inject constructor(
     private val auth: FirebaseAuth,
 ) {
 
-    fun get(): Flow<AquariumStats> {
+    fun getAquariumStats(): Flow<AquariumStats> {
         val uid = auth.currentUser!!.uid
 
         return getDocumentReference(uid)

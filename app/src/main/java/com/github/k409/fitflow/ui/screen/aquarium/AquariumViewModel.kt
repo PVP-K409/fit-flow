@@ -18,7 +18,7 @@ class AquariumViewModel @Inject constructor(
 ) : ViewModel() {
 
     val uiState: StateFlow<AquariumUiState> = combine(
-        aquariumRepository.get(),
+        aquariumRepository.getAquariumStats(),
         itemRepository.getAquariumItems(),
     ) { stats, items ->
         AquariumUiState.Success(

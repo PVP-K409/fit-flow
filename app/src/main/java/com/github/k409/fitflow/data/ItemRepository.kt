@@ -1,15 +1,14 @@
 package com.github.k409.fitflow.data
 
 import android.util.Log
-import com.github.k409.fitflow.model.Item
-import com.google.firebase.Firebase
+import com.github.k409.fitflow.model.InventoryItem
+import com.github.k409.fitflow.model.MarketItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
-import com.google.firebase.storage.storage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
@@ -26,18 +25,18 @@ class ItemRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
 ) {
-    fun getMarketItems(): Flow<List<Item>> {
+    fun getMarketItems(): Flow<List<MarketItem>> {
         return db.collection(MARKET_COLLECTION)
             .orderBy(PRICE_FIELD)
             .snapshots()
             .map {
                 it.documents.map { document ->
-                    document.toObject<Item>() ?: Item()
+                    document.toObject<MarketItem>() ?: MarketItem()
                 }
             }
     }
 
-    fun getUserOwnedItems(): Flow<List<Item>> {
+    fun getUserOwnedItems(): Flow<List<InventoryItem>> {
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
 
@@ -45,29 +44,58 @@ class ItemRepository @Inject constructor(
             .document(uid)
             .collection(ITEMS_COLLECTION)
             .snapshots()
-            .map {
-                it.documents.map { document ->
-                    document.toObject<Item>() ?: Item()
+            .map { snapshot ->
+                snapshot.documents.mapNotNull { document ->
+                    val itemRef = document.get("item") as? DocumentReference
+                    val marketItem = itemRef?.get()?.await()?.toObject<MarketItem>()
+
+                    marketItem?.let {
+                        InventoryItem(
+                            item = it,
+                            placed = document.getBoolean(PLACED_FIELD) ?: false,
+                        )
+                    }
                 }
             }
     }
 
-    suspend fun addItemToUser(item: Item) {
+    fun getAquariumItems(): Flow<List<InventoryItem>> {
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
 
-        val inventoryDocumentRef = getInventoryDocumentRef(uid, item)
+        return db.collection(INVENTORY_COLLECTION)
+            .document(uid)
+            .collection(ITEMS_COLLECTION)
+            .whereEqualTo(PLACED_FIELD, true)
+            .snapshots()
+            .map { snapshot ->
+                snapshot.documents.mapNotNull { document ->
+                    val itemRef = document.get("item") as? DocumentReference
+                    val marketItem = itemRef?.get()?.await()?.toObject<MarketItem>()
+
+                    marketItem?.let {
+                        InventoryItem(
+                            item = it,
+                            placed = document.getBoolean(PLACED_FIELD) ?: false,
+                        )
+                    }
+                }
+            }
+    }
+
+    suspend fun addItemToUserInventory(marketItem: MarketItem) {
+        val currentUser = auth.currentUser
+        val uid = currentUser!!.uid
+
+        val inventoryDocumentRef = getInventoryDocumentRef(uid, marketItem.id)
+
+        val itemReference = db.collection(MARKET_COLLECTION).document(marketItem.id.toString())
 
         val updatedData = hashMapOf(
-            "description" to item.description,
-            "id" to item.id,
-            "phases" to (item.phases ?: emptyMap()),
-            "price" to item.price,
-            "title" to item.title,
-            "type" to item.type,
-            "image" to item.image,
-            "placed" to item.placed,
+            "item" to itemReference,
+            "placed" to false,
         )
+
         try {
             inventoryDocumentRef
                 .set(updatedData)
@@ -77,11 +105,31 @@ class ItemRepository @Inject constructor(
         }
     }
 
-    suspend fun removeItemFromUser(item: Item) {
+    suspend fun updateInventoryItem(marketItem: InventoryItem) {
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
 
-        val inventoryDocumentRef = getInventoryDocumentRef(uid, item)
+        val inventoryDocumentRef = getInventoryDocumentRef(uid, marketItem.item.id)
+
+        val updatedData = hashMapOf(
+            "item" to db.collection(MARKET_COLLECTION).document(marketItem.item.id.toString()),
+            "placed" to marketItem.placed,
+        )
+
+        try {
+            inventoryDocumentRef
+                .set(updatedData)
+                .await()
+        } catch (e: FirebaseFirestoreException) {
+            Log.e("Market Repository", "Error updating inventory", e)
+        }
+    }
+
+    suspend fun removeItemFromUser(itemId: Int) {
+        val currentUser = auth.currentUser
+        val uid = currentUser!!.uid
+
+        val inventoryDocumentRef = getInventoryDocumentRef(uid, itemId)
 
         try {
             inventoryDocumentRef
@@ -92,45 +140,13 @@ class ItemRepository @Inject constructor(
         }
     }
 
-    fun getAquariumItems(): Flow<List<Item>> {
-        val currentUser = auth.currentUser
-        val uid = currentUser!!.uid
-
-        return db.collection(INVENTORY_COLLECTION)
-            .document(uid)
-            .collection(ITEMS_COLLECTION)
-            .whereEqualTo(PLACED_FIELD, true)
-            .snapshots()
-            .map {
-                it.documents.map { document ->
-                    document.toObject<Item>() ?: Item()
-                }
-            }
-            .map {
-                it.map { item ->
-                    val phases = item.phases ?: emptyMap()
-
-                    val updatedPhases = phases.mapValues { (_, imageUrl) ->
-                        getImageDownloadUrl(imageUrl)
-                    }
-
-                    item.copy(phases = updatedPhases)
-                }
-            }
-    }
-
     private fun getInventoryDocumentRef(
         uid: String,
-        item: Item,
+        itemId: Int,
     ): DocumentReference {
         return db.collection(INVENTORY_COLLECTION)
             .document(uid)
             .collection(ITEMS_COLLECTION)
-            .document(item.id.toString())
-    }
-
-    suspend fun getImageDownloadUrl(imageUrl: String): String {
-        // Convert cloud storage url to download url
-        return Firebase.storage.getReferenceFromUrl(imageUrl).downloadUrl.await().toString()
+            .document(itemId.toString())
     }
 }

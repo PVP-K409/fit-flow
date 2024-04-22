@@ -17,6 +17,8 @@ import coil.ImageLoaderFactory
 import coil.decode.SvgDecoder
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
+import coil.request.CachePolicy
+import coil.util.DebugLogger
 import com.github.k409.fitflow.model.NotificationChannel
 import com.github.k409.fitflow.worker.AquariumMetricsUpdaterWorker
 import com.github.k409.fitflow.worker.DrinkReminderWorker
@@ -59,20 +61,26 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
+            .respectCacheHeaders(false)
+            .crossfade(true)
             .components {
                 add(SvgDecoder.Factory())
             }
+            .memoryCachePolicy(CachePolicy.ENABLED)
             .memoryCache {
                 MemoryCache.Builder(this)
                     .maxSizePercent(0.25)
+                    .strongReferencesEnabled(true)
                     .build()
             }
+            .diskCachePolicy(CachePolicy.ENABLED)
             .diskCache {
                 DiskCache.Builder()
-                    .directory(this.cacheDir.resolve("image_cache"))
-                    .maxSizePercent(0.02)
+                    .maxSizePercent(0.03)
+                    .directory(cacheDir)
                     .build()
             }
+            .logger(DebugLogger())
             .build()
     }
 
