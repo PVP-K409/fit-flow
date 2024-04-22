@@ -30,17 +30,7 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField("String", "CLIENT_ID", "\"${keystoreProperties["github.clientId"]}\"")
-        buildConfigField(
-            "String",
-            "CLIENT_SECRET",
-            "\"${keystoreProperties["github.clientSecret"]}\""
-        )
-        buildConfigField(
-            "String",
-            "REDIRECT_URI",
-            "\"${keystoreProperties["github.redirectUri"]}\""
-        )
+        buildConfigField("String", "GOOGLE_SERVER_CLIENT_ID", "\"${keystoreProperties["google.serverClientId"]}\"")
     }
 
     buildFeatures {

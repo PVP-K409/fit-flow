@@ -3,6 +3,7 @@ package com.github.k409.fitflow.di
 import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
+import com.github.k409.fitflow.BuildConfig
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import dagger.Module
 import dagger.Provides
@@ -20,7 +21,7 @@ object AuthModule {
     fun provideGoogleIdOption(): GetGoogleIdOption {
         return GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
-            .setServerClientId("917626448761-u8nvgrds5phb5pnrpr2sk0u47tbuo71p.apps.googleusercontent.com")
+            .setServerClientId(BuildConfig.GOOGLE_SERVER_CLIENT_ID)
             .build()
     }
 
