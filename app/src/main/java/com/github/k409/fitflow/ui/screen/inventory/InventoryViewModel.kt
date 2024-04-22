@@ -20,7 +20,7 @@ class InventoryViewModel @Inject constructor(
     val inventoryUiState: StateFlow<InventoryUiState> =
         itemRepository.getUserOwnedItems().map { ownedItems ->
             InventoryUiState.Success(
-                ownedItems = ownedItems
+                ownedItems = ownedItems,
             )
         }.stateIn(
             scope = viewModelScope,

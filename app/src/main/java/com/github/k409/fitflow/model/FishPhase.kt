@@ -1,11 +1,11 @@
 package com.github.k409.fitflow.model
 
-
 enum class FishPhase {
     Regular,
     Strong,
     Dying,
-    Dead;
+    Dead,
+    ;
 
     companion object {
         fun getPhase(healthLevel: Float): FishPhase {

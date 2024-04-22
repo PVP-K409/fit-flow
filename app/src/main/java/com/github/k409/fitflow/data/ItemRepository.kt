@@ -52,7 +52,7 @@ class ItemRepository @Inject constructor(
                     marketItem?.let {
                         InventoryItem(
                             item = it,
-                            placed = document.getBoolean(PLACED_FIELD) ?: false
+                            placed = document.getBoolean(PLACED_FIELD) ?: false,
                         )
                     }
                 }
@@ -76,7 +76,7 @@ class ItemRepository @Inject constructor(
                     marketItem?.let {
                         InventoryItem(
                             item = it,
-                            placed = document.getBoolean(PLACED_FIELD) ?: false
+                            placed = document.getBoolean(PLACED_FIELD) ?: false,
                         )
                     }
                 }
@@ -93,7 +93,7 @@ class ItemRepository @Inject constructor(
 
         val updatedData = hashMapOf(
             "item" to itemReference,
-            "placed" to false
+            "placed" to false,
         )
 
         try {
@@ -113,7 +113,7 @@ class ItemRepository @Inject constructor(
 
         val updatedData = hashMapOf(
             "item" to db.collection(MARKET_COLLECTION).document(marketItem.item.id.toString()),
-            "placed" to marketItem.placed
+            "placed" to marketItem.placed,
         )
 
         try {
@@ -123,7 +123,6 @@ class ItemRepository @Inject constructor(
         } catch (e: FirebaseFirestoreException) {
             Log.e("Market Repository", "Error updating inventory", e)
         }
-
     }
 
     suspend fun removeItemFromUser(itemId: Int) {
@@ -143,7 +142,7 @@ class ItemRepository @Inject constructor(
 
     private fun getInventoryDocumentRef(
         uid: String,
-        itemId: Int
+        itemId: Int,
     ): DocumentReference {
         return db.collection(INVENTORY_COLLECTION)
             .document(uid)
