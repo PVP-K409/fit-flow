@@ -61,7 +61,7 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
-            // .respectCacheHeaders(false) // forces caching
+            .respectCacheHeaders(false)
             .crossfade(true)
             .components {
                 add(SvgDecoder.Factory())

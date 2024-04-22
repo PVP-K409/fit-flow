@@ -115,7 +115,6 @@ fun InventoryScreen(
                 },
                 addButtonEnabled = !inventoryItem.placed,
                 coinIcon = {},
-                selectedCategoryIndex = selectedCategoryIndex,
             )
         }
     }

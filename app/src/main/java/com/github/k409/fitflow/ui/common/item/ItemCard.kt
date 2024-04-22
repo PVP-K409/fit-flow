@@ -37,13 +37,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import coil.size.Size
 import com.github.k409.fitflow.ui.common.noRippleClickable
-import com.github.k409.fitflow.ui.screen.market.MarketViewModel
 
 @SuppressLint("RememberReturnType")
 @Composable
@@ -59,8 +57,6 @@ fun InventoryItemCard(
     onRemoveClick: () -> Unit = {},
     removeButtonEnabled: Boolean,
     coinIcon: @Composable () -> Unit,
-    marketViewModel: MarketViewModel = hiltViewModel(),
-    selectedCategoryIndex: Int,
 ) {
     val colors = MaterialTheme.colorScheme
 

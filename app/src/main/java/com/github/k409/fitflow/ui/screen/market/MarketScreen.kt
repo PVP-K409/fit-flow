@@ -105,7 +105,6 @@ fun MarketScreen(
                         contentDescription = "",
                     )
                 },
-                selectedCategoryIndex = selectedCategoryIndex,
             )
         }
     }
