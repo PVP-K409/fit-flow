@@ -41,7 +41,7 @@ fun MarketScreen(
     var showDialog by remember { mutableStateOf(false) }
     var dialogText by remember { mutableStateOf("") }
     var addClicked by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf(com.github.k409.fitflow.model.Item()) }
+    var selectedMarketItem by remember { mutableStateOf(com.github.k409.fitflow.model.MarketItem()) }
 
     val marketUiState by marketViewModel.marketUiState.collectAsStateWithLifecycle()
 
@@ -50,8 +50,8 @@ fun MarketScreen(
         return
     }
 
-    val allItems = (marketUiState as MarketUiState.Success).items
-    val ownedItems = (marketUiState as MarketUiState.Success).ownedItems
+    val allItems = (marketUiState as MarketUiState.Success).marketItems
+    val ownedItems = (marketUiState as MarketUiState.Success).ownedMarketItems
     val user = (marketUiState as MarketUiState.Success).user
 
     val items = when (selectedCategoryIndex) {
@@ -80,10 +80,11 @@ fun MarketScreen(
                 {
                     showDialog = true
                     addClicked = false
-                    dialogText = "${context.getString(R.string.are_you_sure_you_want_to_sell)} ${item.title}?"
-                    selectedItem = item
+                    dialogText =
+                        "${context.getString(R.string.are_you_sure_you_want_to_sell)} ${item.title}?"
+                    selectedMarketItem = item
                 },
-                removeButtonEnabled = ownedItems.find { it.id == item.id } != null,
+                removeButtonEnabled = ownedItems.find { it.item.id == item.id } != null,
                 addButtonText = "${stringResource(R.string.buy_for)} ${item.price}",
                 onAddClick =
                 {
@@ -91,9 +92,9 @@ fun MarketScreen(
                     addClicked = true
                     dialogText =
                         "${context.getString(R.string.are_you_sure_you_want_to_buy)} ${item.title}?"
-                    selectedItem = item
+                    selectedMarketItem = item
                 },
-                addButtonEnabled = user.points >= item.price && ownedItems.find { it.id == item.id } == null,
+                addButtonEnabled = user.points >= item.price && ownedItems.find { it.item.id == item.id } == null,
                 coinIcon = {
                     Icon(
                         modifier = Modifier
@@ -114,19 +115,21 @@ fun MarketScreen(
             dialogText = dialogText,
             onConfirm = {
                 if (addClicked) {
-                    marketViewModel.updateUserCoinBalance((-selectedItem.price).toLong())
-                    marketViewModel.addItemToUserInventory(selectedItem)
+                    marketViewModel.updateUserCoinBalance((-selectedMarketItem.price).toLong())
+                    marketViewModel.addItemToUserInventory(selectedMarketItem)
+
                     Toast.makeText(
                         context,
-                        "${selectedItem.title} ${context.getString(R.string.has_been_added_to_your_inventory)}",
+                        "${selectedMarketItem.title} ${context.getString(R.string.has_been_added_to_your_inventory)}",
                         Toast.LENGTH_SHORT,
                     ).show()
                 } else {
-                    marketViewModel.updateUserCoinBalance((selectedItem.price / 2).toLong())
-                    marketViewModel.removeItemFromUserInventory(selectedItem)
+                    marketViewModel.updateUserCoinBalance((selectedMarketItem.price / 2).toLong())
+                    marketViewModel.removeItemFromUserInventory(selectedMarketItem)
+
                     Toast.makeText(
                         context,
-                        "${selectedItem.title} ${context.getString(R.string.has_been_sold)}",
+                        "${selectedMarketItem.title} ${context.getString(R.string.has_been_sold)}",
                         Toast.LENGTH_SHORT,
                     ).show()
                 }

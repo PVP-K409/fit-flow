@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.ItemRepository
 import com.github.k409.fitflow.data.UserRepository
-import com.github.k409.fitflow.model.Item
+import com.github.k409.fitflow.model.InventoryItem
+import com.github.k409.fitflow.model.MarketItem
 import com.github.k409.fitflow.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,8 +28,8 @@ class MarketViewModel @Inject constructor(
     ) { user, items, ownedItems ->
         MarketUiState.Success(
             user = user,
-            items = items,
-            ownedItems = ownedItems,
+            marketItems = items,
+            ownedMarketItems = ownedItems,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -42,15 +43,15 @@ class MarketViewModel @Inject constructor(
         }
     }
 
-    fun addItemToUserInventory(item: Item) {
+    fun addItemToUserInventory(marketItem: MarketItem) {
         viewModelScope.launch {
-            itemRepository.addItemToUser(item)
+            itemRepository.addItemToUserInventory(marketItem)
         }
     }
 
-    fun removeItemFromUserInventory(item: Item) {
+    fun removeItemFromUserInventory(marketItem: MarketItem) {
         viewModelScope.launch {
-            itemRepository.removeItemFromUser(item)
+            itemRepository.removeItemFromUser(marketItem.id)
         }
     }
 }
@@ -59,7 +60,7 @@ sealed interface MarketUiState {
     data object Loading : MarketUiState
     data class Success(
         val user: User,
-        val items: List<Item>,
-        val ownedItems: List<Item>,
+        val marketItems: List<MarketItem>,
+        val ownedMarketItems: List<InventoryItem>,
     ) : MarketUiState
 }

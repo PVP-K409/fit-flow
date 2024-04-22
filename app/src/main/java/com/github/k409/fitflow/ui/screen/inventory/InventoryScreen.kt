@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.k409.fitflow.R
-import com.github.k409.fitflow.model.Item
+import com.github.k409.fitflow.model.InventoryItem
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.item.CategorySelectHeader
 import com.github.k409.fitflow.ui.common.item.InventoryItemCard
@@ -43,8 +43,8 @@ fun InventoryScreen(
     var placedItemCount by remember { mutableIntStateOf(ownedItems.filter { it.placed }.size) }
 
     val items = when (selectedCategoryIndex) {
-        0 -> ownedItems.filter { it.type == "fish" }
-        1 -> ownedItems.filter { it.type == "decoration" }
+        0 -> ownedItems.filter { it.item.type == "fish" }
+        1 -> ownedItems.filter { it.item.type == "decoration" }
         else -> emptyList()
     }
     var mLastToastTime: Long = 0
@@ -60,7 +60,9 @@ fun InventoryScreen(
                 onItemSelected = { selectedCategoryIndex = it },
             )
         }
-        items(items) { item ->
+        items(items) { inventoryItem ->
+            val item = inventoryItem.item
+
             InventoryItemCard(
                 modifier = Modifier,
                 imageDownloadUrl = item.phases?.get("Regular") ?: item.image,
@@ -70,14 +72,8 @@ fun InventoryScreen(
                 onRemoveClick =
                 {
                     inventoryViewModel.updateInventoryItem(
-                        Item(
-                            item.id,
-                            item.title,
-                            item.description,
-                            item.price,
-                            item.phases,
-                            item.type,
-                            item.image,
+                        InventoryItem(
+                            item,
                             false,
                         ),
                     )
@@ -88,7 +84,7 @@ fun InventoryScreen(
                     ).show()
                     placedItemCount--
                 },
-                removeButtonEnabled = item.placed,
+                removeButtonEnabled = inventoryItem.placed,
                 addButtonText = stringResource(R.string.add),
                 onAddClick =
                 {
@@ -104,14 +100,8 @@ fun InventoryScreen(
                         }
                     } else {
                         inventoryViewModel.updateInventoryItem(
-                            Item(
-                                item.id,
-                                item.title,
-                                item.description,
-                                item.price,
-                                item.phases,
-                                item.type,
-                                item.image,
+                            InventoryItem(
+                                item,
                                 true,
                             ),
                         )
@@ -123,7 +113,7 @@ fun InventoryScreen(
                         placedItemCount++
                     }
                 },
-                addButtonEnabled = !item.placed,
+                addButtonEnabled = !inventoryItem.placed,
                 coinIcon = {},
                 selectedCategoryIndex = selectedCategoryIndex,
             )
