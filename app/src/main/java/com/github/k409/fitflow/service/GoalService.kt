@@ -33,7 +33,7 @@ class GoalService @Inject constructor(
             startDate = startDate,
             endDate = endDate,
             completed = false,
-            mandatory = true
+            mandatory = true,
         )
     }
 
