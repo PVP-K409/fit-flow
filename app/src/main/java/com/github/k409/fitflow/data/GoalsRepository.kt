@@ -139,6 +139,7 @@ class GoalsRepository @Inject constructor(
             startDate = this["startDate"] as? String ?: "",
             endDate = this["endDate"] as? String ?: "",
             completed = this["completed"] as? Boolean ?: false,
+            mandatory = this["mandatory"] as? Boolean ?: false,
         )
     }
 }
