@@ -197,7 +197,6 @@ fun MetricColumn(
     }
 }
 
-
 @Composable
 fun NoExerciseLogsFound() {
     Column(
@@ -206,7 +205,7 @@ fun NoExerciseLogsFound() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text( text = "🕵️", fontSize = 48.sp)
+        Text(text = "🕵️", fontSize = 48.sp)
         Text(
             modifier = Modifier
                 .padding(top = 16.dp),
