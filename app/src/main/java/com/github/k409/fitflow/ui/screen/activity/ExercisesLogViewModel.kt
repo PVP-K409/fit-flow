@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.screen.goals
+package com.github.k409.fitflow.ui.screen.activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +18,7 @@ class ExercisesLogViewModel @Inject constructor(
     private val _exerciseRecords = MutableStateFlow<List<ExerciseRecord>>(mutableListOf())
     val exerciseRecords: StateFlow<List<ExerciseRecord>> = _exerciseRecords
 
-    private val _loading = MutableStateFlow<Boolean>(false)
+    private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
     fun loadExerciseRecords() {
