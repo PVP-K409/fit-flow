@@ -1,9 +1,9 @@
-name: Publish Release to GitHub Releases
+name: Publish Release to GitHub Release
 
 on:
   push:
     branches:
-      - 'dev'
+      - "dev"
 
   workflow_dispatch:
 
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Java 20
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: "zulu"
           java-version: 20
 
       - name: Setup Gradle
@@ -61,4 +61,4 @@ jobs:
 
       - name: Create Github Release
         run: |
-          gh release create ${{  github.ref_name }} --generate-notes app/build/outputs/apk/release/app-release.apk
+          gh release create ${{ github.ref_name }}-${{ github.run_number }} --generate-notes app/build/outputs/apk/release/app-release.apk
