@@ -2,6 +2,8 @@ package com.github.k409.fitflow.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
 import com.github.k409.fitflow.data.AquariumRepository
 import com.github.k409.fitflow.data.AuthRepository
 import com.github.k409.fitflow.data.GoalsRepository
@@ -50,8 +52,17 @@ object RepositoryModule {
     fun provideAuthRepository(
         auth: FirebaseAuth,
         userRepository: UserRepository,
+        credentialManager: CredentialManager,
+        getCredentialRequest: GetCredentialRequest,
+        @ApplicationContext context: Context,
     ): AuthRepository {
-        return AuthRepository(auth, userRepository)
+        return AuthRepository(
+            auth,
+            userRepository,
+            credentialManager,
+            getCredentialRequest,
+            context,
+        )
     }
 
     @Provides

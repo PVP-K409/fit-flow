@@ -79,3 +79,8 @@
 -dontwarn com.google.android.gms.auth.api.credentials.CredentialsOptions
 -dontwarn com.google.android.gms.auth.api.credentials.HintRequest$Builder
 -dontwarn com.google.android.gms.auth.api.credentials.HintRequest
+
+-if class androidx.credentials.CredentialManager
+-keep class androidx.credentials.playservices.** {
+  *;
+}
