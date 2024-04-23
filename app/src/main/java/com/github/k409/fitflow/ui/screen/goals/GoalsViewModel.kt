@@ -157,6 +157,7 @@ class GoalsViewModel @Inject constructor(
                 startDate = startDate.toString(),
                 endDate = endDate.toString(),
                 completed = false,
+                mandatory = false,
             )
 
             addGoal(goalType, goal)
