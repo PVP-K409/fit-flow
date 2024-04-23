@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.screen.goals
+package com.github.k409.fitflow.ui.screen.activity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -55,6 +56,8 @@ fun ExercisesLogPage(
 
     if (loading) {
         FitFlowCircularProgressIndicator()
+    } else if (exerciseRecords.isEmpty()) {
+        NoExerciseLogsFound()
     } else {
         LazyColumn {
             items(exerciseRecords) { record ->
@@ -190,6 +193,29 @@ fun MetricColumn(
             textAlign = TextAlign.Center,
             color = color.copy(alpha = 0.85F),
             style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+}
+
+@Composable
+fun NoExerciseLogsFound() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(text = "🕵️", fontSize = 48.sp)
+        Text(
+            modifier = Modifier
+                .padding(top = 16.dp),
+            text = "It seems that you have not been active recently",
+            style = MaterialTheme.typography.titleMedium,
+            fontSize = 16.sp,
+        )
+        Text(
+            text = "Try manually logging the exercises from the Activity screen",
+            fontSize = 10.sp,
         )
     }
 }
