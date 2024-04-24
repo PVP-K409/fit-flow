@@ -45,7 +45,7 @@ fun LeaderboardCard(
             .fillMaxSize()
             .clip(RoundedCornerShape(8.dp))
             .background(colors.primaryContainer)
-            .padding(horizontal = 8.dp, vertical = 16.dp)
+            .padding(horizontal = 8.dp, vertical = 16.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -56,11 +56,10 @@ fun LeaderboardCard(
                 modifier = Modifier.padding(start = 8.dp, end = 8.dp),
                 text = rank.toString(),
                 style =
-                    if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid)
-                        MaterialTheme.typography.headlineSmall
-                    else
-                        MaterialTheme.typography.titleMedium
-                ,
+                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid) {
+                    MaterialTheme.typography.headlineSmall
+                } else
+                    MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = colors.primary,
             )
@@ -90,18 +89,17 @@ fun LeaderboardCard(
                         width = 2.dp,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
                         shape = CircleShape,
-                    )
+                    ),
             )
 
             Text(
                 modifier = Modifier.padding(start = 8.dp),
                 text = user.name.ifEmpty { user.email },
                 style =
-                    if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid)
-                        MaterialTheme.typography.headlineSmall
-                    else
-                        MaterialTheme.typography.titleMedium
-                ,
+                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid) {
+                    MaterialTheme.typography.headlineSmall
+                } else
+                    MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = colors.primary,
             )
@@ -118,11 +116,10 @@ fun LeaderboardCard(
             Text(
                 text = "${user.xp}",
                 style =
-                    if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid)
-                        MaterialTheme.typography.headlineSmall
-                    else
-                        MaterialTheme.typography.titleMedium
-                ,
+                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid) {
+                    MaterialTheme.typography.headlineSmall
+                } else
+                    MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = colors.primary,
             )
