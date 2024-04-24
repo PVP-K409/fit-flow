@@ -129,14 +129,14 @@ private fun AquariumLayout(
             )
 
             Sand()
-            CoralCuspPlant()
+            //CoralCuspPlant()
 
-            Crab(
+            /*Crab(
                 modifier = Modifier
                     .padding(start = 10.dp, bottom = 20.dp),
                 alignment = Alignment.BottomStart,
                 height = 50.dp,
-            )
+            )*/
 
             InventoryButton(
                 modifier = Modifier
@@ -162,14 +162,38 @@ private fun AquariumLayout(
                         .fillMaxHeight(waterLevelAnimation),
                 ) {
                     val phase = getPhase(healthLevel)
+                    //val positions = mutableListOf(Alignment.BottomStart, Alignment.BottomEnd, Alignment.BottomCenter)
+
+                    Box(
+                        modifier = Modifier
+                            .size(
+                                width = width.dp,
+                                height = (height * 0.045).dp,
+                            )
+                            .align(Alignment.BottomCenter),
+                    )
+                    {
+                        for (item in uiState.aquariumItems) {
+                            if (item.item.type == "decoration") {
+                                BouncingDraggableFish(
+                                    initialFishSize = 130.dp,
+                                    imageDownloadUrl = item.item.image,
+                                    bounceEnabled = false,
+                                )
+                                //Log.d("Aquarium", positions[index].toString())
+                            }
+                        }
+                    }
 
                     for (item in uiState.aquariumItems) {
-                        BouncingDraggableFish(
-                            initialFishSize = fishSize,
-                            fishDrawableId = R.drawable.gold_fish_dead,
-                            imageDownloadUrl = item.item.phases?.get(phase.name)
-                                ?: item.item.image,
-                        )
+                        if (item.item.type == "fish") {
+                            BouncingDraggableFish(
+                                initialFishSize = fishSize,
+                                fishDrawableId = R.drawable.gold_fish_dead,
+                                imageDownloadUrl = item.item.phases?.get(phase.name)
+                                    ?: item.item.image,
+                            )
+                        }
                     }
                 }
             }
