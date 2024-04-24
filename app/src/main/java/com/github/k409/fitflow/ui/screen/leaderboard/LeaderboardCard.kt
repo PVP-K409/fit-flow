@@ -20,19 +20,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun LeaderboardCard(
     modifier: Modifier = Modifier,
     user: User,
-    index: Int,
+    rank: Int,
 ) {
     val colors = MaterialTheme.colorScheme
 
@@ -41,7 +45,7 @@ fun LeaderboardCard(
             .fillMaxSize()
             .clip(RoundedCornerShape(8.dp))
             .background(colors.primaryContainer)
-            .padding(horizontal = 8.dp, vertical = 16.dp),
+            .padding(horizontal = 8.dp, vertical = 16.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -50,8 +54,13 @@ fun LeaderboardCard(
         ) {
             Text(
                 modifier = Modifier.padding(start = 8.dp, end = 8.dp),
-                text = index.toString(),
-                style = MaterialTheme.typography.titleLarge,
+                text = rank.toString(),
+                style =
+                    if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid)
+                        MaterialTheme.typography.headlineSmall
+                    else
+                        MaterialTheme.typography.titleMedium
+                ,
                 fontWeight = FontWeight.Bold,
                 color = colors.primary,
             )
@@ -87,16 +96,33 @@ fun LeaderboardCard(
             Text(
                 modifier = Modifier.padding(start = 8.dp),
                 text = user.name.ifEmpty { user.email },
-                style = MaterialTheme.typography.labelLarge,
+                style =
+                    if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid)
+                        MaterialTheme.typography.headlineSmall
+                    else
+                        MaterialTheme.typography.titleMedium
+                ,
                 fontWeight = FontWeight.Bold,
                 color = colors.primary,
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
+            Icon(
+                modifier = Modifier.size(18.dp),
+                painter = painterResource(id = R.drawable.xp),
+                contentDescription = null,
+                tint = Color.Unspecified,
+            )
+
             Text(
-                text = "XP: ${user.xp}",
-                style = MaterialTheme.typography.labelLarge,
+                text = "${user.xp}",
+                style =
+                    if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid)
+                        MaterialTheme.typography.headlineSmall
+                    else
+                        MaterialTheme.typography.titleMedium
+                ,
                 fontWeight = FontWeight.Bold,
                 color = colors.primary,
             )

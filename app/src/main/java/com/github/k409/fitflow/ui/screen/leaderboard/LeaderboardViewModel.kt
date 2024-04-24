@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.model.User
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,9 +18,9 @@ class LeaderboardViewModel @Inject constructor(
 ) : ViewModel() {
     val leaderboardUiState: StateFlow<LeaderboardUiState> =
         userRepository.getAllUserProfiles().map { users ->
-            val sortedUsers = users.sortedByDescending { it.xp }
+            val userList = finalList(users)
             LeaderboardUiState.Success(
-                users = sortedUsers,
+                users = userList,
             )
         }.stateIn(
             scope = viewModelScope,
@@ -33,4 +34,24 @@ sealed interface LeaderboardUiState {
     data class Success(
         val users: List<User>,
     ) : LeaderboardUiState
+}
+
+fun finalList(users: List<User>): List<User> {
+    val sortedUsers = users.sortedByDescending { it.xp }.mapIndexed { index, user ->
+        user.copy(rank = index + 1)
+    }
+    val currentUser = FirebaseAuth.getInstance().currentUser!!.uid
+    val currentUserIndex = sortedUsers.indexOfFirst { it.uid == currentUser }
+
+    val firstFiveList = sortedUsers.take(5)
+
+    return if (currentUserIndex < 5) {
+        firstFiveList
+    } else {
+        val start = currentUserIndex - 2
+        val end = minOf(currentUserIndex + 3, sortedUsers.size)
+        val sublist = sortedUsers.subList(start, end)
+        val filteredSublist = sublist.filter { it !in firstFiveList }
+        firstFiveList + filteredSublist
+    }
 }

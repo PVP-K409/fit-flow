@@ -1,11 +1,13 @@
 package com.github.k409.fitflow.ui.screen.leaderboard
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
@@ -29,16 +31,45 @@ fun GlobalLeaderboardScreen(
 
 @Composable
 fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
-    LazyColumn(
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        items(uiState.users.size) { index ->
-            val user = uiState.users[index]
+    val topFive = uiState.users.take(5)
+    val otherUsers = uiState.users.drop(5)
 
+    Box(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)) {
+        Text(
+            text = "Top 5 users",
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.primary,
+        )
+    }
+
+    for (index in topFive.indices) {
+        val user = topFive[index]
+
+        Box(modifier = Modifier.padding(top = if (index == 0) 0.dp else 16.dp)) {
             LeaderboardCard(
                 user = user,
-                index = index + 1,
+                rank = user.rank,
+            )
+        }
+    }
+
+    if (uiState.users.size > 5) {
+        Box(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)) {
+            Text(
+                text = "Your placing",
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+    }
+
+    for (index in otherUsers.indices) {
+        val user = otherUsers[index]
+
+        Box(modifier = Modifier.padding(top = if (index == 0) 0.dp else 16.dp)) {
+            LeaderboardCard(
+                user = user,
+                rank = user.rank,
             )
         }
     }
