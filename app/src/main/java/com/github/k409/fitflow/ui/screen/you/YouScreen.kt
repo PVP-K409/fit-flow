@@ -2,7 +2,6 @@ package com.github.k409.fitflow.ui.screen.you
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -25,7 +24,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
-import com.github.k409.fitflow.ui.common.UnderConstructionContent
 import com.github.k409.fitflow.ui.screen.leaderboard.GlobalLeaderboardScreen
 
 @Composable
