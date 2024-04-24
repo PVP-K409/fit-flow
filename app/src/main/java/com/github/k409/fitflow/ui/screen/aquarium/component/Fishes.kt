@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -345,14 +344,6 @@ fun BouncingDraggableFish(
                 }
             }
         }
-
-        Text(
-            text = "Fish Position: ${position.x}, ${position.y}" +
-                    "\nContainer Size: $containerWidth, $containerHeight" +
-                    "\nFish Size: ${fishSize.width}, ${fishSize.height}"
-                    + "\nRandom Position: $randomX, $randomY",
-            modifier = Modifier.align(Alignment.TopStart)
-        )
 
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
