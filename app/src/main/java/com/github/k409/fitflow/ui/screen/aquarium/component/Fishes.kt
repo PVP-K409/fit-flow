@@ -288,7 +288,7 @@ fun BouncingDraggableFish(
             .onSizeChanged { newSize ->
                 boxWidth = newSize.width.toFloat()
                 boxHeight = newSize.height.toFloat()
-            }
+            },
     ) {
         val containerWidth by remember { derivedStateOf { boxWidth - fishSize.width } }
         val containerHeight by remember { derivedStateOf { boxHeight - fishSize.height } }
