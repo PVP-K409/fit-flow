@@ -180,7 +180,7 @@ private fun AquariumLayout(
                                     initialPosition = Offset(item.offsetX, item.offsetY),
                                     onDragEnd = { offset ->
                                         inventoryViewModel.updateInventoryItem(
-                                            item.copy(offsetX = offset.x, offsetY = offset.y)
+                                            item.copy(offsetX = offset.x, offsetY = offset.y),
                                         )
                                     },
                                 )
