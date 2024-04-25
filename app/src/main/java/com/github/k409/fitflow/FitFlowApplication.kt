@@ -22,8 +22,7 @@ import coil.util.DebugLogger
 import com.github.k409.fitflow.model.NotificationChannel
 import com.github.k409.fitflow.worker.AquariumMetricsUpdaterWorker
 import com.github.k409.fitflow.worker.DrinkReminderWorker
-import com.github.k409.fitflow.worker.GoalUpdaterWorker
-import com.github.k409.fitflow.worker.StepCounterWorker
+import com.github.k409.fitflow.worker.GoalAndStepUpdateWorker
 import dagger.hilt.android.HiltAndroidApp
 import java.time.Duration
 import java.time.LocalDateTime
@@ -53,8 +52,7 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
 
         createNotificationChannels()
 
-        scheduleStepCounterWorkers()
-        scheduleGoalUpdaterWorkers()
+        scheduleGoalAndStepUpdateWorkers()
         scheduleHydrationReminderWorker()
         scheduleAquariumMetricsUpdaterWorker()
     }
@@ -84,32 +82,24 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
             .build()
     }
 
-    private fun scheduleStepCounterWorkers() {
-        scheduleWork<StepCounterWorker>("PeriodicStepWorker", 180, TimeUnit.MINUTES)
-        scheduleWork<StepCounterWorker>(
-            "MidnightStepWorker",
+    private fun scheduleGoalAndStepUpdateWorkers() {
+        val start = GoalAndStepUpdateWorker.startTimeToSend
+        val end = GoalAndStepUpdateWorker.endTimeToSend
+        val times = (end-start)/3
+        scheduleWork<GoalAndStepUpdateWorker>(
+            "PeriodicGoalAndStepUpdateWorker",
+            (times * 60).toLong(),
+            TimeUnit.MINUTES,
+            calculateInitialDelayUntil(start, 0)
+        )
+        scheduleWork<GoalAndStepUpdateWorker>(
+            "MidnightGoalAndStepUpdateWorker",
             24,
             TimeUnit.HOURS,
             calculateInitialDelayUntilMidnight(),
         )
-        scheduleWork<StepCounterWorker>(
-            "BeforeMidnightStepWorker",
-            24,
-            TimeUnit.HOURS,
-            calculateInitialDelayBeforeMidnight(),
-        )
-    }
-
-    private fun scheduleGoalUpdaterWorkers() {
-        scheduleWork<GoalUpdaterWorker>("PeriodicGoalUpdater", 180, TimeUnit.MINUTES)
-        scheduleWork<GoalUpdaterWorker>(
-            "MidnightGoalUpdater",
-            24,
-            TimeUnit.HOURS,
-            calculateInitialDelayUntilMidnight(),
-        )
-        scheduleWork<GoalUpdaterWorker>(
-            "BeforeMidnightGoalUpdater",
+        scheduleWork<GoalAndStepUpdateWorker>(
+            "BeforeGoalAndStepUpdateWorker",
             24,
             TimeUnit.HOURS,
             calculateInitialDelayBeforeMidnight(),
@@ -172,7 +162,7 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
     }
 
     private fun calculateInitialDelayBeforeMidnight(): Long {
-        return calculateInitialDelayUntil(23, 58)
+        return calculateInitialDelayUntil(23, 45)
     }
 
     private fun calculateInitialDelayUntil(
