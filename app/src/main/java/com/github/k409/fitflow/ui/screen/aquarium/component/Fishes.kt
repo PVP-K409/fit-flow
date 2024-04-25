@@ -44,7 +44,6 @@ import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.github.k409.fitflow.R
-import com.github.k409.fitflow.model.InventoryItem
 import com.github.k409.fitflow.ui.common.noRippleClickable
 import com.github.k409.fitflow.ui.common.thenIf
 import kotlinx.coroutines.delay
@@ -274,8 +273,7 @@ fun BouncingDraggableFish(
     dragEnabled: Boolean = true,
     initialFishSize: Dp = 100.dp,
     initialVelocity: Offset = Offset(2f, 2f),
-    fish: InventoryItem,
-    phaseName: String = "",
+    imageDownloadUrl: String = "",
     initialPosition: Offset = Offset(0f, 0f),
     onDragEnd: (offset: Offset) -> Unit = {},
 ) {
@@ -351,10 +349,7 @@ fun BouncingDraggableFish(
 
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(
-                    fish.item.phases?.get(phaseName)
-                        ?: fish.item.image,
-                )
+                .data(imageDownloadUrl)
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
             error = painterResource(id = fishDrawableId),

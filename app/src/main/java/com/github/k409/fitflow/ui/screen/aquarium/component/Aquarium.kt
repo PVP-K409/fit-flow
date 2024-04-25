@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.screen.aquarium.component
 
-import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -172,10 +171,9 @@ private fun AquariumLayout(
                     ) {
                         for (item in uiState.aquariumItems) {
                             if (item.item.type == "decoration") {
-                                Log.d("Aquarium", item.offsetX.toString())
                                 BouncingDraggableFish(
                                     initialFishSize = 130.dp,
-                                    fish = item,
+                                    imageDownloadUrl = item.item.image,
                                     bounceEnabled = false,
                                     initialPosition = Offset(item.offsetX, item.offsetY),
                                     onDragEnd = { offset ->
@@ -192,8 +190,8 @@ private fun AquariumLayout(
                             BouncingDraggableFish(
                                 initialFishSize = fishSize,
                                 fishDrawableId = R.drawable.gold_fish_dead,
-                                fish = item,
-                                phaseName = phase.name,
+                                imageDownloadUrl = item.item.phases?.get(phase.name)
+                                    ?: item.item.image,
                             )
                         }
                     }
