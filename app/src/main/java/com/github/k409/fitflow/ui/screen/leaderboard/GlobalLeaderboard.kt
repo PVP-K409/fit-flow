@@ -1,17 +1,21 @@
 package com.github.k409.fitflow.ui.screen.leaderboard
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
+import com.github.k409.fitflow.ui.screen.you.SectionHeaderCard
 
 @Composable
 fun GlobalLeaderboardScreen(
@@ -35,37 +39,36 @@ fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
     val topFive = uiState.users.take(5)
     val otherUsers = uiState.users.drop(5)
 
-    Box(modifier = Modifier.padding(top = 22.dp, bottom = 22.dp)) {
-        Text(
-            text = "Top 5 users",
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.primary,
-        )
-    }
+    SectionHeaderCard(
+        modifier = Modifier.padding(bottom = 16.dp),
+        title = stringResource(R.string.top_5_users),
+    )
 
-    for (index in topFive.indices) {
-        val user = topFive[index]
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        for (index in topFive.indices) {
+            val user = topFive[index]
 
-        Box(modifier = Modifier.padding(top = if (index == 0) 0.dp else 22.dp)) {
             LeaderboardCard(
                 user = user,
                 rank = user.rank,
             )
+
         }
-    }
 
-    Box(modifier = Modifier.padding(top = 22.dp, bottom = 22.dp)) {
         HorizontalDivider(
-            modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+            modifier = Modifier.padding(vertical = 8.dp),
             color = MaterialTheme.colorScheme.primary,
-            thickness = 5.dp,
+            thickness = 1.dp,
         )
-    }
 
-    for (index in otherUsers.indices) {
-        val user = otherUsers[index]
+        for (index in otherUsers.indices) {
+            val user = otherUsers[index]
 
-        Box(modifier = Modifier.padding(top = if (index == 0) 0.dp else 22.dp)) {
             LeaderboardCard(
                 user = user,
                 rank = user.rank,

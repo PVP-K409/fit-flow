@@ -92,7 +92,7 @@
     <string name="you">You</string>
     <string name="progress_tab_title">PROGRESS</string>
     <string name="activities_tab_title">ACTIVITIES</string>
-    <string name="global_leaderboard_tab_title">GLOBAL LEADERBOARD</string>
+    <string name="global_leaderboard_tab_title">LEADERBOARD</string>
     <string name="current_month_progress">Current Month Progress</string>
     <string name="your_progress_for_this_month">Your progress for this month</string>
     <string name="best_efforts_title">Best Efforts</string>
@@ -118,4 +118,5 @@
     <string name="aquarium_size_limit_reached_please_remove_some_items_before_adding_more">Aquarium size limit reached. Please remove some items before adding more</string>
     <string name="add">Add</string>
     <string name="added_to_aquarium">Added to aquarium</string>
+    <string name="top_5_users">Top 5 users</string>
 </resources>

@@ -3,19 +3,17 @@ package com.github.k409.fitflow.ui.screen.leaderboard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
@@ -41,22 +40,20 @@ fun LeaderboardCard(
 ) {
     val colors = MaterialTheme.colorScheme
 
-    Column(
+    OutlinedCard(
         modifier = modifier
             .fillMaxSize()
-            .clip(RoundedCornerShape(8.dp))
-            .background(colors.primaryContainer)
-            .padding(horizontal = 8.dp, vertical = 16.dp),
     ) {
         Row(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 8.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
                 modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp)
-                    .width(32.dp),
+                    .padding(start = 8.dp, end = 8.dp),
                 text = rank.toString(),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight =
@@ -96,8 +93,8 @@ fun LeaderboardCard(
             )
 
             Text(
-                modifier = Modifier.padding(start = 16.dp),
-                text = user.name.ifEmpty { user.email },
+                modifier = Modifier.padding(start = 8.dp),
+                text = user.name.ifEmpty { user.email }.substringBefore("@"),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight =
                 if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid) {
@@ -105,6 +102,7 @@ fun LeaderboardCard(
                 } else
                     FontWeight.Normal,
                 color = colors.primary,
+                overflow = TextOverflow.Ellipsis,
             )
 
             Spacer(modifier = Modifier.weight(1f))
