@@ -50,7 +50,7 @@ class AquariumMetricsUpdaterWorker @AssistedInject constructor(
                 goalsRepository.getDailyGoals(yesterday.toString()) ?: emptyMap()
 
             for (goal in dailyActivityGoals) {
-                if (!goal.value.completed) {
+                if (!goal.value.completed && goal.value.mandatory) {
                     aquariumRepository.changeHealthLevel(-HEALTH_LEVEL_CHANGE_DAILY)
                 }
             }

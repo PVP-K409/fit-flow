@@ -11,6 +11,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -282,22 +283,28 @@ fun BouncingDraggableFish(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    BoxWithConstraints(
-        modifier = modifier.fillMaxSize(),
+    var boxWidth by remember { mutableFloatStateOf(0f) }
+    var boxHeight by remember { mutableFloatStateOf(0f) }
+
+    var fishSize by remember { mutableStateOf(IntSize.Zero) }
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .onSizeChanged { newSize ->
+                boxWidth = newSize.width.toFloat()
+                boxHeight = newSize.height.toFloat()
+            },
     ) {
-        var fishSize by remember { mutableStateOf(IntSize(0, 0)) }
+        val containerWidth by remember { derivedStateOf { boxWidth - fishSize.width } }
+        val containerHeight by remember { derivedStateOf { boxHeight - fishSize.height } }
 
-        // TODO possible bug when water level changes
-        val containerWidth by remember { derivedStateOf { constraints.maxWidth.toFloat() - fishSize.width } }
-        val containerHeight by remember { derivedStateOf { constraints.maxHeight.toFloat() - fishSize.height } }
-
-        // TODO: Fix the random position
         val randomX = if (initialPosition.x < 0f) {
-            Random.nextInt(0, containerWidth.toInt().coerceAtLeast(1)).toFloat()
+            0f
         } else initialPosition.x
 
         val randomY = if (initialPosition.y < 0f) {
-            Random.nextInt(0, containerHeight.toInt().coerceAtLeast(1)).toFloat()
+            0f
         } else initialPosition.y
 
         var isDragging by remember { mutableStateOf(false) }
@@ -385,15 +392,17 @@ fun BouncingDraggableFish(
                                         ))
                                     } },
                             onDrag = { _, dragAmount ->
-                                val newOffsetX = (position.x + dragAmount.x).coerceIn(
-                                    0f,
-                                    containerWidth,
-                                )
+                                val newOffsetX = (position.x + dragAmount.x)
+                                    .coerceIn(
+                                        0f,
+                                        containerWidth,
+                                    )
 
-                                val newOffsetY = (position.y + dragAmount.y).coerceIn(
-                                    0f,
-                                    containerHeight,
-                                )
+                                val newOffsetY = (position.y + dragAmount.y)
+                                    .coerceIn(
+                                        0f,
+                                        containerHeight,
+                                    )
 
                                 position = Offset(newOffsetX, newOffsetY)
                             },

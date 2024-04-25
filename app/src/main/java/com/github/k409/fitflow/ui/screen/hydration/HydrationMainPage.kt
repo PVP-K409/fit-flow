@@ -84,7 +84,6 @@ fun HydrationMainPage(
             ) {
                 DrinkButton(cupSize = uiState.cupSize) {
                     viewModel.addWaterCup()
-                    viewModel.scheduleWaterReminder()
                 }
 
                 IconButton(

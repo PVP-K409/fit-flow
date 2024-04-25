@@ -142,7 +142,6 @@ class HydrationNotificationService @Inject constructor(
             NOTIFICATION_IDS_KEY,
             null,
         )
-
         val json = Json { ignoreUnknownKeys = true }
 
         notificationIdsJson?.let {

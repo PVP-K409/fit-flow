@@ -10,4 +10,5 @@ data class GoalRecord(
     var startDate: String = "",
     var endDate: String = "",
     var completed: Boolean = false,
+    var mandatory: Boolean = false,
 )
