@@ -2,6 +2,7 @@ package com.github.k409.fitflow.ui.screen.leaderboard
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +35,7 @@ fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
     val topFive = uiState.users.take(5)
     val otherUsers = uiState.users.drop(5)
 
-    Box(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)) {
+    Box(modifier = Modifier.padding(top = 22.dp, bottom = 22.dp)) {
         Text(
             text = "Top 5 users",
             style = MaterialTheme.typography.headlineLarge,
@@ -45,7 +46,7 @@ fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
     for (index in topFive.indices) {
         val user = topFive[index]
 
-        Box(modifier = Modifier.padding(top = if (index == 0) 0.dp else 16.dp)) {
+        Box(modifier = Modifier.padding(top = if (index == 0) 0.dp else 22.dp)) {
             LeaderboardCard(
                 user = user,
                 rank = user.rank,
@@ -53,20 +54,18 @@ fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
         }
     }
 
-    if (uiState.users.size > 5) {
-        Box(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)) {
-            Text(
-                text = "Your placing",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
+    Box(modifier = Modifier.padding(top = 22.dp, bottom = 22.dp)) {
+        HorizontalDivider(
+            modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+            color = MaterialTheme.colorScheme.primary,
+            thickness = 5.dp
+        )
     }
 
     for (index in otherUsers.indices) {
         val user = otherUsers[index]
 
-        Box(modifier = Modifier.padding(top = if (index == 0) 0.dp else 16.dp)) {
+        Box(modifier = Modifier.padding(top = if (index == 0) 0.dp else 22.dp)) {
             LeaderboardCard(
                 user = user,
                 rank = user.rank,

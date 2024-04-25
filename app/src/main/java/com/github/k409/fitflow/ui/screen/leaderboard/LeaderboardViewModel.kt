@@ -43,15 +43,16 @@ fun finalList(users: List<User>): List<User> {
     val currentUser = FirebaseAuth.getInstance().currentUser!!.uid
     val currentUserIndex = sortedUsers.indexOfFirst { it.uid == currentUser }
 
-    val firstFiveList = sortedUsers.take(5)
-
-    return if (currentUserIndex < 5) {
-        firstFiveList
-    } else {
-        val start = currentUserIndex - 2
-        val end = minOf(currentUserIndex + 3, sortedUsers.size)
-        val sublist = sortedUsers.subList(start, end)
-        val filteredSublist = sublist.filter { it !in firstFiveList }
-        firstFiveList + filteredSublist
+    return if (currentUserIndex <= 4) {
+        val finalList = sortedUsers.take(55)
+        finalList
+    }
+    else {
+        val topFive = sortedUsers.take(5)
+        val start = (currentUserIndex - 25).coerceAtLeast(0)
+        val end = (currentUserIndex + 26).coerceAtMost(sortedUsers.size)
+        val sublist = sortedUsers.subList(start, end).filter { user -> user !in topFive }
+        val finalList = topFive + sublist
+        finalList
     }
 }

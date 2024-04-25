@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -53,14 +54,16 @@ fun LeaderboardCard(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
-                modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp)
+                    .width(32.dp),
                 text = rank.toString(),
-                style =
-                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid) {
-                    MaterialTheme.typography.headlineSmall
-                } else
-                    MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                style =MaterialTheme.typography.bodyLarge,
+                fontWeight =
+                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid)
+                    FontWeight.Bold
+                else
+                    FontWeight.Normal,
                 color = colors.primary,
             )
 
@@ -93,21 +96,23 @@ fun LeaderboardCard(
             )
 
             Text(
-                modifier = Modifier.padding(start = 8.dp),
+                modifier = Modifier.padding(start = 16.dp),
                 text = user.name.ifEmpty { user.email },
-                style =
-                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid) {
-                    MaterialTheme.typography.headlineSmall
-                } else
-                    MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                style =MaterialTheme.typography.bodyLarge,
+                fontWeight =
+                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid)
+                    FontWeight.Bold
+                else
+                    FontWeight.Normal,
                 color = colors.primary,
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
             Icon(
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier
+                    .padding(bottom = 3.dp)
+                    .size(18.dp),
                 painter = painterResource(id = R.drawable.xp),
                 contentDescription = null,
                 tint = Color.Unspecified,
@@ -115,12 +120,12 @@ fun LeaderboardCard(
 
             Text(
                 text = "${user.xp}",
-                style =
-                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid) {
-                    MaterialTheme.typography.headlineSmall
-                } else
-                    MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                style =MaterialTheme.typography.bodyLarge,
+                fontWeight =
+                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid)
+                    FontWeight.Bold
+                else
+                    FontWeight.Normal,
                 color = colors.primary,
             )
         }
