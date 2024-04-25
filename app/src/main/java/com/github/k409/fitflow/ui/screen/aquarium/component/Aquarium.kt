@@ -136,7 +136,7 @@ private fun AquariumLayout(
             )
 
             Sand()
-            //CoralCuspPlant()
+            // CoralCuspPlant()
 
             /*Crab(
                 modifier = Modifier
@@ -169,7 +169,7 @@ private fun AquariumLayout(
                         .fillMaxHeight(waterLevelAnimation),
                 ) {
                     val phase = getPhase(healthLevel)
-                    //val positions = mutableListOf(Alignment.BottomStart, Alignment.BottomEnd, Alignment.BottomCenter)
+                    // val positions = mutableListOf(Alignment.BottomStart, Alignment.BottomEnd, Alignment.BottomCenter)
 
                     Box(
                         modifier = Modifier
@@ -178,8 +178,7 @@ private fun AquariumLayout(
                                 height = (height * 0.045).dp,
                             )
                             .align(Alignment.BottomCenter),
-                    )
-                    {
+                    ) {
                         for (item in uiState.aquariumItems) {
                             if (item.item.type == "decoration") {
                                 Log.d("Aquarium", item.offsetX.toString())
@@ -191,7 +190,7 @@ private fun AquariumLayout(
                                     inventoryViewModel = inventoryViewModel,
                                     initialPosition = Offset(item.offsetX, item.offsetY),
                                 )
-                                //Log.d("Aquarium", positions[index].toString())
+                                // Log.d("Aquarium", positions[index].toString())
                             }
                         }
                     }

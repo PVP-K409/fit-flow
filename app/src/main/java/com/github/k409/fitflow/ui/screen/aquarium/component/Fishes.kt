@@ -79,7 +79,7 @@ fun DraggableFishBox(
     fishSize: Dp = 100.dp,
     initialOffset: Offset = Offset(0f, 0f),
     onPositionChanged: (x: Float, y: Float) -> Unit = { _, _ -> },
-    ) {
+) {
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize(),
@@ -308,7 +308,7 @@ fun BouncingDraggableFish(
         } else initialPosition.y
 
         var isDragging by remember { mutableStateOf(false) }
-        var position by remember { mutableStateOf( Offset(randomX, randomY)) }
+        var position by remember { mutableStateOf(Offset(randomX, randomY)) }
         val flipFish = remember { mutableStateOf(false) }
 
         val animatedRotation by animateFloatAsState(
@@ -358,8 +358,10 @@ fun BouncingDraggableFish(
 
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(fish.item.phases?.get(phaseName)
-                    ?: fish.item.image)
+                .data(
+                    fish.item.phases?.get(phaseName)
+                        ?: fish.item.image,
+                )
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
             error = painterResource(id = fishDrawableId),
@@ -382,15 +384,17 @@ fun BouncingDraggableFish(
                             onDragStart = { _ -> isDragging = true },
                             onDragEnd = {
                                 isDragging = false
-                                if(savePosition) {
+                                if (savePosition) {
                                     inventoryViewModel.updateInventoryItem(
                                         InventoryItem(
                                             fish.item,
                                             true,
                                             position.x,
                                             position.y,
-                                        ))
-                                    } },
+                                        ),
+                                    )
+                                }
+                            },
                             onDrag = { _, dragAmount ->
                                 val newOffsetX = (position.x + dragAmount.x)
                                     .coerceIn(

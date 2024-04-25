@@ -109,7 +109,7 @@ fun InventoryScreen(
                             InventoryItem(
                                 item,
                                 true,
-                                offsetX = Random.nextInt(1, 600).toFloat()
+                                offsetX = Random.nextInt(1, 600).toFloat(),
                             ),
                         )
                         Toast.makeText(
