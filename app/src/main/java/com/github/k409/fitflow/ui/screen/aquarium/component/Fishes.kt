@@ -47,7 +47,6 @@ import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.InventoryItem
 import com.github.k409.fitflow.ui.common.noRippleClickable
 import com.github.k409.fitflow.ui.common.thenIf
-import com.github.k409.fitflow.ui.screen.inventory.InventoryViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.cos
@@ -273,13 +272,12 @@ fun BouncingDraggableFish(
     fishDrawableId: Int = R.drawable.primary_fish,
     bounceEnabled: Boolean = true,
     dragEnabled: Boolean = true,
-    savePosition: Boolean = false,
     initialFishSize: Dp = 100.dp,
     initialVelocity: Offset = Offset(2f, 2f),
     fish: InventoryItem,
     phaseName: String = "",
     initialPosition: Offset = Offset(0f, 0f),
-    inventoryViewModel: InventoryViewModel,
+    onDragEnd: (offset: Offset) -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -379,16 +377,7 @@ fun BouncingDraggableFish(
                             onDragStart = { _ -> isDragging = true },
                             onDragEnd = {
                                 isDragging = false
-                                if (savePosition) {
-                                    inventoryViewModel.updateInventoryItem(
-                                        InventoryItem(
-                                            fish.item,
-                                            true,
-                                            position.x,
-                                            position.y,
-                                        ),
-                                    )
-                                }
+                                onDragEnd(position)
                             },
                             onDrag = { _, dragAmount ->
                                 val newOffsetX = (position.x + dragAmount.x)

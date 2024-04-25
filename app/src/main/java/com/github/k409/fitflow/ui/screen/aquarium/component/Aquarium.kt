@@ -136,14 +136,6 @@ private fun AquariumLayout(
             )
 
             Sand()
-            // CoralCuspPlant()
-
-            /*Crab(
-                modifier = Modifier
-                    .padding(start = 10.dp, bottom = 20.dp),
-                alignment = Alignment.BottomStart,
-                height = 50.dp,
-            )*/
 
             InventoryButton(
                 modifier = Modifier
@@ -169,7 +161,6 @@ private fun AquariumLayout(
                         .fillMaxHeight(waterLevelAnimation),
                 ) {
                     val phase = getPhase(healthLevel)
-                    // val positions = mutableListOf(Alignment.BottomStart, Alignment.BottomEnd, Alignment.BottomCenter)
 
                     Box(
                         modifier = Modifier
@@ -186,11 +177,13 @@ private fun AquariumLayout(
                                     initialFishSize = 130.dp,
                                     fish = item,
                                     bounceEnabled = false,
-                                    savePosition = true,
-                                    inventoryViewModel = inventoryViewModel,
                                     initialPosition = Offset(item.offsetX, item.offsetY),
+                                    onDragEnd = { offset ->
+                                        inventoryViewModel.updateInventoryItem(
+                                            item.copy(offsetX = offset.x, offsetY = offset.y)
+                                        )
+                                    },
                                 )
-                                // Log.d("Aquarium", positions[index].toString())
                             }
                         }
                     }
@@ -201,7 +194,6 @@ private fun AquariumLayout(
                                 fishDrawableId = R.drawable.gold_fish_dead,
                                 fish = item,
                                 phaseName = phase.name,
-                                inventoryViewModel = inventoryViewModel,
                             )
                         }
                     }
