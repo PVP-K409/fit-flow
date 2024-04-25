@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.screen.aquarium.component
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -31,17 +32,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.FishPhase.Companion.getPhase
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screen.aquarium.AquariumUiState
+import com.github.k409.fitflow.ui.screen.inventory.InventoryViewModel
 import kotlin.math.roundToInt
 
 @Composable
@@ -50,6 +54,7 @@ fun AquariumContent(
     uiState: AquariumUiState.Success,
     aquariumBackground: Brush = AquariumTokens.AquariumBackground,
     navController: NavController,
+    inventoryViewModel: InventoryViewModel = hiltViewModel(),
 ) {
     val waterLevel = uiState.aquariumStats.waterLevel
     val healthLevel = uiState.aquariumStats.healthLevel
@@ -84,6 +89,7 @@ fun AquariumContent(
         fishSize = fishSize,
         uiState = uiState,
         navController = navController,
+        inventoryViewModel = inventoryViewModel,
     )
 }
 
@@ -98,6 +104,7 @@ private fun AquariumLayout(
     fishSize: Dp,
     uiState: AquariumUiState.Success,
     navController: NavController,
+    inventoryViewModel: InventoryViewModel,
 ) {
     Column(
         modifier = modifier
@@ -175,23 +182,27 @@ private fun AquariumLayout(
                     {
                         for (item in uiState.aquariumItems) {
                             if (item.item.type == "decoration") {
+                                Log.d("Aquarium", item.offsetX.toString())
                                 BouncingDraggableFish(
                                     initialFishSize = 130.dp,
-                                    imageDownloadUrl = item.item.image,
+                                    fish = item,
                                     bounceEnabled = false,
+                                    savePosition = true,
+                                    inventoryViewModel = inventoryViewModel,
+                                    initialPosition = Offset(item.offsetX, item.offsetY),
                                 )
                                 //Log.d("Aquarium", positions[index].toString())
                             }
                         }
                     }
-
                     for (item in uiState.aquariumItems) {
                         if (item.item.type == "fish") {
                             BouncingDraggableFish(
                                 initialFishSize = fishSize,
                                 fishDrawableId = R.drawable.gold_fish_dead,
-                                imageDownloadUrl = item.item.phases?.get(phase.name)
-                                    ?: item.item.image,
+                                fish = item,
+                                phaseName = phase.name,
+                                inventoryViewModel = inventoryViewModel,
                             )
                         }
                     }

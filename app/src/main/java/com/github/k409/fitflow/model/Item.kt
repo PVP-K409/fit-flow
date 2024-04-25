@@ -13,4 +13,6 @@ data class MarketItem(
 data class InventoryItem(
     val item: MarketItem,
     val placed: Boolean = false,
+    val offsetX: Float = 0f,
+    val offsetY: Float = 0f,
 )

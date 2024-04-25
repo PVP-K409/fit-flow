@@ -40,7 +40,12 @@ fun InventoryScreen(
     }
     val ownedItems = (inventoryUiState as InventoryUiState.Success).ownedItems
 
-    var placedItemCount by remember { mutableIntStateOf(ownedItems.filter { it.placed }.size) }
+    val placedItems = remember {
+        mutableMapOf(
+            "fish" to ownedItems.filter { it.placed && it.item.type == "fish" }.size,
+            "decoration" to ownedItems.filter { it.placed && it.item.type == "decoration" }.size,
+        )
+    }
 
     val items = when (selectedCategoryIndex) {
         0 -> ownedItems.filter { it.item.type == "fish" }
@@ -82,18 +87,19 @@ fun InventoryScreen(
                         context.getString(R.string.removed_from_aquarium),
                         Toast.LENGTH_SHORT,
                     ).show()
-                    placedItemCount--
+                    placedItems[item.type] = placedItems[item.type]!! - 1
                 },
                 removeButtonEnabled = inventoryItem.placed,
                 addButtonText = stringResource(R.string.add),
                 onAddClick =
                 {
-                    if (placedItemCount >= 3) {
+                    if (placedItems[item.type]!! >= 3) {
                         // Limit toast messages in case button is spammed
                         if (System.currentTimeMillis() - mLastToastTime > mNewToastInterval) {
                             Toast.makeText(
                                 context,
-                                context.getString(R.string.aquarium_size_limit_reached_please_remove_some_items_before_adding_more),
+                                //context.getString(R.string.aquarium_size_limit_reached_please_remove_some_items_before_adding_more),
+                                "Aquarium size limit reached. Please remove some ${item.type} items before adding more.",
                                 Toast.LENGTH_SHORT,
                             ).show()
                             mLastToastTime = System.currentTimeMillis()
@@ -110,7 +116,7 @@ fun InventoryScreen(
                             context.getString(R.string.added_to_aquarium),
                             Toast.LENGTH_SHORT,
                         ).show()
-                        placedItemCount++
+                        placedItems[item.type] = placedItems[item.type]!! + 1
                     }
                 },
                 addButtonEnabled = !inventoryItem.placed,

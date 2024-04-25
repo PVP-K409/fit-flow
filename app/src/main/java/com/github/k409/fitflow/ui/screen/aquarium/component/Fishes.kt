@@ -43,8 +43,10 @@ import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.model.InventoryItem
 import com.github.k409.fitflow.ui.common.noRippleClickable
 import com.github.k409.fitflow.ui.common.thenIf
+import com.github.k409.fitflow.ui.screen.inventory.InventoryViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.cos
@@ -76,7 +78,7 @@ fun DraggableFishBox(
     fishSize: Dp = 100.dp,
     initialOffset: Offset = Offset(0f, 0f),
     onPositionChanged: (x: Float, y: Float) -> Unit = { _, _ -> },
-) {
+    ) {
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize(),
@@ -268,11 +270,15 @@ fun AnimatedPrimaryFish(
 fun BouncingDraggableFish(
     modifier: Modifier = Modifier,
     fishDrawableId: Int = R.drawable.primary_fish,
-    imageDownloadUrl: String = "",
     bounceEnabled: Boolean = true,
     dragEnabled: Boolean = true,
+    savePosition: Boolean = false,
     initialFishSize: Dp = 100.dp,
     initialVelocity: Offset = Offset(2f, 2f),
+    fish: InventoryItem,
+    phaseName: String = "",
+    initialPosition: Offset = Offset(-1f, -1f),
+    inventoryViewModel: InventoryViewModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -286,11 +292,16 @@ fun BouncingDraggableFish(
         val containerHeight by remember { derivedStateOf { constraints.maxHeight.toFloat() - fishSize.height } }
 
         // TODO: Fix the random position
-        val randomX = Random.nextInt(0, containerWidth.toInt().coerceAtLeast(1)).toFloat()
-        val randomY = Random.nextInt(0, containerHeight.toInt().coerceAtLeast(1)).toFloat()
+        val randomX = if (initialPosition.x < 0f) {
+            Random.nextInt(0, containerWidth.toInt().coerceAtLeast(1)).toFloat()
+        } else initialPosition.x
+
+        val randomY = if (initialPosition.y < 0f) {
+            Random.nextInt(0, containerHeight.toInt().coerceAtLeast(1)).toFloat()
+        } else initialPosition.y
 
         var isDragging by remember { mutableStateOf(false) }
-        var position by remember { mutableStateOf(Offset(randomX, randomY)) }
+        var position by remember { mutableStateOf( Offset(randomX, randomY)) }
         val flipFish = remember { mutableStateOf(false) }
 
         val animatedRotation by animateFloatAsState(
@@ -340,7 +351,8 @@ fun BouncingDraggableFish(
 
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(imageDownloadUrl)
+                .data(fish.item.phases?.get(phaseName)
+                    ?: fish.item.image)
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
             error = painterResource(id = fishDrawableId),
@@ -361,7 +373,17 @@ fun BouncingDraggableFish(
                     Modifier.pointerInput(initialFishSize) {
                         detectDragGestures(
                             onDragStart = { _ -> isDragging = true },
-                            onDragEnd = { isDragging = false },
+                            onDragEnd = {
+                                isDragging = false
+                                if(savePosition) {
+                                    inventoryViewModel.updateInventoryItem(
+                                        InventoryItem(
+                                            fish.item,
+                                            true,
+                                            position.x,
+                                            position.y,
+                                        ))
+                                    } },
                             onDrag = { _, dragAmount ->
                                 val newOffsetX = (position.x + dragAmount.x).coerceIn(
                                     0f,
