@@ -31,7 +31,7 @@ class GoalAndStepUpdateWorker @AssistedInject constructor(
 
     companion object {
         const val WORKER_NAME = "com.github.k409.fitflow.worker.GoalAndStepUpdateWorker"
-        const val startTimeToSend = 12
+        const val startTimeToSend = 11
         const val endTimeToSend = 22
     }
 
