@@ -143,7 +143,7 @@ class NotificationService @Inject constructor(
         notification: Notification,
         progress: Int? = null,
         maxProgress: Int? = null
-    ){
+    ) {
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.POST_NOTIFICATIONS,
