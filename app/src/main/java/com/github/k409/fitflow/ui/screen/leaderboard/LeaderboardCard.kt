@@ -58,11 +58,11 @@ fun LeaderboardCard(
                     .padding(start = 8.dp, end = 8.dp)
                     .width(32.dp),
                 text = rank.toString(),
-                style =MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyLarge,
                 fontWeight =
-                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid)
+                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid) {
                     FontWeight.Bold
-                else
+                } else
                     FontWeight.Normal,
                 color = colors.primary,
             )
@@ -98,11 +98,11 @@ fun LeaderboardCard(
             Text(
                 modifier = Modifier.padding(start = 16.dp),
                 text = user.name.ifEmpty { user.email },
-                style =MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyLarge,
                 fontWeight =
-                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid)
+                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid) {
                     FontWeight.Bold
-                else
+                } else
                     FontWeight.Normal,
                 color = colors.primary,
             )
@@ -120,11 +120,11 @@ fun LeaderboardCard(
 
             Text(
                 text = "${user.xp}",
-                style =MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyLarge,
                 fontWeight =
-                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid)
+                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid) {
                     FontWeight.Bold
-                else
+                } else
                     FontWeight.Normal,
                 color = colors.primary,
             )

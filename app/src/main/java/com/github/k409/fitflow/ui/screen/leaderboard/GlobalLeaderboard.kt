@@ -58,7 +58,7 @@ fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
         HorizontalDivider(
             modifier = Modifier.padding(start = 8.dp, end = 8.dp),
             color = MaterialTheme.colorScheme.primary,
-            thickness = 5.dp
+            thickness = 5.dp,
         )
     }
 

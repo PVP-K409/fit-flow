@@ -46,8 +46,7 @@ fun finalList(users: List<User>): List<User> {
     return if (currentUserIndex <= 4) {
         val finalList = sortedUsers.take(55)
         finalList
-    }
-    else {
+    } else {
         val topFive = sortedUsers.take(5)
         val start = (currentUserIndex - 25).coerceAtLeast(0)
         val end = (currentUserIndex + 26).coerceAtMost(sortedUsers.size)
