@@ -39,7 +39,9 @@ class SettingsViewModel @Inject constructor(
     )
 
     fun signOut() {
-        authRepository.signOut()
+        viewModelScope.launch {
+            authRepository.signOut()
+        }
     }
 
     fun updateThemePreferences(themePreferences: ThemePreferences) {
