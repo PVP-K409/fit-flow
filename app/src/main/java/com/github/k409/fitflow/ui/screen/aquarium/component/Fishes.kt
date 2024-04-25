@@ -278,7 +278,7 @@ fun BouncingDraggableFish(
     initialVelocity: Offset = Offset(2f, 2f),
     fish: InventoryItem,
     phaseName: String = "",
-    initialPosition: Offset = Offset(-1f, -1f),
+    initialPosition: Offset = Offset(0f, 0f),
     inventoryViewModel: InventoryViewModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -299,13 +299,8 @@ fun BouncingDraggableFish(
         val containerWidth by remember { derivedStateOf { boxWidth - fishSize.width } }
         val containerHeight by remember { derivedStateOf { boxHeight - fishSize.height } }
 
-        val randomX = if (initialPosition.x < 0f) {
-            0f
-        } else initialPosition.x
-
-        val randomY = if (initialPosition.y < 0f) {
-            0f
-        } else initialPosition.y
+        val randomX = initialPosition.x
+        val randomY = initialPosition.y
 
         var isDragging by remember { mutableStateOf(false) }
         var position by remember { mutableStateOf( Offset(randomX, randomY)) }
