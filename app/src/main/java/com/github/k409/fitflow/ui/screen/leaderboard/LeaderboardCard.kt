@@ -42,7 +42,7 @@ fun LeaderboardCard(
 
     OutlinedCard(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxSize(),
     ) {
         Row(
             modifier = Modifier

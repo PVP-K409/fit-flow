@@ -57,7 +57,6 @@ fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
                 user = user,
                 rank = user.rank,
             )
-
         }
 
         HorizontalDivider(
