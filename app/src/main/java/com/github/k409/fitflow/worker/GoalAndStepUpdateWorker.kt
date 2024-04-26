@@ -61,7 +61,7 @@ class GoalAndStepUpdateWorker @AssistedInject constructor(
                         text = appContext.getString(
                             R.string.you_have_walked_out_of_steps_today,
                             progress.toString(),
-                            target.toString()
+                            target.toString(),
                         ),
                     )
                     notificationService.show(notification, progress, target)
