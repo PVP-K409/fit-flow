@@ -112,6 +112,9 @@ dependencies {
     implementation (libs.androidx.credentials.play.services.auth)
     implementation (libs.googleid)
 
+    implementation (libs.compose.pay.button)
+    implementation(libs.play.services.wallet)
+
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.work.runtime)
     implementation(libs.accompanist.permissions)

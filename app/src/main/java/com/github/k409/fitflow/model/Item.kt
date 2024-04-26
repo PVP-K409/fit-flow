@@ -5,6 +5,7 @@ data class MarketItem(
     val title: String = "",
     val description: String = "",
     val price: Int = -1,
+    val priceCents: Long = -1,
     val phases: Map<String, String>? = emptyMap(),
     val type: String = "",
     val image: String = "",

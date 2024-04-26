@@ -3,6 +3,7 @@ agp = "8.2.2"
 androidx-connectClient = "1.1.0-alpha07"
 animatedNavigationBar = "1.0.0"
 coilCompose = "2.6.0"
+composePayButton = "1.0.0"
 coreSplashscreen = "1.0.1"
 credentials = "1.2.2"
 datastorePreferences = "1.1.0"
@@ -28,6 +29,7 @@ activity-compose = "1.9.0"
 compose-bom = "2024.04.01"
 navigation-runtime-ktx = "2.7.7"
 navigation-compose = "2.7.7"
+playServicesWallet = "19.3.0"
 runtimeLivedata = "1.6.6"
 playServicesAuth = "21.1.0"
 spotlessPluginGradle = "6.19.0"
@@ -57,6 +59,7 @@ androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "
 animated-navigation-bar = { module = "com.exyte:animated-navigation-bar", version.ref = "animatedNavigationBar" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coilCompose" }
+compose-pay-button = { module = "com.google.pay.button:compose-pay-button", version.ref = "composePayButton" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 firebase-ui-storage = { module = "com.firebaseui:firebase-ui-storage", version.ref = "firebaseUiStorage" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
@@ -73,6 +76,7 @@ lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtim
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+play-services-wallet = { module = "com.google.android.gms:play-services-wallet", version.ref = "playServicesWallet" }
 spotless-plugin-gradle = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotlessPluginGradle" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
