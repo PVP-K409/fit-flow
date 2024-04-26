@@ -72,14 +72,14 @@ fun AquariumContent(
 
     // at the start of each minute check what background to use
     LaunchedEffect(Unit) {
-        while(isActive) {
+        while (isActive) {
             when (LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))) {
                 in "00:00".."06:59" -> aquariumBackground = NightBackground
                 in "07:00".."11:59" -> aquariumBackground = MorningBackground
-                in "12:00".."17:59" ->  aquariumBackground = AfternoonBackground
+                in "12:00".."17:59" -> aquariumBackground = AfternoonBackground
                 in "18:00".."23:59" -> aquariumBackground = EveningBackground
             }
-            delay((60000 - LocalTime.now().second*1000).toLong())
+            delay((60000 - LocalTime.now().second * 1000).toLong())
         }
     }
 
