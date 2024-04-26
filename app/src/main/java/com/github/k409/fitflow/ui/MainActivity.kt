@@ -5,12 +5,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.PermissionsHandler
 import com.github.k409.fitflow.ui.theme.FitFlowTheme
+import com.github.k409.fitflow.worker.GoalAndStepUpdateWorker
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,8 +53,21 @@ class MainActivity : ComponentActivity() {
                             sharedUiState = sharedUiState,
                         )
                     }
+                    StartWorkerButton { startWorker() }
                 }
             }
         }
     }
+}
+
+@Composable
+fun StartWorkerButton(onClick: () -> Unit) {
+    Button(onClick = onClick) {
+        Text("Start Worker")
+    }
+}
+
+fun MainActivity.startWorker() {
+    val workRequest = OneTimeWorkRequestBuilder<GoalAndStepUpdateWorker>().build()
+    WorkManager.getInstance(applicationContext).enqueue(workRequest)
 }

@@ -91,7 +91,7 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
             "PeriodicGoalAndStepUpdateWorker",
             period.toLong(),
             TimeUnit.MINUTES,
-            calculateInitialDelayUntil(start - period, 0),
+            calculateInitialDelayUntil(start, 0),
         )
         scheduleWork<GoalAndStepUpdateWorker>(
             "MidnightGoalAndStepUpdateWorker",

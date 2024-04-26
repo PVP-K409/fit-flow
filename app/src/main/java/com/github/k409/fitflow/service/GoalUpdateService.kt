@@ -1,6 +1,9 @@
 package com.github.k409.fitflow.service
 
+import android.app.Notification
+import android.app.NotificationManager
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.IBinder
@@ -32,6 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
+
 
 private const val goalUpdate = "Goal Update service"
 private const val stepUpdate = "Step Update service"
@@ -76,20 +80,10 @@ class GoalUpdateService : Service() {
     }
 
     private fun start() {
-        val title = getString(R.string.updating_data)
-        val text = getString(R.string.updating_goals_and_steps_data)
+        val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(goalNotificationChannel())
 
-        val notificationAndroid =
-            NotificationCompat.Builder(this, notificationChannel)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setAutoCancel(true)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(text))
-                .build()
-
-        startForeground(notificationId, notificationAndroid)
+        startForeground(notificationId, goalNotification())
 
         CoroutineScope(Dispatchers.Default).launch {
             try {
@@ -104,6 +98,32 @@ class GoalUpdateService : Service() {
                 }
             }
         }
+    }
+
+    private fun goalNotificationChannel(): android.app.NotificationChannel {
+        val channelName = NotificationChannel.GoalUpdate
+        val importance = NotificationManager.IMPORTANCE_LOW
+        return android.app.NotificationChannel(notificationChannel,
+            channelName.toString(), importance).apply {
+            setShowBadge(false)
+            vibrationPattern = longArrayOf(0)
+            enableVibration(false)
+            enableLights(false)
+        }
+    }
+
+    private fun goalNotification(): Notification {
+        val notificationTitle = getString(R.string.updating_data)
+        val notificationText = getString(R.string.updating_goals_and_steps_data)
+
+        return NotificationCompat.Builder(this, notificationChannel)
+            .setContentTitle(notificationTitle)
+            .setContentText(notificationText)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setAutoCancel(true)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(notificationText))
+            .build()
     }
 
     private suspend fun performStepsUpdate() {
