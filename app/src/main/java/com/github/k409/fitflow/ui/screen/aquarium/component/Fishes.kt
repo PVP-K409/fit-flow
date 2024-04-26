@@ -357,9 +357,11 @@ fun BouncingDraggableFish(
             error = painterResource(id = fishDrawableId),
             contentDescription = "",
             modifier = Modifier
-                .conditional(uniformSize,
+                .conditional(
+                    uniformSize,
                     ifTrue = { size(initialFishSize) },
-                    ifFalse = { width(initialFishSize) })
+                    ifFalse = { width(initialFishSize) },
+                )
                 .offset {
                     IntOffset(
                         position.x
@@ -405,5 +407,3 @@ fun BouncingDraggableFish(
         )
     }
 }
-
-

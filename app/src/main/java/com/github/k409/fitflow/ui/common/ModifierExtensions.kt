@@ -84,7 +84,7 @@ inline fun <T> Modifier.thenIfNotNull(
 fun Modifier.conditional(
     condition: Boolean,
     ifTrue: Modifier.() -> Modifier,
-    ifFalse: (Modifier.() -> Modifier)? = null
+    ifFalse: (Modifier.() -> Modifier)? = null,
 ): Modifier {
     return if (condition) {
         then(ifTrue(Modifier))
