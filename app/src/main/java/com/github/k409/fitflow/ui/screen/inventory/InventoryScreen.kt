@@ -23,6 +23,7 @@ import com.github.k409.fitflow.model.InventoryItem
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.item.CategorySelectHeader
 import com.github.k409.fitflow.ui.common.item.InventoryItemCard
+import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -40,7 +41,12 @@ fun InventoryScreen(
     }
     val ownedItems = (inventoryUiState as InventoryUiState.Success).ownedItems
 
-    var placedItemCount by remember { mutableIntStateOf(ownedItems.filter { it.placed }.size) }
+    val placedItemCounts = remember {
+        mutableMapOf(
+            "fish" to ownedItems.filter { it.placed && it.item.type == "fish" }.size,
+            "decoration" to ownedItems.filter { it.placed && it.item.type == "decoration" }.size,
+        )
+    }
 
     val items = when (selectedCategoryIndex) {
         0 -> ownedItems.filter { it.item.type == "fish" }
@@ -82,13 +88,13 @@ fun InventoryScreen(
                         context.getString(R.string.removed_from_aquarium),
                         Toast.LENGTH_SHORT,
                     ).show()
-                    placedItemCount--
+                    placedItemCounts[item.type] = placedItemCounts[item.type]!! - 1
                 },
                 removeButtonEnabled = inventoryItem.placed,
                 addButtonText = stringResource(R.string.add),
                 onAddClick =
                 {
-                    if (placedItemCount >= 3) {
+                    if (placedItemCounts[item.type]!! >= 3) {
                         // Limit toast messages in case button is spammed
                         if (System.currentTimeMillis() - mLastToastTime > mNewToastInterval) {
                             Toast.makeText(
@@ -103,6 +109,7 @@ fun InventoryScreen(
                             InventoryItem(
                                 item,
                                 true,
+                                offsetX = Random.nextInt(1, 600).toFloat(),
                             ),
                         )
                         Toast.makeText(
@@ -110,7 +117,7 @@ fun InventoryScreen(
                             context.getString(R.string.added_to_aquarium),
                             Toast.LENGTH_SHORT,
                         ).show()
-                        placedItemCount++
+                        placedItemCounts[item.type] = placedItemCounts[item.type]!! + 1
                     }
                 },
                 addButtonEnabled = !inventoryItem.placed,
