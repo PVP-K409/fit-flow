@@ -77,6 +77,8 @@ class ItemRepository @Inject constructor(
                         InventoryItem(
                             item = it,
                             placed = document.getBoolean(PLACED_FIELD) ?: false,
+                            offsetX = document.getDouble("offsetX")?.toFloat() ?: 0f,
+                            offsetY = document.getDouble("offsetY")?.toFloat() ?: 0f,
                         )
                     }
                 }
@@ -114,6 +116,8 @@ class ItemRepository @Inject constructor(
         val updatedData = hashMapOf(
             "item" to db.collection(MARKET_COLLECTION).document(marketItem.item.id.toString()),
             "placed" to marketItem.placed,
+            "offsetX" to marketItem.offsetX,
+            "offsetY" to marketItem.offsetY,
         )
 
         try {

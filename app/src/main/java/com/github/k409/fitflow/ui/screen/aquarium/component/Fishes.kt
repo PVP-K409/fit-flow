@@ -44,6 +44,7 @@ import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.ui.common.conditional
 import com.github.k409.fitflow.ui.common.noRippleClickable
 import com.github.k409.fitflow.ui.common.thenIf
 import kotlinx.coroutines.delay
@@ -269,11 +270,14 @@ fun AnimatedPrimaryFish(
 fun BouncingDraggableFish(
     modifier: Modifier = Modifier,
     fishDrawableId: Int = R.drawable.primary_fish,
-    imageDownloadUrl: String = "",
     bounceEnabled: Boolean = true,
     dragEnabled: Boolean = true,
     initialFishSize: Dp = 100.dp,
+    uniformSize: Boolean = false,
     initialVelocity: Offset = Offset(2f, 2f),
+    imageDownloadUrl: String = "",
+    initialPosition: Offset = Offset(0f, 0f),
+    onDragEnd: (offset: Offset) -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -293,8 +297,8 @@ fun BouncingDraggableFish(
         val containerWidth by remember { derivedStateOf { boxWidth - fishSize.width } }
         val containerHeight by remember { derivedStateOf { boxHeight - fishSize.height } }
 
-        val randomX = 0f
-        val randomY = 0f
+        val randomX = initialPosition.x
+        val randomY = initialPosition.y
 
         var isDragging by remember { mutableStateOf(false) }
         var position by remember { mutableStateOf(Offset(randomX, randomY)) }
@@ -353,7 +357,11 @@ fun BouncingDraggableFish(
             error = painterResource(id = fishDrawableId),
             contentDescription = "",
             modifier = Modifier
-                .width(initialFishSize)
+                .conditional(
+                    uniformSize,
+                    ifTrue = { size(initialFishSize) },
+                    ifFalse = { width(initialFishSize) },
+                )
                 .offset {
                     IntOffset(
                         position.x
@@ -368,7 +376,10 @@ fun BouncingDraggableFish(
                     Modifier.pointerInput(initialFishSize) {
                         detectDragGestures(
                             onDragStart = { _ -> isDragging = true },
-                            onDragEnd = { isDragging = false },
+                            onDragEnd = {
+                                isDragging = false
+                                onDragEnd(position)
+                            },
                             onDrag = { _, dragAmount ->
                                 val newOffsetX = (position.x + dragAmount.x)
                                     .coerceIn(
