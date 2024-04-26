@@ -76,8 +76,9 @@ fun AquariumContent(
             when (LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))) {
                 in "00:00".."06:59" -> aquariumBackground = NightBackground
                 in "07:00".."11:59" -> aquariumBackground = MorningBackground
-                in "12:00".."17:59" -> aquariumBackground = AfternoonBackground
-                in "18:00".."23:59" -> aquariumBackground = EveningBackground
+                in "12:00".."16:59" -> aquariumBackground = AfternoonBackground
+                in "17:00".."21:59" -> aquariumBackground = EveningBackground
+                in "22:00".."23:59" -> aquariumBackground = NightBackground
             }
             delay((60000 - LocalTime.now().second * 1000).toLong())
         }
