@@ -36,7 +36,7 @@ object PaymentsUtil {
     private val gatewayTokenizationSpecification: JSONObject =
         JSONObject()
             .put("type", "PAYMENT_GATEWAY")
-            .put("parameters", JSONObject(Constants.PAYMENT_GATEWAY_TOKENIZATION_PARAMETERS))
+            .put("parameters", JSONObject(PaymentConstants.PAYMENT_GATEWAY_TOKENIZATION_PARAMETERS))
 
     /**
      * Card networks supported by your app and your gateway.
@@ -44,7 +44,7 @@ object PaymentsUtil {
      * @return Allowed card networks
      * See [CardParameters](https://developers.google.com/pay/api/android/reference/object.CardParameters)
      */
-    private val allowedCardNetworks = JSONArray(Constants.SUPPORTED_NETWORKS)
+    private val allowedCardNetworks = JSONArray(PaymentConstants.SUPPORTED_NETWORKS)
 
     /**
      * Card authentication methods supported by your app and your gateway.
@@ -52,7 +52,7 @@ object PaymentsUtil {
      * @return Allowed card authentication methods.
      * See [CardParameters](https://developers.google.com/pay/api/android/reference/object.CardParameters)
      */
-    private val allowedCardAuthMethods = JSONArray(Constants.SUPPORTED_METHODS)
+    private val allowedCardAuthMethods = JSONArray(PaymentConstants.SUPPORTED_METHODS)
 
     /**
      * Describe your app's support for the CARD payment method.
@@ -114,13 +114,13 @@ object PaymentsUtil {
 
     /**
      * Creates an instance of [PaymentsClient] for use in an [Context] using the
-     * environment and theme set in [Constants].
+     * environment and theme set in [PaymentConstants].
      *
      * @param context from the caller activity.
      */
     fun createPaymentsClient(context: Context): PaymentsClient {
         val walletOptions = Wallet.WalletOptions.Builder()
-            .setEnvironment(Constants.PAYMENTS_ENVIRONMENT)
+            .setEnvironment(PaymentConstants.PAYMENTS_ENVIRONMENT)
             .build()
 
         return Wallet.getPaymentsClient(context, walletOptions)
@@ -137,8 +137,8 @@ object PaymentsUtil {
         JSONObject()
             .put("totalPrice", price)
             .put("totalPriceStatus", "FINAL")
-            .put("countryCode", Constants.COUNTRY_CODE)
-            .put("currencyCode", Constants.CURRENCY_CODE)
+            .put("countryCode", PaymentConstants.COUNTRY_CODE)
+            .put("currencyCode", PaymentConstants.CURRENCY_CODE)
 
     /**
      * An object describing information requested in a Google Pay payment sheet
