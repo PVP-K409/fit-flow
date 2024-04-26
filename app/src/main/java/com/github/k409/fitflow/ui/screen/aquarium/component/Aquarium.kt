@@ -163,10 +163,7 @@ private fun AquariumLayout(
 
                     Box(
                         modifier = Modifier
-                            .size(
-                                width = width.dp,
-                                height = (height * 0.075).dp,
-                            )
+                            .height(150.dp)
                             .align(Alignment.BottomCenter),
                     ) {
                         for (item in uiState.aquariumItems) {
