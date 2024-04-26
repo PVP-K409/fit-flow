@@ -166,7 +166,7 @@ fun MarketScreen(
                     imageDownloadUrl = item.phases?.get("Regular") ?: item.image,
                     name = item.title,
                     description = item.description,
-                    googleButtonEnabled = ownedItems.find { it.item.id == item.id } == null,
+                    owned = ownedItems.find { it.item.id == item.id } != null,
                     payUiState = payUiState,
                     priceCents = item.priceCents,
                     onGooglePayButtonClick = {

@@ -44,6 +44,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -109,7 +110,7 @@ fun InventoryItemCardGooglePay(
     imageDownloadUrl: String,
     name: String,
     description: String,
-    googleButtonEnabled: Boolean,
+    owned: Boolean,
     priceCents: Long,
     payUiState: PaymentUiState,
     onGooglePayButtonClick: () -> Unit,
@@ -137,7 +138,11 @@ fun InventoryItemCardGooglePay(
                 GooglePayButton(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onGooglePayButtonClick() },
-                    enabled = googleButtonEnabled,
+                    enabledPaying = payUiState !is PaymentUiState.Error && !owned,
+                    showGoogleIcon = !owned,
+                    disabledMessage = if (payUiState is PaymentUiState.Error) stringResource(R.string.unavailable) else stringResource(
+                        R.string.in_inventory
+                    )
                 )
             }
         }
@@ -179,7 +184,9 @@ private fun EuroPriceCard(
 @Composable
 private fun GooglePayButton(
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
+    enabledPaying: Boolean = true,
+    showGoogleIcon: Boolean = true,
+    disabledMessage: String,
     onClick: () -> Unit,
 ) {
     ElevatedButton(
@@ -191,23 +198,24 @@ private fun GooglePayButton(
                 ),
             ),
         onClick = onClick,
-        enabled = enabled,
+        enabled = enabledPaying,
         shape = MaterialTheme.shapes.extraLarge,
-        border = if (enabled) ButtonDefaults.outlinedButtonBorder else null,
+        border = if (enabledPaying) ButtonDefaults.outlinedButtonBorder else null,
     ) {
-        if (enabled) {
+        if (showGoogleIcon) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_google_logo),
                 contentDescription = null,
                 tint = Color.Unspecified,
             )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Text(text = "Pay", color = colorScheme.onSurface)
-        } else {
-            Text(text = "In inventory")
         }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(
+            text = if (enabledPaying) stringResource(R.string.pay) else disabledMessage,
+            color = if (enabledPaying) colorScheme.onSurface else Color.Unspecified
+        )
     }
 }
 
