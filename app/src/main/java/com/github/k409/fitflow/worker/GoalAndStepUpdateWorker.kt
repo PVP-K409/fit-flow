@@ -2,7 +2,13 @@ package com.github.k409.fitflow.worker
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.util.Log
+import androidx.health.connect.client.HealthConnectClient
+import androidx.health.connect.client.permission.HealthPermission
+import androidx.health.connect.client.records.DistanceRecord
+import androidx.health.connect.client.records.ExerciseSessionRecord
+import androidx.health.connect.client.records.StepsRecord
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -15,6 +21,7 @@ import com.github.k409.fitflow.service.GoalUpdateService
 import com.github.k409.fitflow.service.NotificationService
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -28,6 +35,8 @@ class GoalAndStepUpdateWorker @AssistedInject constructor(
     @Assisted workerParams: WorkerParameters,
     private val goalsRepository: GoalsRepository,
     private val notificationService: NotificationService,
+    private val client: HealthConnectClient,
+    private val sharedPreferences: SharedPreferences,
 ) : CoroutineWorker(appContext, workerParams) {
 
     companion object {
@@ -43,8 +52,21 @@ class GoalAndStepUpdateWorker @AssistedInject constructor(
                 appContext.startForegroundService(it)
             }
 
+            while (goalsUpdatedCheck()) {
+                delay(3000)
+            }
+
+            val stepPermission = setOf(
+                HealthPermission.getReadPermission(StepsRecord::class),
+                HealthPermission.getReadPermission(DistanceRecord::class),
+                HealthPermission.getReadPermission(ExerciseSessionRecord::class),
+            )
+
+            val grantedPerms = client.permissionController.getGrantedPermissions()
+            val grantedStepsPermission = grantedPerms.containsAll(stepPermission)
+
             // Post notification after update
-            if (isHourWithinRange()) {
+            if (isHourWithinRange() && grantedStepsPermission) {
                 val date = LocalDate.now().toString()
                 val walkingGoal = goalsRepository.getDailyGoals(date)?.get(walking)
 
@@ -78,5 +100,9 @@ class GoalAndStepUpdateWorker @AssistedInject constructor(
         val startTime = LocalTime.of(startTimeToSend, 0)
         val endTime = LocalTime.of(endTimeToSend, 0)
         return !currentTime.isBefore(startTime) && !currentTime.isAfter(endTime)
+    }
+
+    private fun goalsUpdatedCheck() : Boolean {
+        return sharedPreferences.getBoolean("GoalsUpdated", false)
     }
 }
