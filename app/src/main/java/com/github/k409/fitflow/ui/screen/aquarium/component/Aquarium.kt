@@ -165,14 +165,14 @@ private fun AquariumLayout(
                         modifier = Modifier
                             .size(
                                 width = width.dp,
-                                height = (height * 0.045).dp,
+                                height = (height * 0.075).dp,
                             )
                             .align(Alignment.BottomCenter),
                     ) {
                         for (item in uiState.aquariumItems) {
                             if (item.item.type == "decoration") {
                                 BouncingDraggableFish(
-                                    initialFishSize = 130.dp,
+                                    initialFishSize = 85.dp,
                                     imageDownloadUrl = item.item.image,
                                     bounceEnabled = false,
                                     initialPosition = Offset(item.offsetX, item.offsetY),
@@ -181,6 +181,7 @@ private fun AquariumLayout(
                                             item.copy(offsetX = offset.x, offsetY = offset.y),
                                         )
                                     },
+                                    uniformSize = true,
                                 )
                             }
                         }

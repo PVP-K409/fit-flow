@@ -44,6 +44,7 @@ import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.ui.common.conditional
 import com.github.k409.fitflow.ui.common.noRippleClickable
 import com.github.k409.fitflow.ui.common.thenIf
 import kotlinx.coroutines.delay
@@ -272,6 +273,7 @@ fun BouncingDraggableFish(
     bounceEnabled: Boolean = true,
     dragEnabled: Boolean = true,
     initialFishSize: Dp = 100.dp,
+    uniformSize: Boolean = false,
     initialVelocity: Offset = Offset(2f, 2f),
     imageDownloadUrl: String = "",
     initialPosition: Offset = Offset(0f, 0f),
@@ -355,7 +357,9 @@ fun BouncingDraggableFish(
             error = painterResource(id = fishDrawableId),
             contentDescription = "",
             modifier = Modifier
-                .width(initialFishSize)
+                .conditional(uniformSize,
+                    ifTrue = { size(initialFishSize) },
+                    ifFalse = { width(initialFishSize) })
                 .offset {
                     IntOffset(
                         position.x
@@ -401,3 +405,5 @@ fun BouncingDraggableFish(
         )
     }
 }
+
+
