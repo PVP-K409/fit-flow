@@ -34,6 +34,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 private const val goalUpdate = "Goal Update service"
@@ -62,6 +63,8 @@ class GoalUpdateService : Service() {
     @Inject lateinit var userRepository: UserRepository
 
     @Inject lateinit var aquariumRepository: AquariumRepository
+
+    @Inject lateinit var goalService: GoalService
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -79,6 +82,7 @@ class GoalUpdateService : Service() {
     }
 
     private fun start() {
+        prefs.edit().putBoolean("GoalsUpdated", false).apply()
         val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(goalNotificationChannel())
 
@@ -93,6 +97,7 @@ class GoalUpdateService : Service() {
                 Log.e("GoalUpdateService", "Error updating data", e)
             } finally {
                 withContext(Dispatchers.Main) {
+                    prefs.edit().putBoolean("GoalsUpdated", true).apply()
                     stopSelf()
                 }
             }
@@ -234,24 +239,41 @@ class GoalUpdateService : Service() {
 
             val periods = setOf(daily, weekly)
             val date = LocalDate.now().toString()
+            val today = LocalDate.now()
+            val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val formattedToday = today.format(dateFormatter)
 
             for (period in periods) {
                 val goalsToUpdate = when (period) {
                     daily -> goalsRepository.getDailyGoals(date)
                     weekly -> goalsRepository.getWeeklyGoals(date)
                     else -> return
+                } ?: mutableMapOf()
+
+                if (goalsToUpdate.isEmpty() || !goalsToUpdate.keys.contains(walking) && grantedStepsPermission) {
+                    val goal = goalService.calculateStepGoal(
+                        description = "$period $walking",
+                        type = walking,
+                        startDate = formattedToday,
+                        endDate = if (period == weekly) {
+                            today.plusDays(7)
+                                .format(dateFormatter)
+                        } else today.plusDays(1).format(dateFormatter),
+                    )
+
+                    goalsToUpdate[walking] = goal
                 }
 
-                if (!goalsToUpdate.isNullOrEmpty()) {
+                if (goalsToUpdate.isNotEmpty()) {
                     for (key in goalsToUpdate.keys) {
                         val goal = goalsToUpdate[key]
 
-                        if (key == walking && grantedExercisePermission) {
+                        if (key == walking && grantedStepsPermission) {
                             goalsToUpdate[key]?.currentProgress = healthStatsManager.getTotalSteps(
                                 startDateString = goal?.startDate ?: "",
                                 endDateString = goal?.endDate ?: "",
                             )
-                        } else if (grantedStepsPermission) {
+                        } else if (grantedExercisePermission) {
                             val validExerciseTypes = getValidExerciseTypesByType(key)
                             goalsToUpdate[key]?.currentProgress =
                                 healthStatsManager.getTotalExerciseDistance(
