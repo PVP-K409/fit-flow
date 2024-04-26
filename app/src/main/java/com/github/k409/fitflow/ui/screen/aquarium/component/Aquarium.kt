@@ -27,8 +27,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -44,19 +47,41 @@ import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.FishPhase.Companion.getPhase
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screen.aquarium.AquariumUiState
+import com.github.k409.fitflow.ui.screen.aquarium.component.AquariumTokens.AfternoonBackground
+import com.github.k409.fitflow.ui.screen.aquarium.component.AquariumTokens.EveningBackground
+import com.github.k409.fitflow.ui.screen.aquarium.component.AquariumTokens.MorningBackground
+import com.github.k409.fitflow.ui.screen.aquarium.component.AquariumTokens.NightBackground
 import com.github.k409.fitflow.ui.screen.inventory.InventoryViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 @Composable
 fun AquariumContent(
     modifier: Modifier = Modifier,
     uiState: AquariumUiState.Success,
-    aquariumBackground: Brush = AquariumTokens.AquariumBackground,
     navController: NavController,
     inventoryViewModel: InventoryViewModel = hiltViewModel(),
 ) {
     val waterLevel = uiState.aquariumStats.waterLevel
     val healthLevel = uiState.aquariumStats.healthLevel
+
+    var aquariumBackground by remember { mutableStateOf(AfternoonBackground) }
+
+    // at the start of each minute check what background to use
+    LaunchedEffect(Unit) {
+        while(isActive) {
+            when (LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))) {
+                in "00:00".."06:59" -> aquariumBackground = NightBackground
+                in "07:00".."11:59" -> aquariumBackground = MorningBackground
+                in "12:00".."17:59" ->  aquariumBackground = AfternoonBackground
+                in "18:00".."23:59" -> aquariumBackground = EveningBackground
+            }
+            delay((60000 - LocalTime.now().second*1000).toLong())
+        }
+    }
 
     val backgroundAlpha by animateFloatAsState(
         targetValue = calculateAquariumBackgroundAlpha(waterLevel),
