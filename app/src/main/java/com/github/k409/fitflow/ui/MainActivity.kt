@@ -53,21 +53,8 @@ class MainActivity : ComponentActivity() {
                             sharedUiState = sharedUiState,
                         )
                     }
-                    StartWorkerButton { startWorker() }
                 }
             }
         }
     }
-}
-
-@Composable
-fun StartWorkerButton(onClick: () -> Unit) {
-    Button(onClick = onClick) {
-        Text("Start Worker")
-    }
-}
-
-fun MainActivity.startWorker() {
-    val workRequest = OneTimeWorkRequestBuilder<GoalAndStepUpdateWorker>().build()
-    WorkManager.getInstance(applicationContext).enqueue(workRequest)
 }
