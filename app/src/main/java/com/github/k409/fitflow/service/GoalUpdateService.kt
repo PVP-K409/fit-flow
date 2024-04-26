@@ -76,8 +76,8 @@ class GoalUpdateService : Service() {
     }
 
     private fun start() {
-        val title = "Updating Data"
-        val text = "Updating goals and steps data"
+        val title = getString(R.string.updating_data)
+        val text = getString(R.string.updating_goals_and_steps_data)
 
         val notificationAndroid =
             NotificationCompat.Builder(this, notificationChannel)

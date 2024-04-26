@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.data.GoalsRepository
 import com.github.k409.fitflow.model.Notification
 import com.github.k409.fitflow.model.NotificationChannel
@@ -56,8 +57,12 @@ class GoalAndStepUpdateWorker @AssistedInject constructor(
                     val notification = Notification(
                         id = notificationId,
                         channel = NotificationChannel.WalkingProgress,
-                        title = "Walking Goal Progress",
-                        text = "You have walked $progress out of $target steps today.",
+                        title = appContext.getString(R.string.walking_goal_progress),
+                        text = appContext.getString(
+                            R.string.you_have_walked_out_of_steps_today,
+                            progress.toString(),
+                            target.toString()
+                        ),
                     )
                     notificationService.show(notification, progress, target)
                 }
