@@ -102,7 +102,7 @@ class GoalAndStepUpdateWorker @AssistedInject constructor(
         return !currentTime.isBefore(startTime) && !currentTime.isAfter(endTime)
     }
 
-    private fun goalsUpdatedCheck() : Boolean {
+    private fun goalsUpdatedCheck(): Boolean {
         return sharedPreferences.getBoolean("GoalsUpdated", false)
     }
 }
