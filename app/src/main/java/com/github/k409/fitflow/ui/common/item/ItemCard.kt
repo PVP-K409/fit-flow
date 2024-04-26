@@ -76,7 +76,7 @@ fun InventoryItemCard(
         modifier = modifier,
         imageDownloadUrl = imageDownloadUrl,
         name = name,
-        description = description
+        description = description,
     ) {
         Row(
             modifier = modifier.fillMaxSize(),
@@ -140,16 +140,18 @@ fun InventoryItemCardGooglePay(
                     onClick = { onGooglePayButtonClick() },
                     enabledPaying = payUiState !is PaymentUiState.Error && !owned,
                     showGoogleIcon = !owned,
-                    disabledMessage = if (payUiState is PaymentUiState.Error) stringResource(R.string.unavailable) else stringResource(
-                        R.string.in_inventory
-                    )
+                    disabledMessage = if (payUiState is PaymentUiState.Error) {
+                        stringResource(R.string.unavailable)
+                    } else {
+                        stringResource(
+                            R.string.in_inventory,
+                        )
+                    },
                 )
             }
         }
     }
-
 }
-
 
 @Composable
 private fun EuroPriceCard(
@@ -214,7 +216,7 @@ private fun GooglePayButton(
 
         Text(
             text = if (enabledPaying) stringResource(R.string.pay) else disabledMessage,
-            color = if (enabledPaying) colorScheme.onSurface else Color.Unspecified
+            color = if (enabledPaying) colorScheme.onSurface else Color.Unspecified,
         )
     }
 }

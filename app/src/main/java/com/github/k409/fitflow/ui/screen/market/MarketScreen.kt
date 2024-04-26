@@ -88,14 +88,13 @@ fun MarketScreen(
                     is ResolvableApiException -> {
                         resolvePaymentForResult.launch(
                             IntentSenderRequest.Builder(exception.resolution)
-                                .build()
+                                .build(),
                         )
                     }
                 }
             }
         }
     }
-
 
     if (marketUiState is MarketUiState.Loading) {
         FitFlowCircularProgressIndicator()
@@ -123,7 +122,6 @@ fun MarketScreen(
         }
         items(items) { item ->
             if (item.priceCents <= 0) {
-
                 InventoryItemCard(
                     modifier = Modifier,
                     imageDownloadUrl = item.phases?.get("Regular") ?: item.image,

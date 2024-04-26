@@ -28,7 +28,6 @@ class CheckoutViewModel @Inject constructor(
         MutableStateFlow(PaymentUiState.NotStarted)
     val paymentUiState: StateFlow<PaymentUiState> = _paymentUiState.asStateFlow()
 
-
     init {
         viewModelScope.launch {
             verifyGooglePayReadiness()
@@ -38,7 +37,7 @@ class CheckoutViewModel @Inject constructor(
     /**
      * Determine the user's ability to pay with a payment method supported by your app and display
      * a Google Pay payment button.
-    ) */
+     ) */
     private suspend fun verifyGooglePayReadiness() {
         val newUiState: PaymentUiState = try {
             if (fetchCanUseGooglePay()) {
@@ -55,7 +54,7 @@ class CheckoutViewModel @Inject constructor(
 
     /**
      * Determine the user's ability to pay with a payment method supported by your app.
-    ) */
+     ) */
     private suspend fun fetchCanUseGooglePay(): Boolean {
         val request = IsReadyToPayRequest.fromJson(PaymentsUtil.isReadyToPayRequest().toString())
         return paymentsClient.isReadyToPay(request).await()
@@ -66,7 +65,7 @@ class CheckoutViewModel @Inject constructor(
      *
      * @return a [Task] with the payment information.
      * @see [PaymentDataRequest](https://developers.google.com/android/reference/com/google/android/gms/wallet/PaymentsClient#loadPaymentData(com.google.android.gms.wallet.PaymentDataRequest)
-    ) */
+     ) */
     fun getLoadPaymentDataTask(priceCents: Long): Task<PaymentData> {
         val paymentDataRequestJson = PaymentsUtil.getPaymentDataRequest(priceCents)
         val request = PaymentDataRequest.fromJson(paymentDataRequestJson.toString())
@@ -85,6 +84,6 @@ abstract class PaymentUiState internal constructor() {
     class PaymentCompleted(val paymentData: PaymentData) : PaymentUiState()
     class Error(
         val code: Int,
-        val message: String? = null
+        val message: String? = null,
     ) : PaymentUiState()
 }

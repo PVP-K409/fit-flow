@@ -2,7 +2,6 @@ package com.github.k409.fitflow.util
 
 import com.google.android.gms.wallet.WalletConstants
 
-
 object PaymentConstants {
     /**
      * Changing this to ENVIRONMENT_PRODUCTION will make the API return chargeable card information.
@@ -24,7 +23,7 @@ object PaymentConstants {
         "DISCOVER",
         "JCB",
         "MASTERCARD",
-        "VISA"
+        "VISA",
     )
 
     /**
@@ -35,7 +34,7 @@ object PaymentConstants {
      */
     val SUPPORTED_METHODS = listOf(
         "PAN_ONLY",
-        "CRYPTOGRAM_3DS"
+        "CRYPTOGRAM_3DS",
     )
 
     /**
@@ -70,6 +69,6 @@ object PaymentConstants {
      */
     val PAYMENT_GATEWAY_TOKENIZATION_PARAMETERS = mapOf(
         "gateway" to PAYMENT_GATEWAY_TOKENIZATION_NAME,
-        "gatewayMerchantId" to "exampleGatewayMerchantId"
+        "gatewayMerchantId" to "exampleGatewayMerchantId",
     )
 }

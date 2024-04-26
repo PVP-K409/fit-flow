@@ -70,9 +70,10 @@ object PaymentsUtil {
         JSONObject()
             .put("type", "CARD")
             .put(
-                "parameters", JSONObject()
+                "parameters",
+                JSONObject()
                     .put("allowedAuthMethods", allowedCardAuthMethods)
-                    .put("allowedCardNetworks", allowedCardNetworks)
+                    .put("allowedCardNetworks", allowedCardNetworks),
             )
 
     /**
