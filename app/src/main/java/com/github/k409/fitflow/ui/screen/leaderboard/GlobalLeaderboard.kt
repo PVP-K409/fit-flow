@@ -2,10 +2,10 @@ package com.github.k409.fitflow.ui.screen.leaderboard
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,7 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
-import com.github.k409.fitflow.ui.screen.you.SectionHeaderCard
+import com.github.k409.fitflow.ui.screen.you.OutlineCardContainer
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun GlobalLeaderboardScreen(
@@ -39,39 +40,63 @@ fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
     val topFive = uiState.users.take(5)
     val otherUsers = uiState.users.drop(5)
 
-    SectionHeaderCard(
-        modifier = Modifier.padding(bottom = 16.dp),
-        title = stringResource(R.string.top_5_users),
-    )
-
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        for (index in topFive.indices) {
-            val user = topFive[index]
+        OutlineCardContainer(
+            title = stringResource(id = R.string.top_5_users),
+            subtitleText = stringResource(R.string.top_5_users_in_the_global_leaderboard),
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
 
-            LeaderboardCard(
-                user = user,
-                rank = user.rank,
-            )
+                topFive.indices.forEach { index ->
+                    val user = topFive[index]
+
+                    LeaderboardCard(
+                        user = user,
+                        rank = user.rank,
+                        // TODO: remove this later
+                        currentUser = FirebaseAuth.getInstance().currentUser!!.uid == user.uid
+                    )
+
+                    if (index != topFive.size - 1) {
+                        HorizontalDivider()
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = 8.dp),
-            color = MaterialTheme.colorScheme.primary,
-            thickness = 1.dp,
-        )
+        OutlineCardContainer(
+            title = stringResource(R.string.other_users),
+            subtitleText = stringResource(R.string.other_users_in_the_global_leaderboard),
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
 
-        for (index in otherUsers.indices) {
-            val user = otherUsers[index]
+                otherUsers.indices.forEach { index ->
+                    val user = otherUsers[index]
 
-            LeaderboardCard(
-                user = user,
-                rank = user.rank,
-            )
+                    LeaderboardCard(
+                        user = user,
+                        rank = user.rank,
+                        // TODO: remove this later
+                        currentUser = FirebaseAuth.getInstance().currentUser!!.uid == user.uid
+                    )
+
+                    if (index != otherUsers.size - 1) {
+                        HorizontalDivider()
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }

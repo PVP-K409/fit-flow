@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,102 +29,90 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
-import com.google.firebase.auth.FirebaseAuth
+import com.github.k409.fitflow.ui.common.thenIf
 
 @Composable
 fun LeaderboardCard(
     modifier: Modifier = Modifier,
     user: User,
     rank: Int,
+    currentUser: Boolean,
 ) {
     val colors = MaterialTheme.colorScheme
 
-    OutlinedCard(
-        modifier = modifier
+    Row(
+        modifier = Modifier
             .fillMaxSize(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Row(
+        Text(
+            modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+            text = rank.toString(),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = if (currentUser) {
+                FontWeight.Bold
+            } else FontWeight.Normal,
+            color = colors.primary,
+        )
+
+        SubcomposeAsyncImage(
+            model = ImageRequest.Builder(LocalContext.current).data(user.photoUrl).crossfade(true)
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            error = {
+                Icon(
+                    modifier = Modifier.padding(3.dp),
+                    imageVector = Icons.Outlined.PersonOutline,
+                    contentDescription = null,
+                )
+            },
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 8.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp),
-                text = rank.toString(),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight =
-                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid) {
-                    FontWeight.Bold
-                } else
-                    FontWeight.Normal,
-                color = colors.primary,
-            )
+                .clip(CircleShape)
+                .size(38.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    shape = CircleShape,
+                )
+                .border(
+                    width = 2.dp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                    shape = CircleShape,
+                ),
+        )
 
-            SubcomposeAsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(user.photoUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                error = {
-                    Icon(
-                        modifier = Modifier.padding(3.dp),
-                        imageVector = Icons.Outlined.PersonOutline,
-                        contentDescription = null,
-                    )
-                },
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(38.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.secondaryContainer,
-                        shape = CircleShape,
-                    )
-                    .border(
-                        width = 2.dp,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                        shape = CircleShape,
-                    ),
-            )
+        Text(
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .thenIf(currentUser) { background(colors.secondaryContainer) },
+            text = user.name.ifEmpty { user.email }.substringBefore("@"),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = if (currentUser) {
+                FontWeight.Bold
+            } else FontWeight.Normal,
+            color = colors.primary,
+            overflow = TextOverflow.Ellipsis,
+        )
 
-            Text(
-                modifier = Modifier.padding(start = 8.dp),
-                text = user.name.ifEmpty { user.email }.substringBefore("@"),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight =
-                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid) {
-                    FontWeight.Bold
-                } else
-                    FontWeight.Normal,
-                color = colors.primary,
-                overflow = TextOverflow.Ellipsis,
-            )
+        Spacer(modifier = Modifier.weight(1f))
 
-            Spacer(modifier = Modifier.weight(1f))
+        Icon(
+            modifier = Modifier
+                .padding(bottom = 3.dp)
+                .size(18.dp),
+            painter = painterResource(id = R.drawable.xp),
+            contentDescription = null,
+            tint = Color.Unspecified,
+        )
 
-            Icon(
-                modifier = Modifier
-                    .padding(bottom = 3.dp)
-                    .size(18.dp),
-                painter = painterResource(id = R.drawable.xp),
-                contentDescription = null,
-                tint = Color.Unspecified,
-            )
-
-            Text(
-                text = "${user.xp}",
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight =
-                if (user.uid == FirebaseAuth.getInstance().currentUser!!.uid) {
-                    FontWeight.Bold
-                } else
-                    FontWeight.Normal,
-                color = colors.primary,
-            )
-        }
+        Text(
+            text = "${user.xp}",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = if (currentUser) {
+                FontWeight.Bold
+            } else FontWeight.Normal,
+            color = colors.primary,
+        )
     }
 }
