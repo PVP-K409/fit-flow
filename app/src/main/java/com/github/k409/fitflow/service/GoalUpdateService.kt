@@ -36,7 +36,6 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 
-
 private const val goalUpdate = "Goal Update service"
 private const val stepUpdate = "Step Update service"
 private const val daily = "Daily"
@@ -103,8 +102,11 @@ class GoalUpdateService : Service() {
     private fun goalNotificationChannel(): android.app.NotificationChannel {
         val channelName = NotificationChannel.GoalUpdate
         val importance = NotificationManager.IMPORTANCE_LOW
-        return android.app.NotificationChannel(notificationChannel,
-            channelName.toString(), importance).apply {
+        return android.app.NotificationChannel(
+            notificationChannel,
+            channelName.toString(),
+            importance,
+        ).apply {
             setShowBadge(false)
             vibrationPattern = longArrayOf(0)
             enableVibration(false)
