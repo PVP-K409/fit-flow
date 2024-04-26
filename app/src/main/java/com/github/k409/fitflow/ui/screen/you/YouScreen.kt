@@ -24,7 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
-import com.github.k409.fitflow.ui.common.UnderConstructionContent
+import com.github.k409.fitflow.ui.screen.leaderboard.GlobalLeaderboardScreen
 
 @Composable
 fun YouScreen(
@@ -44,7 +44,7 @@ fun YouScreen(
         SecondaryTextTabsRow(
             titles = listOf(
                 stringResource(R.string.progress_tab_title),
-                stringResource(R.string.activities_tab_title),
+                stringResource(R.string.global_leaderboard_tab_title),
             ),
             selectedTabIndex = selectedTabIndex,
         )
@@ -64,7 +64,7 @@ fun YouScreen(
                 }
 
                 1 -> {
-                    UnderConstructionContent()
+                    GlobalLeaderboardScreen()
                 }
             }
         }

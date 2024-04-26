@@ -221,10 +221,10 @@ private fun BestEffortsCard(uiState: ProgressUiState.Success) {
 }
 
 @Composable
-private fun SectionHeaderCard(
+fun SectionHeaderCard(
     modifier: Modifier = Modifier,
     title: String,
-    subtitle: String,
+    subtitle: String? = null,
 ) {
     OutlinedCard(
         modifier = modifier
@@ -239,19 +239,20 @@ private fun SectionHeaderCard(
             horizontalAlignment = Alignment.Start,
         ) {
             Text(
-                modifier = Modifier.padding(bottom = 6.dp),
                 text = title,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.ExtraBold,
                 color = MaterialTheme.colorScheme.primary,
             )
 
-            Text(
-                modifier = Modifier.padding(bottom = 0.dp),
-                text = subtitle,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.W300,
-            )
+            subtitle?.let {
+                Text(
+                    modifier = Modifier.padding(top = 6.dp, bottom = 0.dp),
+                    text = it,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.W300,
+                )
+            }
         }
     }
 }
