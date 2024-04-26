@@ -7,6 +7,7 @@ import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.DrinkReminderState
 import com.github.k409.fitflow.model.Notification
 import com.github.k409.fitflow.model.NotificationChannel
+import com.github.k409.fitflow.model.NotificationId
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -87,11 +88,11 @@ class HydrationNotificationService @Inject constructor(
             }
         }
 
-        Log.d(TAG, "Current date time: $currentDateTime")
+        val startIndex = NotificationId.entries.last().notificationId + 1 // TODO hydration notification id's
 
         val scheduledNotificationIds = notificationDateTimes.mapIndexed { index, dateTime ->
             val notification = Notification(
-                id = index,
+                id = index + startIndex,
                 channel = NotificationChannel.HydrationReminder,
                 title = context.getString(R.string.hydration_notification_title),
                 text = context.getString(
@@ -108,7 +109,7 @@ class HydrationNotificationService @Inject constructor(
 
             Log.d(TAG, "Scheduled notification at $dateTime")
 
-            index
+            index + startIndex
         }
 
         saveScheduledNotificationIds(scheduledNotificationIds)

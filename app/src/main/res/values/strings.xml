@@ -128,4 +128,8 @@
     <string name="pay">Pay</string>
     <string name="in_inventory">In inventory</string>
     <string name="unavailable">Unavailable</string>
+    <string name="updating_data">Updating Data</string>
+    <string name="updating_goals_and_steps_data">Updating goals and steps data</string>
+    <string name="walking_goal_progress">Walking Goal Progress</string>
+    <string name="you_have_walked_out_of_steps_today">You have walked %1$s out of %2$s steps today.</string>
 </resources>

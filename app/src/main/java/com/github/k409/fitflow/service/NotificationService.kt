@@ -139,6 +139,52 @@ class NotificationService @Inject constructor(
         )
     }
 
+    fun show(
+        notification: Notification,
+        progress: Int? = null,
+        maxProgress: Int? = null,
+    ) {
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS,
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        val builder = NotificationCompat.Builder(context, notification.channel.channelId)
+            .setContentTitle(notification.title)
+            .setContentText(notification.text)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(notification.text))
+
+        if (progress != null && maxProgress != null) {
+            builder.setProgress(maxProgress, progress, false)
+        }
+
+        val intent = Intent(context, Activity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+
+        builder.setContentIntent(pendingIntent)
+
+        val notificationManager = NotificationManagerCompat.from(context)
+
+        notificationManager.notify(
+            notification.id,
+            builder.build(),
+        )
+    }
+
     fun cancel(
         notification: Notification,
     ) {
