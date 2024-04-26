@@ -21,8 +21,8 @@ import com.github.k409.fitflow.data.HealthStatsManager
 import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.model.DailyStepRecord
-import com.github.k409.fitflow.model.NotificationId
 import com.github.k409.fitflow.model.NotificationChannel
+import com.github.k409.fitflow.model.NotificationId
 import com.github.k409.fitflow.model.getValidExerciseTypesByType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +33,6 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 
-
 private const val goalUpdate = "Goal Update service"
 private const val stepUpdate = "Step Update service"
 private const val daily = "Daily"
@@ -43,15 +42,22 @@ private val notificationChannel = NotificationChannel.GoalUpdate.channelId
 private val notificationId = NotificationId.GoalUpdate.notificationId
 
 @AndroidEntryPoint
-class GoalUpdateService : Service()  {
+class GoalUpdateService : Service() {
 
     @Inject lateinit var stepsRepository: StepsRepository
+
     @Inject lateinit var stepCounterService: StepCounterService
+
     @Inject lateinit var prefs: SharedPreferences
+
     @Inject lateinit var client: HealthConnectClient
+
     @Inject lateinit var healthStatsManager: HealthStatsManager
+
     @Inject lateinit var goalsRepository: GoalsRepository
+
     @Inject lateinit var userRepository: UserRepository
+
     @Inject lateinit var aquariumRepository: AquariumRepository
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -99,7 +105,6 @@ class GoalUpdateService : Service()  {
             }
         }
     }
-
 
     private suspend fun performStepsUpdate() {
         val hasRebooted = prefs.getBoolean("rebooted", false)
@@ -185,7 +190,6 @@ class GoalUpdateService : Service()  {
             prefs.edit().putString("lastDate", today).apply() // saving last update day
 
             stepsRepository.updateSteps(newDailyStepRecord)
-
         } catch (e: Exception) {
             Log.e(stepUpdate, "Error updating steps", e)
         }
@@ -252,10 +256,8 @@ class GoalUpdateService : Service()  {
                     goalsRepository.updateGoals(goalsToUpdate, LocalDate.now().toString(), period)
                 }
             }
-
         } catch (e: Exception) {
             Log.e(goalUpdate, "Goals failed to update", e)
         }
     }
-
 }

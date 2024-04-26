@@ -5,5 +5,4 @@ enum class NotificationId(
 ) {
     GoalUpdate(1),
     WalkingProgress(2),
-    ;
 }

@@ -17,10 +17,10 @@ import dagger.assisted.AssistedInject
 import java.time.LocalDate
 import java.time.LocalTime
 
-
 private const val TAG = "GoalAndStepUpdateWorker"
 private const val walking = "Walking"
 private val notificationId = NotificationId.WalkingProgress.notificationId
+
 @HiltWorker
 class GoalAndStepUpdateWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
@@ -47,18 +47,17 @@ class GoalAndStepUpdateWorker @AssistedInject constructor(
                 val date = LocalDate.now().toString()
                 val walkingGoal = goalsRepository.getDailyGoals(date)?.get(walking)
 
-
                 if (walkingGoal != null) {
                     val progress = walkingGoal.currentProgress.toInt()
                     val target = walkingGoal.target.toInt()
-                    if ( progress >= target) {
+                    if (progress >= target) {
                         return Result.success()
                     }
                     val notification = Notification(
                         id = notificationId,
                         channel = NotificationChannel.WalkingProgress,
                         title = "Walking Goal Progress",
-                        text = "You have walked $progress out of $target steps today."
+                        text = "You have walked $progress out of $target steps today.",
                     )
                     notificationService.show(notification, progress, target)
                 }
@@ -75,8 +74,4 @@ class GoalAndStepUpdateWorker @AssistedInject constructor(
         val endTime = LocalTime.of(endTimeToSend, 0)
         return !currentTime.isBefore(startTime) && !currentTime.isAfter(endTime)
     }
-
 }
-
-
-

@@ -85,13 +85,13 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
     private fun scheduleGoalAndStepUpdateWorkers() {
         val start = GoalAndStepUpdateWorker.startTimeToSend
         val end = GoalAndStepUpdateWorker.endTimeToSend
-        val times = (end-start)/3
+        val times = (end - start) / 3
         val period = times * 60
         scheduleWork<GoalAndStepUpdateWorker>(
             "PeriodicGoalAndStepUpdateWorker",
             period.toLong(),
             TimeUnit.MINUTES,
-            calculateInitialDelayUntil(start-period, 0)
+            calculateInitialDelayUntil(start - period, 0),
         )
         scheduleWork<GoalAndStepUpdateWorker>(
             "MidnightGoalAndStepUpdateWorker",

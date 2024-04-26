@@ -142,7 +142,7 @@ class NotificationService @Inject constructor(
     fun show(
         notification: Notification,
         progress: Int? = null,
-        maxProgress: Int? = null
+        maxProgress: Int? = null,
     ) {
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -181,7 +181,7 @@ class NotificationService @Inject constructor(
 
         notificationManager.notify(
             notification.id,
-            builder.build()
+            builder.build(),
         )
     }
 
