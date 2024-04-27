@@ -1,7 +1,9 @@
 [versions]
 agp = "8.2.2"
+androidMapsUtils = "2.2.3"
 androidx-connectClient = "1.1.0-alpha07"
 animatedNavigationBar = "1.0.0"
+appcompat = "1.6.1"
 coilCompose = "2.6.0"
 composePayButton = "1.0.0"
 coreSplashscreen = "1.0.1"
@@ -27,8 +29,11 @@ espresso-core = "3.5.1"
 lifecycle-runtime-ktx = "2.7.0"
 activity-compose = "1.9.0"
 compose-bom = "2024.04.01"
+mapsUtilsKtx = "3.2.0"
 navigation-runtime-ktx = "2.7.7"
 navigation-compose = "2.7.7"
+playServicesLocation = "21.2.0"
+playServicesMaps = "18.2.0"
 playServicesWallet = "19.3.0"
 runtimeLivedata = "1.6.6"
 playServicesAuth = "21.1.0"
@@ -45,6 +50,8 @@ firebaseAppcheckDebug = "17.1.2"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+android-maps-utils = { module = "com.google.maps.android:android-maps-utils", version.ref = "androidMapsUtils" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "androidx-connectClient" }
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
@@ -75,7 +82,10 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+maps-utils-ktx = { module = "com.google.maps.android:maps-utils-ktx", version.ref = "mapsUtilsKtx" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 play-services-wallet = { module = "com.google.android.gms:play-services-wallet", version.ref = "playServicesWallet" }
 spotless-plugin-gradle = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotlessPluginGradle" }
 ui = { group = "androidx.compose.ui", name = "ui" }

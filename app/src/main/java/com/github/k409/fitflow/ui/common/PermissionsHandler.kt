@@ -22,6 +22,7 @@ fun PermissionsHandler() {
         permissions.add(Manifest.permission.POST_NOTIFICATIONS)
         permissions.add(Manifest.permission.USE_EXACT_ALARM)
         permissions.add(Manifest.permission.SCHEDULE_EXACT_ALARM)
+        permissions.add(Manifest.permission.FOREGROUND_SERVICE)
     }
 
     val permissionState = rememberMultiplePermissionsState(
