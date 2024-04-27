@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.screen.activity.ActivityScreen
+import com.github.k409.fitflow.ui.screen.activity.ExerciseSessionScreen
 import com.github.k409.fitflow.ui.screen.aquarium.AquariumScreen
 import com.github.k409.fitflow.ui.screen.goals.GoalCreation
 import com.github.k409.fitflow.ui.screen.goals.GoalsScreen
@@ -36,7 +37,7 @@ fun FitFlowNavGraph(
         }
 
         composable(NavRoutes.Activity.route) {
-            ActivityScreen()
+            ActivityScreen(navController = navController)
         }
 
         composable(NavRoutes.Goals.route) {
@@ -49,6 +50,10 @@ fun FitFlowNavGraph(
 
         composable(NavRoutes.GoalCreation.route) {
             GoalCreation(navController = navController)
+        }
+
+        composable(NavRoutes.ExerciseSession.route) {
+            ExerciseSessionScreen()
         }
 
         composable(NavRoutes.Hydration.route) {

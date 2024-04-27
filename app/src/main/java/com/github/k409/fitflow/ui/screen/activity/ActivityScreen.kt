@@ -11,12 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.github.k409.fitflow.ui.common.HorizontalPagerIndicator
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ActivityScreen(
     activityViewModel: ActivityViewModel = hiltViewModel(),
+    navController: NavHostController,
 ) {
     val pagerState = rememberPagerState(pageCount = {
         2
@@ -39,7 +41,7 @@ fun ActivityScreen(
                 }
 
                 1 -> {
-                    ExercisesLogPage()
+                    ExercisesLogPage(navController = navController)
                 }
             }
         }
