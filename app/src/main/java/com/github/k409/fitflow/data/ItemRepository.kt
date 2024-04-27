@@ -153,8 +153,7 @@ class ItemRepository @Inject constructor(
             .collection(ITEMS_COLLECTION)
             .document(itemId.toString())
     }
-    suspend fun getInitialFish(
-    ): MarketItem {
+    suspend fun getInitialFish(): MarketItem {
         return db.collection(MARKET_COLLECTION)
             .document(INITIAL_FISH_ID.toString())
             .get()
