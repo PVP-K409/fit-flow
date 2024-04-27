@@ -8,6 +8,8 @@ import androidx.work.WorkManager
 import com.github.k409.fitflow.data.HealthStatsManager
 import com.github.k409.fitflow.service.HealthConnectService
 import com.github.k409.fitflow.service.StepCounterService
+import com.github.k409.fitflow.util.PaymentsUtil
+import com.google.android.gms.wallet.PaymentsClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -58,5 +60,11 @@ class AppModule {
         context: Context,
     ): WorkManager {
         return WorkManager.getInstance(context)
+    }
+
+    @Provides
+    @Singleton
+    fun providePaymentsClient(@ApplicationContext context: Context): PaymentsClient {
+        return PaymentsUtil.createPaymentsClient(context)
     }
 }
