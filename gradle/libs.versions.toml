@@ -13,6 +13,7 @@ datastorePreferencesCore = "1.1.0"
 firebaseMessaging = "23.4.1"
 firebaseUiAuth = "8.0.0"
 firebaseUiStorage = "7.2.0"
+google-mapsCompose = "2.2.0"
 googleid = "1.1.0"
 googleServices = "4.4.1"
 hilt = "2.50"
@@ -81,6 +82,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "google-mapsCompose" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }

@@ -61,13 +61,17 @@ fun ExercisesLogPage(
 
     if (loading) {
         FitFlowCircularProgressIndicator()
-    } else if (exerciseRecords.isEmpty()) {
-        NoExerciseLogsFound()
     } else {
-        Box(modifier = Modifier.fillMaxSize()) {
-            LazyColumn {
-                items(exerciseRecords) { record ->
-                    ExerciseRecordCard(record)
+        Box(modifier = Modifier.fillMaxSize()){
+            if (exerciseRecords.isEmpty()) {
+                NoExerciseLogsFound()
+            } else {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn {
+                        items(exerciseRecords) { record ->
+                            ExerciseRecordCard(record)
+                        }
+                    }
                 }
             }
             FloatingActionButton(
@@ -82,6 +86,7 @@ fun ExercisesLogPage(
                 )
             }
         }
+
     }
 }
 

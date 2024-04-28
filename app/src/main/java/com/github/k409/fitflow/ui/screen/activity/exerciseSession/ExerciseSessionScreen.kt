@@ -4,7 +4,9 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,21 +16,31 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapType
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -51,48 +63,87 @@ fun ExerciseSessionScreen(
         fineLocationPermissionState.launchMultiplePermissionRequest()
     }
 
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Spacer(modifier = Modifier.weight(1f))
+
         if (showMap && fineLocationPermissionState.allPermissionsGranted) {
             exerciseSessionViewModel.getUserLocation()
-            AndroidView(factory = { context ->
-                MapView(context).apply {
-                    onCreate(null)
-                    getMapAsync { googleMap ->
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 14f))
-                        googleMap.uiSettings.isZoomControlsEnabled = true
-                    }
-                }
-            }, modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth())
 
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-                // Additional UI elements here
+            val cameraPositionState = rememberCameraPositionState {
+                position = CameraPosition.fromLatLngZoom(location, 14f)
+            }
+            val marker = MarkerState(position = location)
+            var uiSettings by remember { mutableStateOf(MapUiSettings()) }
+            val properties by remember {
+                mutableStateOf( MapProperties(mapType = MapType.SATELLITE))
+            }
+
+            Log.d("ExerciseSessionScreen", "location: $location")
+            Box(modifier = Modifier.height(600.dp)) {
+                GoogleMap(
+                    cameraPositionState = cameraPositionState,
+                    properties = properties,
+                    uiSettings = uiSettings,
+                ) {
+                    Marker(
+                        state = marker,
+                        title = "Current Location",
+                    )
+                }
+                Switch(
+                    checked = uiSettings.zoomControlsEnabled,
+                    onCheckedChange = {
+                        uiSettings = uiSettings.copy(zoomControlsEnabled = it)
+                    })
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+        }
+        Row(
+            modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            if(!showMap) {
+                ActionButton(
+                    text = "Start",
+                    onClick = { exerciseSessionViewModel.startSession() },
+                    modifier = Modifier.weight(1f),
+                )
+            }
+            if (showMap && fineLocationPermissionState.allPermissionsGranted){
+                ActionButton(
+                    text = "Stop",
+                    onClick = { exerciseSessionViewModel.stopSession() },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            if (showMap && !fineLocationPermissionState.allPermissionsGranted) {
+                ToSettings()
             }
         }
-        if(!showMap) {
-            Button(
-                onClick = { exerciseSessionViewModel.startSession() }
-            )
-            {
-                Text("Start")
-            }
-        }
-        if (showMap && fineLocationPermissionState.allPermissionsGranted){
-            Button(
-                onClick = { exerciseSessionViewModel.stopSession() }
-            )
-            {
-                Text("Stop")
-            }
-        }
-        if (showMap && !fineLocationPermissionState.allPermissionsGranted) {
-            ToSettings()
-        }
+
     }
 }
 
+
+@Composable
+fun ActionButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp)
+    ) {
+        Text(text)
+    }
+}
 
 @Composable
 fun ToSettings() {

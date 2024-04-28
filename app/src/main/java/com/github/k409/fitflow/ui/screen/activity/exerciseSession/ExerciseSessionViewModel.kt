@@ -1,6 +1,7 @@
 package com.github.k409.fitflow.ui.screen.activity.exerciseSession
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
@@ -50,5 +51,7 @@ class ExerciseSessionViewModel @Inject constructor(
             _locations.value.add(latLng)
             _liveLocation.value = latLng
         }
+
+        Log.d("ExerciseSessionViewModel", "getUserLocation: ${_liveLocation.value}")
     }
 }
