@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.screen.activity.ActivityScreen
-import com.github.k409.fitflow.ui.screen.activity.ExerciseSessionScreen
+import com.github.k409.fitflow.ui.screen.activity.exerciseSession.ExerciseSessionScreen
 import com.github.k409.fitflow.ui.screen.aquarium.AquariumScreen
 import com.github.k409.fitflow.ui.screen.goals.GoalCreation
 import com.github.k409.fitflow.ui.screen.goals.GoalsScreen

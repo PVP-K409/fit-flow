@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.screen.activity
+package com.github.k409.fitflow.ui.screen.activity.exerciseLog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

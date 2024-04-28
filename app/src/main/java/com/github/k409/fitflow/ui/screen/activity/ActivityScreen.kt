@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.github.k409.fitflow.ui.common.HorizontalPagerIndicator
+import com.github.k409.fitflow.ui.screen.activity.exerciseLog.ExercisesLogPage
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
