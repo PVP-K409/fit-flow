@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.screen.inventory
 
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.InventoryItem
+import com.github.k409.fitflow.service.SnackbarManager
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.item.CategorySelectHeader
 import com.github.k409.fitflow.ui.common.item.InventoryItemCard
@@ -53,8 +53,8 @@ fun InventoryScreen(
         1 -> ownedItems.filter { it.item.type == "decoration" }
         else -> emptyList()
     }
-    var mLastToastTime: Long = 0
-    val mNewToastInterval = 2000 // milliseconds
+    var mLastSnackbarTime: Long = 0
+    val mNewSnackbarInterval = 2000 // milliseconds
 
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
@@ -83,11 +83,7 @@ fun InventoryScreen(
                             false,
                         ),
                     )
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.removed_from_aquarium),
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    SnackbarManager.showMessage(context.getString(R.string.removed_from_aquarium))
                     placedItemCounts[item.type] = placedItemCounts[item.type]!! - 1
                 },
                 removeButtonEnabled = inventoryItem.placed,
@@ -96,13 +92,9 @@ fun InventoryScreen(
                 {
                     if (placedItemCounts[item.type]!! >= 3) {
                         // Limit toast messages in case button is spammed
-                        if (System.currentTimeMillis() - mLastToastTime > mNewToastInterval) {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.aquarium_size_limit_reached_please_remove_some_items_before_adding_more),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                            mLastToastTime = System.currentTimeMillis()
+                        if (System.currentTimeMillis() - mLastSnackbarTime > mNewSnackbarInterval) {
+                            SnackbarManager.showMessage(context.getString(R.string.aquarium_size_limit_reached_please_remove_some_items_before_adding_more))
+                            mLastSnackbarTime = System.currentTimeMillis()
                         }
                     } else {
                         inventoryViewModel.updateInventoryItem(
@@ -112,11 +104,7 @@ fun InventoryScreen(
                                 offsetX = Random.nextInt(1, 600).toFloat(),
                             ),
                         )
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.added_to_aquarium),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        SnackbarManager.showMessage(context.getString(R.string.added_to_aquarium))
                         placedItemCounts[item.type] = placedItemCounts[item.type]!! + 1
                     }
                 },
