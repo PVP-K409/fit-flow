@@ -1,10 +1,8 @@
 package com.github.k409.fitflow.ui.screen.activity.exerciseSession
 
-import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,17 +27,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.k409.fitflow.service.RouteTrackingService
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapType
-import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -48,16 +41,12 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun ExerciseSessionScreen(
     exerciseSessionViewModel: ExerciseSessionViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val fineLocationPermissionState = rememberMultiplePermissionsState(
-        listOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
-        ),
+        RouteTrackingService.fineLocationPermissions
     )
-    val showMap = exerciseSessionViewModel.showMap.collectAsState().value
-    val distance = exerciseSessionViewModel.distance.collectAsState().value
-    val time = exerciseSessionViewModel.time.collectAsState().value
-    val location = exerciseSessionViewModel.liveLocation.collectAsState().value
-
+    val isTracking = exerciseSessionViewModel.isTracking.collectAsState().value
+    var map: GoogleMap? by remember { mutableStateOf(null) }
 
     LaunchedEffect(key1 = Unit) {
         fineLocationPermissionState.launchMultiplePermissionRequest()
@@ -66,35 +55,14 @@ fun ExerciseSessionScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.weight(1f))
 
-        if (showMap && fineLocationPermissionState.allPermissionsGranted) {
-            exerciseSessionViewModel.getUserLocation()
-
-            val cameraPositionState = rememberCameraPositionState {
-                position = CameraPosition.fromLatLngZoom(location, 14f)
-            }
-            val marker = MarkerState(position = location)
-            var uiSettings by remember { mutableStateOf(MapUiSettings()) }
-            val properties by remember {
-                mutableStateOf( MapProperties(mapType = MapType.SATELLITE))
-            }
-
-            Log.d("ExerciseSessionScreen", "location: $location")
+        if (fineLocationPermissionState.allPermissionsGranted) {
             Box(modifier = Modifier.height(600.dp)) {
-                GoogleMap(
-                    cameraPositionState = cameraPositionState,
-                    properties = properties,
-                    uiSettings = uiSettings,
-                ) {
-                    Marker(
-                        state = marker,
-                        title = "Current Location",
-                    )
+                AndroidView({ MapView(it).apply { onCreate(null) } }, modifier = Modifier.fillMaxSize()) { mapView ->
+                    mapView.getMapAsync { googleMap ->
+                        map = googleMap
+                        exerciseSessionViewModel.setupMap(map!!)
+                    }
                 }
-                Switch(
-                    checked = uiSettings.zoomControlsEnabled,
-                    onCheckedChange = {
-                        uiSettings = uiSettings.copy(zoomControlsEnabled = it)
-                    })
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -102,31 +70,44 @@ fun ExerciseSessionScreen(
         }
         Row(
             modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+                .fillMaxWidth()
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            if(!showMap) {
+            if(!isTracking && fineLocationPermissionState.allPermissionsGranted) {
                 ActionButton(
                     text = "Start",
-                    onClick = { exerciseSessionViewModel.startSession() },
+                    onClick = {
+                        exerciseSessionViewModel.startSession()
+                        Intent(context, RouteTrackingService::class.java).also {
+                            it.action = RouteTrackingService.Actions.START.toString()
+                            context.startService(it)
+                        }
+                              },
                     modifier = Modifier.weight(1f),
                 )
             }
-            if (showMap && fineLocationPermissionState.allPermissionsGranted){
+            if (isTracking && fineLocationPermissionState.allPermissionsGranted){
                 ActionButton(
                     text = "Stop",
-                    onClick = { exerciseSessionViewModel.stopSession() },
+                    onClick = {
+                        exerciseSessionViewModel.stopSession()
+                        Intent(context, RouteTrackingService::class.java).also {
+                            it.action = RouteTrackingService.Actions.STOP.toString()
+                            context.startService(it)
+                        }
+                              },
                     modifier = Modifier.weight(1f)
                 )
             }
-            if (showMap && !fineLocationPermissionState.allPermissionsGranted) {
+            if (!fineLocationPermissionState.allPermissionsGranted) {
                 ToSettings()
             }
         }
 
     }
 }
+
 
 
 @Composable

@@ -7,6 +7,7 @@ enum class NotificationChannel(
     HydrationReminder("Hydration Reminder"),
     GoalUpdate("Goal Update"),
     WalkingProgress("Walking Progress"),
+    ExerciseSession("Exercise Session"),
     ;
 
     companion object {
