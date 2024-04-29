@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PersonOutline
@@ -82,10 +83,13 @@ fun LeaderboardCard(
                 ),
         )
 
+        Spacer(modifier = Modifier.width(2.dp))
+
         Text(
             modifier = Modifier
-                .padding(start = 8.dp)
-                .thenIf(currentUser) { background(colors.secondaryContainer) },
+                .clip(MaterialTheme.shapes.medium)
+                .thenIf(currentUser) { background(colors.secondaryContainer) }
+                .padding(horizontal = 8.dp, vertical = 3.dp),
             text = user.name.ifEmpty { user.email }.substringBefore("@"),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = if (currentUser) {

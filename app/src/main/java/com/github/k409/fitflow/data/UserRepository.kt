@@ -104,22 +104,12 @@ class UserRepository @Inject constructor(
         }
     }
 
-    fun getAllUserProfiles(): Flow<List<User>> = callbackFlow {
-        val listener = db.collection(USERS_COLLECTION)
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Log.w("User Repository", "Listen failed", e)
-                    return@addSnapshotListener
-                }
-
-                val users = snapshot?.documents?.mapNotNull { it.toObject<User>() } ?: emptyList()
-                trySend(users)
+    fun getAllUserProfiles(): Flow<List<User>> =
+        db.collection(USERS_COLLECTION)
+            .snapshots()
+            .map { snapshot ->
+                snapshot.documents.mapNotNull { it.toObject<User>() }
             }
-
-        awaitClose {
-            listener.remove()
-        }
-    }
 
     private fun getUserDocumentReference(uid: String) =
         db.collection(USERS_COLLECTION)
