@@ -2,7 +2,6 @@ package com.github.k409.fitflow.ui.screen.profile
 
 import android.annotation.SuppressLint
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -42,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
+import com.github.k409.fitflow.service.SnackbarManager
 import com.github.k409.fitflow.ui.common.NumberPickerDialog
 import com.github.k409.fitflow.ui.screen.settings.SettingsViewModel
 import kotlinx.coroutines.launch
@@ -193,7 +193,7 @@ fun ProfileCreationScreen(
     @Composable
     fun displayMessage(message: String) {
         Column {
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            SnackbarManager.showMessage(message)
         }
     }
     Column(
