@@ -102,10 +102,10 @@ fun ExerciseSessionScreen(
                         }
                     },
                 )
-        }
-            if (!fineLocationPermissionState.allPermissionsGranted) {
-                ToSettings()
             }
+        }
+        if (!fineLocationPermissionState.allPermissionsGranted) {
+            ToSettings()
         }
 
     }
