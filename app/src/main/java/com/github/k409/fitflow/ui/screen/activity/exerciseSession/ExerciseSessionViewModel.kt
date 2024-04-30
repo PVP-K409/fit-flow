@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.k409.fitflow.model.getAllExerciseSessionActivitiesTypes
 import com.github.k409.fitflow.service.RouteTrackingService
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -12,6 +13,7 @@ import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,8 +24,6 @@ class ExerciseSessionViewModel @Inject constructor(
     private val _map = MutableStateFlow<GoogleMap?>(null)
 
     private val pathPoints = RouteTrackingService.pathPoints.asStateFlow()
-    var map = _map.asStateFlow()
-
 
     init {
         subscribeToObservers()
@@ -33,8 +33,6 @@ class ExerciseSessionViewModel @Inject constructor(
         initializeMap()
         addAllPolylines()
     }
-
-
 
     private fun subscribeToObservers() {
         viewModelScope.launch {
@@ -70,7 +68,7 @@ class ExerciseSessionViewModel @Inject constructor(
     }
 
     fun stopSession() {
-        map.value?.clear()
+        _map.value?.clear()
     }
 
     private fun addLatestPolyline() {
@@ -82,7 +80,7 @@ class ExerciseSessionViewModel @Inject constructor(
                 .width(10f)
                 .add(preLastLatLng)
                 .add(lastLatLng)
-            map.value?.addPolyline(polylineOptions)
+            _map.value?.addPolyline(polylineOptions)
         }
 
     }
@@ -93,14 +91,14 @@ class ExerciseSessionViewModel @Inject constructor(
                 .color(Color.Blue.toArgb())
                 .width(10f)
                 .addAll(polyline)
-            map.value?.addPolyline(polylineOptions)
+            _map.value?.addPolyline(polylineOptions)
         }
     }
 
     private fun moveCameraToUser() {
         if (pathPoints.value.isNotEmpty() && pathPoints.value.last().isNotEmpty()) {
             val currentZoomLevel = _map.value?.cameraPosition?.zoom ?: 15f
-            map.value?.animateCamera(
+            _map.value?.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     pathPoints.value.last().last(),
                     currentZoomLevel
@@ -108,4 +106,9 @@ class ExerciseSessionViewModel @Inject constructor(
             )
         }
     }
+
+    fun getValidExerciseSessionActivitiesTypes() : List<String> {
+        return getAllExerciseSessionActivitiesTypes()
+    }
+
 }

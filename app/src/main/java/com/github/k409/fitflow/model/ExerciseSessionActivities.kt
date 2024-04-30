@@ -42,3 +42,7 @@ data class ExerciseSessionActivity(
     val locationUpdateInterval: Long,
     val fastestLocationUpdateInterval: Long,
 )
+
+fun getAllExerciseSessionActivitiesTypes(): List<String> {
+    return ExerciseSessionActivities.entries.map { it.exerciseSessionActivity.type }
+}

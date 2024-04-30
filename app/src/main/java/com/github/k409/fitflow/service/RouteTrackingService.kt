@@ -25,6 +25,8 @@ import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -48,6 +50,7 @@ class RouteTrackingService : LifecycleService() {
         val isTracking = MutableStateFlow(false)
         val sessionActive = MutableStateFlow(false)
         val sessionPaused = MutableStateFlow(false)
+        val selectedExercise = MutableStateFlow("")
         val pathPoints = MutableStateFlow<Polylines>(mutableListOf())
         val fineLocationPermissions = listOf(
             Manifest.permission.ACCESS_BACKGROUND_LOCATION,
@@ -84,6 +87,7 @@ class RouteTrackingService : LifecycleService() {
         isTracking.value = false
         sessionActive.value = false
         sessionPaused.value = false
+        selectedExercise.value = ""
         pathPoints.value = mutableListOf()
         locationClient.removeLocationUpdates(locationCallback)
         stopSelf()
@@ -197,8 +201,4 @@ class RouteTrackingService : LifecycleService() {
             ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
         }
     }
-
-
-
-
 }
