@@ -125,6 +125,9 @@
     <string name="sign_in_to_continue">Sign in to continue</string>
     <string name="sign_in_failed">Sign in failed</string>
     <string name="welcome">Welcome, %1$s</string>
+    <string name="pay">Pay</string>
+    <string name="in_inventory">In inventory</string>
+    <string name="unavailable">Unavailable</string>
     <string name="updating_data">Updating Data</string>
     <string name="updating_goals_and_steps_data">Updating goals and steps data</string>
     <string name="walking_goal_progress">Walking Goal Progress</string>

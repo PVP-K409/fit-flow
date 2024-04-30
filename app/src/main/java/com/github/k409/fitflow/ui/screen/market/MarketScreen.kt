@@ -1,6 +1,11 @@
 package com.github.k409.fitflow.ui.screen.market
 
-import android.widget.Toast
+import android.app.Activity.RESULT_OK
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,16 +30,26 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.service.SnackbarManager
 import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.common.item.CategorySelectHeader
 import com.github.k409.fitflow.ui.common.item.InventoryItemCard
+import com.github.k409.fitflow.ui.common.item.InventoryItemCardGooglePay
+import com.github.k409.fitflow.ui.screen.checkout.CheckoutViewModel
+import com.github.k409.fitflow.ui.screen.checkout.PaymentUiState
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.wallet.PaymentData
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MarketScreen(
     marketViewModel: MarketViewModel = hiltViewModel(),
+    checkoutViewModel: CheckoutViewModel = hiltViewModel(),
 ) {
+    val payUiState: PaymentUiState by checkoutViewModel.paymentUiState.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
     var selectedCategoryIndex by rememberSaveable { mutableIntStateOf(0) }
 
@@ -44,6 +59,41 @@ fun MarketScreen(
     var selectedMarketItem by remember { mutableStateOf(com.github.k409.fitflow.model.MarketItem()) }
 
     val marketUiState by marketViewModel.marketUiState.collectAsStateWithLifecycle()
+
+    val resolvePaymentForResult =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
+            when (result.resultCode) {
+                RESULT_OK ->
+                    result.data?.let { intent ->
+                        PaymentData.getFromIntent(intent)?.let {
+                            checkoutViewModel.setPaymentData(it)
+                            SnackbarManager.showMessage("Payment successful")
+                            marketViewModel.addItemToUserInventory(selectedMarketItem)
+                        }
+                    }
+            }
+        }
+
+    val onGooglePayButtonClick: (priceCents: Long) -> Task<PaymentData> = { priceCents ->
+        val task = checkoutViewModel.getLoadPaymentDataTask(priceCents = priceCents)
+
+        task.addOnCompleteListener { completedTask ->
+            if (completedTask.isSuccessful) {
+                completedTask.result.let {
+                    Log.i("Google Pay result:", it.toJson())
+                }
+            } else {
+                when (val exception = completedTask.exception) {
+                    is ResolvableApiException -> {
+                        resolvePaymentForResult.launch(
+                            IntentSenderRequest.Builder(exception.resolution)
+                                .build(),
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     if (marketUiState is MarketUiState.Loading) {
         FitFlowCircularProgressIndicator()
@@ -70,44 +120,61 @@ fun MarketScreen(
             )
         }
         items(items) { item ->
-            InventoryItemCard(
-                modifier = Modifier,
-                imageDownloadUrl = item.phases?.get("Regular") ?: item.image,
-                name = item.title,
-                description = item.description,
-                removeButtonText = "${stringResource(R.string.sell_for)} ${item.price / 2}",
-                onRemoveClick =
-                {
-                    showDialog = true
-                    addClicked = false
-                    dialogText =
-                        "${context.getString(R.string.are_you_sure_you_want_to_sell)} ${item.title}?"
-                    selectedMarketItem = item
-                },
-                removeButtonEnabled = ownedItems.find { it.item.id == item.id } != null,
-                addButtonText = "${stringResource(R.string.buy_for)} ${item.price}",
-                onAddClick =
-                {
-                    showDialog = true
-                    addClicked = true
-                    dialogText =
-                        "${context.getString(R.string.are_you_sure_you_want_to_buy)} ${item.title}?"
-                    selectedMarketItem = item
-                },
-                addButtonEnabled = user.points >= item.price && ownedItems.find { it.item.id == item.id } == null,
-                coinIcon = {
-                    Icon(
-                        modifier = Modifier
-                            .padding(start = 4.dp)
-                            .size(20.dp),
-                        painter = painterResource(id = R.drawable.coin),
-                        tint = Color.Unspecified,
-                        contentDescription = "",
-                    )
-                },
-            )
+            if (item.priceCents <= 0) {
+                InventoryItemCard(
+                    modifier = Modifier,
+                    imageDownloadUrl = item.phases?.get("Regular") ?: item.image,
+                    name = item.title,
+                    description = item.description,
+                    removeButtonText = "${stringResource(R.string.sell_for)} ${item.price / 2}",
+                    onRemoveClick =
+                    {
+                        showDialog = true
+                        addClicked = false
+                        dialogText =
+                            "${context.getString(R.string.are_you_sure_you_want_to_sell)} ${item.title}?"
+                        selectedMarketItem = item
+                    },
+                    removeButtonEnabled = ownedItems.find { it.item.id == item.id } != null,
+                    addButtonText = "${stringResource(R.string.buy_for)} ${item.price}",
+                    onAddClick =
+                    {
+                        showDialog = true
+                        addClicked = true
+                        dialogText =
+                            "${context.getString(R.string.are_you_sure_you_want_to_buy)} ${item.title}?"
+                        selectedMarketItem = item
+                    },
+                    addButtonEnabled = user.points >= item.price && ownedItems.find { it.item.id == item.id } == null,
+                    coinIcon = {
+                        Icon(
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                                .size(20.dp),
+                            painter = painterResource(id = R.drawable.coin),
+                            tint = Color.Unspecified,
+                            contentDescription = "",
+                        )
+                    },
+                )
+            } else {
+                InventoryItemCardGooglePay(
+                    modifier = Modifier,
+                    imageDownloadUrl = item.phases?.get("Regular") ?: item.image,
+                    name = item.title,
+                    description = item.description,
+                    owned = ownedItems.find { it.item.id == item.id } != null,
+                    payUiState = payUiState,
+                    priceCents = item.priceCents,
+                    onGooglePayButtonClick = {
+                        onGooglePayButtonClick(item.priceCents)
+                        selectedMarketItem = item
+                    },
+                )
+            }
         }
     }
+
     if (showDialog) {
         ConfirmDialog(
             dialogTitle = stringResource(R.string.are_you_sure),
@@ -116,21 +183,11 @@ fun MarketScreen(
                 if (addClicked) {
                     marketViewModel.updateUserCoinBalance((-selectedMarketItem.price).toLong())
                     marketViewModel.addItemToUserInventory(selectedMarketItem)
-
-                    Toast.makeText(
-                        context,
-                        "${selectedMarketItem.title} ${context.getString(R.string.has_been_added_to_your_inventory)}",
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    SnackbarManager.showMessage("${selectedMarketItem.title} has been added to your inventory")
                 } else {
                     marketViewModel.updateUserCoinBalance((selectedMarketItem.price / 2).toLong())
                     marketViewModel.removeItemFromUserInventory(selectedMarketItem)
-
-                    Toast.makeText(
-                        context,
-                        "${selectedMarketItem.title} ${context.getString(R.string.has_been_sold)}",
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    SnackbarManager.showMessage("${selectedMarketItem.title} has been sold")
                 }
                 showDialog = false
             },
