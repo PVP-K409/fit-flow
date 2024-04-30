@@ -23,6 +23,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,6 +44,7 @@ class RouteTrackingService : LifecycleService() {
     @Inject lateinit var locationClient: FusedLocationProviderClient
 
     companion object {
+        val update = Channel<Unit>()
         val isTracking = MutableStateFlow(false)
         val pathPoints = MutableStateFlow<Polylines>(mutableListOf())
         val fineLocationPermissions = listOf(
@@ -145,6 +147,9 @@ class RouteTrackingService : LifecycleService() {
             }
             updatedPathPoints.last().add(position)
             pathPoints.value = updatedPathPoints
+            lifecycleScope.launch {
+                update.send(Unit)
+            }
         }
     }
 

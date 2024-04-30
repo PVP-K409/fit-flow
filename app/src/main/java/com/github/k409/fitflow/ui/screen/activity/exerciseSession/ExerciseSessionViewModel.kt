@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,9 +31,7 @@ class ExerciseSessionViewModel @Inject constructor(
 
 
     init {
-        viewModelScope.launch {
-            subscribeToObservers()
-        }
+        subscribeToObservers()
     }
     fun setupMap(googleMap: GoogleMap) {
         _map.value = googleMap
@@ -42,11 +41,12 @@ class ExerciseSessionViewModel @Inject constructor(
 
 
 
-    private suspend fun subscribeToObservers() {
-        while (true) {
-                delay(1000)
+    private fun subscribeToObservers() {
+        viewModelScope.launch {
+            RouteTrackingService.update.consumeEach {
                 addLatestPolyline()
                 moveCameraToUser()
+            }
         }
     }
 
