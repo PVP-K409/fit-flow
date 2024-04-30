@@ -45,7 +45,8 @@ fun ExerciseSessionScreen(
     val fineLocationPermissionState = rememberMultiplePermissionsState(
         RouteTrackingService.fineLocationPermissions
     )
-    val isTracking = exerciseSessionViewModel.isTracking.collectAsState().value
+    val sessionPaused = RouteTrackingService.sessionPaused.collectAsState()
+    val sessionActive = RouteTrackingService.sessionActive.collectAsState()
     var map: GoogleMap? by remember { mutableStateOf(null) }
 
     LaunchedEffect(key1 = Unit) {
@@ -66,40 +67,42 @@ fun ExerciseSessionScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
-
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            if(!isTracking && fineLocationPermissionState.allPermissionsGranted) {
-                ActionButton(
-                    text = "Start",
-                    onClick = {
-                        exerciseSessionViewModel.startSession()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                ControlButtons(
+                    sessionActive = sessionActive.value,
+                    sessionPaused = sessionPaused.value,
+                    onStart = {
                         Intent(context, RouteTrackingService::class.java).also {
                             it.action = RouteTrackingService.Actions.START.toString()
                             context.startService(it)
                         }
-                              },
-                    modifier = Modifier.weight(1f),
-                )
-            }
-            if (isTracking && fineLocationPermissionState.allPermissionsGranted){
-                ActionButton(
-                    text = "Stop",
-                    onClick = {
+                    },
+                    onStop = {
                         exerciseSessionViewModel.stopSession()
                         Intent(context, RouteTrackingService::class.java).also {
                             it.action = RouteTrackingService.Actions.STOP.toString()
                             context.startService(it)
                         }
-                              },
-                    modifier = Modifier.weight(1f)
+                    },
+                    onPause = {
+                        Intent(context, RouteTrackingService::class.java).also {
+                            it.action = RouteTrackingService.Actions.PAUSE.toString()
+                            context.startService(it)
+                        }
+                    },
+                    onResume = {
+                        Intent(context, RouteTrackingService::class.java).also {
+                            it.action = RouteTrackingService.Actions.RESUME.toString()
+                            context.startService(it)
+                        }
+                    },
                 )
-            }
+        }
             if (!fineLocationPermissionState.allPermissionsGranted) {
                 ToSettings()
             }
@@ -108,6 +111,51 @@ fun ExerciseSessionScreen(
     }
 }
 
+@Composable
+fun ControlButtons(
+    sessionActive: Boolean,
+    sessionPaused: Boolean,
+    onStart: () -> Unit,
+    onStop: () -> Unit,
+    onPause: () -> Unit,
+    onResume: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        if(!sessionActive) {
+            ActionButton(
+                text = "Start",
+                onClick = onStart,
+                modifier = Modifier.weight(1f),
+            )
+        }
+        if (sessionActive){
+            ActionButton(
+                text = "Stop",
+                onClick = onStop,
+                modifier = Modifier.weight(1f)
+            )
+        }
+        if (sessionActive && sessionPaused) {
+            ActionButton(
+                text = "Resume",
+                onClick = onResume,
+                modifier = Modifier.weight(1f)
+            )
+        }
+        if (sessionActive && !sessionPaused) {
+            ActionButton(
+                text = "Pause",
+                onClick = onPause,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
 
 
 @Composable

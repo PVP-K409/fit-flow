@@ -1,7 +1,5 @@
 package com.github.k409.fitflow.ui.screen.activity.exerciseSession
 
-import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
@@ -10,11 +8,9 @@ import com.github.k409.fitflow.service.RouteTrackingService
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -23,9 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ExerciseSessionViewModel @Inject constructor(
 ) : ViewModel() {
-    private val _showMap = MutableStateFlow(false)
     private val _map = MutableStateFlow<GoogleMap?>(null)
-    val isTracking = RouteTrackingService.isTracking.asStateFlow()
+
     private val pathPoints = RouteTrackingService.pathPoints.asStateFlow()
     var map = _map.asStateFlow()
 
@@ -43,7 +38,7 @@ class ExerciseSessionViewModel @Inject constructor(
 
     private fun subscribeToObservers() {
         viewModelScope.launch {
-            RouteTrackingService.update.consumeEach {
+            RouteTrackingService.update.consumeEach{
                 addLatestPolyline()
                 moveCameraToUser()
             }
@@ -64,9 +59,8 @@ class ExerciseSessionViewModel @Inject constructor(
             map.uiSettings.isMapToolbarEnabled = true
             map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
             val currentCameraPosition = map.cameraPosition
-            val initialLatLng = LatLng(54.687157, 25.279652)
             val newCameraPosition = CameraPosition.Builder()
-                .target(initialLatLng)
+                .target(currentCameraPosition.target)
                 .zoom(15f)
                 .bearing(currentCameraPosition.bearing)
                 .tilt(currentCameraPosition.tilt)
@@ -75,12 +69,8 @@ class ExerciseSessionViewModel @Inject constructor(
         }
     }
 
-    fun startSession() {
-        _showMap.value = true
-    }
-
     fun stopSession() {
-        _showMap.value = false
+        map.value?.clear()
     }
 
     private fun addLatestPolyline() {
@@ -94,6 +84,7 @@ class ExerciseSessionViewModel @Inject constructor(
                 .add(lastLatLng)
             map.value?.addPolyline(polylineOptions)
         }
+
     }
 
     private fun addAllPolylines() {

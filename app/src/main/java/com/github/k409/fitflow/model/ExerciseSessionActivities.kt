@@ -10,6 +10,8 @@ enum class ExerciseSessionActivities (
             type = "Walking",
             icon = R.drawable.walk,
             validExerciseTypes = setOf(79),
+            locationUpdateInterval = 10000L,
+            fastestLocationUpdateInterval = 5000L,
         ),
     ),
     Running(
@@ -17,6 +19,8 @@ enum class ExerciseSessionActivities (
             type = "Running",
             icon = R.drawable.run,
             validExerciseTypes = setOf(56, 57),
+            locationUpdateInterval = 5000L,
+            fastestLocationUpdateInterval = 3000L,
         ),
     ),
     Biking(
@@ -24,6 +28,8 @@ enum class ExerciseSessionActivities (
             type = "Biking",
             icon = R.drawable.bike,
             validExerciseTypes = setOf(8, 9),
+            locationUpdateInterval = 4000L,
+            fastestLocationUpdateInterval = 2000L,
         ),
     ),
 
@@ -33,4 +39,6 @@ data class ExerciseSessionActivity(
     val type: String,
     val icon: Int,
     val validExerciseTypes: Set<Int>,
+    val locationUpdateInterval: Long,
+    val fastestLocationUpdateInterval: Long,
 )

@@ -28,8 +28,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val LOCATION_UPDATE_INTERVAL = 10000L
-private const val FASTEST_LOCATION_UPDATE_INTERVAL = 5000L
+private const val LOCATION_UPDATE_INTERVAL = 3000L
+private const val FASTEST_LOCATION_UPDATE_INTERVAL = 1000L
 
 private val notificationChannel = NotificationChannel.ExerciseSession.channelId
 private val notificationId = NotificationId.ExerciseSession.notificationId
@@ -46,6 +46,8 @@ class RouteTrackingService : LifecycleService() {
     companion object {
         val update = Channel<Unit>()
         val isTracking = MutableStateFlow(false)
+        val sessionActive = MutableStateFlow(false)
+        val sessionPaused = MutableStateFlow(false)
         val pathPoints = MutableStateFlow<Polylines>(mutableListOf())
         val fineLocationPermissions = listOf(
             Manifest.permission.ACCESS_BACKGROUND_LOCATION,
@@ -80,15 +82,18 @@ class RouteTrackingService : LifecycleService() {
 
     private fun stop() {
         isTracking.value = false
+        sessionActive.value = false
+        sessionPaused.value = false
         pathPoints.value = mutableListOf()
         locationClient.removeLocationUpdates(locationCallback)
         stopSelf()
     }
 
     private fun start() {
-        startTracking()
+        addEmptyPolyline()
 
         isTracking.value = true
+        sessionActive.value = true
 
         val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(exerciseSessionNotificationChannel())
@@ -96,13 +101,16 @@ class RouteTrackingService : LifecycleService() {
         startForeground(notificationId, exerciseSessionNotification())
     }
     private fun pause() {
-        TODO("Not yet implemented")
+        isTracking.value = false
+        sessionPaused.value = true
     }
 
 
 
     private fun resume() {
-        TODO("Not yet implemented")
+        addEmptyPolyline()
+        isTracking.value = true
+        sessionPaused.value = false
     }
 
     @SuppressLint("MissingPermission")
@@ -131,7 +139,6 @@ class RouteTrackingService : LifecycleService() {
                 result.locations.let { locations ->
                     for (location in locations) {
                         addPathPoint(location)
-                        //Log.d("RouteTrackingService", "location: ${location.latitude}, ${location.longitude}")
                     }
                 }
             }
@@ -153,27 +160,10 @@ class RouteTrackingService : LifecycleService() {
         }
     }
 
-    private fun startTracking() {
-        addEmptyPolyline()
-        getInitialUserLocation()
-    }
-
     private fun addEmptyPolyline() {
         val updatedPathPoints = pathPoints.value.toMutableList()
         updatedPathPoints.add(mutableListOf())
         pathPoints.value = updatedPathPoints
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun getInitialUserLocation() {
-        locationClient.lastLocation.addOnSuccessListener { location ->
-            location?.let {
-                val position = LatLng(location.latitude, location.longitude)
-                val updatedPathPoints = pathPoints.value.toMutableList()
-                updatedPathPoints.last().add(position)
-                pathPoints.value = updatedPathPoints
-            }
-        }
     }
 
 
