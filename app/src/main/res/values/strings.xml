@@ -134,4 +134,5 @@
     <string name="you_have_walked_out_of_steps_today">You have walked %1$s out of %2$s steps today.</string>
     <string name="create_exercise_session">Create Exercise Session</string>
     <string name="exercise_session">Exercise Session</string>
+    <string name="exercise_session_in_progress">Exercise Session in Progress</string>
 </resources>

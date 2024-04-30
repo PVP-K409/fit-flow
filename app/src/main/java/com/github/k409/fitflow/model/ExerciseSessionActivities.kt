@@ -37,7 +37,7 @@ enum class ExerciseSessionActivities (
 
 data class ExerciseSessionActivity(
     val type: String,
-    val icon: Int,
+    val icon: Int = R.drawable.walk,
     val validExerciseTypes: Set<Int>,
     val locationUpdateInterval: Long,
     val fastestLocationUpdateInterval: Long,
@@ -45,4 +45,8 @@ data class ExerciseSessionActivity(
 
 fun getAllExerciseSessionActivitiesTypes(): List<String> {
     return ExerciseSessionActivities.entries.map { it.exerciseSessionActivity.type }
+}
+
+fun getExerciseSessionActivityByType(type: String): ExerciseSessionActivity {
+    return ExerciseSessionActivities.valueOf(type).exerciseSessionActivity
 }

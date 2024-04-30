@@ -13,7 +13,6 @@ import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject

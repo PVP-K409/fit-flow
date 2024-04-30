@@ -33,7 +33,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.service.RouteTrackingService
 import com.github.k409.fitflow.ui.common.ConfirmDialog
-import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screen.goals.ExerciseDropdownMenu
 import com.github.k409.fitflow.ui.screen.goals.ExpandedDropdown
 import com.github.k409.fitflow.ui.screen.goals.InlineError
@@ -142,11 +141,11 @@ fun ExerciseSessionScreen(
                 onDismiss = { showConfirmationDialog = false },
                 onConfirm = {
                     showConfirmationDialog = false
+                    RouteTrackingService.selectedExercise.value = selectedExercise
                     Intent(context, RouteTrackingService::class.java).also {
                         it.action = RouteTrackingService.Actions.START.toString()
                         context.startService(it)
                     }
-                    RouteTrackingService.selectedExercise.value = selectedExercise
                 },
             )
         }

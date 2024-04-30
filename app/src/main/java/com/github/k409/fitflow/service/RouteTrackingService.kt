@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.location.Location
 import android.os.Looper
 import androidx.core.app.NotificationCompat
@@ -14,8 +15,10 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.model.ExerciseSessionActivity
 import com.github.k409.fitflow.model.NotificationChannel
 import com.github.k409.fitflow.model.NotificationId
+import com.github.k409.fitflow.model.getExerciseSessionActivityByType
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -25,13 +28,11 @@ import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val LOCATION_UPDATE_INTERVAL = 3000L
-private const val FASTEST_LOCATION_UPDATE_INTERVAL = 1000L
+private const val DEFAULT_LOCATION_UPDATE_INTERVAL = 4000L
+private const val DEFAULT_FASTEST_LOCATION_UPDATE_INTERVAL = 2000L
 
 private val notificationChannel = NotificationChannel.ExerciseSession.channelId
 private val notificationId = NotificationId.ExerciseSession.notificationId
@@ -46,6 +47,9 @@ class RouteTrackingService : LifecycleService() {
     @Inject lateinit var locationClient: FusedLocationProviderClient
 
     companion object {
+        private var exerciseSessionActivity: ExerciseSessionActivity? = null
+        private var locationUpdateInterval = DEFAULT_LOCATION_UPDATE_INTERVAL
+        private var fastestLocationUpdateInterval = DEFAULT_FASTEST_LOCATION_UPDATE_INTERVAL
         val update = Channel<Unit>()
         val isTracking = MutableStateFlow(false)
         val sessionActive = MutableStateFlow(false)
@@ -96,6 +100,9 @@ class RouteTrackingService : LifecycleService() {
     private fun start() {
         addEmptyPolyline()
 
+        exerciseSessionActivity = getExerciseSessionActivityByType(selectedExercise.value)
+        locationUpdateInterval = exerciseSessionActivity!!.locationUpdateInterval
+        fastestLocationUpdateInterval = exerciseSessionActivity!!.fastestLocationUpdateInterval
         isTracking.value = true
         sessionActive.value = true
 
@@ -121,8 +128,8 @@ class RouteTrackingService : LifecycleService() {
     private fun updateLocationTracking(isTracking: Boolean) {
         if(isTracking) {
             if (hasLocationPermission()) {
-                val request = LocationRequest.Builder(LOCATION_UPDATE_INTERVAL).apply {
-                    setMinUpdateIntervalMillis(FASTEST_LOCATION_UPDATE_INTERVAL)
+                val request = LocationRequest.Builder(locationUpdateInterval).apply {
+                    setMinUpdateIntervalMillis(fastestLocationUpdateInterval)
                     setPriority(Priority.PRIORITY_HIGH_ACCURACY)
                 }.build()
 
@@ -182,13 +189,17 @@ class RouteTrackingService : LifecycleService() {
     }
 
     private fun exerciseSessionNotification(): Notification {
-        val notificationTitle = getString(R.string.updating_data)
-        val notificationText = getString(R.string.updating_goals_and_steps_data)
+        val notificationTitle = getString(R.string.exercise_session_in_progress)
+        val notificationText = selectedExercise.value
+
+        val icon = exerciseSessionActivity?.icon ?: R.drawable.ic_launcher_foreground
+        val iconBitmap = BitmapFactory.decodeResource(resources, icon)
 
         return NotificationCompat.Builder(this, notificationChannel)
             .setContentTitle(notificationTitle)
             .setContentText(notificationText)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(icon)
+            .setLargeIcon(iconBitmap)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setOngoing(true)
