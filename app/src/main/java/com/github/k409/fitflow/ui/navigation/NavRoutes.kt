@@ -41,6 +41,7 @@ sealed class NavRoutes(
             Levels,
             GlobalLeaderboard,
             You,
+            LevelUp,
         )
         val bottomNavBarItems =
             listOf(Aquarium, Activity, Hydration, Goals, Marketplace, You)
@@ -92,4 +93,6 @@ sealed class NavRoutes(
     data object GlobalLeaderboard : NavRoutes("globalLeaderboard", R.string.global, Icons.Outlined.Leaderboard, R.drawable.leaderboard_48)
 
     data object GoalCreation : NavRoutes("goalCreation", R.string.goal_creation, Icons.Outlined.Add)
+
+    data object LevelUp : NavRoutes("levelUp", R.string.levels, Icons.Outlined.LocalPlay)
 }

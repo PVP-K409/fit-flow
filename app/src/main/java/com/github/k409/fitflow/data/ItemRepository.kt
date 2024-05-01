@@ -17,6 +17,7 @@ import javax.inject.Inject
 private const val MARKET_COLLECTION = "market"
 private const val INVENTORY_COLLECTION = "inventory"
 private const val ITEMS_COLLECTION = "items"
+private const val REWARDS_COLLECTION = "rewards"
 
 private const val PLACED_FIELD = "placed"
 private const val PRICE_FIELD = "price"
@@ -89,7 +90,7 @@ class ItemRepository @Inject constructor(
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
 
-        val inventoryDocumentRef = getInventoryDocumentRef(uid, marketItem.id)
+        val inventoryDocumentRef = getInventoryDocumentRef(uid, marketItem.id.toString())
 
         val itemReference = db.collection(MARKET_COLLECTION).document(marketItem.id.toString())
 
@@ -103,15 +104,38 @@ class ItemRepository @Inject constructor(
                 .set(updatedData)
                 .await()
         } catch (e: FirebaseFirestoreException) {
-            Log.e("Market Repository", "Error updating inventory", e)
+            Log.e("Item Repository", "Error updating inventory", e)
         }
     }
 
+    suspend fun addRewardItemToUserInventory(userLevel: Int) {
+        val currentUser = auth.currentUser
+        val uid = currentUser!!.uid
+
+        try {
+            val itemReference = db.collection(REWARDS_COLLECTION).whereEqualTo("id", userLevel).get().await().documents.first().reference
+
+            //Log.d("ItemRepository", "Reward item reference: $itemReference")
+
+            val inventoryDocumentRef = getInventoryDocumentRef(uid, itemReference.id)
+
+            val updatedData = hashMapOf(
+                "item" to itemReference,
+                "placed" to false,
+            )
+
+            inventoryDocumentRef
+                .set(updatedData)
+                .await()
+        } catch (e: FirebaseFirestoreException) {
+            Log.e("Item Repository", "Error adding reward item", e)
+        }
+    }
     suspend fun updateInventoryItem(marketItem: InventoryItem) {
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
 
-        val inventoryDocumentRef = getInventoryDocumentRef(uid, marketItem.item.id)
+        val inventoryDocumentRef = getInventoryDocumentRef(uid, marketItem.item.id.toString())
 
         val updatedData = hashMapOf(
             "item" to db.collection(MARKET_COLLECTION).document(marketItem.item.id.toString()),
@@ -125,7 +149,7 @@ class ItemRepository @Inject constructor(
                 .set(updatedData)
                 .await()
         } catch (e: FirebaseFirestoreException) {
-            Log.e("Market Repository", "Error updating inventory", e)
+            Log.e("Item Repository", "Error updating inventory", e)
         }
     }
 
@@ -133,24 +157,24 @@ class ItemRepository @Inject constructor(
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
 
-        val inventoryDocumentRef = getInventoryDocumentRef(uid, itemId)
+        val inventoryDocumentRef = getInventoryDocumentRef(uid, itemId.toString())
 
         try {
             inventoryDocumentRef
                 .delete()
                 .await()
         } catch (e: FirebaseFirestoreException) {
-            Log.e("Market Repository", "Error updating inventory", e)
+            Log.e("Item Repository", "Error updating inventory", e)
         }
     }
 
     private fun getInventoryDocumentRef(
         uid: String,
-        itemId: Int,
+        itemId: String,
     ): DocumentReference {
         return db.collection(INVENTORY_COLLECTION)
             .document(uid)
             .collection(ITEMS_COLLECTION)
-            .document(itemId.toString())
+            .document(itemId)
     }
 }
