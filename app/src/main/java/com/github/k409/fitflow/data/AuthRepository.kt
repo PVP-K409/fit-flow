@@ -39,7 +39,7 @@ class AuthRepository @Inject constructor(
 
             return SignInResult(
                 null,
-                context.getString(R.string.no_credentials_found_please_add_a_google_account_to_your_device)
+                context.getString(R.string.no_credentials_found_please_add_a_google_account_to_your_device),
             )
         } catch (e: Exception) {
             Log.e(TAG, "Exception", e)

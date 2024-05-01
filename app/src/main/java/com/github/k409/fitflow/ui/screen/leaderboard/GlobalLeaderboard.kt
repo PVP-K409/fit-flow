@@ -52,7 +52,6 @@ fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-
                 topFive.indices.forEach { index ->
                     val user = topFive[index]
 
@@ -60,7 +59,7 @@ fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
                         user = user,
                         rank = user.rank,
                         // TODO: remove this later
-                        currentUser = FirebaseAuth.getInstance().currentUser!!.uid == user.uid
+                        currentUser = FirebaseAuth.getInstance().currentUser!!.uid == user.uid,
                     )
 
                     if (index != topFive.size - 1) {
@@ -79,7 +78,6 @@ fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-
                 otherUsers.indices.forEach { index ->
                     val user = otherUsers[index]
 
@@ -87,7 +85,7 @@ fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
                         user = user,
                         rank = user.rank,
                         // TODO: remove this later
-                        currentUser = FirebaseAuth.getInstance().currentUser!!.uid == user.uid
+                        currentUser = FirebaseAuth.getInstance().currentUser!!.uid == user.uid,
                     )
 
                     if (index != otherUsers.size - 1) {
