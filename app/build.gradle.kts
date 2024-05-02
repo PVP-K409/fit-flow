@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.daggerHilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.gms)
+    alias(libs.plugins.compose.compiler)
 }
 
 val keystorePropertiesFile: File = rootProject.file("keystore.properties")
@@ -86,14 +87,15 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.5"
-    }
     androidComponents {
         onVariants(selector().withBuildType("release")) {
             it.packaging.resources.excludes.add("META-INF/**")
         }
     }
+}
+
+composeCompiler {
+    enableStrongSkippingMode = true
 }
 
 dependencies {

@@ -20,9 +20,9 @@ hilt = "2.50"
 hiltAndroidCompiler = "2.50"
 hiltAndroid = "2.50"
 hiltWork = "1.2.0"
-kotlin = "1.9.20"
+kotlin = "2.0.0-RC2"
 kotlinxSerializationJson = "1.6.0"
-ksp = "1.9.20-1.0.14"
+ksp = "2.0.0-RC2-1.0.20"
 core-ktx = "1.13.0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
@@ -122,8 +122,10 @@ firebase = ["firebase-auth",
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
 daggerHilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPluginGradle" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

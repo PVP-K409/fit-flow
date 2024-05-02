@@ -15,10 +15,12 @@ import javax.inject.Inject
 @HiltViewModel
 class LeaderboardViewModel @Inject constructor(
     userRepository: UserRepository,
+    private val auth: FirebaseAuth,
 ) : ViewModel() {
     val leaderboardUiState: StateFlow<LeaderboardUiState> =
         userRepository.getAllUserProfiles().map { users ->
-            val userList = finalList(users)
+            val userList = generateLeaderboardUsers(users)
+
             LeaderboardUiState.Success(
                 users = userList,
             )
@@ -27,6 +29,29 @@ class LeaderboardViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = LeaderboardUiState.Loading,
         )
+
+    private fun generateLeaderboardUsers(users: List<User>): List<User> {
+        val sortedUsers = users.sortedByDescending { it.xp }.mapIndexed { index, user ->
+            user.copy(rank = index + 1)
+        }
+        val currentUser = auth.currentUser!!.uid
+        val currentUserIndex = sortedUsers.indexOfFirst { it.uid == currentUser }
+
+        return if (currentUserIndex <= 4) {
+            val finalList = sortedUsers.take(55)
+
+            finalList
+        } else {
+            val topFive = sortedUsers.take(5)
+            val start = (currentUserIndex - 25).coerceAtLeast(0)
+            val end = (currentUserIndex + 26).coerceAtMost(sortedUsers.size)
+
+            val sublist = sortedUsers.subList(start, end).filter { user -> user !in topFive }
+            val finalList = topFive + sublist
+
+            finalList
+        }
+    }
 }
 
 sealed interface LeaderboardUiState {
@@ -34,24 +59,4 @@ sealed interface LeaderboardUiState {
     data class Success(
         val users: List<User>,
     ) : LeaderboardUiState
-}
-
-fun finalList(users: List<User>): List<User> {
-    val sortedUsers = users.sortedByDescending { it.xp }.mapIndexed { index, user ->
-        user.copy(rank = index + 1)
-    }
-    val currentUser = FirebaseAuth.getInstance().currentUser!!.uid
-    val currentUserIndex = sortedUsers.indexOfFirst { it.uid == currentUser }
-
-    return if (currentUserIndex <= 4) {
-        val finalList = sortedUsers.take(55)
-        finalList
-    } else {
-        val topFive = sortedUsers.take(5)
-        val start = (currentUserIndex - 25).coerceAtLeast(0)
-        val end = (currentUserIndex + 26).coerceAtMost(sortedUsers.size)
-        val sublist = sortedUsers.subList(start, end).filter { user -> user !in topFive }
-        val finalList = topFive + sublist
-        finalList
-    }
 }

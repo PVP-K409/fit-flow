@@ -15,6 +15,7 @@ import com.github.k409.fitflow.ui.screen.hydration.HydrationScreen
 import com.github.k409.fitflow.ui.screen.inventory.InventoryScreen
 import com.github.k409.fitflow.ui.screen.leaderboard.GlobalLeaderboardScreen
 import com.github.k409.fitflow.ui.screen.level.LevelScreen
+import com.github.k409.fitflow.ui.screen.level.LevelUpScreen
 import com.github.k409.fitflow.ui.screen.login.LoginScreen
 import com.github.k409.fitflow.ui.screen.market.MarketScreen
 import com.github.k409.fitflow.ui.screen.profile.ProfileCreationScreen
@@ -90,6 +91,10 @@ fun FitFlowNavGraph(
 
         composable(NavRoutes.You.route) {
             YouScreen()
+        }
+
+        composable(NavRoutes.LevelUp.route) {
+            LevelUpScreen()
         }
     }
 }

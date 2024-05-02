@@ -3,6 +3,7 @@ package com.github.k409.fitflow.data
 import android.util.Log
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.toUser
+import com.github.k409.fitflow.ui.screen.level.levels
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FieldValue
@@ -78,14 +79,29 @@ class UserRepository @Inject constructor(
     ) {
         val uid = auth.currentUser!!.uid
 
+        val userDocRef = getUserDocumentReference(uid)
+        val user = userDocRef.get().await().toObject<User>() ?: return
+
         try {
-            getUserDocumentReference(uid)
-                .update(
-                    mapOf(
-                        "points" to FieldValue.increment(coins),
-                        "xp" to FieldValue.increment(xp),
-                    ),
-                ).await()
+            // check if user leveled up
+            if (levels.any { user.xp + xp >= it.maxXP && user.xp < it.maxXP }) {
+                userDocRef
+                    .update(
+                        mapOf(
+                            "points" to FieldValue.increment(coins),
+                            "xp" to FieldValue.increment(xp),
+                            "hasLeveledUp" to true,
+                        ),
+                    ).await()
+            } else {
+                userDocRef
+                    .update(
+                        mapOf(
+                            "points" to FieldValue.increment(coins),
+                            "xp" to FieldValue.increment(xp),
+                        ),
+                    ).await()
+            }
         } catch (e: Exception) {
             Log.e("User Repository", "Error updating user coins and xp")
         }
@@ -104,23 +120,25 @@ class UserRepository @Inject constructor(
         }
     }
 
-    fun getAllUserProfiles(): Flow<List<User>> = callbackFlow {
-        val listener = db.collection(USERS_COLLECTION)
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Log.w("User Repository", "Listen failed", e)
-                    return@addSnapshotListener
-                }
-
-                val users = snapshot?.documents?.mapNotNull { it.toObject<User>() } ?: emptyList()
-                trySend(users)
+    fun getAllUserProfiles(): Flow<List<User>> =
+        db.collection(USERS_COLLECTION)
+            .snapshots()
+            .map { snapshot ->
+                snapshot.documents.mapNotNull { it.toObject<User>() }
             }
 
-        awaitClose {
-            listener.remove()
+    suspend fun updateUserField(field: String, value: Any) {
+        val uid = auth.currentUser?.uid ?: return
+
+        try {
+            getUserDocumentReference(uid)
+                .update(field, value)
+                .await()
+        } catch (e: Exception) {
+            Log.e("User Repository", "Error updating user field")
+            Log.e("User Repository", e.toString())
         }
     }
-
     private fun getUserDocumentReference(uid: String) =
         db.collection(USERS_COLLECTION)
             .document(uid)
