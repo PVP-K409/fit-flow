@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Looper
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
@@ -20,6 +21,7 @@ import com.github.k409.fitflow.model.ExerciseSessionActivity
 import com.github.k409.fitflow.model.NotificationChannel
 import com.github.k409.fitflow.model.NotificationId
 import com.github.k409.fitflow.model.getExerciseSessionActivityByType
+import com.github.k409.fitflow.util.formatTimeFromSeconds
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -44,7 +46,7 @@ private const val DEFAULT_LOCATION_UPDATE_INTERVAL = 4000L
 private const val DEFAULT_FASTEST_LOCATION_UPDATE_INTERVAL = 2000L
 private const val TIMER_UPDATE_INTERVAL = 50L
 
-private val notificationChannel = NotificationChannel.ExerciseSession.channelId
+private val notificationChannelId = NotificationChannel.ExerciseSession.channelId
 private val notificationId = NotificationId.ExerciseSession.notificationId
 
 
@@ -55,6 +57,7 @@ typealias Polylines = MutableList<Polyline>
 class RouteTrackingService : LifecycleService() {
 
     @Inject lateinit var locationClient: FusedLocationProviderClient
+    private lateinit var notificationBuilder: NotificationCompat.Builder
 
     private var exerciseSessionActivity: ExerciseSessionActivity? = null
     private var locationUpdateInterval = DEFAULT_LOCATION_UPDATE_INTERVAL
@@ -182,10 +185,9 @@ class RouteTrackingService : LifecycleService() {
         isTracking.value = true
         sessionActive.value = true
 
-        val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(exerciseSessionNotificationChannel())
+        notificationBuilder = createNotificationChannelBuilder()
 
-        startForeground(notificationId, exerciseSessionNotification())
+        startForeground(notificationId, notificationBuilder.build())
     }
     private fun pause() {
         isTracking.value = false
@@ -283,32 +285,31 @@ class RouteTrackingService : LifecycleService() {
         pathPoints.value = updatedPathPoints
     }
 
-
-    private fun exerciseSessionNotificationChannel(): android.app.NotificationChannel {
-        val channelName = NotificationChannel.ExerciseSession
-        val importance = NotificationManager.IMPORTANCE_HIGH
-        return android.app.NotificationChannel(
-            notificationChannel,
-            channelName.toString(),
-            importance,
-        )
+    private fun updateNotification() {
+        val notificationText = "${selectedExercise.value}: ${formatTimeFromSeconds(timeRunInSecond.value)} "
+        val notification = notificationBuilder
+            .setContentText(notificationText)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(notificationText))
+            .build()
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(notificationId, notification)
     }
 
-    private fun exerciseSessionNotification(): Notification {
-        val notificationTitle = getString(R.string.exercise_session_in_progress)
-        val notificationText = selectedExercise.value
 
+    private fun createNotificationChannelBuilder(): NotificationCompat.Builder {
+        val notificationTitle = getString(R.string.exercise_session_in_progress)
+        val notificationText = "${selectedExercise.value}: ${formatTimeFromSeconds(timeRunInSecond.value)} "
         val icon = exerciseSessionActivity?.icon ?: R.drawable.ic_launcher_foreground
 
-        return NotificationCompat.Builder(this, notificationChannel)
+        notificationBuilder = NotificationCompat.Builder(this, notificationChannelId)
             .setContentTitle(notificationTitle)
             .setContentText(notificationText)
             .setSmallIcon(icon)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setAutoCancel(true)
             .setOngoing(true)
+            .setOnlyAlertOnce(true)
             .setStyle(NotificationCompat.BigTextStyle().bigText(notificationText))
-            .build()
+        return notificationBuilder
     }
 
     private fun hasLocationPermission() : Boolean{
@@ -333,6 +334,7 @@ class RouteTrackingService : LifecycleService() {
                 if (timeRunInMillis.value >= lastSecondTimestamp + 1000) {
                     timeRunInSecond.value++
                     lastSecondTimestamp += 1000L
+                    updateNotification()
                 }
                 delay(TIMER_UPDATE_INTERVAL)
             }

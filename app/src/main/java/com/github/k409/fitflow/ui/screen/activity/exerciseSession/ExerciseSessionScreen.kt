@@ -38,7 +38,7 @@ import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.screen.goals.ExerciseDropdownMenu
 import com.github.k409.fitflow.ui.screen.goals.ExpandedDropdown
 import com.github.k409.fitflow.ui.screen.goals.InlineError
-import com.github.k409.fitflow.util.formatTime
+import com.github.k409.fitflow.util.formatTimeFromMillis
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.maps.MapView
@@ -169,7 +169,7 @@ fun TimeDisplay(
     timeInMillis: Long,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
 ) {
-    val formattedTime = formatTime(timeInMillis)
+    val formattedTime = formatTimeFromMillis(timeInMillis)
 
     Text(
         text = formattedTime,
