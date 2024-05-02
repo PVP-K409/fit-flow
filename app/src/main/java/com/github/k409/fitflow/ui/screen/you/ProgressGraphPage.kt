@@ -385,7 +385,7 @@ private fun EffortRow(
 }
 
 @Composable
-private fun OutlineCardContainer(
+fun OutlineCardContainer(
     modifier: Modifier = Modifier,
     title: String,
     subtitleText: String,

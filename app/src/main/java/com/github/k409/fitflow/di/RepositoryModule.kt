@@ -8,6 +8,7 @@ import com.github.k409.fitflow.data.AquariumRepository
 import com.github.k409.fitflow.data.AuthRepository
 import com.github.k409.fitflow.data.GoalsRepository
 import com.github.k409.fitflow.data.HydrationRepository
+import com.github.k409.fitflow.data.ItemRepository
 import com.github.k409.fitflow.data.ProfileRepository
 import com.github.k409.fitflow.data.StepsRepository
 import com.github.k409.fitflow.data.UserRepository
@@ -52,6 +53,7 @@ object RepositoryModule {
     fun provideAuthRepository(
         auth: FirebaseAuth,
         userRepository: UserRepository,
+        itemRepository: ItemRepository,
         credentialManager: CredentialManager,
         getCredentialRequest: GetCredentialRequest,
         @ApplicationContext context: Context,
@@ -59,6 +61,7 @@ object RepositoryModule {
         return AuthRepository(
             auth,
             userRepository,
+            itemRepository,
             credentialManager,
             getCredentialRequest,
             context,

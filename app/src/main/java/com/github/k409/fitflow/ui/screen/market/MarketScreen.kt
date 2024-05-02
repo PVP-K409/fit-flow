@@ -2,7 +2,6 @@ package com.github.k409.fitflow.ui.screen.market
 
 import android.app.Activity.RESULT_OK
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -184,21 +183,11 @@ fun MarketScreen(
                 if (addClicked) {
                     marketViewModel.updateUserCoinBalance((-selectedMarketItem.price).toLong())
                     marketViewModel.addItemToUserInventory(selectedMarketItem)
-
-                    Toast.makeText(
-                        context,
-                        "${selectedMarketItem.title} ${context.getString(R.string.has_been_added_to_your_inventory)}",
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    SnackbarManager.showMessage("${selectedMarketItem.title} has been added to your inventory")
                 } else {
                     marketViewModel.updateUserCoinBalance((selectedMarketItem.price / 2).toLong())
                     marketViewModel.removeItemFromUserInventory(selectedMarketItem)
-
-                    Toast.makeText(
-                        context,
-                        "${selectedMarketItem.title} ${context.getString(R.string.has_been_sold)}",
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    SnackbarManager.showMessage("${selectedMarketItem.title} has been sold")
                 }
                 showDialog = false
             },

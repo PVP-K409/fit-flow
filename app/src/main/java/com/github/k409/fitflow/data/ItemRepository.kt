@@ -21,7 +21,7 @@ private const val REWARDS_COLLECTION = "rewards"
 
 private const val PLACED_FIELD = "placed"
 private const val PRICE_FIELD = "price"
-
+private const val INITIAL_FISH_ID = 0
 class ItemRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
@@ -33,7 +33,7 @@ class ItemRepository @Inject constructor(
             .map {
                 it.documents.map { document ->
                     document.toObject<MarketItem>() ?: MarketItem()
-                }
+                }.drop(1) // drop initial fish that user has by default
             }
     }
 
@@ -194,5 +194,12 @@ class ItemRepository @Inject constructor(
             .document(uid)
             .collection(ITEMS_COLLECTION)
             .document(itemId)
+    }
+    suspend fun getInitialFish(): MarketItem {
+        return db.collection(MARKET_COLLECTION)
+            .document(INITIAL_FISH_ID.toString())
+            .get()
+            .await()
+            .toObject<MarketItem>() ?: MarketItem()
     }
 }

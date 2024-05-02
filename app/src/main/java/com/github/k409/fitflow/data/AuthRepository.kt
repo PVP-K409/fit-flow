@@ -24,6 +24,7 @@ private const val TAG = "AuthRepository"
 class AuthRepository @Inject constructor(
     private val auth: FirebaseAuth,
     private val userRepository: UserRepository,
+    private val itemRepository: ItemRepository,
     private val credentialManager: CredentialManager,
     private val getCredentialRequest: GetCredentialRequest,
     @ApplicationContext private val context: Context,
@@ -35,6 +36,11 @@ class AuthRepository @Inject constructor(
             return handleSignIn(result)
         } catch (e: GetCredentialException) {
             Log.e(TAG, "GetCredentialException", e)
+
+            return SignInResult(
+                null,
+                context.getString(R.string.no_credentials_found_please_add_a_google_account_to_your_device),
+            )
         } catch (e: Exception) {
             Log.e(TAG, "Exception", e)
         }
@@ -75,6 +81,8 @@ class AuthRepository @Inject constructor(
 
         if (authResult.additionalUserInfo?.isNewUser == true) {
             userRepository.createUser(authResult.user!!)
+            // add initial fish to user's inventory
+            itemRepository.addItemToUserInventory(itemRepository.getInitialFish())
         }
 
         val user = authResult.user?.toUser()
