@@ -7,9 +7,10 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.location.Location
 import android.os.Looper
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
@@ -24,15 +25,22 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val DEFAULT_LOCATION_UPDATE_INTERVAL = 4000L
 private const val DEFAULT_FASTEST_LOCATION_UPDATE_INTERVAL = 2000L
+private const val TIMER_UPDATE_INTERVAL = 50L
 
 private val notificationChannel = NotificationChannel.ExerciseSession.channelId
 private val notificationId = NotificationId.ExerciseSession.notificationId
@@ -46,11 +54,14 @@ class RouteTrackingService : LifecycleService() {
 
     @Inject lateinit var locationClient: FusedLocationProviderClient
 
+    private var exerciseSessionActivity: ExerciseSessionActivity? = null
+    private var locationUpdateInterval = DEFAULT_LOCATION_UPDATE_INTERVAL
+    private var fastestLocationUpdateInterval = DEFAULT_FASTEST_LOCATION_UPDATE_INTERVAL
+    private val timeRunInSecond = MutableStateFlow(0L)
+
     companion object {
-        private var exerciseSessionActivity: ExerciseSessionActivity? = null
-        private var locationUpdateInterval = DEFAULT_LOCATION_UPDATE_INTERVAL
-        private var fastestLocationUpdateInterval = DEFAULT_FASTEST_LOCATION_UPDATE_INTERVAL
-        val update = Channel<Unit>()
+        val map = MutableStateFlow<GoogleMap?>(null)
+        val timeRunInMillis = MutableStateFlow(0L)
         val isTracking = MutableStateFlow(false)
         val sessionActive = MutableStateFlow(false)
         val sessionPaused = MutableStateFlow(false)
@@ -61,6 +72,54 @@ class RouteTrackingService : LifecycleService() {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
         )
+
+        fun setGoogleMap(googleMap: GoogleMap) {
+            map.value = googleMap
+            initializeMap()
+            addAllPolylines()
+        }
+
+        private fun initializeMap() {
+            map.value?.let { map ->
+                map.mapType = GoogleMap.MAP_TYPE_NORMAL
+                map.uiSettings.isZoomControlsEnabled = true
+                map.uiSettings.isZoomGesturesEnabled = true
+                map.uiSettings.isScrollGesturesEnabled = true
+                map.uiSettings.isRotateGesturesEnabled = true
+                map.uiSettings.isTiltGesturesEnabled = true
+                map.uiSettings.isCompassEnabled = true
+                map.uiSettings.isMyLocationButtonEnabled = true
+                map.uiSettings.isIndoorLevelPickerEnabled = true
+                map.uiSettings.isMapToolbarEnabled = true
+                map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
+
+                val currentCameraPosition = map.cameraPosition
+
+                val newCameraPosition = CameraPosition.Builder()
+                    .zoom(15f)
+                    .bearing(currentCameraPosition.bearing)
+                    .tilt(currentCameraPosition.tilt)
+
+                if (pathPoints.value.isNotEmpty() && pathPoints.value.last().isNotEmpty()) {
+                    val lastPoint = pathPoints.value.last().last()
+                    newCameraPosition.target(LatLng(lastPoint.latitude, lastPoint.longitude))
+                } else {
+                    newCameraPosition.target(currentCameraPosition.target)
+                }
+
+                map.moveCamera(CameraUpdateFactory.newCameraPosition(newCameraPosition.build()))
+            }
+        }
+
+        private fun addAllPolylines() {
+            for (polyline in pathPoints.value) {
+                val polylineOptions = PolylineOptions()
+                    .color(Color.Blue.toArgb())
+                    .width(10f)
+                    .addAll(polyline)
+                map.value?.addPolyline(polylineOptions)
+            }
+        }
     }
 
     enum class Actions {
@@ -92,12 +151,14 @@ class RouteTrackingService : LifecycleService() {
         sessionActive.value = false
         sessionPaused.value = false
         selectedExercise.value = ""
+        map.value = null
         pathPoints.value = mutableListOf()
         locationClient.removeLocationUpdates(locationCallback)
         stopSelf()
     }
 
     private fun start() {
+        startTimer()
         addEmptyPolyline()
 
         exerciseSessionActivity = getExerciseSessionActivityByType(selectedExercise.value)
@@ -114,15 +175,18 @@ class RouteTrackingService : LifecycleService() {
     private fun pause() {
         isTracking.value = false
         sessionPaused.value = true
+        isTimerEnabled = false
     }
 
 
 
     private fun resume() {
+        startTimer()
         addEmptyPolyline()
         isTracking.value = true
         sessionPaused.value = false
     }
+
 
     @SuppressLint("MissingPermission")
     private fun updateLocationTracking(isTracking: Boolean) {
@@ -156,6 +220,32 @@ class RouteTrackingService : LifecycleService() {
         }
     }
 
+    private fun addLatestPolyline() {
+        if (pathPoints.value.isNotEmpty() && pathPoints.value.last().size > 1 ) {
+            val preLastLatLng = pathPoints.value.last()[pathPoints.value.last().size - 2]
+            val lastLatLng = pathPoints.value.last().last()
+            val polylineOptions = PolylineOptions()
+                .color(Color.Blue.toArgb())
+                .width(10f)
+                .add(preLastLatLng)
+                .add(lastLatLng)
+            map.value?.addPolyline(polylineOptions)
+        }
+
+    }
+
+    private fun moveCameraToUser() {
+        if (pathPoints.value.isNotEmpty() && pathPoints.value.last().isNotEmpty()) {
+            val currentZoomLevel = map.value?.cameraPosition?.zoom ?: 15f
+            map.value?.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    pathPoints.value.last().last(),
+                    currentZoomLevel
+                )
+            )
+        }
+    }
+
     private fun addPathPoint(location: Location?) {
         location?.let {
             val position = LatLng(location.latitude, location.longitude)
@@ -165,9 +255,8 @@ class RouteTrackingService : LifecycleService() {
             }
             updatedPathPoints.last().add(position)
             pathPoints.value = updatedPathPoints
-            lifecycleScope.launch {
-                update.send(Unit)
-            }
+            addLatestPolyline()
+            moveCameraToUser()
         }
     }
 
@@ -193,13 +282,11 @@ class RouteTrackingService : LifecycleService() {
         val notificationText = selectedExercise.value
 
         val icon = exerciseSessionActivity?.icon ?: R.drawable.ic_launcher_foreground
-        val iconBitmap = BitmapFactory.decodeResource(resources, icon)
 
         return NotificationCompat.Builder(this, notificationChannel)
             .setContentTitle(notificationTitle)
             .setContentText(notificationText)
             .setSmallIcon(icon)
-            .setLargeIcon(iconBitmap)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setOngoing(true)
@@ -210,6 +297,29 @@ class RouteTrackingService : LifecycleService() {
     private fun hasLocationPermission() : Boolean{
         return fineLocationPermissions.all {
             ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    private var timeStarted = 0L
+    private var isTimerEnabled = false
+    private var lapTime = 0L
+    private var timeRun = 0L
+    private var lastSecondTimestamp = 0L
+    private fun startTimer() {
+        isTimerEnabled = true
+        timeStarted = System.currentTimeMillis()
+        CoroutineScope(Dispatchers.Main).launch {
+            while(isTracking.value) {
+                lapTime = System.currentTimeMillis() - timeStarted
+                timeRunInMillis.value = timeRun + lapTime
+
+                if (timeRunInMillis.value >= lastSecondTimestamp + 1000) {
+                    timeRunInSecond.value++
+                    lastSecondTimestamp += 1000L
+                }
+                delay(TIMER_UPDATE_INTERVAL)
+            }
+            timeRun += lapTime
         }
     }
 }

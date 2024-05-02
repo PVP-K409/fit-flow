@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -36,9 +38,9 @@ import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.screen.goals.ExerciseDropdownMenu
 import com.github.k409.fitflow.ui.screen.goals.ExpandedDropdown
 import com.github.k409.fitflow.ui.screen.goals.InlineError
+import com.github.k409.fitflow.util.formatTime
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 
 
@@ -54,8 +56,7 @@ fun ExerciseSessionScreen(
     val sessionPaused = RouteTrackingService.sessionPaused.collectAsState()
     val sessionActive = RouteTrackingService.sessionActive.collectAsState()
     val exercise = RouteTrackingService.selectedExercise.collectAsState()
-
-    var map: GoogleMap? by remember { mutableStateOf(null) }
+    val timeInMillis = RouteTrackingService.timeRunInMillis.collectAsState()
 
     var selectedExercise by remember { mutableStateOf("") }
     val expandedDropdown by remember { mutableStateOf(ExpandedDropdown.NONE) }
@@ -67,14 +68,22 @@ fun ExerciseSessionScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.weight(1f))
         if (fineLocationPermissionState.allPermissionsGranted) {
             if (sessionActive.value) {
-                Box(modifier = Modifier.height(600.dp)) {
-                    AndroidView({ MapView(it).apply { onCreate(null) } }, modifier = Modifier.fillMaxSize()) { mapView ->
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
+                    Text(text = exercise.value,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    TimeDisplay(
+                        modifier = Modifier.padding(16.dp),
+                        timeInMillis = timeInMillis.value,
+                    )
+                }
+                Box(modifier = Modifier.fillMaxHeight(0.8f)) {
+                    AndroidView({ MapView(it).apply { onCreate(null) } }) { mapView ->
                         mapView.getMapAsync { googleMap ->
-                            map = googleMap
-                            exerciseSessionViewModel.setupMap(map!!)
+                            RouteTrackingService.setGoogleMap(googleMap)
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
@@ -92,6 +101,7 @@ fun ExerciseSessionScreen(
 
                 InlineError(selectedExercise.isEmpty() && showInlineError)
             }
+            Spacer(modifier = Modifier.weight(1f))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -110,7 +120,6 @@ fun ExerciseSessionScreen(
                         }
                     },
                     onStop = {
-                        exerciseSessionViewModel.stopSession()
                         Intent(context, RouteTrackingService::class.java).also {
                             it.action = RouteTrackingService.Actions.STOP.toString()
                             context.startService(it)
@@ -132,6 +141,7 @@ fun ExerciseSessionScreen(
             }
         }
         if (!fineLocationPermissionState.allPermissionsGranted) {
+            Spacer(modifier = Modifier.weight(1f))
             ToSettings()
         }
         if (showConfirmationDialog) {
@@ -151,6 +161,21 @@ fun ExerciseSessionScreen(
         }
 
     }
+}
+
+@Composable
+fun TimeDisplay(
+    modifier: Modifier,
+    timeInMillis: Long,
+    textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
+) {
+    val formattedTime = formatTime(timeInMillis)
+
+    Text(
+        text = formattedTime,
+        style = textStyle,
+        modifier = modifier
+    )
 }
 
 @Composable
