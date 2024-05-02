@@ -1,5 +1,5 @@
 [versions]
-agp = "8.2.2"
+agp = "8.4.0"
 androidx-connectClient = "1.1.0-alpha07"
 animatedNavigationBar = "1.0.0"
 coilCompose = "2.6.0"
