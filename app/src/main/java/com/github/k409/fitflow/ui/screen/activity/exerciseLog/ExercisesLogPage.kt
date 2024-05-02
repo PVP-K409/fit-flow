@@ -62,7 +62,7 @@ fun ExercisesLogPage(
     if (loading) {
         FitFlowCircularProgressIndicator()
     } else {
-        Box(modifier = Modifier.fillMaxSize()){
+        Box(modifier = Modifier.fillMaxSize()) {
             if (exerciseRecords.isEmpty()) {
                 NoExerciseLogsFound()
             } else {
@@ -86,7 +86,6 @@ fun ExercisesLogPage(
                 )
             }
         }
-
     }
 }
 

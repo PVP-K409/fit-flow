@@ -38,12 +38,10 @@ import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.screen.goals.ExerciseDropdownMenu
 import com.github.k409.fitflow.ui.screen.goals.ExpandedDropdown
 import com.github.k409.fitflow.ui.screen.goals.InlineError
-import com.github.k409.fitflow.util.formatTimeFromMillis
 import com.github.k409.fitflow.util.formatTimeFromSeconds
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.maps.MapView
-
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -52,7 +50,7 @@ fun ExerciseSessionScreen(
 ) {
     val context = LocalContext.current
     val fineLocationPermissionState = rememberMultiplePermissionsState(
-        RouteTrackingService.fineLocationPermissions
+        RouteTrackingService.fineLocationPermissions,
     )
     val sessionPaused = RouteTrackingService.sessionPaused.collectAsState()
     val sessionActive = RouteTrackingService.sessionActive.collectAsState()
@@ -71,10 +69,11 @@ fun ExerciseSessionScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         if (fineLocationPermissionState.allPermissionsGranted) {
             if (sessionActive.value) {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
-                    Text(text = exercise.value,
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(
+                        text = exercise.value,
                         style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp),
                     )
                     TimeDisplay(
                         modifier = Modifier.padding(16.dp),
@@ -89,8 +88,7 @@ fun ExerciseSessionScreen(
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                 }
-            }
-            else { // show dropdown
+            } else { // show dropdown
                 val exerciseTypes = exerciseSessionViewModel.getValidExerciseSessionActivitiesTypes()
                 ExerciseDropdownMenu(
                     options = exerciseTypes,
@@ -107,7 +105,7 @@ fun ExerciseSessionScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 ControlButtons(
                     sessionActive = sessionActive.value,
@@ -115,8 +113,7 @@ fun ExerciseSessionScreen(
                     onStart = {
                         if (selectedExercise.isNotEmpty()) {
                             showConfirmationDialog = true
-                        }
-                        else {
+                        } else {
                             showInlineError = true
                         }
                     },
@@ -160,7 +157,6 @@ fun ExerciseSessionScreen(
                 },
             )
         }
-
     }
 }
 
@@ -175,7 +171,7 @@ fun TimeDisplay(
     Text(
         text = formattedTime,
         style = textStyle,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -192,51 +188,50 @@ fun ControlButtons(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        if(!sessionActive) {
+        if (!sessionActive) {
             ActionButton(
                 text = "Start",
                 onClick = onStart,
                 modifier = Modifier.weight(1f),
             )
         }
-        if (sessionActive){
+        if (sessionActive) {
             ActionButton(
                 text = "Stop",
                 onClick = onStop,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
         }
         if (sessionActive && sessionPaused) {
             ActionButton(
                 text = "Resume",
                 onClick = onResume,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
         }
         if (sessionActive && !sessionPaused) {
             ActionButton(
                 text = "Pause",
                 onClick = onPause,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
         }
     }
 }
 
-
 @Composable
 fun ActionButton(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Button(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 8.dp),
     ) {
         Text(text)
     }
@@ -250,13 +245,13 @@ fun ToSettings() {
             .fillMaxWidth()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Text(
             "Location permission is needed to start the session and display the map.",
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp),
         )
         Button(
             onClick = {
@@ -265,7 +260,7 @@ fun ToSettings() {
                 intent.data = uri
                 context.startActivity(intent)
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text("Open Settings")
         }

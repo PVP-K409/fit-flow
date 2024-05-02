@@ -2,7 +2,7 @@ package com.github.k409.fitflow.model
 
 import com.github.k409.fitflow.R
 
-enum class ExerciseSessionActivities (
+enum class ExerciseSessionActivities(
     val exerciseSessionActivity: ExerciseSessionActivity,
 ) {
     Walking(
@@ -32,7 +32,6 @@ enum class ExerciseSessionActivities (
             fastestLocationUpdateInterval = 2000L,
         ),
     ),
-
 }
 
 data class ExerciseSessionActivity(

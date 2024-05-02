@@ -47,7 +47,6 @@ private const val TIMER_UPDATE_INTERVAL = 1000L
 private val notificationChannelId = NotificationChannel.ExerciseSession.channelId
 private val notificationId = NotificationId.ExerciseSession.notificationId
 
-
 typealias Polyline = MutableList<LatLng>
 typealias Polylines = MutableList<Polyline>
 
@@ -115,7 +114,7 @@ class RouteTrackingService : LifecycleService() {
                     .center(targetLatLng)
                     .radius(5.0)
                     .strokeColor(0x500000FF)
-                    .fillColor( Color.Blue.toArgb())
+                    .fillColor(Color.Blue.toArgb())
                     .strokeWidth(20f)
                 circle = map.addCircle(circleOptions)
 
@@ -193,8 +192,6 @@ class RouteTrackingService : LifecycleService() {
         isTimerEnabled = false
     }
 
-
-
     private fun resume() {
         startTimer()
         addEmptyPolyline()
@@ -202,17 +199,17 @@ class RouteTrackingService : LifecycleService() {
         sessionPaused.value = false
     }
 
-
     @SuppressLint("MissingPermission")
     private fun updateLocationTracking(isTracking: Boolean) {
-        if(isTracking) {
+        if (isTracking) {
             if (hasLocationPermission()) {
                 val request = LocationRequest.Builder(locationUpdateInterval).apply {
                     setMinUpdateIntervalMillis(fastestLocationUpdateInterval)
                     setPriority(Priority.PRIORITY_HIGH_ACCURACY)
                 }.build()
 
-                locationClient.requestLocationUpdates(request,
+                locationClient.requestLocationUpdates(
+                    request,
                     locationCallback,
                     Looper.getMainLooper(),
                 )
@@ -225,7 +222,7 @@ class RouteTrackingService : LifecycleService() {
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
-            if(isTracking.value) {
+            if (isTracking.value) {
                 result.locations.let { locations ->
                     for (location in locations) {
                         addPathPoint(location)
@@ -236,7 +233,7 @@ class RouteTrackingService : LifecycleService() {
     }
 
     private fun addLatestPolyline() {
-        if (pathPoints.value.isNotEmpty() && pathPoints.value.last().size > 1 ) {
+        if (pathPoints.value.isNotEmpty() && pathPoints.value.last().size > 1) {
             val preLastLatLng = pathPoints.value.last()[pathPoints.value.last().size - 2]
             val lastLatLng = pathPoints.value.last().last()
             val polylineOptions = PolylineOptions()
@@ -246,7 +243,6 @@ class RouteTrackingService : LifecycleService() {
                 .add(lastLatLng)
             map.value?.addPolyline(polylineOptions)
         }
-
     }
 
     private fun moveCameraToUser() {
@@ -255,12 +251,11 @@ class RouteTrackingService : LifecycleService() {
             map.value?.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     pathPoints.value.last().last(),
-                    currentZoomLevel
-                )
+                    currentZoomLevel,
+                ),
             )
         }
     }
-
 
     private fun addPathPoint(location: Location?) {
         location?.let {
@@ -293,7 +288,6 @@ class RouteTrackingService : LifecycleService() {
         notificationManager.notify(notificationId, notification)
     }
 
-
     private fun createNotificationChannelBuilder(): NotificationCompat.Builder {
         val notificationTitle = getString(R.string.exercise_session_in_progress)
         val notificationText = "${selectedExercise.value}: ${formatTimeFromSeconds(timeRunInSecond.value)} "
@@ -310,7 +304,7 @@ class RouteTrackingService : LifecycleService() {
         return notificationBuilder
     }
 
-    private fun hasLocationPermission() : Boolean{
+    private fun hasLocationPermission(): Boolean {
         return fineLocationPermissions.all {
             ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
         }
@@ -325,7 +319,7 @@ class RouteTrackingService : LifecycleService() {
         isTimerEnabled = true
         timeStarted = System.currentTimeMillis()
         CoroutineScope(Dispatchers.Main).launch {
-            while(isTracking.value) {
+            while (isTracking.value) {
                 lapTime = System.currentTimeMillis() - timeStarted
                 timeRunInMillis.value = timeRun + lapTime
 
