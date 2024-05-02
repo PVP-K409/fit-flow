@@ -131,18 +131,36 @@ class ItemRepository @Inject constructor(
             Log.e("Item Repository", "Error adding reward item", e)
         }
     }
+    fun getRewardItems(): Flow<List<MarketItem>> {
+        return db.collection(REWARDS_COLLECTION)
+            .snapshots()
+            .map {
+                it.documents.map { document ->
+                    document.toObject<MarketItem>() ?: MarketItem()
+                }
+            }
+    }
     suspend fun updateInventoryItem(marketItem: InventoryItem) {
         val currentUser = auth.currentUser
         val uid = currentUser!!.uid
 
         val inventoryDocumentRef = getInventoryDocumentRef(uid, marketItem.item.id.toString())
 
-        val updatedData = hashMapOf(
-            "item" to db.collection(MARKET_COLLECTION).document(marketItem.item.id.toString()),
-            "placed" to marketItem.placed,
-            "offsetX" to marketItem.offsetX,
-            "offsetY" to marketItem.offsetY,
-        )
+        val updatedData = if (marketItem.item.id >= 1000) {
+            hashMapOf(
+                "item" to db.collection(REWARDS_COLLECTION).document(marketItem.item.id.toString()),
+                "placed" to marketItem.placed,
+                "offsetX" to marketItem.offsetX,
+                "offsetY" to marketItem.offsetY,
+            )
+        } else {
+            hashMapOf(
+                "item" to db.collection(MARKET_COLLECTION).document(marketItem.item.id.toString()),
+                "placed" to marketItem.placed,
+                "offsetX" to marketItem.offsetX,
+                "offsetY" to marketItem.offsetY,
+            )
+        }
 
         try {
             inventoryDocumentRef

@@ -132,4 +132,7 @@
     <string name="updating_goals_and_steps_data">Updating goals and steps data</string>
     <string name="walking_goal_progress">Walking Goal Progress</string>
     <string name="you_have_walked_out_of_steps_today">You have walked %1$s out of %2$s steps today.</string>
+    <string name="congratulations_you_have_leveled_up_to">Congratulations! You have leveled up to %1$s!</string>
+    <string name="you_have_unlocked_the_following_reward">You have unlocked the following reward:</string>
+    <string name="awesome">Awesome!</string>
 </resources>

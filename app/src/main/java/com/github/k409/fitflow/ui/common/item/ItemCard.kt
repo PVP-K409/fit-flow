@@ -105,6 +105,21 @@ fun InventoryItemCard(
 }
 
 @Composable
+fun InventoryItemCardWithoutButtons(
+    modifier: Modifier,
+    imageDownloadUrl: String,
+    name: String,
+    description: String,
+) {
+    InventoryItemCardWrapper(
+        modifier = modifier,
+        imageDownloadUrl = imageDownloadUrl,
+        name = name,
+        description = description,
+    ) {
+    }
+}
+@Composable
 fun InventoryItemCardGooglePay(
     modifier: Modifier,
     imageDownloadUrl: String,
