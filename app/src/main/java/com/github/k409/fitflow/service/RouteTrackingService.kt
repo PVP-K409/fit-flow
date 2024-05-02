@@ -2,14 +2,12 @@ package com.github.k409.fitflow.service
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Looper
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
@@ -44,7 +42,7 @@ import javax.inject.Inject
 
 private const val DEFAULT_LOCATION_UPDATE_INTERVAL = 4000L
 private const val DEFAULT_FASTEST_LOCATION_UPDATE_INTERVAL = 2000L
-private const val TIMER_UPDATE_INTERVAL = 50L
+private const val TIMER_UPDATE_INTERVAL = 1000L
 
 private val notificationChannelId = NotificationChannel.ExerciseSession.channelId
 private val notificationId = NotificationId.ExerciseSession.notificationId
@@ -62,12 +60,12 @@ class RouteTrackingService : LifecycleService() {
     private var exerciseSessionActivity: ExerciseSessionActivity? = null
     private var locationUpdateInterval = DEFAULT_LOCATION_UPDATE_INTERVAL
     private var fastestLocationUpdateInterval = DEFAULT_FASTEST_LOCATION_UPDATE_INTERVAL
-    private val timeRunInSecond = MutableStateFlow(0L)
+    private val timeRunInMillis = MutableStateFlow(0L)
 
     companion object {
         val map = MutableStateFlow<GoogleMap?>(null)
         var circle: Circle? = null
-        val timeRunInMillis = MutableStateFlow(0L)
+        val timeRunInSecond = MutableStateFlow(0L)
         val isTracking = MutableStateFlow(false)
         val sessionActive = MutableStateFlow(false)
         val sessionPaused = MutableStateFlow(false)
@@ -116,7 +114,7 @@ class RouteTrackingService : LifecycleService() {
                 val circleOptions = CircleOptions()
                     .center(targetLatLng)
                     .radius(5.0)
-                    .strokeColor(0x750000FF)
+                    .strokeColor(0x500000FF)
                     .fillColor( Color.Blue.toArgb())
                     .strokeWidth(20f)
                 circle = map.addCircle(circleOptions)

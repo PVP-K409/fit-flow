@@ -39,6 +39,7 @@ import com.github.k409.fitflow.ui.screen.goals.ExerciseDropdownMenu
 import com.github.k409.fitflow.ui.screen.goals.ExpandedDropdown
 import com.github.k409.fitflow.ui.screen.goals.InlineError
 import com.github.k409.fitflow.util.formatTimeFromMillis
+import com.github.k409.fitflow.util.formatTimeFromSeconds
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.maps.MapView
@@ -56,7 +57,7 @@ fun ExerciseSessionScreen(
     val sessionPaused = RouteTrackingService.sessionPaused.collectAsState()
     val sessionActive = RouteTrackingService.sessionActive.collectAsState()
     val exercise = RouteTrackingService.selectedExercise.collectAsState()
-    val timeInMillis = RouteTrackingService.timeRunInMillis.collectAsState()
+    val timeInSecond = RouteTrackingService.timeRunInSecond.collectAsState()
 
     var selectedExercise by remember { mutableStateOf("") }
     val expandedDropdown by remember { mutableStateOf(ExpandedDropdown.NONE) }
@@ -77,7 +78,7 @@ fun ExerciseSessionScreen(
                     )
                     TimeDisplay(
                         modifier = Modifier.padding(16.dp),
-                        timeInMillis = timeInMillis.value,
+                        timeInSeconds = timeInSecond.value,
                     )
                 }
                 Box(modifier = Modifier.fillMaxHeight(0.8f)) {
@@ -166,10 +167,10 @@ fun ExerciseSessionScreen(
 @Composable
 fun TimeDisplay(
     modifier: Modifier,
-    timeInMillis: Long,
+    timeInSeconds: Long,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
 ) {
-    val formattedTime = formatTimeFromMillis(timeInMillis)
+    val formattedTime = formatTimeFromSeconds(timeInSeconds)
 
     Text(
         text = formattedTime,
