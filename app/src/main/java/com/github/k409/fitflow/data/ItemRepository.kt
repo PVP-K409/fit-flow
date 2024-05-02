@@ -115,7 +115,7 @@ class ItemRepository @Inject constructor(
         try {
             val itemReference = db.collection(REWARDS_COLLECTION).whereEqualTo("id", userLevel).get().await().documents.first().reference
 
-            //Log.d("ItemRepository", "Reward item reference: $itemReference")
+            // Log.d("ItemRepository", "Reward item reference: $itemReference")
 
             val inventoryDocumentRef = getInventoryDocumentRef(uid, itemReference.id)
 

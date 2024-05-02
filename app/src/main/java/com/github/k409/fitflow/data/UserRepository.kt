@@ -93,8 +93,7 @@ class UserRepository @Inject constructor(
                             "hasLeveledUp" to true,
                         ),
                     ).await()
-            }
-            else {
+            } else {
                 userDocRef
                     .update(
                         mapOf(

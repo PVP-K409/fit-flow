@@ -119,6 +119,7 @@ fun InventoryItemCardWithoutButtons(
     ) {
     }
 }
+
 @Composable
 fun InventoryItemCardGooglePay(
     modifier: Modifier,

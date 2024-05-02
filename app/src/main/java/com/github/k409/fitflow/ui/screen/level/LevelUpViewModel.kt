@@ -21,24 +21,24 @@ class LevelUpViewModel @Inject constructor(
     val levelUpUiState: StateFlow<LevelUpUiState> = combine(
         userRepository.currentUser,
         itemRepository.getRewardItems(),
-        ) { user, rewards ->
-            LevelUpUiState.Success(
-                user = user,
-                rewards = rewards,
-            )
-
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = LevelUpUiState.Loading,
+    ) { user, rewards ->
+        LevelUpUiState.Success(
+            user = user,
+            rewards = rewards,
         )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = LevelUpUiState.Loading,
+    )
 
     suspend fun updateUserField(field: String, value: Any) {
         userRepository.updateUserField(field, value)
     }
+
     // User level needs to be incremented by 1000, because reward numeration starts from 1000
-    suspend fun addRewardItemToUserInventory(userLevel : Int) {
-        itemRepository.addRewardItemToUserInventory(userLevel + 1000 )
+    suspend fun addRewardItemToUserInventory(userLevel: Int) {
+        itemRepository.addRewardItemToUserInventory(userLevel + 1000)
     }
 }
 

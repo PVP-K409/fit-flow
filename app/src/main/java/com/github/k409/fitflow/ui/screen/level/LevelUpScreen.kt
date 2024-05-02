@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LevelUpScreen(
     viewModel: LevelUpViewModel = hiltViewModel(),
-    ) {
+) {
     val uiState by viewModel.levelUpUiState.collectAsState()
 
     when (uiState) {
@@ -52,6 +52,7 @@ fun LevelUpScreen(
         }
     }
 }
+
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 private fun LevelUpScreenContent(viewModel: LevelUpViewModel, uiState: LevelUpUiState.Success) {
@@ -75,7 +76,7 @@ private fun LevelUpScreenContent(viewModel: LevelUpViewModel, uiState: LevelUpUi
             .background(background),
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = stringResource(R.string.congratulations_you_have_leveled_up_to, level.name),
@@ -115,7 +116,7 @@ private fun LevelUpScreenContent(viewModel: LevelUpViewModel, uiState: LevelUpUi
                             .padding(8.dp),
                         onClick = {
                             clicked.value = true
-                        }
+                        },
                     ) {
                         Text(
                             text = stringResource(R.string.awesome),
@@ -125,13 +126,12 @@ private fun LevelUpScreenContent(viewModel: LevelUpViewModel, uiState: LevelUpUi
                 }
             }
         }
-
     }
     if (clicked.value) {
         clicked.value = false
 
         coroutineScope.launch {
-            //Log.d("LevelUpScreenContent", "Adding reward item to user inventory")
+            // Log.d("LevelUpScreenContent", "Adding reward item to user inventory")
             viewModel.updateUserField("hasLeveledUp", false)
             viewModel.addRewardItemToUserInventory(level.id)
         }
