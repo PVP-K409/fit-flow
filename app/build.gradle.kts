@@ -32,6 +32,8 @@ android {
         }
 
         buildConfigField("String", "GOOGLE_SERVER_CLIENT_ID", "\"${keystoreProperties["google.serverClientId"]}\"")
+
+        resValue("string", "google_maps_key", "\"${keystoreProperties["google.mapsApiKey"]}\"")
     }
 
     buildFeatures {
@@ -100,12 +102,18 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.firebase.appcheck.debug)
+    implementation(libs.androidx.lifecycle.service)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.connect.client)
+
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
+    implementation(libs.maps.compose)
+
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)

@@ -9,6 +9,8 @@ import com.github.k409.fitflow.data.HealthStatsManager
 import com.github.k409.fitflow.service.HealthConnectService
 import com.github.k409.fitflow.service.StepCounterService
 import com.github.k409.fitflow.util.PaymentsUtil
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.wallet.PaymentsClient
 import dagger.Module
 import dagger.Provides
@@ -36,6 +38,12 @@ class AppModule {
     @Singleton
     fun provideHealthConnectService(client: HealthConnectClient): HealthConnectService {
         return HealthConnectService(client)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFusedLocationProviderClient(@ApplicationContext appContext: Context): FusedLocationProviderClient {
+        return LocationServices.getFusedLocationProviderClient(appContext)
     }
 
     @Provides

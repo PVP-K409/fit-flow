@@ -1,4 +1,4 @@
-package com.github.k409.fitflow.ui.screen.activity
+package com.github.k409.fitflow.ui.screen.activity.exerciseLog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -30,14 +31,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.ExerciseRecord
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
+import com.github.k409.fitflow.ui.navigation.NavRoutes
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
@@ -46,6 +50,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun ExercisesLogPage(
     exerciseLogViewModel: ExercisesLogViewModel = hiltViewModel(),
+    navController: NavHostController,
 ) {
     val exerciseRecords by exerciseLogViewModel.exerciseRecords.collectAsState()
     val loading by exerciseLogViewModel.loading.collectAsState()
@@ -56,12 +61,29 @@ fun ExercisesLogPage(
 
     if (loading) {
         FitFlowCircularProgressIndicator()
-    } else if (exerciseRecords.isEmpty()) {
-        NoExerciseLogsFound()
     } else {
-        LazyColumn {
-            items(exerciseRecords) { record ->
-                ExerciseRecordCard(record)
+        Box(modifier = Modifier.fillMaxSize()) {
+            if (exerciseRecords.isEmpty()) {
+                NoExerciseLogsFound()
+            } else {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn {
+                        items(exerciseRecords) { record ->
+                            ExerciseRecordCard(record)
+                        }
+                    }
+                }
+            }
+            FloatingActionButton(
+                onClick = { navController.navigate(NavRoutes.ExerciseSession.route) },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(bottom = 32.dp, end = 24.dp),
+            ) {
+                Icon(
+                    NavRoutes.ExerciseSession.icon,
+                    contentDescription = stringResource(R.string.create_exercise_session),
+                )
             }
         }
     }
@@ -214,7 +236,7 @@ fun NoExerciseLogsFound() {
             fontSize = 16.sp,
         )
         Text(
-            text = "Try manually logging the exercises from the Activity screen",
+            text = "Try manually logging the exercises",
             fontSize = 10.sp,
         )
     }
