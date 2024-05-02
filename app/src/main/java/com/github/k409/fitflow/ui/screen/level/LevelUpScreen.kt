@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
@@ -60,7 +60,7 @@ private fun LevelUpScreenContent(viewModel: LevelUpViewModel, uiState: LevelUpUi
     val coroutineScope = rememberCoroutineScope()
 
     // unlike market items, reward items have document numeration starting from 1000
-    val reward = uiState.rewards.first { it.id == level.id + 1000 }
+    val reward = uiState.rewards.firstOrNull { it.id == level.id + 1000 }
 
     val colors = MaterialTheme.colorScheme
     val background = Brush.linearGradient(
@@ -79,10 +79,10 @@ private fun LevelUpScreenContent(viewModel: LevelUpViewModel, uiState: LevelUpUi
         ) {
             Text(
                 text = stringResource(R.string.congratulations_you_have_leveled_up_to, level.name),
-                fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(16.dp),
+                textAlign = TextAlign.Center,
             )
-            // show badge
             Icon(
                 painter = painterResource(id = level.icon),
                 contentDescription = "Level badge",
@@ -101,12 +101,14 @@ private fun LevelUpScreenContent(viewModel: LevelUpViewModel, uiState: LevelUpUi
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 items(1) {
-                    InventoryItemCardWithoutButtons(
-                        modifier = Modifier,
-                        imageDownloadUrl = reward.phases?.get("Regular") ?: reward.image,
-                        name = reward.title,
-                        description = reward.description,
-                    )
+                    if (reward != null) {
+                        InventoryItemCardWithoutButtons(
+                            modifier = Modifier,
+                            imageDownloadUrl = reward.phases?.get("Regular") ?: reward.image,
+                            name = reward.title,
+                            description = reward.description,
+                        )
+                    }
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
