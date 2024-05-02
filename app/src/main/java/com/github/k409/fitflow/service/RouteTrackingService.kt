@@ -28,6 +28,8 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.Circle
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,6 +63,7 @@ class RouteTrackingService : LifecycleService() {
 
     companion object {
         val map = MutableStateFlow<GoogleMap?>(null)
+        var circle: Circle? = null
         val timeRunInMillis = MutableStateFlow(0L)
         val isTracking = MutableStateFlow(false)
         val sessionActive = MutableStateFlow(false)
@@ -100,12 +103,22 @@ class RouteTrackingService : LifecycleService() {
                     .bearing(currentCameraPosition.bearing)
                     .tilt(currentCameraPosition.tilt)
 
-                if (pathPoints.value.isNotEmpty() && pathPoints.value.last().isNotEmpty()) {
+                val targetLatLng = if (pathPoints.value.isNotEmpty() && pathPoints.value.last().isNotEmpty()) {
                     val lastPoint = pathPoints.value.last().last()
-                    newCameraPosition.target(LatLng(lastPoint.latitude, lastPoint.longitude))
+                    LatLng(lastPoint.latitude, lastPoint.longitude)
                 } else {
-                    newCameraPosition.target(currentCameraPosition.target)
+                    currentCameraPosition.target
                 }
+
+                val circleOptions = CircleOptions()
+                    .center(targetLatLng)
+                    .radius(5.0)
+                    .strokeColor(0x750000FF)
+                    .fillColor( Color.Blue.toArgb())
+                    .strokeWidth(20f)
+                circle = map.addCircle(circleOptions)
+
+                newCameraPosition.target(targetLatLng)
 
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(newCameraPosition.build()))
             }
@@ -151,6 +164,8 @@ class RouteTrackingService : LifecycleService() {
         sessionActive.value = false
         sessionPaused.value = false
         selectedExercise.value = ""
+        timeRunInMillis.value = 0L
+        timeRunInSecond.value = 0L
         map.value = null
         pathPoints.value = mutableListOf()
         locationClient.removeLocationUpdates(locationCallback)
@@ -246,6 +261,7 @@ class RouteTrackingService : LifecycleService() {
         }
     }
 
+
     private fun addPathPoint(location: Location?) {
         location?.let {
             val position = LatLng(location.latitude, location.longitude)
@@ -257,6 +273,7 @@ class RouteTrackingService : LifecycleService() {
             pathPoints.value = updatedPathPoints
             addLatestPolyline()
             moveCameraToUser()
+            circle?.center = position
         }
     }
 
