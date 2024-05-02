@@ -89,6 +89,7 @@ fun FitFlowApp(
     val startDestination = when {
         user.uid.isEmpty() -> NavRoutes.Login.route
         !user.isProfileComplete() -> NavRoutes.ProfileCreation.route
+        user.hasLeveledUp -> NavRoutes.LevelUp.route
         else -> NavRoutes.Aquarium.route
     }
 
@@ -183,7 +184,7 @@ private fun UpdateTopAndBottomBarVisibility(
     topBarState: MutableState<Boolean>,
 ) {
     when (currentScreen) {
-        NavRoutes.Login, NavRoutes.Default -> {
+        NavRoutes.Login, NavRoutes.Default, NavRoutes.LevelUp -> {
             bottomBarState.value = false
             topBarState.value = false
         }
