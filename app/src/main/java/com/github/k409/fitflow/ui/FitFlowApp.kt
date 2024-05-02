@@ -39,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -65,6 +66,7 @@ import com.exyte.animatednavbar.items.dropletbutton.DropletButton
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.isProfileComplete
+import com.github.k409.fitflow.service.RouteTrackingService
 import com.github.k409.fitflow.service.SnackbarManager
 import com.github.k409.fitflow.ui.common.LocalSnackbarHostState
 import com.github.k409.fitflow.ui.common.SwipeableSnackbar
@@ -86,9 +88,12 @@ fun FitFlowApp(
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
     val currentScreen = NavRoutes.getRoute(currentDestination?.route)
 
+    val trackingActive = RouteTrackingService.sessionActive.collectAsState().value
+
     val startDestination = when {
         user.uid.isEmpty() -> NavRoutes.Login.route
         !user.isProfileComplete() -> NavRoutes.ProfileCreation.route
+        trackingActive -> NavRoutes.ExerciseSession.route
         else -> NavRoutes.Aquarium.route
     }
 
@@ -188,7 +193,7 @@ private fun UpdateTopAndBottomBarVisibility(
             topBarState.value = false
         }
 
-        NavRoutes.Settings, NavRoutes.ProfileCreation, NavRoutes.Levels -> {
+        NavRoutes.Settings, NavRoutes.ProfileCreation, NavRoutes.Levels, NavRoutes.ExerciseSession -> {
             bottomBarState.value = false
             topBarState.value = true
         }
