@@ -132,4 +132,8 @@
     <string name="updating_goals_and_steps_data">Updating goals and steps data</string>
     <string name="walking_goal_progress">Walking Goal Progress</string>
     <string name="you_have_walked_out_of_steps_today">You have walked %1$s out of %2$s steps today.</string>
+    <string name="top_5_users_in_the_global_leaderboard">Top 5 users in the global leaderboard</string>
+    <string name="other_users">Other users</string>
+    <string name="other_users_in_the_global_leaderboard">Other users in the global leaderboard</string>
+    <string name="no_credentials_found_please_add_a_google_account_to_your_device">No credentials found. Please add a Google account to your device.</string>
 </resources>

@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.gms) apply false
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.kotlinSerialization) apply false
+    alias(libs.plugins.compose.compiler) apply false
 }
 
 subprojects {
