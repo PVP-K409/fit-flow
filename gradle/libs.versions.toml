@@ -6,9 +6,9 @@ coilCompose = "2.6.0"
 composePayButton = "1.0.0"
 coreSplashscreen = "1.0.1"
 credentials = "1.2.2"
-datastorePreferences = "1.1.0"
-datastorePreferencesCore = "1.1.0"
-firebaseMessaging = "23.4.1"
+datastorePreferences = "1.1.1"
+datastorePreferencesCore = "1.1.1"
+firebaseMessaging = "24.0.0"
 firebaseUiAuth = "8.0.0"
 firebaseUiStorage = "7.2.0"
 google-mapsCompose = "2.2.0"
@@ -21,35 +21,34 @@ hiltWork = "1.2.0"
 kotlin = "2.0.0-RC2"
 kotlinxSerializationJson = "1.6.0"
 ksp = "2.0.0-RC2-1.0.20"
-core-ktx = "1.13.0"
+core-ktx = "1.13.1"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 lifecycle-runtime-ktx = "2.7.0"
 activity-compose = "1.9.0"
-compose-bom = "2024.04.01"
+compose-bom = "2024.05.00"
 navigation-runtime-ktx = "2.7.7"
 navigation-compose = "2.7.7"
 playServicesLocation = "21.2.0"
 playServicesMaps = "18.2.0"
 playServicesWallet = "19.3.0"
-runtimeLivedata = "1.6.6"
-playServicesAuth = "21.1.0"
+runtimeLivedata = "1.6.7"
+playServicesAuth = "21.1.1"
 spotlessPluginGradle = "6.19.0"
-ui = "1.6.6"
+ui = "1.6.7"
 gmsPlugin = "4.4.1"
-firebase-bom = "32.8.1"
+firebase-bom = "33.0.0"
 workRuntimeKtx = "2.9.0"
 accompanist = "0.32.0"
 lifecycleRuntimeCompose = "2.7.0"
-firebaseAppcheckDebug = "17.1.2"
+firebaseAppcheckDebug = "18.0.0"
 lifecycleService = "2.7.0"
-
-
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 androidx-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "androidx-connectClient" }
+#noinspection CredentialDependency - supressed because credentials dependecy already used in the project
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
@@ -95,7 +94,6 @@ material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "ui" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigation-runtime-ktx" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose" }
-
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
@@ -118,7 +116,6 @@ firebase = ["firebase-auth",
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
 daggerHilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
