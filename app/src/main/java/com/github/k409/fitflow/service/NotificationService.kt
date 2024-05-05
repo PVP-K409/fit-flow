@@ -228,7 +228,7 @@ class NotificationService @Inject constructor(
         enableVibration: Boolean = false,
         enableLights: Boolean = false,
         vibrationPattern: LongArray = longArrayOf(0L),
-    ) : NotificationChannel {
+    ): NotificationChannel {
         return NotificationChannel(
             channelId,
             channelName,
@@ -245,10 +245,10 @@ class NotificationService @Inject constructor(
         notificationTitle: String,
         notificationText: String,
         notificationChannel: String,
-        setSmallIcon : Int = R.drawable.ic_launcher_foreground,
-        setPriority : Int = NotificationCompat.PRIORITY_LOW,
-        setAutoCancel : Boolean = true,
-    ) : android.app.Notification {
+        setSmallIcon: Int = R.drawable.ic_launcher_foreground,
+        setPriority: Int = NotificationCompat.PRIORITY_LOW,
+        setAutoCancel: Boolean = true,
+    ): android.app.Notification {
         return NotificationCompat.Builder(context, notificationChannel)
             .setContentTitle(notificationTitle)
             .setContentText(notificationText)
@@ -258,5 +258,4 @@ class NotificationService @Inject constructor(
             .setStyle(NotificationCompat.BigTextStyle().bigText(notificationText))
             .build()
     }
-
 }

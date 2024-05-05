@@ -8,7 +8,7 @@ enum class NotificationChannel(
     GoalUpdate("Goal Update"),
     WalkingProgress("Walking Progress"),
     ExerciseSession("Exercise Session"),
-    AquariumHealth("Aquarium Health")
+    AquariumHealth("Aquarium Health"),
     ;
 
     companion object {

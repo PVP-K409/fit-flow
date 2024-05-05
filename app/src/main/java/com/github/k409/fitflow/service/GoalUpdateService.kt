@@ -64,7 +64,7 @@ class GoalUpdateService : Service() {
 
     @Inject lateinit var goalService: GoalService
 
-    @Inject lateinit var  notificationService: NotificationService
+    @Inject lateinit var notificationService: NotificationService
 
     @Inject lateinit var notificationManager: NotificationManager
     override fun onBind(intent: Intent?): IBinder? {

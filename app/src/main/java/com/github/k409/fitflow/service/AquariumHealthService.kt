@@ -22,17 +22,21 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-
 private const val AquariumUpdate = "AquariumUpdate"
 private val notificationChannel = NotificationChannel.AquariumHealth.channelId
 private val notificationId = NotificationId.AquariumHealth.notificationId
+
 @AndroidEntryPoint
 class AquariumHealthService : Service() {
 
     @Inject lateinit var aquariumRepository: AquariumRepository
+
     @Inject lateinit var hydrationRepository: HydrationRepository
+
     @Inject lateinit var goalsRepository: GoalsRepository
-    @Inject lateinit var  notificationService: NotificationService
+
+    @Inject lateinit var notificationService: NotificationService
+
     @Inject lateinit var notificationManager: NotificationManager
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -84,7 +88,6 @@ class AquariumHealthService : Service() {
                 )
             }
         }
-
     }
 
     private suspend fun performAquariumHealthUpdate() {
