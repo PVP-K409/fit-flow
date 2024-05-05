@@ -1,9 +1,7 @@
 package com.github.k409.fitflow.service
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.IBinder
@@ -65,6 +63,10 @@ class GoalUpdateService : Service() {
     @Inject lateinit var aquariumRepository: AquariumRepository
 
     @Inject lateinit var goalService: GoalService
+
+    @Inject lateinit var notificationService: NotificationService
+
+    @Inject lateinit var notificationManager: NotificationManager
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -83,10 +85,26 @@ class GoalUpdateService : Service() {
 
     private fun start() {
         prefs.edit().putBoolean("GoalsUpdated", false).apply()
-        val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(goalNotificationChannel())
+        val goalNotification = notificationService.createNotification(
+            notificationTitle = getString(R.string.updating_data),
+            notificationText = getString(R.string.updating_goals_and_steps_data),
+            notificationChannel = notificationChannel,
+            setSmallIcon = R.drawable.ic_launcher_foreground,
+            setPriority = NotificationCompat.PRIORITY_LOW,
+            setAutoCancel = true,
+        )
+        val goalNotificationChannel = notificationService.createNotificationChannel(
+            channelName = NotificationChannel.GoalUpdate.toString(),
+            channelId = notificationChannel,
+            importance = NotificationManager.IMPORTANCE_LOW,
+            setShowBadge = false,
+            vibrationPattern = longArrayOf(0),
+            enableVibration = false,
+            enableLights = false,
+        )
+        notificationManager.createNotificationChannel(goalNotificationChannel)
 
-        startForeground(notificationId, goalNotification())
+        startForeground(notificationId, goalNotification)
 
         CoroutineScope(Dispatchers.Default).launch {
             try {
@@ -102,35 +120,6 @@ class GoalUpdateService : Service() {
                 }
             }
         }
-    }
-
-    private fun goalNotificationChannel(): android.app.NotificationChannel {
-        val channelName = NotificationChannel.GoalUpdate
-        val importance = NotificationManager.IMPORTANCE_LOW
-        return android.app.NotificationChannel(
-            notificationChannel,
-            channelName.toString(),
-            importance,
-        ).apply {
-            setShowBadge(false)
-            vibrationPattern = longArrayOf(0)
-            enableVibration(false)
-            enableLights(false)
-        }
-    }
-
-    private fun goalNotification(): Notification {
-        val notificationTitle = getString(R.string.updating_data)
-        val notificationText = getString(R.string.updating_goals_and_steps_data)
-
-        return NotificationCompat.Builder(this, notificationChannel)
-            .setContentTitle(notificationTitle)
-            .setContentText(notificationText)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setAutoCancel(true)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(notificationText))
-            .build()
     }
 
     private suspend fun performStepsUpdate() {

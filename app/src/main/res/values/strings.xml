@@ -142,4 +142,6 @@
     <string name="create_exercise_session">Create Exercise Session</string>
     <string name="exercise_session">Exercise Session</string>
     <string name="exercise_session_in_progress">Exercise Session in Progress</string>
+    <string name="aquarium_health_update">Aquarium Health Update</string>
+    <string name="updating_aquarium_health_metrics">Updating aquarium health metrics</string>
 </resources>
