@@ -3,6 +3,7 @@ package com.github.k409.fitflow.service
 import android.Manifest
 import android.app.Activity
 import android.app.AlarmManager
+import android.app.NotificationChannel
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -218,4 +219,44 @@ class NotificationService @Inject constructor(
             it.cancel()
         }
     }
+
+    fun createNotificationChannel(
+        channelName: String,
+        channelId: String,
+        importance: Int,
+        setShowBadge: Boolean = false,
+        enableVibration: Boolean = false,
+        enableLights: Boolean = false,
+        vibrationPattern: LongArray = longArrayOf(0L),
+    ) : NotificationChannel {
+        return NotificationChannel(
+            channelId,
+            channelName,
+            importance,
+        ).apply {
+            this.setShowBadge(setShowBadge)
+            this.enableVibration(enableVibration)
+            this.enableLights(enableLights)
+            this.vibrationPattern = vibrationPattern
+        }
+    }
+
+    fun createNotification(
+        notificationTitle: String,
+        notificationText: String,
+        notificationChannel: String,
+        setSmallIcon : Int = R.drawable.ic_launcher_foreground,
+        setPriority : Int = NotificationCompat.PRIORITY_LOW,
+        setAutoCancel : Boolean = true,
+    ) : android.app.Notification {
+        return NotificationCompat.Builder(context, notificationChannel)
+            .setContentTitle(notificationTitle)
+            .setContentText(notificationText)
+            .setSmallIcon(setSmallIcon)
+            .setPriority(setPriority)
+            .setAutoCancel(setAutoCancel)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(notificationText))
+            .build()
+    }
+
 }
