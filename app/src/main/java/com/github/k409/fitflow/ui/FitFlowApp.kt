@@ -68,6 +68,7 @@ import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.isProfileComplete
 import com.github.k409.fitflow.service.RouteTrackingService
 import com.github.k409.fitflow.service.SnackbarManager
+import com.github.k409.fitflow.service.SnackbarMessage
 import com.github.k409.fitflow.ui.common.LocalSnackbarHostState
 import com.github.k409.fitflow.ui.common.SwipeableSnackbar
 import com.github.k409.fitflow.ui.common.noRippleClickable
@@ -142,10 +143,10 @@ fun FitFlowApp(
                     navController = navController,
                     currentScreen = currentScreen,
                     visible = !(
-                        navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                            currentScreen,
-                        )
-                        ) && bottomBarState.value,
+                            navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                                currentScreen,
+                            )
+                            ) && bottomBarState.value,
                     containerColor = if (currentScreen == NavRoutes.Aquarium) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
                 )
             },
@@ -169,11 +170,17 @@ fun FitFlowApp(
 
 @Composable
 private fun SnackbarManagerLaunchedEffect(snackbarHostState: SnackbarHostState) {
+    val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         SnackbarManager.messages.collect { currentMessages ->
             if (currentMessages.isNotEmpty()) {
                 val message = currentMessages[0]
-                val text = message.message
+
+                val text = when (message) {
+                    is SnackbarMessage.StringSnackbar -> message.message
+                    is SnackbarMessage.ResourceSnackbar -> context.getString(message.message)
+                }
 
                 SnackbarManager.setMessageShown(messageId = message.id)
                 snackbarHostState.showSnackbar(message = text, withDismissAction = true)
