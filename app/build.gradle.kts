@@ -1,3 +1,4 @@
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -8,6 +9,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.gms)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 val keystorePropertiesFile: File = rootProject.file("keystore.properties")
@@ -70,6 +72,9 @@ android {
             isDebuggable = false
             manifestPlaceholders["appName"] = "FitFlow"
             signingConfig = signingConfigs.getByName("fitflow-release")
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = true
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -117,6 +122,8 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.google.firebase.analytics)
 
     implementation (libs.androidx.credentials)
     implementation (libs.androidx.credentials.play.services.auth)
