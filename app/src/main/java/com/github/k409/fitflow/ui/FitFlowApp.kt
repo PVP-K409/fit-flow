@@ -75,6 +75,7 @@ import com.exyte.animatednavbar.items.dropletbutton.DropletButton
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.isProfileComplete
+import com.github.k409.fitflow.model.levels
 import com.github.k409.fitflow.service.RouteTrackingService
 import com.github.k409.fitflow.service.SnackbarManager
 import com.github.k409.fitflow.service.SnackbarMessage
@@ -83,7 +84,6 @@ import com.github.k409.fitflow.ui.common.SwipeableSnackbar
 import com.github.k409.fitflow.ui.common.noRippleClickable
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
-import com.github.k409.fitflow.model.levels
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -152,10 +152,10 @@ fun FitFlowApp(
                     navController = navController,
                     currentScreen = currentScreen,
                     visible = !(
-                            navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                                currentScreen,
-                            )
-                            ) && bottomBarState.value,
+                        navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                            currentScreen,
+                        )
+                        ) && bottomBarState.value,
                     containerColor = if (currentScreen == NavRoutes.Aquarium) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
                 )
             },
@@ -274,18 +274,7 @@ fun FitFlowTopBar(
                         points = user.points,
                         xp = user.xp,
                     )
-                } /*else {
-                    UserLevelBadge(
-                        modifier = Modifier.padding(end = 8.dp),
-                        xp = user.xp,
-                        onClick = {
-                            navController.navigate(NavRoutes.Levels.route) {
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                    )
-                }*/
+                }
 
                 TopBarAvatarDropdownMenu(
                     navigateScreen = { route ->
@@ -304,7 +293,7 @@ fun FitFlowTopBar(
 @Composable
 fun TopBarAvatarDropdownMenu(
     navigateScreen: (NavRoutes) -> Unit,
-    avatarPhotoUrl: String = ""
+    avatarPhotoUrl: String = "",
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -346,9 +335,10 @@ fun TopBarAvatarDropdownMenu(
         DropdownMenu(
             modifier = Modifier.widthIn(min = 140.dp),
             expanded = expanded,
-            onDismissRequest = { expanded = false }) {
-
-            DropdownMenuItem(text = { Text(stringResource(R.string.settings)) },
+            onDismissRequest = { expanded = false },
+        ) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.settings)) },
                 onClick = {
                     navigateScreen(NavRoutes.Settings)
                     expanded = false
@@ -356,11 +346,13 @@ fun TopBarAvatarDropdownMenu(
                 leadingIcon = {
                     Icon(
                         Icons.Outlined.Settings,
-                        contentDescription = null
+                        contentDescription = null,
                     )
-                })
+                },
+            )
 
-            DropdownMenuItem(text = { Text(stringResource(R.string.profile_label)) },
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.profile_label)) },
                 onClick = {
                     navigateScreen(NavRoutes.Profile)
                     expanded = false
@@ -368,11 +360,13 @@ fun TopBarAvatarDropdownMenu(
                 leadingIcon = {
                     Icon(
                         Icons.Outlined.Person,
-                        contentDescription = null
+                        contentDescription = null,
                     )
-                })
+                },
+            )
 
-            DropdownMenuItem(text = { Text(stringResource(R.string.levels)) },
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.levels)) },
                 onClick = {
                     navigateScreen(NavRoutes.Levels)
                     expanded = false
@@ -380,11 +374,10 @@ fun TopBarAvatarDropdownMenu(
                 leadingIcon = {
                     Icon(
                         Icons.Outlined.Star,
-                        contentDescription = null
+                        contentDescription = null,
                     )
-                })
-
-
+                },
+            )
         }
     }
 }

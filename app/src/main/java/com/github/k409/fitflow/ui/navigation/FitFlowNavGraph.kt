@@ -105,7 +105,7 @@ fun FitFlowNavGraph(
                         launchSingleTop = true
                         restoreState = true
                     }
-                }
+                },
             )
         }
     }

@@ -50,7 +50,7 @@ import com.github.k409.fitflow.ui.navigation.NavRoutes
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     onNavigate: (NavRoutes) -> Unit,
-    profileViewModel: ProfileViewModel = hiltViewModel()
+    profileViewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val currentUser = profileViewModel.currentUser.collectAsState(initial = null).value
 
@@ -106,7 +106,8 @@ fun ProfileScreen(
 
             ElevatedButton(
                 modifier = Modifier.align(Alignment.CenterEnd),
-                onClick = { onNavigate(NavRoutes.ProfileCreation) }) {
+                onClick = { onNavigate(NavRoutes.ProfileCreation) },
+            ) {
                 Text(text = stringResource(R.string.edit_profile))
             }
         }
@@ -131,7 +132,7 @@ fun ProfileScreen(
             item {
                 WidgetCard(
                     title = stringResource(R.string.xp),
-                    value = currentUser.xp.toString()
+                    value = currentUser.xp.toString(),
                 ) {
                     Icon(
                         modifier = Modifier
@@ -148,7 +149,6 @@ fun ProfileScreen(
             item(span = {
                 GridItemSpan(maxLineSpan)
             }) {
-
                 WidgetCard(title = stringResource(R.string.level_progress)) {
                     Text(
                         text = if (maxXp == Int.MAX_VALUE) {
@@ -164,8 +164,10 @@ fun ProfileScreen(
                     )
 
                     val progressColor =
-                        if (progress >= 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(
-                            alpha = 0.5f
+                        if (progress >= 1) {
+                            MaterialTheme.colorScheme.primary
+                        } else MaterialTheme.colorScheme.primary.copy(
+                            alpha = 0.5f,
                         )
 
                     LinearProgressIndicator(
@@ -183,21 +185,21 @@ fun ProfileScreen(
             item {
                 WidgetCard(
                     title = stringResource(id = R.string.points),
-                    value = currentUser.points.toString()
+                    value = currentUser.points.toString(),
                 )
             }
 
             item {
                 WidgetCard(
                     title = stringResource(R.string.height_cm),
-                    value = currentUser.height.toString()
+                    value = currentUser.height.toString(),
                 )
             }
 
             item {
                 WidgetCard(
                     title = stringResource(R.string.weight_kg),
-                    value = currentUser.weight.toString()
+                    value = currentUser.weight.toString(),
                 )
             }
 
@@ -208,7 +210,7 @@ fun ProfileScreen(
             item {
                 WidgetCard(
                     title = stringResource(R.string.birth_date),
-                    value = currentUser.dateOfBirth
+                    value = currentUser.dateOfBirth,
                 )
             }
         }
@@ -252,18 +254,17 @@ private fun WidgetCard(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
 
                 actions()
             }
-
 
             Spacer(modifier = Modifier.height(3.dp))
 
