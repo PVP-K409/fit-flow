@@ -39,6 +39,7 @@ spotlessPluginGradle = "6.19.0"
 ui = "1.6.7"
 gmsPlugin = "4.4.1"
 firebase-bom = "33.0.0"
+crashlytics= "2.9.9"
 workRuntimeKtx = "2.9.0"
 accompanist = "0.32.0"
 lifecycleRuntimeCompose = "2.7.0"
@@ -64,7 +65,9 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"
 coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coilCompose" }
 compose-pay-button = { module = "com.google.pay.button:compose-pay-button", version.ref = "composePayButton" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-ui-storage = { module = "com.firebaseui:firebase-ui-storage", version.ref = "firebaseUiStorage" }
+google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
@@ -122,3 +125,4 @@ gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPluginGradle" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }

@@ -142,6 +142,15 @@
     <string name="create_exercise_session">Create Exercise Session</string>
     <string name="exercise_session">Exercise Session</string>
     <string name="exercise_session_in_progress">Exercise Session in Progress</string>
+    <string name="profile_label">Profile</string>
+    <string name="profile">Profile</string>
+    <string name="points">Points</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="birth_date">Birth date</string>
+    <string name="level_progress">Level Progress</string>
+    <string name="level">Level</string>
+    <string name="xp">XP</string>
     <string name="aquarium_health_update">Aquarium Health Update</string>
     <string name="updating_aquarium_health_metrics">Updating aquarium health metrics</string>
 </resources>
