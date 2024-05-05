@@ -1,8 +1,10 @@
 package com.github.k409.fitflow.ui.screen.level
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowRightAlt
@@ -18,13 +21,19 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.github.k409.fitflow.model.MarketItem
+import com.github.k409.fitflow.ui.common.Dialog
+import com.github.k409.fitflow.ui.common.item.InventoryItemCardWithoutButtons
 
 @Composable
 fun LevelCard(
@@ -34,15 +43,21 @@ fun LevelCard(
     maxXp: Int,
     userXp: Int,
     icon: Int,
+    rewardItem: MarketItem? = null,
 ) {
     val colors = MaterialTheme.colorScheme
+    val isDialogOpen = remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .background(colors.primaryContainer)
-            .padding(horizontal = 8.dp, vertical = 16.dp),
+            .padding(horizontal = 8.dp, vertical = 16.dp)
+            .clickable {
+                // show what reward the user will get in a popup dialog
+                isDialogOpen.value = true
+            },
     ) {
         Row(
             modifier = Modifier
@@ -147,5 +162,29 @@ fun LevelCard(
                 }
             }
         }
+    }
+    if (isDialogOpen.value && rewardItem != null) {
+        Dialog(
+            title = "Your reward for reaching $name level",
+            onDismiss = { isDialogOpen.value = false },
+            buttonsVisible = false,
+            content = {
+                LazyColumn(
+                    //contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    items(1) {
+                        InventoryItemCardWithoutButtons(
+                            modifier = Modifier,
+                            imageDownloadUrl = rewardItem.phases?.get("Regular")
+                                ?: rewardItem.image,
+                            name = rewardItem.title,
+                            description = rewardItem.description,
+                        )
+                    }
+                }
+            },
+            onSaveClick = { isDialogOpen.value = false },
+        )
     }
 }

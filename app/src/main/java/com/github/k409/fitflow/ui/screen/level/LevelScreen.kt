@@ -13,23 +13,23 @@ import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 
 @Composable
 fun LevelScreen(
-    viewModel: LevelViewModel = hiltViewModel(),
+    viewModel: LevelUpViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.levelUiState.collectAsState()
+    val uiState by viewModel.levelUpUiState.collectAsState()
 
     when (uiState) {
-        is LevelUiState.Loading -> {
+        is LevelUpUiState.Loading -> {
             FitFlowCircularProgressIndicator()
         }
 
-        is LevelUiState.Success -> {
-            LevelScreenContent(uiState = uiState as LevelUiState.Success)
+        is LevelUpUiState.Success -> {
+            LevelScreenContent(uiState = uiState as LevelUpUiState.Success)
         }
     }
 }
 
 @Composable
-private fun LevelScreenContent(uiState: LevelUiState.Success) {
+private fun LevelScreenContent(uiState: LevelUpUiState.Success) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -43,6 +43,7 @@ private fun LevelScreenContent(uiState: LevelUiState.Success) {
                 maxXp = level.maxXP,
                 userXp = uiState.user.xp,
                 icon = level.icon,
+                rewardItem = uiState.rewards.firstOrNull { it.id == level.id + 1000 },
             )
         }
     }
