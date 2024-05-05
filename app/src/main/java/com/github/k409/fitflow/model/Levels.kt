@@ -1,8 +1,8 @@
-package com.github.k409.fitflow.ui.screen.level
+package com.github.k409.fitflow.model
 
 import com.github.k409.fitflow.R
 
-internal val levels = listOf(
+val levels = listOf(
     Level(
         1,
         R.drawable.beginner,
@@ -40,7 +40,7 @@ internal val levels = listOf(
     ),
 )
 
-internal data class Level(
+data class Level(
     val id: Int = -1,
     val icon: Int = -1,
     val name: String = "",

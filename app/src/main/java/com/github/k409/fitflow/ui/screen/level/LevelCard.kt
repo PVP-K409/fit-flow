@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun LevelCard(
     modifier: Modifier = Modifier,
-    id: Int,
     name: String,
     minXp: Int,
     maxXp: Int,

@@ -3,7 +3,7 @@ package com.github.k409.fitflow.data
 import android.util.Log
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.toUser
-import com.github.k409.fitflow.ui.screen.level.levels
+import com.github.k409.fitflow.model.levels
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FieldValue

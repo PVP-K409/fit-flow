@@ -19,6 +19,7 @@ import com.github.k409.fitflow.ui.screen.level.LevelUpScreen
 import com.github.k409.fitflow.ui.screen.login.LoginScreen
 import com.github.k409.fitflow.ui.screen.market.MarketScreen
 import com.github.k409.fitflow.ui.screen.profile.ProfileCreationScreen
+import com.github.k409.fitflow.ui.screen.profile.ProfileScreen
 import com.github.k409.fitflow.ui.screen.settings.SettingsScreen
 import com.github.k409.fitflow.ui.screen.you.YouScreen
 
@@ -95,6 +96,17 @@ fun FitFlowNavGraph(
 
         composable(NavRoutes.LevelUp.route) {
             LevelUpScreen()
+        }
+
+        composable(NavRoutes.Profile.route) {
+            ProfileScreen(
+                onNavigate = { route ->
+                    navController.navigate(route.route) {
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
         }
     }
 }

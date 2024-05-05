@@ -8,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.k409.fitflow.model.levels
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 
 @Composable
@@ -37,7 +38,6 @@ private fun LevelScreenContent(uiState: LevelUiState.Success) {
             val level = levels[index]
 
             LevelCard(
-                id = level.id,
                 name = level.name,
                 minXp = level.minXP,
                 maxXp = level.maxXP,
