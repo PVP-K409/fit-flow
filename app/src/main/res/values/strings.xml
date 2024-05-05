@@ -151,4 +151,6 @@
     <string name="level_progress">Level Progress</string>
     <string name="level">Level</string>
     <string name="xp">XP</string>
+    <string name="aquarium_health_update">Aquarium Health Update</string>
+    <string name="updating_aquarium_health_metrics">Updating aquarium health metrics</string>
 </resources>
