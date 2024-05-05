@@ -213,7 +213,7 @@ private fun AquariumLayout(
                         if (item.item.type == "fish") {
                             BouncingDraggableFish(
                                 initialFishSize = fishSize,
-                                fishDrawableId = R.drawable.gold_fish_dead,
+                                fishDrawableId = R.drawable.primary_fish,
                                 imageDownloadUrl = item.item.phases?.get(phase.name)
                                     ?: item.item.image,
                             )
