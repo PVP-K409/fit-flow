@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
@@ -30,6 +31,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -152,10 +154,10 @@ fun FitFlowApp(
                     navController = navController,
                     currentScreen = currentScreen,
                     visible = !(
-                        navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
-                            currentScreen,
-                        )
-                        ) && bottomBarState.value,
+                            navController.previousBackStackEntry != null && !NavRoutes.bottomNavBarItems.contains(
+                                currentScreen,
+                            )
+                            ) && bottomBarState.value,
                     containerColor = if (currentScreen == NavRoutes.Aquarium) Color(0xFFE4C68B) else MaterialTheme.colorScheme.surface,
                 )
             },
@@ -191,8 +193,10 @@ private fun SnackbarManagerLaunchedEffect(snackbarHostState: SnackbarHostState) 
                     is SnackbarMessage.ResourceSnackbar -> context.getString(message.message)
                 }
 
+                SnackbarManager.setCurrentMessage(message)
                 SnackbarManager.setMessageShown(messageId = message.id)
                 snackbarHostState.showSnackbar(message = text, withDismissAction = true)
+                SnackbarManager.setCurrentMessage(null)
             }
         }
     }
@@ -374,6 +378,22 @@ fun TopBarAvatarDropdownMenu(
                 leadingIcon = {
                     Icon(
                         Icons.Outlined.Star,
+                        contentDescription = null,
+                    )
+                },
+            )
+
+            HorizontalDivider()
+
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.report_issue)) },
+                onClick = {
+                    navigateScreen(NavRoutes.ReportIssue)
+                    expanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Outlined.BugReport,
                         contentDescription = null,
                     )
                 },
