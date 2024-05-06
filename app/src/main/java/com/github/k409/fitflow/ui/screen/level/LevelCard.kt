@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowRightAlt
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -51,10 +52,6 @@ fun LevelCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clickable {
-                // show what reward the user will get in a popup dialog
-                isDialogOpen.value = true
-            }
             .clip(RoundedCornerShape(8.dp))
             .background(colors.primaryContainer)
             .padding(horizontal = 8.dp, vertical = 16.dp),
@@ -90,7 +87,18 @@ fun LevelCard(
                         fontWeight = FontWeight.Bold,
                         color = colors.primary,
                     )
-
+                    if (rewardItem != null) {
+                        Icon(
+                            modifier = Modifier
+                                .size(22.dp)
+                                .clickable {
+                                    // show what reward the user will get in a popup dialog
+                                    isDialogOpen.value = true
+                                },
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = null,
+                        )
+                    }
                     Spacer(modifier = Modifier.weight(1f))
 
                     if (maxXp == Int.MAX_VALUE) {
