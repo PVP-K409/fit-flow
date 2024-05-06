@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.screen.activity.exerciseLog
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,12 +38,14 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.health.connect.client.PermissionController
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.ExerciseRecord
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.navigation.NavRoutes
+import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
@@ -55,7 +59,22 @@ fun ExercisesLogPage(
     val exerciseRecords by exerciseLogViewModel.exerciseRecords.collectAsState()
     val loading by exerciseLogViewModel.loading.collectAsState()
 
+    val coroutineScope = rememberCoroutineScope()
+    val permissionContract = PermissionController.createRequestPermissionResultContract()
+    val launcher = rememberLauncherForActivityResult(contract = permissionContract) {
+        coroutineScope.launch {
+            if (exerciseLogViewModel.permissionsGranted()) {
+                exerciseLogViewModel.loadExerciseRecords()
+            } else {
+                navController.navigate(NavRoutes.Aquarium.route)
+            }
+        }
+    }
+
     LaunchedEffect(key1 = Unit) {
+        if (!exerciseLogViewModel.permissionsGranted()) {
+            launcher.launch(exerciseLogViewModel.permissions)
+        }
         exerciseLogViewModel.loadExerciseRecords()
     }
 
