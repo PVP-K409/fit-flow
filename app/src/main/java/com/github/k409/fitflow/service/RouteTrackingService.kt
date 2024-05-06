@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Looper
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
@@ -66,6 +67,7 @@ class RouteTrackingService : LifecycleService() {
         var circle: Circle? = null
         val timeRunInSecond = MutableStateFlow(0L)
         val distanceInKm = MutableStateFlow(0f)
+        val avgSpeed = MutableStateFlow(0f)
         val isTracking = MutableStateFlow(false)
         val sessionActive = MutableStateFlow(false)
         val sessionPaused = MutableStateFlow(false)
@@ -167,6 +169,7 @@ class RouteTrackingService : LifecycleService() {
         timeRunInMillis.value = 0L
         timeRunInSecond.value = 0L
         distanceInKm.value = 0f
+        avgSpeed.value = 0f
         map.value = null
         pathPoints.value = mutableListOf()
         locationClient.removeLocationUpdates(locationCallback)
@@ -274,6 +277,12 @@ class RouteTrackingService : LifecycleService() {
                     updatedPathPoints.last().last().longitude
                 )
                 distanceInKm.value += distance/1000
+                if (timeRunInSecond.value > 0 && distanceInKm.value > 0.01f) {
+                    avgSpeed.value = distanceInKm.value / (timeRunInSecond.value / 3600.toFloat())
+                } else {
+                    avgSpeed.value = 0f
+                }
+                Log.d("RouteTrackingService", "Distance: ${distanceInKm.value}, Avg Speed: ${avgSpeed.value}")
             }
             pathPoints.value = updatedPathPoints
             addLatestPolyline()
