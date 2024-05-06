@@ -3,18 +3,23 @@ package com.github.k409.fitflow.service
 import android.util.Log
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.records.DistanceRecord
+import androidx.health.connect.client.records.ExerciseRoute
 import androidx.health.connect.client.records.ExerciseRouteResult
 import androidx.health.connect.client.records.ExerciseSessionRecord
+import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.request.ReadRecordsRequest
 import androidx.health.connect.client.time.TimeRangeFilter
+import androidx.health.connect.client.units.Energy
+import androidx.health.connect.client.units.Length
 import com.github.k409.fitflow.model.ExerciseRecord
 import com.github.k409.fitflow.model.HealthConnectExercises
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.Instant
+import java.time.ZoneOffset
 import javax.inject.Inject
 import kotlin.math.round
 
@@ -38,7 +43,7 @@ class HealthConnectService @Inject constructor(
                 RoundingMode.CEILING,
             ).toDouble()
         } catch (e: Exception) {
-            Log.d("Aggregate Distance", "Distance could not be read")
+            Log.e("Aggregate Distance", "Distance could not be read")
             0.0
         }
     }
@@ -56,7 +61,7 @@ class HealthConnectService @Inject constructor(
             )
             response[StepsRecord.COUNT_TOTAL]?.toDouble() ?: 0.0
         } catch (e: Exception) {
-            Log.d("Aggregate Steps", "Steps could not be read")
+            Log.e("Aggregate Steps", "Steps could not be read", e)
             0.0
         }
     }
@@ -75,7 +80,7 @@ class HealthConnectService @Inject constructor(
             val calories = response[TotalCaloriesBurnedRecord.ENERGY_TOTAL]?.inCalories?.toLong() ?: 0L
             round(calories.toDouble() / 1000).toLong()
         } catch (e: Exception) {
-            Log.d("Aggregate Calories", "Calories could not be read")
+            Log.d("Aggregate Calories", "Calories could not be read", e)
             0L
         }
     }
@@ -159,4 +164,61 @@ class HealthConnectService @Inject constructor(
             return mutableListOf()
         }
     }
+
+    suspend fun writeExerciseSession(
+        exerciseType: Int,
+        startTime: Instant,
+        startZoneOffset: ZoneOffset,
+        endTime: Instant,
+        endZoneOffset: ZoneOffset,
+        distanceInKm: Float,
+        calories: Long,
+        route: List<ExerciseRoute.Location>,
+    ) {
+        val distanceInMeters = (distanceInKm * 1000).toDouble()
+        val length = Length.meters(distanceInMeters)
+        val energy = Energy.calories(calories.toDouble())
+        Log.d("Write exercise", "energy: ${energy.inCalories}")
+
+        try {
+            val records = mutableListOf<Record>()
+            records.add(
+                ExerciseSessionRecord(
+                    exerciseType = exerciseType,
+                    startTime = startTime,
+                    startZoneOffset = startZoneOffset,
+                    endTime = endTime,
+                    endZoneOffset = endZoneOffset,
+                    exerciseRoute = ExerciseRoute(route),
+                )
+            )
+
+            records.add(
+                DistanceRecord(
+                    startTime = startTime,
+                    startZoneOffset = startZoneOffset,
+                    endTime = endTime,
+                    endZoneOffset = endZoneOffset,
+                    distance = length,
+                )
+            )
+
+            records.add(
+                TotalCaloriesBurnedRecord(
+                    startTime = startTime,
+                    startZoneOffset = startZoneOffset,
+                    endTime = endTime,
+                    endZoneOffset = endZoneOffset,
+                    energy = energy,
+                )
+            )
+
+            client.insertRecords(records)
+        } catch (e: Exception) {
+            Log.e("Write Exercise", "Failed to write exercise", e)
+        }
+
+    }
+
+
 }

@@ -63,9 +63,7 @@ fun ExercisesLogPage(
     val permissionContract = PermissionController.createRequestPermissionResultContract()
     val launcher = rememberLauncherForActivityResult(contract = permissionContract) {
         coroutineScope.launch {
-            if (exerciseLogViewModel.permissionsGranted()) {
-                exerciseLogViewModel.loadExerciseRecords()
-            } else {
+            if (!exerciseLogViewModel.permissionsGranted()) {
                 navController.navigate(NavRoutes.Aquarium.route)
             }
         }
@@ -74,8 +72,9 @@ fun ExercisesLogPage(
     LaunchedEffect(key1 = Unit) {
         if (!exerciseLogViewModel.permissionsGranted()) {
             launcher.launch(exerciseLogViewModel.permissions)
+        } else {
+            exerciseLogViewModel.loadExerciseRecords()
         }
-        exerciseLogViewModel.loadExerciseRecords()
     }
 
     if (loading) {
