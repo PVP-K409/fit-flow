@@ -56,6 +56,7 @@ fun ExerciseSessionScreen(
     val sessionActive = RouteTrackingService.sessionActive.collectAsState()
     val exercise = RouteTrackingService.selectedExercise.collectAsState()
     val timeInSecond = RouteTrackingService.timeRunInSecond.collectAsState()
+    val distance = RouteTrackingService.distanceInKm.collectAsState()
 
     var selectedExercise by remember { mutableStateOf("") }
     val expandedDropdown by remember { mutableStateOf(ExpandedDropdown.NONE) }
@@ -63,7 +64,9 @@ fun ExerciseSessionScreen(
     var showConfirmationDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit) {
-        fineLocationPermissionState.launchMultiplePermissionRequest()
+        if (!fineLocationPermissionState.allPermissionsGranted) {
+            fineLocationPermissionState.launchMultiplePermissionRequest()
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -79,6 +82,7 @@ fun ExerciseSessionScreen(
                         modifier = Modifier.padding(16.dp),
                         timeInSeconds = timeInSecond.value,
                     )
+                    DistanceText(distance = distance.value)
                 }
                 Box(modifier = Modifier.fillMaxHeight(0.8f)) {
                     AndroidView({ MapView(it).apply { onCreate(null) } }) { mapView ->
@@ -173,6 +177,12 @@ fun TimeDisplay(
         style = textStyle,
         modifier = modifier,
     )
+}
+
+@Composable
+fun DistanceText(distance: Float) {
+    val formattedDistance = "%.2f km".format(distance)
+    Text(text = formattedDistance)
 }
 
 @Composable

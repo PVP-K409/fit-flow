@@ -65,13 +65,13 @@ class RouteTrackingService : LifecycleService() {
         val map = MutableStateFlow<GoogleMap?>(null)
         var circle: Circle? = null
         val timeRunInSecond = MutableStateFlow(0L)
+        val distanceInKm = MutableStateFlow(0f)
         val isTracking = MutableStateFlow(false)
         val sessionActive = MutableStateFlow(false)
         val sessionPaused = MutableStateFlow(false)
         val selectedExercise = MutableStateFlow("")
         val pathPoints = MutableStateFlow<Polylines>(mutableListOf())
         val fineLocationPermissions = listOf(
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
         )
@@ -166,6 +166,7 @@ class RouteTrackingService : LifecycleService() {
         selectedExercise.value = ""
         timeRunInMillis.value = 0L
         timeRunInSecond.value = 0L
+        distanceInKm.value = 0f
         map.value = null
         pathPoints.value = mutableListOf()
         locationClient.removeLocationUpdates(locationCallback)
@@ -265,6 +266,15 @@ class RouteTrackingService : LifecycleService() {
                 updatedPathPoints.add(mutableListOf())
             }
             updatedPathPoints.last().add(position)
+            if (updatedPathPoints.isNotEmpty() && updatedPathPoints.last().size>1) {
+                val distance = calculateDistance(
+                    updatedPathPoints.last()[updatedPathPoints.last().size - 2].latitude,
+                    updatedPathPoints.last()[updatedPathPoints.last().size - 2].longitude,
+                    updatedPathPoints.last().last().latitude,
+                    updatedPathPoints.last().last().longitude
+                )
+                distanceInKm.value += distance/1000
+            }
             pathPoints.value = updatedPathPoints
             addLatestPolyline()
             moveCameraToUser()
@@ -332,5 +342,16 @@ class RouteTrackingService : LifecycleService() {
             }
             timeRun += lapTime
         }
+    }
+
+    private fun calculateDistance(
+        startLatitude: Double,
+        startLongitude: Double,
+        endLatitude: Double,
+        endLongitude: Double
+    ) : Float {
+        val results = FloatArray(1)
+        Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, results)
+        return results[0]
     }
 }
