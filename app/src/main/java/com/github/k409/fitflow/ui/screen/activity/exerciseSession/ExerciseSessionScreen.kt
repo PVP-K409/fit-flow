@@ -189,12 +189,6 @@ fun TimeDisplay(
 }
 
 @Composable
-fun Calories(calories : Long) {
-    val formattedCalories = "$calories cal"
-    Text(text = formattedCalories)
-}
-
-@Composable
 fun ControlButtons(
     sessionActive: Boolean,
     onStart: () -> Unit,
