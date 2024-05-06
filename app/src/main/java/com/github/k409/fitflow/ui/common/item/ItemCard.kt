@@ -116,6 +116,7 @@ fun InventoryItemCardWithoutButtons(
         imageDownloadUrl = imageDownloadUrl,
         name = name,
         description = description,
+        expandedOnly = true,
     ) {
     }
 }
@@ -243,6 +244,7 @@ private fun InventoryItemCardWrapper(
     imageDownloadUrl: String,
     name: String,
     description: String,
+    expandedOnly: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colors = colorScheme
@@ -304,22 +306,24 @@ private fun InventoryItemCardWrapper(
                         .fillMaxWidth(),
                     contentAlignment = Alignment.CenterEnd,
                 ) {
-                    IconButton(
-                        modifier = Modifier
-                            .rotate(rotationState),
-                        onClick = {
-                            expandedState = !expandedState
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = null,
-                        )
+                    if (!expandedOnly) {
+                        IconButton(
+                            modifier = Modifier
+                                .rotate(rotationState),
+                            onClick = {
+                                expandedState = !expandedState
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = null,
+                            )
+                        }
                     }
                 }
             }
 
-            AnimatedVisibility(visible = expandedState) {
+            AnimatedVisibility(visible = expandedState || expandedOnly) {
                 Column(modifier = modifier.padding(8.dp)) {
                     Text(
                         text = description,

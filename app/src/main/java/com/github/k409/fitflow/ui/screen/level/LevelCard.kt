@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,11 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.MarketItem
 import com.github.k409.fitflow.ui.common.Dialog
 import com.github.k409.fitflow.ui.common.item.InventoryItemCardWithoutButtons
@@ -51,13 +51,13 @@ fun LevelCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .background(colors.primaryContainer)
-            .padding(horizontal = 8.dp, vertical = 16.dp)
             .clickable {
                 // show what reward the user will get in a popup dialog
                 isDialogOpen.value = true
-            },
+            }
+            .clip(RoundedCornerShape(8.dp))
+            .background(colors.primaryContainer)
+            .padding(horizontal = 8.dp, vertical = 16.dp),
     ) {
         Row(
             modifier = Modifier
@@ -165,12 +165,12 @@ fun LevelCard(
     }
     if (isDialogOpen.value && rewardItem != null) {
         Dialog(
-            title = "Your reward for reaching $name level",
+            title = stringResource(R.string.your_reward_for_reaching_level, name),
             onDismiss = { isDialogOpen.value = false },
             buttonsVisible = false,
             content = {
                 LazyColumn(
-                    //contentPadding = PaddingValues(16.dp),
+                    // contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     items(1) {
