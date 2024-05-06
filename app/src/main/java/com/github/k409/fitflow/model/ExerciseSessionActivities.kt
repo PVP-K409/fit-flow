@@ -12,6 +12,7 @@ enum class ExerciseSessionActivities(
             validExerciseTypes = setOf(79),
             locationUpdateInterval = 10000L,
             fastestLocationUpdateInterval = 5000L,
+            met = 3.0
         ),
     ),
     Running(
@@ -21,6 +22,7 @@ enum class ExerciseSessionActivities(
             validExerciseTypes = setOf(56, 57),
             locationUpdateInterval = 5000L,
             fastestLocationUpdateInterval = 3000L,
+            met = 8.8
         ),
     ),
     Biking(
@@ -30,6 +32,7 @@ enum class ExerciseSessionActivities(
             validExerciseTypes = setOf(8, 9),
             locationUpdateInterval = 4000L,
             fastestLocationUpdateInterval = 2000L,
+            met = 6.0
         ),
     ),
 }
@@ -40,6 +43,7 @@ data class ExerciseSessionActivity(
     val validExerciseTypes: Set<Int>,
     val locationUpdateInterval: Long,
     val fastestLocationUpdateInterval: Long,
+    val met: Double,
 )
 
 fun getAllExerciseSessionActivitiesTypes(): List<String> {

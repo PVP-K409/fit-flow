@@ -127,6 +127,18 @@ class UserRepository @Inject constructor(
                 snapshot.documents.mapNotNull { it.toObject<User>() }
             }
 
+    suspend fun getUserWeight(): Double {
+        val uid = auth.currentUser?.uid ?: return 0.0
+
+        return getUserDocumentReference(uid)
+            .get()
+            .await()
+            .toObject<User>()
+            ?.weight ?: 0.0
+    }
+
+
+
     suspend fun updateUserField(field: String, value: Any) {
         val uid = auth.currentUser?.uid ?: return
 

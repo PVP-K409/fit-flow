@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Looper
 import android.util.Log
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
@@ -16,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.model.ExerciseSessionActivity
 import com.github.k409.fitflow.model.NotificationChannel
 import com.github.k409.fitflow.model.NotificationId
@@ -39,6 +41,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import javax.inject.Inject
 
 private const val DEFAULT_LOCATION_UPDATE_INTERVAL = 4000L
@@ -55,19 +58,26 @@ typealias Polylines = MutableList<Polyline>
 class RouteTrackingService : LifecycleService() {
 
     @Inject lateinit var locationClient: FusedLocationProviderClient
+    @Inject lateinit var userRepository: UserRepository
+
     private lateinit var notificationBuilder: NotificationCompat.Builder
 
     private var exerciseSessionActivity: ExerciseSessionActivity? = null
     private var locationUpdateInterval = DEFAULT_LOCATION_UPDATE_INTERVAL
     private var fastestLocationUpdateInterval = DEFAULT_FASTEST_LOCATION_UPDATE_INTERVAL
     private val timeRunInMillis = MutableStateFlow(0L)
+    private var userWeight: Double = 0.0
 
     companion object {
         val map = MutableStateFlow<GoogleMap?>(null)
         var circle: Circle? = null
+
         val timeRunInSecond = MutableStateFlow(0L)
         val distanceInKm = MutableStateFlow(0f)
         val avgSpeed = MutableStateFlow(0f)
+        val calories = MutableStateFlow(0L)
+
+
         val isTracking = MutableStateFlow(false)
         val sessionActive = MutableStateFlow(false)
         val sessionPaused = MutableStateFlow(false)
@@ -170,6 +180,7 @@ class RouteTrackingService : LifecycleService() {
         timeRunInSecond.value = 0L
         distanceInKm.value = 0f
         avgSpeed.value = 0f
+        calories.value = 0L
         map.value = null
         pathPoints.value = mutableListOf()
         locationClient.removeLocationUpdates(locationCallback)
@@ -185,6 +196,10 @@ class RouteTrackingService : LifecycleService() {
         fastestLocationUpdateInterval = exerciseSessionActivity!!.fastestLocationUpdateInterval
         isTracking.value = true
         sessionActive.value = true
+
+        CoroutineScope(Dispatchers.Main).launch {
+            userWeight = userRepository.getUserWeight()
+        }
 
         notificationBuilder = createNotificationChannelBuilder()
 
@@ -276,13 +291,15 @@ class RouteTrackingService : LifecycleService() {
                     updatedPathPoints.last().last().latitude,
                     updatedPathPoints.last().last().longitude
                 )
+
                 distanceInKm.value += distance/1000
+
                 if (timeRunInSecond.value > 0 && distanceInKm.value > 0.01f) {
                     avgSpeed.value = distanceInKm.value / (timeRunInSecond.value / 3600.toFloat())
                 } else {
                     avgSpeed.value = 0f
                 }
-                Log.d("RouteTrackingService", "Distance: ${distanceInKm.value}, Avg Speed: ${avgSpeed.value}")
+                calories.value = calculateCalories(exerciseSessionActivity!!.met.toFloat(), userWeight, timeRunInSecond.value / 3600.toFloat())
             }
             pathPoints.value = updatedPathPoints
             addLatestPolyline()
@@ -362,5 +379,10 @@ class RouteTrackingService : LifecycleService() {
         val results = FloatArray(1)
         Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, results)
         return results[0]
+    }
+
+    private fun calculateCalories(met: Float, weightInKg: Double, durationInHours: Float): Long {
+        Log.d("RouteTrackingService", "MET: $met, weight: $weightInKg, duration: $durationInHours")
+        return (met * weightInKg * durationInHours).toLong()
     }
 }

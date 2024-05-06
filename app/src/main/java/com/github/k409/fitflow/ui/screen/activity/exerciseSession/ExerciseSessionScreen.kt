@@ -55,9 +55,11 @@ fun ExerciseSessionScreen(
     val sessionPaused = RouteTrackingService.sessionPaused.collectAsState()
     val sessionActive = RouteTrackingService.sessionActive.collectAsState()
     val exercise = RouteTrackingService.selectedExercise.collectAsState()
+
     val timeInSecond = RouteTrackingService.timeRunInSecond.collectAsState()
     val distance = RouteTrackingService.distanceInKm.collectAsState()
     val avgSpeed = RouteTrackingService.avgSpeed.collectAsState()
+    val calories = RouteTrackingService.calories.collectAsState()
 
     var selectedExercise by remember { mutableStateOf("") }
     val expandedDropdown by remember { mutableStateOf(ExpandedDropdown.NONE) }
@@ -85,6 +87,7 @@ fun ExerciseSessionScreen(
                     )
                     DistanceText(distance = distance.value)
                     AverageSpeedText(avgSpeed = avgSpeed.value)
+                    Calories(calories = calories.value)
                 }
                 Box(modifier = Modifier.fillMaxHeight(0.8f)) {
                     AndroidView({ MapView(it).apply { onCreate(null) } }) { mapView ->
@@ -191,6 +194,11 @@ fun DistanceText(distance: Float) {
 fun AverageSpeedText(avgSpeed: Float) {
     val formattedAvgSpeed = "%.2f km/h".format(avgSpeed)
     Text(text = formattedAvgSpeed)
+}
+@Composable
+fun Calories(calories : Long) {
+    val formattedCalories = "$calories kcal"
+    Text(text = formattedCalories)
 }
 
 @Composable
