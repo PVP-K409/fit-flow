@@ -39,24 +39,24 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun LevelUpScreen(
-    viewModel: LevelUpViewModel = hiltViewModel(),
+    viewModel: LevelViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.levelUpUiState.collectAsState()
+    val uiState by viewModel.levelUiState.collectAsState()
 
     when (uiState) {
-        is LevelUpUiState.Loading -> {
+        is LevelUiState.Loading -> {
             FitFlowCircularProgressIndicator()
         }
 
-        is LevelUpUiState.Success -> {
-            LevelUpScreenContent(viewModel = viewModel, uiState = uiState as LevelUpUiState.Success)
+        is LevelUiState.Success -> {
+            LevelUpScreenContent(viewModel = viewModel, uiState = uiState as LevelUiState.Success)
         }
     }
 }
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-private fun LevelUpScreenContent(viewModel: LevelUpViewModel, uiState: LevelUpUiState.Success) {
+private fun LevelUpScreenContent(viewModel: LevelViewModel, uiState: LevelUiState.Success) {
     val clicked = remember { mutableStateOf(false) }
     val level = levels.first { it.minXP <= uiState.user.xp && it.maxXP >= uiState.user.xp }
     val coroutineScope = rememberCoroutineScope()

@@ -153,4 +153,5 @@
     <string name="xp">XP</string>
     <string name="aquarium_health_update">Aquarium Health Update</string>
     <string name="updating_aquarium_health_metrics">Updating aquarium health metrics</string>
+    <string name="your_reward_for_reaching_level">Your reward for reaching %1$s level</string>
 </resources>

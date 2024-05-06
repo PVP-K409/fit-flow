@@ -43,6 +43,7 @@ private fun LevelScreenContent(uiState: LevelUiState.Success) {
                 maxXp = level.maxXP,
                 userXp = uiState.user.xp,
                 icon = level.icon,
+                rewardItem = uiState.rewards.firstOrNull { it.id == level.id + 1000 },
             )
         }
     }

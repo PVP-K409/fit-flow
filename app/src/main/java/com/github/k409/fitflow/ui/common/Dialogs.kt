@@ -103,7 +103,7 @@ fun <T> Dialog(
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start,
+                    textAlign = TextAlign.Center,
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
