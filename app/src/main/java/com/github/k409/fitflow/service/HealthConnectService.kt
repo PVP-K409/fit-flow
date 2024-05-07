@@ -190,7 +190,7 @@ class HealthConnectService @Inject constructor(
                     endTime = endTime,
                     endZoneOffset = endZoneOffset,
                     exerciseRoute = ExerciseRoute(route),
-                )
+                ),
             )
 
             records.add(
@@ -200,7 +200,7 @@ class HealthConnectService @Inject constructor(
                     endTime = endTime,
                     endZoneOffset = endZoneOffset,
                     distance = length,
-                )
+                ),
             )
 
             records.add(
@@ -210,15 +210,12 @@ class HealthConnectService @Inject constructor(
                     endTime = endTime,
                     endZoneOffset = endZoneOffset,
                     energy = energy,
-                )
+                ),
             )
 
             client.insertRecords(records)
         } catch (e: Exception) {
             Log.e("Write Exercise", "Failed to write exercise", e)
         }
-
     }
-
-
 }

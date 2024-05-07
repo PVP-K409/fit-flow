@@ -5,8 +5,8 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.ZoneOffset
 
-data class ExerciseSession (
-    var exerciseType : Int = 0,
+data class ExerciseSession(
+    var exerciseType: Int = 0,
     var startTime: Instant = Instant.now(),
     var startZoneOffset: ZoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now()),
     var endTime: Instant = Instant.now(),
@@ -14,5 +14,4 @@ data class ExerciseSession (
     var distance: Float = 0.0f,
     var calories: Long = 0L,
     var route: List<ExerciseRoute.Location> = listOf(),
-    )
-
+)

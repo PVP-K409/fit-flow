@@ -52,12 +52,13 @@ private const val TIMER_UPDATE_INTERVAL = 1000L
 private val notificationChannelId = NotificationChannel.ExerciseSession.channelId
 private val notificationId = NotificationId.ExerciseSession.notificationId
 
-
 @AndroidEntryPoint
 class RouteTrackingService : LifecycleService() {
 
     @Inject lateinit var locationClient: FusedLocationProviderClient
+
     @Inject lateinit var userRepository: UserRepository
+
     @Inject lateinit var healthConnectClient: HealthConnectService
 
     private lateinit var notificationBuilder: NotificationCompat.Builder
@@ -78,7 +79,6 @@ class RouteTrackingService : LifecycleService() {
         val calories = MutableStateFlow(0L)
 
         val exerciseSessionToWrite = MutableStateFlow(ExerciseSession())
-
 
         val isTracking = MutableStateFlow(false)
         val selectedExercise = MutableStateFlow("")
@@ -177,7 +177,7 @@ class RouteTrackingService : LifecycleService() {
         exerciseSessionToWrite.value.distance = distanceInKm.value
         exerciseSessionToWrite.value.calories = calories.value
         exerciseSessionToWrite.value.route = pathPoints.value
-        val exerciseSession  = exerciseSessionToWrite.value.copy()
+        val exerciseSession = exerciseSessionToWrite.value.copy()
         CoroutineScope(Dispatchers.Main).launch {
             healthConnectClient.writeExerciseSession(
                 exerciseSession.exerciseType,
@@ -189,7 +189,6 @@ class RouteTrackingService : LifecycleService() {
                 exerciseSession.calories,
                 exerciseSession.route,
             )
-
         }
         exerciseSessionToWrite.value = ExerciseSession()
         isTracking.value = false
@@ -297,15 +296,15 @@ class RouteTrackingService : LifecycleService() {
             val updatedPathPoints = pathPoints.value.toMutableList()
 
             updatedPathPoints.add(healthConnectLocation)
-            if (updatedPathPoints.size>1) {
+            if (updatedPathPoints.size > 1) {
                 val distance = calculateDistance(
                     updatedPathPoints[updatedPathPoints.size - 2].latitude,
                     updatedPathPoints[updatedPathPoints.size - 2].longitude,
                     updatedPathPoints.last().latitude,
-                    updatedPathPoints.last().longitude
+                    updatedPathPoints.last().longitude,
                 )
 
-                distanceInKm.value += distance/1000
+                distanceInKm.value += distance / 1000
 
                 if (timeRunInSecond.value > 0 && distanceInKm.value > 0.01f) {
                     avgSpeed.value = distanceInKm.value / (timeRunInSecond.value / 3600.toFloat())
@@ -381,8 +380,8 @@ class RouteTrackingService : LifecycleService() {
         startLatitude: Double,
         startLongitude: Double,
         endLatitude: Double,
-        endLongitude: Double
-    ) : Float {
+        endLongitude: Double,
+    ): Float {
         val results = FloatArray(1)
         Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, results)
         return results[0]
