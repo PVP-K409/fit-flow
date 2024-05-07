@@ -10,8 +10,8 @@ enum class ExerciseSessionActivities(
             type = "Walking",
             icon = R.drawable.walk,
             validExerciseType = 79,
-            locationUpdateInterval = 10000L,
-            fastestLocationUpdateInterval = 5000L,
+            locationUpdateInterval = 15000L,
+            fastestLocationUpdateInterval = 10000L,
             met = 3.0
         ),
     ),
@@ -20,8 +20,8 @@ enum class ExerciseSessionActivities(
             type = "Running",
             icon = R.drawable.run,
             validExerciseType = 56,
-            locationUpdateInterval = 5000L,
-            fastestLocationUpdateInterval = 3000L,
+            locationUpdateInterval = 10000L,
+            fastestLocationUpdateInterval = 6000L,
             met = 8.8
         ),
     ),
@@ -30,8 +30,8 @@ enum class ExerciseSessionActivities(
             type = "Biking",
             icon = R.drawable.bike,
             validExerciseType = 8,
-            locationUpdateInterval = 4000L,
-            fastestLocationUpdateInterval = 2000L,
+            locationUpdateInterval = 8000L,
+            fastestLocationUpdateInterval = 5000L,
             met = 6.0
         ),
     ),
