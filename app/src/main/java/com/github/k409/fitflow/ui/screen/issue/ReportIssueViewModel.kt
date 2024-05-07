@@ -17,7 +17,7 @@ class ReportIssueViewModel @Inject constructor(
     private val auth: FirebaseAuth,
 ) : ViewModel() {
 
-    suspend fun reportIssue(state: ReportIssueUiState) : Boolean {
+    suspend fun reportIssue(state: ReportIssueUiState): Boolean {
         if (!validate(state)) {
             SnackbarManager.showNotDuplicateMessage(R.string.please_fill_all_fields)
 
@@ -52,5 +52,3 @@ data class ReportIssueUiState(
     val title: String,
     val description: String,
 )
-
-

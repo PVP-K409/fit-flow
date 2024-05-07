@@ -73,8 +73,6 @@ fun ProfileScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
-
         Spacer(modifier = Modifier.height(8.dp))
 
         LazyVerticalGrid(
@@ -135,7 +133,8 @@ fun ProfileScreen(
                 GridItemSpan(maxLineSpan)
             }) {
                 WidgetCard(
-                    title = stringResource(id = R.string.user_name), value = currentUser.name
+                    title = stringResource(id = R.string.user_name),
+                    value = currentUser.name,
                 )
             }
 

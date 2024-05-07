@@ -56,12 +56,11 @@ fun ReportIssueScreen(
         ReportIssueCard(
             reportIssueViewModel = reportIssueViewModel,
             onNavigateBack = navigateBack,
-            onReportIssue = { reportIssueViewModel.reportIssue(it) }
+            onReportIssue = { reportIssueViewModel.reportIssue(it) },
         )
 
         GithubIssueCard()
     }
-
 }
 
 @Composable
@@ -89,12 +88,12 @@ private fun ReportIssueCard(
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.Start
+                horizontalAlignment = Alignment.Start,
             ) {
                 Text(
                     modifier = Modifier.padding(bottom = 6.dp),
@@ -132,8 +131,8 @@ private fun ReportIssueCard(
                     val success = onReportIssue(
                         ReportIssueUiState(
                             title = title,
-                            description = description
-                        )
+                            description = description,
+                        ),
                     )
 
                     if (success) {
@@ -155,7 +154,7 @@ private fun GithubIssueCard(
     val githubIntent = remember {
         Intent(
             Intent.ACTION_VIEW,
-            Uri.parse(GITHUB_ISSUES_URL)
+            Uri.parse(GITHUB_ISSUES_URL),
         )
     }
 
@@ -168,7 +167,7 @@ private fun GithubIssueCard(
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
         ) {
             Text(
                 modifier = Modifier.padding(bottom = 6.dp),
@@ -186,7 +185,7 @@ private fun GithubIssueCard(
 
             Box(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 FilledTonalButton(onClick = {
                     context.startActivity(githubIntent)
@@ -195,7 +194,7 @@ private fun GithubIssueCard(
                         modifier = Modifier.size(20.dp),
                         painter = painterResource(id = R.drawable.github_mark),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
@@ -224,7 +223,7 @@ private fun TextArea(
         label = { Text(text = label) },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next,
-            keyboardType = keyboardType
+            keyboardType = keyboardType,
         ),
         keyboardActions = KeyboardActions(onNext = {
             val isMoved = focusManager.moveFocus(FocusDirection.Down)
@@ -246,7 +245,7 @@ private fun TextField(
     initialTextFieldValue: String = "",
     onValueChange: (String) -> Unit,
     keyboardType: KeyboardType = KeyboardType.Text,
-    singleLine: Boolean = true
+    singleLine: Boolean = true,
 ) {
     var text by remember { mutableStateOf(TextFieldValue(initialTextFieldValue)) }
     val focusManager = LocalFocusManager.current
@@ -256,7 +255,7 @@ private fun TextField(
         label = { Text(text = label) },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next,
-            keyboardType = keyboardType
+            keyboardType = keyboardType,
         ),
         keyboardActions = KeyboardActions(onNext = {
             val isMoved = focusManager.moveFocus(FocusDirection.Down)
@@ -269,6 +268,6 @@ private fun TextField(
             onValueChange(it.text)
         },
         singleLine = singleLine,
-        modifier = modifier
+        modifier = modifier,
     )
 }
