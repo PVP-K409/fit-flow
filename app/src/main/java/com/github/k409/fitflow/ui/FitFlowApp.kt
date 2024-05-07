@@ -77,13 +77,11 @@ import com.exyte.animatednavbar.items.dropletbutton.DropletButton
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.isProfileComplete
-import com.github.k409.fitflow.model.levels
 import com.github.k409.fitflow.service.RouteTrackingService
 import com.github.k409.fitflow.service.SnackbarManager
 import com.github.k409.fitflow.service.SnackbarMessage
 import com.github.k409.fitflow.ui.common.LocalSnackbarHostState
 import com.github.k409.fitflow.ui.common.SwipeableSnackbar
-import com.github.k409.fitflow.ui.common.noRippleClickable
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import java.util.Locale
@@ -399,36 +397,6 @@ fun TopBarAvatarDropdownMenu(
                 },
             )
         }
-    }
-}
-
-@Composable
-fun UserLevelBadge(
-    modifier: Modifier = Modifier,
-    xp: Int,
-    onClick: () -> Unit,
-) {
-    val userLevel = levels.firstOrNull { xp in it.minXP..it.maxXP }
-
-    if (userLevel == null) {
-        return
-    }
-
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Icon(
-            painter = painterResource(id = userLevel.icon),
-            contentDescription = "Level badge",
-            tint = Color.Unspecified,
-            modifier = Modifier
-                .size(36.dp)
-                .noRippleClickable(
-                    onClick = onClick,
-                ),
-        )
     }
 }
 
