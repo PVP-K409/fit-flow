@@ -12,7 +12,7 @@ enum class ExerciseSessionActivities(
             validExerciseType = 79,
             locationUpdateInterval = 15000L,
             fastestLocationUpdateInterval = 10000L,
-            met = 3.0
+            met = 3.0,
         ),
     ),
     Running(
@@ -22,7 +22,7 @@ enum class ExerciseSessionActivities(
             validExerciseType = 56,
             locationUpdateInterval = 10000L,
             fastestLocationUpdateInterval = 6000L,
-            met = 8.8
+            met = 8.8,
         ),
     ),
     Biking(
@@ -32,7 +32,7 @@ enum class ExerciseSessionActivities(
             validExerciseType = 8,
             locationUpdateInterval = 8000L,
             fastestLocationUpdateInterval = 5000L,
-            met = 6.0
+            met = 6.0,
         ),
     ),
 }

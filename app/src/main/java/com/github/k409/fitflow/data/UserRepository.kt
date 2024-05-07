@@ -137,8 +137,6 @@ class UserRepository @Inject constructor(
             ?.weight ?: 0.0
     }
 
-
-
     suspend fun updateUserField(field: String, value: Any) {
         val uid = auth.currentUser?.uid ?: return
 
