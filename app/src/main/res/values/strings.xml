@@ -159,4 +159,5 @@
     <string name="open_settings">Open Settings</string>
     <string name="location_permission_is_needed_to_start_the_session_and_display_the_map">Location permission is needed to start the session and display the map.</string>
     <string name="are_you_sure_you_want_stop_this_exercise_session">Are you sure you want stop this exercise session?</string>
+    <string name="are_you_sure_you_want_start_this_exercise_session">Are you sure you want start this exercise session?</string>
 </resources>

@@ -138,7 +138,7 @@ fun ExerciseSessionScreen(
         }
         if (showConfirmationDialogStart) {
             ConfirmDialog(
-                dialogTitle = "Are you sure you want start this exercise session?",
+                dialogTitle = stringResource(R.string.are_you_sure_you_want_start_this_exercise_session),
                 dialogText = "Exercise: $selectedExercise",
                 onDismiss = { showConfirmationDialogStart = false },
                 onConfirm = {
