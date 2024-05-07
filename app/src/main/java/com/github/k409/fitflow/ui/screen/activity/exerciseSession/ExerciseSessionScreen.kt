@@ -153,7 +153,7 @@ fun ExerciseSessionScreen(
         }
         if (showConfirmationDialogStop) {
             ConfirmDialog(
-                dialogTitle = "Are you sure you want stop this exercise session?",
+                dialogTitle = stringResource(R.string.are_you_sure_you_want_stop_this_exercise_session),
                 dialogText = """
                     Distance: ${String.format(Locale.US, "%.2f", distance.value)} km
                     Time: ${formatTimeFromSeconds(timeInSecond.value)}
@@ -244,7 +244,7 @@ fun ToSettings() {
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
-            "Location permission is needed to start the session and display the map.",
+            stringResource(R.string.location_permission_is_needed_to_start_the_session_and_display_the_map),
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 16.dp),
@@ -258,7 +258,7 @@ fun ToSettings() {
             },
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("Open Settings")
+            Text(stringResource(R.string.open_settings))
         }
     }
 }
