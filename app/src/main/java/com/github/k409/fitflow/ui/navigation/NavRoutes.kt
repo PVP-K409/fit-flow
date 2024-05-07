@@ -11,6 +11,7 @@ import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material.icons.outlined.Leaderboard
 import androidx.compose.material.icons.outlined.LocalPlay
 import androidx.compose.material.icons.outlined.PersonOutline
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.StackedLineChart
 import androidx.compose.material.icons.outlined.Store
@@ -44,9 +45,10 @@ sealed class NavRoutes(
             ExerciseSession,
             LevelUp,
             Profile,
+            Search,
         )
         val bottomNavBarItems =
-            listOf(Aquarium, Activity, Hydration, Goals, Marketplace, You)
+            listOf(Aquarium, Activity, Hydration, Goals, Marketplace,Search, You)
 
         fun getRoute(route: String?): NavRoutes {
             return navRoutes.find { it.route == route } ?: Default
@@ -98,6 +100,13 @@ sealed class NavRoutes(
         R.string.global,
         Icons.Outlined.Leaderboard,
         R.drawable.leaderboard_48,
+    )
+
+    data object Search : NavRoutes(
+        "search",
+        R.string.search,
+        Icons.Outlined.Search,
+        R.drawable.search_48,
     )
 
     data object GoalCreation : NavRoutes("goalCreation", R.string.goal_creation, Icons.Outlined.Add)

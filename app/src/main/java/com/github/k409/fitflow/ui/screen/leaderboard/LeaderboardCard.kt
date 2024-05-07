@@ -34,7 +34,6 @@ import com.github.k409.fitflow.ui.common.thenIf
 
 @Composable
 fun LeaderboardCard(
-    modifier: Modifier = Modifier,
     user: User,
     rank: Int,
     currentUser: Boolean,

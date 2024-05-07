@@ -64,6 +64,7 @@
     <string name="inventory">Inventory</string>
     <string name="levels">Levels</string>
     <string name="global">Global leaderboard</string>
+    <string name="search">User search</string>
     <string name="goal_creation">Create goal</string>
     <string name="walking">Walking</string>
     <string name="daily">Daily</string>
@@ -154,4 +155,5 @@
     <string name="aquarium_health_update">Aquarium Health Update</string>
     <string name="updating_aquarium_health_metrics">Updating aquarium health metrics</string>
     <string name="your_reward_for_reaching_level">Your reward for reaching %1$s level</string>
+    <string name="send_a_friend_request">Send a friend request</string>
 </resources>

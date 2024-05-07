@@ -17,6 +17,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -139,6 +140,16 @@ class UserRepository @Inject constructor(
             Log.e("User Repository", e.toString())
         }
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun searchUserByEmail(email: String): Flow<String?> =
+        db.collection(USERS_COLLECTION)
+            .whereEqualTo("email", email)
+            .snapshots()
+            .flatMapLatest { snapshot ->
+                flowOf(snapshot.documents.first().getString("uid"))
+            }
+
     private fun getUserDocumentReference(uid: String) =
         db.collection(USERS_COLLECTION)
             .document(uid)
