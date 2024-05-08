@@ -55,4 +55,6 @@ class StepCounterService(context: Context) {
             SensorManager.SENSOR_DELAY_NORMAL,
         )
     }
+
+    fun isSensorAvailable() = sensor != null
 }
