@@ -58,18 +58,19 @@ class ActivityViewModel @Inject constructor(
 
     private fun loadTodaySteps() {
         viewModelScope.launch {
+            _loading.value = true
             val today = LocalDate.now().toString()
             val step = stepsRepository.getSteps(today)
 
-            if (step == null) { // new day
-                viewModelScope.launch {
-                    updateTodayStepsManually()
-                    _todaySteps.value =
-                        stepsRepository.getSteps(today) // Update step after the suspend function completes
-                }
-            } else {
+            if ( step == null) {
+                updateTodayStepsManually()
+                _todaySteps.value =
+                    stepsRepository.getSteps(today)
+            }
+            else {
                 _todaySteps.value = step
             }
+            _loading.value = false
         }
     }
 
@@ -92,7 +93,6 @@ class ActivityViewModel @Inject constructor(
 
         val stepGoal = if (dailyStepRecord == null || dailyStepRecord.stepGoal == 0L) {
             val goalService = GoalService(stepsRepository)
-            //_loading.value = true
             goalService.calculateStepTarget(today, today, stepsRepository).toLong()
         } else {
             dailyStepRecord.stepGoal
@@ -152,7 +152,6 @@ class ActivityViewModel @Inject constructor(
         _todaySteps.value = newDailyStepRecord
 
         stepsRepository.updateSteps(newDailyStepRecord)
-        _loading.value = false
     }
 
     suspend fun getStepRecord(date: LocalDate): DailyStepRecord? {
