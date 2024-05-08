@@ -163,4 +163,10 @@
     <string name="fill_the_form_to_report_an_issue">Fill the form to report an issue</string>
     <string name="write_a_github_issue">Write a GitHub issue</string>
     <string name="write_github_issue_description">If you have a GitHub account, you can write an issue on the GitHub repository. There you can track the progress of the issue and see when it is resolved.</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="location_permission_is_needed_to_start_the_session_and_display_the_map">Location permission is needed to start the session and display the map.</string>
+    <string name="are_you_sure_you_want_stop_this_exercise_session">Are you sure you want stop this exercise session?</string>
+    <string name="are_you_sure_you_want_start_this_exercise_session">Are you sure you want start this exercise session?</string>
 </resources>

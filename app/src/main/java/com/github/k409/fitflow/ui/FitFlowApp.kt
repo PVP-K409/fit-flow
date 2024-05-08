@@ -98,7 +98,7 @@ fun FitFlowApp(
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
     val currentScreen = NavRoutes.getRoute(currentDestination?.route)
 
-    val trackingActive = RouteTrackingService.sessionActive.collectAsState().value
+    val trackingActive = RouteTrackingService.isTracking.collectAsState().value
 
     val startDestination = when {
         user.uid.isEmpty() -> NavRoutes.Login.route
