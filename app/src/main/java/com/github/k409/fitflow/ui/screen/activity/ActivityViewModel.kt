@@ -103,7 +103,7 @@ class ActivityViewModel @Inject constructor(
                     totalDistance = distance,
                     stepGoal = stepGoal,
 
-                    )
+                )
             } else if (hasRebooted || currentSteps <= 1) { // if current day and reboot has happened
                 newDailyStepRecord = DailyStepRecord(
                     totalSteps = if (permissionsGranted) healthConnectSteps else dailyStepRecord.stepCounterSteps + currentSteps,
@@ -148,8 +148,7 @@ class ActivityViewModel @Inject constructor(
             stepsRepository.updateSteps(newDailyStepRecord)
         } catch (e: Exception) {
             Log.e("ActivityViewModel", "Error updating steps", e)
-        }
-        finally {
+        } finally {
             _loading.value = false
         }
     }
