@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -57,6 +58,7 @@ import kotlinx.coroutines.isActive
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
+import kotlin.random.Random
 
 @Composable
 fun AquariumContent(
@@ -70,7 +72,6 @@ fun AquariumContent(
 
     var aquariumBackground by remember { mutableStateOf(AfternoonBackground) }
 
-    // at the start of each minute check what background to use
     LaunchedEffect(Unit) {
         while (isActive) {
             when (LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))) {
@@ -141,7 +142,7 @@ private fun AquariumLayout(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+        ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -181,46 +182,98 @@ private fun AquariumLayout(
                     .padding(bottom = 10.dp),
                 verticalArrangement = Arrangement.Bottom,
             ) {
+
+                if (waterLevelAnimation <= 0f) {
+                    val fishesCount = uiState.fishes.size
+                    val bones = listOf(R.drawable.fish_bone_1, R.drawable.fish_bone_2)
+                    val rotation = remember { Random.nextInt(360) }
+
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.Bottom,
+                    ) {
+                        for (i in 0 until fishesCount) {
+                            FishImage(
+                                modifier = Modifier
+                                    .padding(bottom = 20.dp)
+                                    .rotate(rotation.toFloat()),
+                                fishSize = 90.dp,
+                                fishDrawableId = bones[i % 2],
+                            )
+                        }
+                    }
+                }
+
                 Box(
                     modifier = Modifier
                         .fillMaxHeight(waterLevelAnimation),
                 ) {
                     val phase = getPhase(healthLevel)
 
-                    Box(
+                    DecorationsBox(
                         modifier = Modifier
                             .height(150.dp)
                             .align(Alignment.BottomCenter),
-                    ) {
-                        for (item in uiState.aquariumItems) {
-                            if (item.item.type == "decoration") {
-                                BouncingDraggableFish(
-                                    initialFishSize = 85.dp,
-                                    imageDownloadUrl = item.item.image,
-                                    bounceEnabled = false,
-                                    initialPosition = Offset(item.offsetX, item.offsetY),
-                                    onDragEnd = { offset ->
-                                        inventoryViewModel.updateInventoryItem(
-                                            item.copy(offsetX = offset.x, offsetY = offset.y),
-                                        )
-                                    },
-                                    uniformSize = true,
-                                )
-                            }
-                        }
-                    }
-                    for (item in uiState.aquariumItems) {
-                        if (item.item.type == "fish") {
+                        uiState = uiState,
+                        inventoryViewModel = inventoryViewModel
+                    )
+
+                    for ((index, item) in uiState.fishes.withIndex()) {
+                        val xOffset = (width / uiState.fishes.size) * (index).toFloat()
+
+                        if (waterLevel > 0f && healthLevel > 0f) {
                             BouncingDraggableFish(
                                 initialFishSize = fishSize,
                                 fishDrawableId = R.drawable.primary_fish,
+                                initialPosition = Offset(xOffset, 0f),
+                                imageDownloadUrl = item.item.phases?.get(phase.name)
+                                    ?: item.item.image,
+                            )
+                        } else {
+                            BouncingDraggableFish(
+                                modifier = Modifier
+                                    .padding(top = 20.dp),
+                                initialFishSize = fishSize,
+                                fishDrawableId = R.drawable.primary_fish,
+                                bounceEnabled = false,
+                                initialPosition = Offset(xOffset, 0f),
                                 imageDownloadUrl = item.item.phases?.get(phase.name)
                                     ?: item.item.image,
                             )
                         }
                     }
+
+
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun DecorationsBox(
+    modifier: Modifier = Modifier,
+    uiState: AquariumUiState.Success,
+    inventoryViewModel: InventoryViewModel
+) {
+    Box(
+        modifier = modifier,
+    ) {
+
+        for (item in uiState.decorations) {
+            BouncingDraggableFish(
+                initialFishSize = 85.dp,
+                imageDownloadUrl = item.item.image,
+                bounceEnabled = false,
+                initialPosition = Offset(item.offsetX, item.offsetY),
+                onDragEnd = { offset ->
+                    inventoryViewModel.updateInventoryItem(
+                        item.copy(offsetX = offset.x, offsetY = offset.y),
+                    )
+                },
+                uniformSize = true,
+            )
         }
     }
 }
