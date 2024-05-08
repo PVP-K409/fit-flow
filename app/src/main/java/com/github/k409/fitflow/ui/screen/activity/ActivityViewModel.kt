@@ -33,7 +33,7 @@ class ActivityViewModel @Inject constructor(
     private val _todaySteps = MutableStateFlow<DailyStepRecord?>(null)
     val todaySteps: StateFlow<DailyStepRecord?> = _todaySteps
 
-    private val _loading = MutableStateFlow(false)
+    private val _loading = MutableStateFlow(true)
     val loading: StateFlow<Boolean> = _loading
 
     val permissions = setOf(
@@ -92,7 +92,7 @@ class ActivityViewModel @Inject constructor(
 
         val stepGoal = if (dailyStepRecord == null || dailyStepRecord.stepGoal == 0L) {
             val goalService = GoalService(stepsRepository)
-            _loading.value = true
+            //_loading.value = true
             goalService.calculateStepTarget(today, today, stepsRepository).toLong()
         } else {
             dailyStepRecord.stepGoal
