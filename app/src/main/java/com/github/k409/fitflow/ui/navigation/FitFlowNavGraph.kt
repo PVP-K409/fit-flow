@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.screen.activity.ActivityScreen
 import com.github.k409.fitflow.ui.screen.activity.exerciseSession.ExerciseSessionScreen
 import com.github.k409.fitflow.ui.screen.aquarium.AquariumScreen
-import com.github.k409.fitflow.ui.screen.friendSearchInvite.FriendsScreen
+import com.github.k409.fitflow.ui.screen.friends.FriendsScreen
 import com.github.k409.fitflow.ui.screen.goals.GoalCreation
 import com.github.k409.fitflow.ui.screen.goals.GoalsScreen
 import com.github.k409.fitflow.ui.screen.hydration.HydrationScreen
@@ -75,7 +75,7 @@ fun FitFlowNavGraph(
             GlobalLeaderboardScreen()
         }
 
-        composable(NavRoutes.Search.route) {
+        composable(NavRoutes.Friends.route) {
             FriendsScreen()
         }
 

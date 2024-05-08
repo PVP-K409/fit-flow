@@ -45,10 +45,10 @@ sealed class NavRoutes(
             ExerciseSession,
             LevelUp,
             Profile,
-            Search,
+            Friends,
         )
         val bottomNavBarItems =
-            listOf(Aquarium, Activity, Hydration, Goals, Marketplace,Search, You)
+            listOf(Aquarium, Activity, Hydration, Goals, Marketplace,Friends, You)
 
         fun getRoute(route: String?): NavRoutes {
             return navRoutes.find { it.route == route } ?: Default
@@ -102,9 +102,9 @@ sealed class NavRoutes(
         R.drawable.leaderboard_48,
     )
 
-    data object Search : NavRoutes(
-        "search",
-        R.string.search,
+    data object Friends : NavRoutes(
+        "friends",
+        R.string.friends,
         Icons.Outlined.Search,
         R.drawable.search_48,
     )

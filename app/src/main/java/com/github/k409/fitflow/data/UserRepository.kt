@@ -147,7 +147,11 @@ class UserRepository @Inject constructor(
             .whereEqualTo("email", email)
             .snapshots()
             .flatMapLatest { snapshot ->
-                flowOf(snapshot.documents.first().getString("uid"))
+                if (snapshot.documents.isNotEmpty()) {
+                    flowOf(snapshot.documents.first().getString("uid"))
+                } else {
+                    flowOf(null)
+                }
             }
 
     private fun getUserDocumentReference(uid: String) =
