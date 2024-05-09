@@ -116,8 +116,8 @@ fun ExercisesLogPage(
         val maxDistance = if (exerciseRecords.maxOfOrNull { it.distance.toFloat() } != null) exerciseRecords.maxOf { it.distance.toFloat() } else 0f
         val maxDuration = if (exerciseRecords.maxOfOrNull { Duration.between(it.startTime, it.endTime).toMinutes() } != null) exerciseRecords.maxOf { Duration.between(it.startTime, it.endTime).toMinutes() } else 0f
         val exerciseTypes = exerciseRecords.mapNotNull { it.exerciseType }.distinct()
-        var startDate by remember { mutableStateOf( if (exerciseRecords.isNotEmpty()) exerciseRecords.minOf { it.startTime }.atZone(ZoneId.systemDefault()) else ZonedDateTime.now() - Duration.ofDays(1)) }
-        var endDate by remember { mutableStateOf( if (exerciseRecords.isNotEmpty()) exerciseRecords.maxOf { it.endTime }.atZone(ZoneId.systemDefault()) else ZonedDateTime.now()) }
+        var startDate by remember { mutableStateOf(if (exerciseRecords.isNotEmpty()) exerciseRecords.minOf { it.startTime }.atZone(ZoneId.systemDefault()) else ZonedDateTime.now() - Duration.ofDays(1)) }
+        var endDate by remember { mutableStateOf(if (exerciseRecords.isNotEmpty()) exerciseRecords.maxOf { it.endTime }.atZone(ZoneId.systemDefault()) else ZonedDateTime.now()) }
 
         var distanceSliderPosition by remember { mutableStateOf(0f..maxDistance) }
         var durationSliderPosition by remember { mutableStateOf(0f..maxDuration.toFloat()) }
@@ -135,15 +135,17 @@ fun ExercisesLogPage(
         Box(modifier = Modifier.fillMaxSize()) {
             val filteredRecords = exerciseRecords.filter {
                 it.distance in distanceSliderPosition.start..distanceSliderPosition.endInclusive &&
-                        Duration.between(it.startTime, it.endTime).toMinutes() in durationSliderPosition.start.toInt()..durationSliderPosition.endInclusive.toInt() &&
-                        it.startTime.truncatedTo(ChronoUnit.DAYS) >= startDate.toInstant().truncatedTo(ChronoUnit.DAYS) && it.endTime.truncatedTo(ChronoUnit.DAYS) <= endDate.toInstant().truncatedTo(ChronoUnit.DAYS) &&
-                        selectedExercise[exerciseTypes.indexOf(it.exerciseType)] }
+                    Duration.between(it.startTime, it.endTime).toMinutes() in durationSliderPosition.start.toInt()..durationSliderPosition.endInclusive.toInt() &&
+                    it.startTime.truncatedTo(ChronoUnit.DAYS) >= startDate.toInstant().truncatedTo(ChronoUnit.DAYS) && it.endTime.truncatedTo(ChronoUnit.DAYS) <= endDate.toInstant().truncatedTo(ChronoUnit.DAYS) &&
+                    selectedExercise[exerciseTypes.indexOf(it.exerciseType)]
+            }
             if (filteredRecords.isEmpty()) {
                 NoExerciseLogsFound()
             } else {
                 Box(modifier = Modifier.fillMaxSize()) {
                     LazyColumn {
-                        items(filteredRecords
+                        items(
+                            filteredRecords,
                         ) { record ->
                             ExerciseRecordCard(record)
                         }
@@ -187,21 +189,19 @@ fun ExercisesLogPage(
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             ) {
                 Dialog(
                     title = stringResource(R.string.filter_exercise_log),
                     onDismiss = { isDialogOpen.value = false },
                     onSaveClick = { isDialogOpen.value = false },
                 ) {
-
                     Column(
                         modifier = Modifier
                             .verticalScroll(rememberScrollState())
                             .weight(weight = 1f, fill = false),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-
                         FlowRow(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -209,7 +209,7 @@ fun ExercisesLogPage(
                                 .background(MaterialTheme.colorScheme.secondaryContainer)
                                 .padding(5.dp),
 
-                            ) {
+                        ) {
                             Text(
                                 text = stringResource(R.string.distance_km),
                                 color = MaterialTheme.colorScheme.primary,
@@ -225,9 +225,10 @@ fun ExercisesLogPage(
                                 text = String.format(
                                     Locale.ENGLISH,
                                     "%.2f ",
-                                    distanceSliderPosition.start
-                                ), color = MaterialTheme.colorScheme.secondary,
-                                style = MaterialTheme.typography.bodyMedium
+                                    distanceSliderPosition.start,
+                                ),
+                                color = MaterialTheme.colorScheme.secondary,
+                                style = MaterialTheme.typography.bodyMedium,
                             )
 
                             Spacer(modifier = Modifier.weight(1f))
@@ -236,9 +237,10 @@ fun ExercisesLogPage(
                                 text = String.format(
                                     Locale.ENGLISH,
                                     "%.2f ",
-                                    distanceSliderPosition.endInclusive
-                                ), color = MaterialTheme.colorScheme.secondary,
-                                style = MaterialTheme.typography.bodyMedium
+                                    distanceSliderPosition.endInclusive,
+                                ),
+                                color = MaterialTheme.colorScheme.secondary,
+                                style = MaterialTheme.typography.bodyMedium,
                             )
                         }
 
@@ -259,15 +261,16 @@ fun ExercisesLogPage(
                                 value = durationSliderPosition,
                                 onValueChange = { range -> durationSliderPosition = range },
                                 steps = maxDuration.toInt() - 1,
-                                valueRange = 0f..maxDuration.toFloat()
+                                valueRange = 0f..maxDuration.toFloat(),
                             )
                             Text(
                                 text = String.format(
                                     Locale.ENGLISH,
                                     "%.2f ",
-                                    durationSliderPosition.start
-                                ), color = MaterialTheme.colorScheme.secondary,
-                                style = MaterialTheme.typography.bodyMedium
+                                    durationSliderPosition.start,
+                                ),
+                                color = MaterialTheme.colorScheme.secondary,
+                                style = MaterialTheme.typography.bodyMedium,
                             )
 
                             Spacer(modifier = Modifier.weight(1f))
@@ -276,12 +279,13 @@ fun ExercisesLogPage(
                                 text = String.format(
                                     Locale.ENGLISH,
                                     "%.0f ",
-                                    durationSliderPosition.endInclusive
-                                ), color = MaterialTheme.colorScheme.secondary,
-                                style = MaterialTheme.typography.bodyMedium
+                                    durationSliderPosition.endInclusive,
+                                ),
+                                color = MaterialTheme.colorScheme.secondary,
+                                style = MaterialTheme.typography.bodyMedium,
                             )
                         }
-                        Row (
+                        Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly,
                         ) {
@@ -289,12 +293,14 @@ fun ExercisesLogPage(
                                 TextField(
                                     value = startDate.format(formatter) + " - " + endDate.format(formatter),
                                     onValueChange = {},
-                                    label = { Text(
-                                        text = stringResource(R.string.date_range),
-                                        color = MaterialTheme.colorScheme.primary,
-                                        style = MaterialTheme.typography.labelLarge,
-                                        modifier = Modifier.padding(bottom = 5.dp),
-                                    ) },
+                                    label = {
+                                        Text(
+                                            text = stringResource(R.string.date_range),
+                                            color = MaterialTheme.colorScheme.primary,
+                                            style = MaterialTheme.typography.labelLarge,
+                                            modifier = Modifier.padding(bottom = 5.dp),
+                                        )
+                                    },
                                     textStyle = MaterialTheme.typography.bodyMedium,
                                     colors = TextFieldDefaults.colors(
                                         focusedTextColor = MaterialTheme.colorScheme.secondary,
@@ -325,17 +331,24 @@ fun ExercisesLogPage(
                                 confirmButton = {
                                     TextButton(
                                         onClick = {
-                                            startDate = ZonedDateTime.ofInstant(datePickerState.selectedStartDateMillis?.let {
-                                                Instant.ofEpochMilli(
-                                                    it
-                                                )
-                                            }, ZoneId.systemDefault())
-                                            endDate = ZonedDateTime.ofInstant(datePickerState.selectedEndDateMillis?.let {
-                                                Instant.ofEpochMilli(
-                                                    it
-                                                )
-                                            }, ZoneId.systemDefault())
-                                            showDatePicker = false},
+                                            startDate = ZonedDateTime.ofInstant(
+                                                datePickerState.selectedStartDateMillis?.let {
+                                                    Instant.ofEpochMilli(
+                                                        it,
+                                                    )
+                                                },
+                                                ZoneId.systemDefault(),
+                                            )
+                                            endDate = ZonedDateTime.ofInstant(
+                                                datePickerState.selectedEndDateMillis?.let {
+                                                    Instant.ofEpochMilli(
+                                                        it,
+                                                    )
+                                                },
+                                                ZoneId.systemDefault(),
+                                            )
+                                            showDatePicker = false
+                                        },
                                     ) {
                                         Text(stringResource(R.string.confirm))
                                     }
@@ -346,7 +359,7 @@ fun ExercisesLogPage(
                                     ) {
                                         Text(stringResource(R.string.cancel))
                                     }
-                                }
+                                },
                             ) {
                                 DateRangePicker(
                                     state = datePickerState,
@@ -376,7 +389,7 @@ fun ExercisesLogPage(
                                     label = {
                                         Text(
                                             text = type,
-                                            color = MaterialTheme.colorScheme.secondary
+                                            color = MaterialTheme.colorScheme.secondary,
                                         )
                                     },
                                     selected = selectedExercise[exerciseTypes.indexOf(type)],
@@ -390,7 +403,7 @@ fun ExercisesLogPage(
                                             Icon(
                                                 imageVector = Icons.Outlined.Done,
                                                 contentDescription = "Done icon",
-                                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                                modifier = Modifier.size(FilterChipDefaults.IconSize),
                                             )
                                         }
                                     } else {
