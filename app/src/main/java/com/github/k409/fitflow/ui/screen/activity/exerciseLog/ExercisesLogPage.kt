@@ -78,6 +78,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.Locale
 
 @SuppressLint("RememberReturnType")
@@ -121,7 +122,7 @@ fun ExercisesLogPage(
         var distanceSliderPosition by remember { mutableStateOf(0f..maxDistance) }
         var durationSliderPosition by remember { mutableStateOf(0f..maxDuration.toFloat()) }
         val selectedExercise = remember { mutableStateListOf<Boolean>() }
-        selectedExercise.addAll(exerciseTypes.map { false })
+        selectedExercise.addAll(exerciseTypes.map { true })
 
         val datePickerState = rememberDateRangePickerState(
             initialSelectedStartDateMillis = startDate.toInstant().toEpochMilli(),
@@ -132,12 +133,18 @@ fun ExercisesLogPage(
         )
 
         Box(modifier = Modifier.fillMaxSize()) {
-            if (exerciseRecords.isEmpty()) {
+            val filteredRecords = exerciseRecords.filter {
+                it.distance in distanceSliderPosition.start..distanceSliderPosition.endInclusive &&
+                        Duration.between(it.startTime, it.endTime).toMinutes() in durationSliderPosition.start.toInt()..durationSliderPosition.endInclusive.toInt() &&
+                        it.startTime.truncatedTo(ChronoUnit.DAYS) >= startDate.toInstant().truncatedTo(ChronoUnit.DAYS) && it.endTime.truncatedTo(ChronoUnit.DAYS) <= endDate.toInstant().truncatedTo(ChronoUnit.DAYS) &&
+                        selectedExercise[exerciseTypes.indexOf(it.exerciseType)] }
+            if (filteredRecords.isEmpty()) {
                 NoExerciseLogsFound()
             } else {
                 Box(modifier = Modifier.fillMaxSize()) {
                     LazyColumn {
-                        items(exerciseRecords) { record ->
+                        items(filteredRecords
+                        ) { record ->
                             ExerciseRecordCard(record)
                         }
                     }
@@ -183,7 +190,7 @@ fun ExercisesLogPage(
                     .fillMaxWidth()
             ) {
                 Dialog(
-                    title = "Filter exercise log",
+                    title = stringResource(R.string.filter_exercise_log),
                     onDismiss = { isDialogOpen.value = false },
                     onSaveClick = { isDialogOpen.value = false },
                 ) {
@@ -204,7 +211,7 @@ fun ExercisesLogPage(
 
                             ) {
                             Text(
-                                text = "Distance (km)",
+                                text = stringResource(R.string.distance_km),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.labelLarge,
                                 modifier = Modifier.padding(start = 12.dp),
@@ -243,7 +250,7 @@ fun ExercisesLogPage(
                                 .padding(5.dp),
                         ) {
                             Text(
-                                text = "Duration (minutes)",
+                                text = stringResource(R.string.duration_minutes),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.labelLarge,
                                 modifier = Modifier.padding(start = 12.dp),
@@ -283,7 +290,7 @@ fun ExercisesLogPage(
                                     value = startDate.format(formatter) + " - " + endDate.format(formatter),
                                     onValueChange = {},
                                     label = { Text(
-                                        text = "Date range",
+                                        text = stringResource(R.string.date_range),
                                         color = MaterialTheme.colorScheme.primary,
                                         style = MaterialTheme.typography.labelLarge,
                                         modifier = Modifier.padding(bottom = 5.dp),
@@ -357,7 +364,7 @@ fun ExercisesLogPage(
                             maxItemsInEachRow = 2,
                         ) {
                             Text(
-                                text = "Type",
+                                text = stringResource(R.string.exercise_type),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.labelLarge,
                                 modifier = Modifier
@@ -546,13 +553,12 @@ fun NoExerciseLogsFound() {
         Text(
             modifier = Modifier
                 .padding(top = 16.dp),
-            // TODO : add to string resources
-            text = "It seems that you have not been active recently",
+            text = stringResource(R.string.it_seems_that_you_have_not_been_active_recently),
             style = MaterialTheme.typography.titleMedium,
             fontSize = 16.sp,
         )
         Text(
-            text = "Try manually logging the exercises",
+            text = stringResource(R.string.try_manually_logging_the_exercises),
             fontSize = 10.sp,
         )
     }
