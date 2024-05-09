@@ -48,11 +48,12 @@ internal fun ActivityPage(activityViewModel: ActivityViewModel) {
     var selectedDateRecord by remember { mutableStateOf(todaySteps) }
 
     LaunchedEffect(key1 = Unit) {
+        activityViewModel.checkForNewDay()
         if (!activityViewModel.permissionsGranted()) {
             launcher.launch(activityViewModel.permissions)
+        } else {
+            activityViewModel.updateTodayStepsManually()
         }
-
-        activityViewModel.updateTodayStepsManually()
 
         if (selectedDate.value == LocalDate.now()) {
             selectedDateRecord = todaySteps
