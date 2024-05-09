@@ -151,7 +151,7 @@ private fun AquariumLayout(
                 alpha = backgroundAlpha,
             ),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
@@ -202,7 +202,7 @@ private fun AquariumLayout(
                             .height(150.dp)
                             .align(Alignment.BottomCenter),
                         uiState = uiState,
-                        onDecorationDragEnd = onDecorationDragEnd
+                        onDecorationDragEnd = onDecorationDragEnd,
                     )
 
                     FishContainer(
@@ -211,7 +211,7 @@ private fun AquariumLayout(
                         waterLevel = waterLevelAnimation,
                         healthLevel = healthLevel,
                         fishSize = fishSize,
-                        phase = phase
+                        phase = phase,
                     )
                 }
             }
@@ -222,7 +222,7 @@ private fun AquariumLayout(
 @Composable
 private fun FishBonesContainer(
     waterLevelAnimation: Float,
-    uiState: AquariumUiState.Success
+    uiState: AquariumUiState.Success,
 ) {
     if (waterLevelAnimation <= 0f) {
         val fishesCount = uiState.fishes.size
@@ -255,7 +255,7 @@ private fun FishContainer(
     waterLevel: Float,
     healthLevel: Float,
     fishSize: Dp,
-    phase: FishPhase
+    phase: FishPhase,
 ) {
     for ((index, item) in uiState.fishes.withIndex()) {
         val xOffset = (width / uiState.fishes.size) * (index).toFloat()
