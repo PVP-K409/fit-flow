@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.PersonOff
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -41,6 +42,7 @@ fun FriendCard(
     user: User,
     coroutineScope: CoroutineScope,
     friendsViewModel: FriendsViewModel,
+    friendRequest: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -101,7 +103,7 @@ fun FriendCard(
                         .clip(MaterialTheme.shapes.medium)
                         .padding(8.dp),
                     text = user.email,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
 
@@ -111,30 +113,50 @@ fun FriendCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
-                    Button(
-                        modifier = Modifier
-                            .padding(start = 6.dp),
-                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-                        onClick = {
-                            coroutineScope.launch {
-                                friendsViewModel.acceptFriendRequest(user.uid)
+                    if(friendRequest) {
+                        Button(
+                            modifier = Modifier
+                                .padding(start = 6.dp),
+                            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                            onClick = {
+                                coroutineScope.launch {
+                                    friendsViewModel.acceptFriendRequest(user.uid)
+                                }
                             }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.CheckCircle,
+                                contentDescription = null,
+                            )
                         }
-                    ) {
-                        Text(text = "Accept")
                     }
 
                     Button(
-                        modifier = Modifier
-                            ,
+                        modifier = Modifier.padding(start = 6.dp),
                         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error),
                         onClick = {
-                            coroutineScope.launch {
-                                friendsViewModel.declineFriendRequest(user.uid)
+                            if(friendRequest) {
+                                coroutineScope.launch {
+                                    friendsViewModel.declineFriendRequest(user.uid)
+                                }
+                            } else {
+                                coroutineScope.launch {
+                                    friendsViewModel.removeFriend(user.uid)
+                                }
                             }
                         }
                     ) {
-                        Text(text = "Decline")
+                        if(friendRequest) {
+                            Icon(
+                                imageVector = Icons.Outlined.Cancel,
+                                contentDescription = null,
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Outlined.PersonOff,
+                                contentDescription = null,
+                            )
+                        }
                     }
                 }
             }

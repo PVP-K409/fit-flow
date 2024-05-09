@@ -17,8 +17,8 @@ class FriendsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val friendsUiState: StateFlow<FriendsUiState> = combine(
-        friendsRepository.getFriendsDetails(),
-        friendsRepository.getFriendRequestsDetails(),
+        friendsRepository.getFriends(),
+        friendsRepository.getFriendRequests(),
     ) { friends, friendRequests ->
         FriendsUiState.Success(
             friends = friends,
@@ -41,6 +41,15 @@ class FriendsViewModel @Inject constructor(
     suspend fun declineFriendRequest(uid: String) {
             friendsRepository.declineFriendRequest(uid)
     }
+
+    suspend fun removeFriend(uid: String) {
+            friendsRepository.removeFriend(uid)
+    }
+
+//    fun userEmail(): String {
+//        val user: Flow<User> = userRepository.currentUser
+//        return user
+//    }
 }
 
 sealed interface FriendsUiState {

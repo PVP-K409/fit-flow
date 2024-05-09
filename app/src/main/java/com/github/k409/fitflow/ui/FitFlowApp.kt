@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.PeopleAlt
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
@@ -374,6 +375,20 @@ fun TopBarAvatarDropdownMenu(
                 leadingIcon = {
                     Icon(
                         Icons.Outlined.Star,
+                        contentDescription = null,
+                    )
+                },
+            )
+
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.friends)) },
+                onClick = {
+                    navigateScreen(NavRoutes.Friends)
+                    expanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Outlined.PeopleAlt,
                         contentDescription = null,
                     )
                 },

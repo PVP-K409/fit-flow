@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -29,9 +28,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @Composable
@@ -39,6 +42,7 @@ fun FriendsScreen(
     viewModel: FriendsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.friendsUiState.collectAsState()
+    val userEmail = FirebaseAuth.getInstance().currentUser?.email
 
     val scrollState = rememberScrollState()
 
@@ -50,8 +54,12 @@ fun FriendsScreen(
     val friendRequests = (uiState as FriendsUiState.Success).friendRequests
     val friends = (uiState as FriendsUiState.Success).friends
 
+    val context = LocalContext.current
+
     val coroutineScope = rememberCoroutineScope()
     var searchText by remember { mutableStateOf("") }
+    var isButtonEnabled by remember { mutableStateOf(true) }
+    var nameError by remember { mutableStateOf<String?>(null) }
 
 
     Column(
@@ -59,7 +67,6 @@ fun FriendsScreen(
             .verticalScroll(scrollState)
             .padding(vertical = 16.dp)
             .padding(start = 12.dp, end = 12.dp),
-            //.padding(top = 90.dp, bottom = 6.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start
     ) {
@@ -70,11 +77,23 @@ fun FriendsScreen(
         ) {
             TextField(
                 value = searchText,
-                onValueChange = { searchText = it },
+                onValueChange = {
+                    searchText = it
+                    isButtonEnabled = it != userEmail
+                    nameError = if (it == userEmail) context.getString(R.string.self_friend) else null
+                },
                 label = { Text("Send a friend request to") },
                 modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp),
+                    .padding(start = 16.dp, end = 12.dp),
             )
+            nameError?.let {
+                Text(
+                    text = it,
+                    color = Color.Red,
+                    modifier = Modifier.padding(start = 8.dp),
+                )
+            }
+
 
             IconButton(
                 modifier = Modifier
@@ -84,6 +103,7 @@ fun FriendsScreen(
                         viewModel.sendFriendRequest(searchText)
                     }
                 },
+                enabled = isButtonEnabled,
             ) {
                 Icon(
                     modifier = Modifier
@@ -102,7 +122,8 @@ fun FriendsScreen(
             FriendCard(
                 user = user,
                 coroutineScope = coroutineScope,
-                friendsViewModel = viewModel
+                friendsViewModel = viewModel,
+                friendRequest = true
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -121,7 +142,8 @@ fun FriendsScreen(
             FriendCard(
                 user = user,
                 coroutineScope = coroutineScope,
-                friendsViewModel = viewModel
+                friendsViewModel = viewModel,
+                friendRequest = false
             )
 
             Spacer(modifier = Modifier.height(12.dp))
