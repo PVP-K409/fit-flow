@@ -1,8 +1,6 @@
 package com.github.k409.fitflow.ui.screen.activity.exerciseLog
 
 import android.annotation.SuppressLint
-import android.text.format.DateUtils
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -29,7 +27,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.FilterList
-import androidx.compose.material3.Button
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.DisplayMode
@@ -82,7 +79,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalField
 import java.util.Locale
 
 @SuppressLint("RememberReturnType")
@@ -208,7 +204,8 @@ fun ExercisesLogPage(
                         endDate = exerciseRecords.maxOf { it.endTime }
                             .atZone(ZoneId.systemDefault())
                         selectedExercise.clear()
-                        selectedExercise.addAll(exerciseTypes.map { true })},
+                        selectedExercise.addAll(exerciseTypes.map { true })
+                    },
                     onSaveClick = { isDialogOpen.value = false },
                 ) {
                     Column(
