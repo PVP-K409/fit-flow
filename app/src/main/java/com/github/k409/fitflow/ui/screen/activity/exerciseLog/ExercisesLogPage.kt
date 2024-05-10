@@ -1,6 +1,8 @@
 package com.github.k409.fitflow.ui.screen.activity.exerciseLog
 
 import android.annotation.SuppressLint
+import android.text.format.DateUtils
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -27,6 +29,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.FilterList
+import androidx.compose.material3.Button
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.DisplayMode
@@ -79,6 +82,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalField
 import java.util.Locale
 
 @SuppressLint("RememberReturnType")
@@ -113,13 +117,15 @@ fun ExercisesLogPage(
     if (loading) {
         FitFlowCircularProgressIndicator()
     } else {
-        val maxDistance = if (exerciseRecords.maxOfOrNull { it.distance.toFloat() } != null) exerciseRecords.maxOf { it.distance.toFloat() } else 0f
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+        val maxDistance = if (exerciseRecords.maxOfOrNull { it.distance } != null) exerciseRecords.maxOf { it.distance } else 0f
         val maxDuration = if (exerciseRecords.maxOfOrNull { Duration.between(it.startTime, it.endTime).toMinutes() } != null) exerciseRecords.maxOf { Duration.between(it.startTime, it.endTime).toMinutes() } else 0f
         val exerciseTypes = exerciseRecords.mapNotNull { it.exerciseType }.distinct()
         var startDate by remember { mutableStateOf(if (exerciseRecords.isNotEmpty()) exerciseRecords.minOf { it.startTime }.atZone(ZoneId.systemDefault()) else ZonedDateTime.now() - Duration.ofDays(1)) }
         var endDate by remember { mutableStateOf(if (exerciseRecords.isNotEmpty()) exerciseRecords.maxOf { it.endTime }.atZone(ZoneId.systemDefault()) else ZonedDateTime.now()) }
 
-        var distanceSliderPosition by remember { mutableStateOf(0f..maxDistance) }
+        var distanceSliderPosition by remember { mutableStateOf(0f..maxDistance.toFloat()) }
         var durationSliderPosition by remember { mutableStateOf(0f..maxDuration.toFloat()) }
         val selectedExercise = remember { mutableStateListOf<Boolean>() }
         selectedExercise.addAll(exerciseTypes.map { true })
@@ -134,7 +140,8 @@ fun ExercisesLogPage(
 
         Box(modifier = Modifier.fillMaxSize()) {
             val filteredRecords = exerciseRecords.filter {
-                it.distance in distanceSliderPosition.start..distanceSliderPosition.endInclusive &&
+                // maybe fix + 0.001f someday
+                it.distance in distanceSliderPosition.start..distanceSliderPosition.endInclusive + 0.001f &&
                     Duration.between(it.startTime, it.endTime).toMinutes() in durationSliderPosition.start.toInt()..durationSliderPosition.endInclusive.toInt() &&
                     it.startTime.truncatedTo(ChronoUnit.DAYS) >= startDate.toInstant().truncatedTo(ChronoUnit.DAYS) && it.endTime.truncatedTo(ChronoUnit.DAYS) <= endDate.toInstant().truncatedTo(ChronoUnit.DAYS) &&
                     selectedExercise[exerciseTypes.indexOf(it.exerciseType)]
@@ -185,15 +192,23 @@ fun ExercisesLogPage(
         if (isDialogOpen.value) {
             var showDatePicker by remember { mutableStateOf(false) }
 
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
             ) {
                 Dialog(
                     title = stringResource(R.string.filter_exercise_log),
-                    onDismiss = { isDialogOpen.value = false },
+                    dismissButtonTitle = "Reset filters",
+                    saveButtonTitle = "Close",
+                    onDismiss = {
+                        distanceSliderPosition = 0f..maxDistance.toFloat()
+                        durationSliderPosition = 0f..maxDuration.toFloat()
+                        startDate = exerciseRecords.minOf { it.startTime }
+                            .atZone(ZoneId.systemDefault())
+                        endDate = exerciseRecords.maxOf { it.endTime }
+                            .atZone(ZoneId.systemDefault())
+                        selectedExercise.clear()
+                        selectedExercise.addAll(exerciseTypes.map { true })},
                     onSaveClick = { isDialogOpen.value = false },
                 ) {
                     Column(
@@ -219,7 +234,7 @@ fun ExercisesLogPage(
                             RangeSlider(
                                 value = distanceSliderPosition,
                                 onValueChange = { range -> distanceSliderPosition = range },
-                                valueRange = 0f..maxDistance,
+                                valueRange = 0f..maxDistance.toFloat(),
                             )
                             Text(
                                 text = String.format(
@@ -266,7 +281,7 @@ fun ExercisesLogPage(
                             Text(
                                 text = String.format(
                                     Locale.ENGLISH,
-                                    "%.2f ",
+                                    "%.0f ",
                                     durationSliderPosition.start,
                                 ),
                                 color = MaterialTheme.colorScheme.secondary,
