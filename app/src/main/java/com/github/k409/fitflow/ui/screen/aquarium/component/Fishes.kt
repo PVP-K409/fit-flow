@@ -76,7 +76,7 @@ fun BouncingDraggableFish(
     fishDrawableId: Int = R.drawable.primary_fish,
     bounceEnabled: Boolean = true,
     dragEnabled: Boolean = true,
-    flipped : Boolean = false,
+    flipped: Boolean = false,
     initialFishSize: Dp = 100.dp,
     uniformSize: Boolean = false,
     initialVelocity: Offset = Offset(2f, 2f),
