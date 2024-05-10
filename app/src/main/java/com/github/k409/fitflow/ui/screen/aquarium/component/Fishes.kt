@@ -76,6 +76,7 @@ fun BouncingDraggableFish(
     fishDrawableId: Int = R.drawable.primary_fish,
     bounceEnabled: Boolean = true,
     dragEnabled: Boolean = true,
+    flipped : Boolean = false,
     initialFishSize: Dp = 100.dp,
     uniformSize: Boolean = false,
     initialVelocity: Offset = Offset(2f, 2f),
@@ -110,8 +111,14 @@ fun BouncingDraggableFish(
         var position by remember { mutableStateOf(Offset(randomX, randomY)) }
         val flipFish = remember { mutableStateOf(false) }
 
-        val animatedRotation by animateFloatAsState(
+        val animatedRotationY by animateFloatAsState(
             targetValue = if (flipFish.value) 180f else 0f,
+            animationSpec = tween(durationMillis = 200),
+            label = "Fish Rotation Animation",
+        )
+
+        val animatedRotationZ by animateFloatAsState(
+            targetValue = if (flipped) 180f else 0f,
             animationSpec = tween(durationMillis = 200),
             label = "Fish Rotation Animation",
         )
@@ -207,7 +214,8 @@ fun BouncingDraggableFish(
                     }
                 }
                 .graphicsLayer {
-                    rotationY = animatedRotation
+                    rotationY = animatedRotationY
+                    rotationZ = animatedRotationZ
                 }
                 .onSizeChanged { size ->
                     fishSize = size

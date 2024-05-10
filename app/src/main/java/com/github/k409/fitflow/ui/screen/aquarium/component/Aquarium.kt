@@ -184,6 +184,15 @@ private fun AquariumLayout(
                 healthLevel = healthLevel,
             )
 
+            DecorationsBox(
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+                    .height(150.dp)
+                    .align(Alignment.BottomCenter),
+                uiState = uiState,
+                onDecorationDragEnd = onDecorationDragEnd,
+            )
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -192,28 +201,15 @@ private fun AquariumLayout(
             ) {
                 FishBonesContainer(waterLevelAnimation = waterLevelAnimation, uiState = uiState)
 
-                Box(
-                    modifier = Modifier.fillMaxHeight(waterLevelAnimation),
-                ) {
-                    val phase = getPhase(healthLevel)
-
-                    DecorationsBox(
-                        modifier = Modifier
-                            .height(150.dp)
-                            .align(Alignment.BottomCenter),
-                        uiState = uiState,
-                        onDecorationDragEnd = onDecorationDragEnd,
-                    )
-
-                    FishContainer(
-                        uiState = uiState,
-                        width = width,
-                        waterLevel = waterLevelAnimation,
-                        healthLevel = healthLevel,
-                        fishSize = fishSize,
-                        phase = phase,
-                    )
-                }
+                FishContainer(
+                    uiState = uiState,
+                    width = width,
+                    waterLevel = waterLevel,
+                    waterLevelAnimation = waterLevelAnimation,
+                    healthLevel = healthLevel,
+                    fishSize = fishSize,
+                    phase = getPhase(healthLevel),
+                )
             }
         }
     }
@@ -253,21 +249,27 @@ private fun FishContainer(
     uiState: AquariumUiState.Success,
     width: Int,
     waterLevel: Float,
+    waterLevelAnimation: Float,
     healthLevel: Float,
     fishSize: Dp,
     phase: FishPhase,
 ) {
-    for ((index, item) in uiState.fishes.withIndex()) {
-        val xOffset = (width / uiState.fishes.size) * (index).toFloat()
+    Box(
+        modifier = Modifier.fillMaxHeight(waterLevelAnimation),
+    ) {
+        for ((index, item) in uiState.fishes.withIndex()) {
+            val xOffset = (width / uiState.fishes.size) * (index).toFloat()
 
-        if (waterLevel > 0f && healthLevel >= 0f) {
-            BouncingDraggableFish(
-                initialFishSize = fishSize,
-                fishDrawableId = R.drawable.primary_fish,
-                initialPosition = Offset(xOffset, 0f),
-                bounceEnabled = healthLevel > 0f,
-                imageDownloadUrl = item.item.phases?.get(phase.name) ?: item.item.image,
-            )
+            if (waterLevelAnimation > 0f && healthLevel >= 0f) {
+                BouncingDraggableFish(
+                    initialFishSize = fishSize,
+                    fishDrawableId = R.drawable.primary_fish,
+                    initialPosition = Offset(xOffset, 0f),
+                    bounceEnabled = healthLevel > 0f,
+                    flipped = healthLevel <= 0f,
+                    imageDownloadUrl = item.item.phases?.get(phase.name) ?: item.item.image,
+                )
+            }
         }
     }
 }
