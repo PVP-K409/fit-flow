@@ -167,4 +167,7 @@
     <string name="filter_exercise_log">Filter exercise log</string>
     <string name="duration_minutes">Duration (minutes)</string>
     <string name="date_range">Date range</string>
+    <string name="reset_filters">Reset filters</string>
+    <string name="close">Close</string>
+    <string name="filter">Filter</string>
 </resources>

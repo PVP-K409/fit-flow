@@ -158,7 +158,7 @@ fun ExercisesLogPage(
             }
             if (exerciseRecords.isNotEmpty()) {
                 ExtendedFloatingActionButton(
-                    text = { Text(text = "Filter") },
+                    text = { Text(text = stringResource(R.string.filter)) },
                     onClick = {
                         isDialogOpen.value = true
                     },
@@ -195,8 +195,8 @@ fun ExercisesLogPage(
             ) {
                 Dialog(
                     title = stringResource(R.string.filter_exercise_log),
-                    dismissButtonTitle = "Reset filters",
-                    saveButtonTitle = "Close",
+                    dismissButtonTitle = stringResource(R.string.reset_filters),
+                    saveButtonTitle = stringResource(R.string.close),
                     onDismiss = {
                         distanceSliderPosition = 0f..maxDistance
                         durationSliderPosition = 0f..maxDuration.toFloat()
@@ -275,7 +275,7 @@ fun ExercisesLogPage(
                             RangeSlider(
                                 value = durationSliderPosition,
                                 onValueChange = { range -> durationSliderPosition = range },
-                                steps = maxDuration.toInt() - 1,
+                                steps = if (maxDuration.toInt() < 1) 0 else maxDuration.toInt() - 1,
                                 valueRange = 0f..maxDuration.toFloat(),
                             )
                             Text(
