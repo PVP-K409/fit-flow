@@ -1,6 +1,7 @@
 package com.github.k409.fitflow.ui.screen.settings
 
 import android.os.Build
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -77,6 +81,8 @@ fun SettingsScreen(
             coroutineScope = coroutineScope,
             settingsViewModel = settingsViewModel,
         )
+
+        LanguageSettingsGroup()
     }
 }
 
@@ -254,5 +260,63 @@ private fun ColumnScope.ThemeColourSelector(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun LanguageSettingsGroup() {
+
+    val localeOptions = mapOf(
+        R.string.en to "en",
+        R.string.lt to "lt",
+    ).mapKeys { stringResource(it.key) }
+
+    SettingsEntryGroupText(title = stringResource(R.string.localization))
+
+    val currentLocale = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+
+    LanguageSelector(
+        localeOptions = localeOptions,
+        onLocaleSelect = { selectionLocale ->
+            val locale = localeOptions[selectionLocale]
+
+            AppCompatDelegate.setApplicationLocales(
+                LocaleListCompat.forLanguageTags(
+                    "en"
+                )
+            )
+        },
+    )
+
+    SettingsGroupSpacer()
+}
+
+@Composable
+private fun LanguageSelector(
+    localeOptions: Map<String, String>,
+    onLocaleSelect: (String) -> Unit,
+) {
+    val selectedIndex = remember { mutableIntStateOf(0) }
+
+    Column(
+        modifier = Modifier.padding(
+            horizontal = 32.dp,
+            vertical = 16.dp,
+        ),
+    ) {
+        Text(
+            modifier = Modifier.padding(bottom = 8.dp),
+            text = stringResource(R.string.language),
+            style = typography.titleMedium,
+        )
+
+        FancyIndicatorTabs(
+            values = localeOptions.keys.toList(),
+            selectedIndex = selectedIndex.intValue,
+            onValueChange = {
+                selectedIndex.intValue = it
+                onLocaleSelect(localeOptions.values.toList()[it])
+            },
+        )
     }
 }

@@ -180,7 +180,7 @@
     <string name="close">Close</string>
     <string name="filter">Filter</string>
     <string name="localization">Localization</string>
-    <string name="en">English</string>
-    <string name="lt">Lithuanian</string>
-    <string name="language">Language</string>
+    <string name="en">Anglų</string>
+    <string name="lt">Lietuvių</string>
+    <string name="language">Kalba</string>
 </resources>

@@ -108,6 +108,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.firebase.appcheck.debug)
     implementation(libs.androidx.lifecycle.service)
+    implementation(libs.androidx.appcompat)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

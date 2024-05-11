@@ -45,6 +45,7 @@ accompanist = "0.32.0"
 lifecycleRuntimeCompose = "2.7.0"
 firebaseAppcheckDebug = "18.0.0"
 lifecycleService = "2.7.0"
+appcompat = "1.6.1"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
@@ -107,6 +108,7 @@ firebase-config = { module = "com.google.firebase:firebase-config" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug", version.ref = "firebaseAppcheckDebug" }
 androidx-lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycleService" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 [bundles]
 firebase = ["firebase-auth",
