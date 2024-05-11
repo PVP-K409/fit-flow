@@ -396,7 +396,7 @@ fun ExercisesLogPage(
                                                 .weight(1f)
                                                 .padding(start = 24.dp),
                                         )
-                                    }
+                                    },
                                 )
                             }
                         }
