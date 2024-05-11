@@ -1,7 +1,6 @@
 package com.github.k409.fitflow.ui.screen.activity.exerciseLog
 
 import android.annotation.SuppressLint
-import android.icu.text.DecimalFormat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -28,8 +27,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.FilterList
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
+import androidx.compose.material3.DateRangePickerDefaults
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -233,7 +234,7 @@ fun ExercisesLogPage(
                                 onValueChange = { range -> distanceSliderPosition = range },
                                 valueRange = 0f..maxDistance,
                                 // add steps for more precise values
-                                steps = DecimalFormat("#.##").format(maxDistance).toFloat().times(100).toInt() / 10,
+                                steps = maxDistance.times(10).toInt(),
                             )
                             Text(
                                 text = String.format(
@@ -377,6 +378,25 @@ fun ExercisesLogPage(
                             ) {
                                 DateRangePicker(
                                     state = datePickerState,
+                                    title = {
+                                        DateRangePickerDefaults.DateRangePickerTitle(
+                                            displayMode = datePickerState.displayMode,
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .padding(start = 24.dp, top = 16.dp),
+                                        )
+                                    },
+                                    headline = {
+                                        DateRangePickerDefaults.DateRangePickerHeadline(
+                                            selectedStartDateMillis = datePickerState.selectedStartDateMillis,
+                                            selectedEndDateMillis = datePickerState.selectedEndDateMillis,
+                                            displayMode = datePickerState.displayMode,
+                                            dateFormatter = remember { DatePickerDefaults.dateFormatter() },
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .padding(start = 24.dp),
+                                        )
+                                    }
                                 )
                             }
                         }
