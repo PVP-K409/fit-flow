@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
@@ -30,6 +31,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -75,13 +77,11 @@ import com.exyte.animatednavbar.items.dropletbutton.DropletButton
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.isProfileComplete
-import com.github.k409.fitflow.model.levels
 import com.github.k409.fitflow.service.RouteTrackingService
 import com.github.k409.fitflow.service.SnackbarManager
 import com.github.k409.fitflow.service.SnackbarMessage
 import com.github.k409.fitflow.ui.common.LocalSnackbarHostState
 import com.github.k409.fitflow.ui.common.SwipeableSnackbar
-import com.github.k409.fitflow.ui.common.noRippleClickable
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import java.util.Locale
@@ -191,8 +191,10 @@ private fun SnackbarManagerLaunchedEffect(snackbarHostState: SnackbarHostState) 
                     is SnackbarMessage.ResourceSnackbar -> context.getString(message.message)
                 }
 
+                SnackbarManager.setCurrentMessage(message)
                 SnackbarManager.setMessageShown(messageId = message.id)
                 snackbarHostState.showSnackbar(message = text, withDismissAction = true)
+                SnackbarManager.setCurrentMessage(null)
             }
         }
     }
@@ -378,37 +380,23 @@ fun TopBarAvatarDropdownMenu(
                     )
                 },
             )
+
+            HorizontalDivider()
+
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.report_issue)) },
+                onClick = {
+                    navigateScreen(NavRoutes.ReportIssue)
+                    expanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Outlined.BugReport,
+                        contentDescription = null,
+                    )
+                },
+            )
         }
-    }
-}
-
-@Composable
-fun UserLevelBadge(
-    modifier: Modifier = Modifier,
-    xp: Int,
-    onClick: () -> Unit,
-) {
-    val userLevel = levels.firstOrNull { xp in it.minXP..it.maxXP }
-
-    if (userLevel == null) {
-        return
-    }
-
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Icon(
-            painter = painterResource(id = userLevel.icon),
-            contentDescription = "Level badge",
-            tint = Color.Unspecified,
-            modifier = Modifier
-                .size(36.dp)
-                .noRippleClickable(
-                    onClick = onClick,
-                ),
-        )
     }
 }
 

@@ -154,6 +154,15 @@
     <string name="aquarium_health_update">Aquarium Health Update</string>
     <string name="updating_aquarium_health_metrics">Updating aquarium health metrics</string>
     <string name="your_reward_for_reaching_level">Your reward for reaching %1$s level</string>
+    <string name="report_issue">Report an issue</string>
+    <string name="please_fill_all_fields">Please fill all fields</string>
+    <string name="title">Title</string>
+    <string name="detailed_description">Detailed description</string>
+    <string name="issue_reported">Issue reported</string>
+    <string name="submit">Submit</string>
+    <string name="fill_the_form_to_report_an_issue">Fill the form to report an issue</string>
+    <string name="write_a_github_issue">Write a GitHub issue</string>
+    <string name="write_github_issue_description">If you have a GitHub account, you can write an issue on the GitHub repository. There you can track the progress of the issue and see when it is resolved.</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="open_settings">Open Settings</string>

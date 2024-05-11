@@ -39,6 +39,7 @@ private fun LevelScreenContent(uiState: LevelUiState.Success) {
 
             LevelCard(
                 name = level.name,
+                level = level,
                 minXp = level.minXP,
                 maxXp = level.maxXP,
                 userXp = uiState.user.xp,

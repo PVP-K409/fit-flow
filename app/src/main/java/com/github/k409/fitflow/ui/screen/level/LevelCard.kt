@@ -32,13 +32,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.model.Level
 import com.github.k409.fitflow.model.MarketItem
+import com.github.k409.fitflow.model.getProgress
+import com.github.k409.fitflow.model.getProgressText
 import com.github.k409.fitflow.ui.common.Dialog
 import com.github.k409.fitflow.ui.common.item.InventoryItemCardWithoutButtons
 
 @Composable
 fun LevelCard(
     modifier: Modifier = Modifier,
+    level: Level,
     name: String,
     minXp: Int,
     maxXp: Int,
@@ -48,6 +52,9 @@ fun LevelCard(
 ) {
     val colors = MaterialTheme.colorScheme
     val isDialogOpen = remember { mutableStateOf(false) }
+
+    val progress = level.getProgress(userXp)
+    val levelProgressText = level.getProgressText(userXp)
 
     Column(
         modifier = modifier
@@ -92,7 +99,6 @@ fun LevelCard(
                             modifier = Modifier
                                 .size(22.dp)
                                 .clickable {
-                                    // show what reward the user will get in a popup dialog
                                     isDialogOpen.value = true
                                 },
                             imageVector = Icons.Outlined.Info,
@@ -103,7 +109,7 @@ fun LevelCard(
 
                     if (maxXp == Int.MAX_VALUE) {
                         Text(
-                            text = "$minXp+",
+                            text = "$minXp +",
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Normal,
                             color = colors.primary,
@@ -133,22 +139,9 @@ fun LevelCard(
                     }
                 }
 
-                val progress = if (maxXp == Int.MAX_VALUE) {
-                    userXp.toFloat() / 10000
-                } else {
-                    userXp.toFloat() / maxXp
-                }
-
                 Column {
                     Text(
-                        text =
-                        if (maxXp == Int.MAX_VALUE) {
-                            "$minXp+"
-                        } else if (progress >= 1) {
-                            "$maxXp/$maxXp"
-                        } else {
-                            "$userXp/$maxXp"
-                        },
+                        text = levelProgressText,
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Normal,
                         color = colors.primary,
@@ -178,7 +171,6 @@ fun LevelCard(
             buttonsVisible = false,
             content = {
                 LazyColumn(
-                    // contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     items(1) {
