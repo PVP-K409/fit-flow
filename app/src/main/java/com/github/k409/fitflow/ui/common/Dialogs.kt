@@ -55,10 +55,10 @@ fun ConfirmDialog(
 @Composable
 fun Dialog(
     title: String,
-    saveButtonTitle: String = "OK",
+    saveButtonTitle: String = stringResource(R.string.confirm),
     onSaveClick: () -> Unit,
     onDismiss: () -> Unit,
-    dismissButtonTitle: String = "Cancel",
+    dismissButtonTitle: String = stringResource(R.string.cancel),
     buttonsVisible: Boolean = true,
     content: @Composable () -> Unit,
 ) {
@@ -81,9 +81,9 @@ fun <T> Dialog(
     buttonsVisible: Boolean = true,
     selectedValue: T,
     onSaveClick: (T) -> Unit,
-    saveButtonTitle: String = "OK",
+    saveButtonTitle: String = stringResource(R.string.confirm),
     onDismiss: () -> Unit,
-    dismissButtonTitle: String = "Cancel",
+    dismissButtonTitle: String = stringResource(R.string.cancel),
     content: @Composable () -> Unit,
 ) {
     androidx.compose.ui.window.Dialog(
