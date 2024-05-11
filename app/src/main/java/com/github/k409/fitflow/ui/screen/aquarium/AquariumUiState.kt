@@ -8,5 +8,7 @@ sealed interface AquariumUiState {
     data class Success(
         val aquariumStats: AquariumStats,
         val aquariumItems: List<InventoryItem>,
+        val fishes: List<InventoryItem>,
+        val decorations: List<InventoryItem>,
     ) : AquariumUiState
 }
