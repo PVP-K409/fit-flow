@@ -183,4 +183,5 @@
     <string name="en">English</string>
     <string name="lt">Lithuanian</string>
     <string name="language">Language</string>
+    <string name="system_default">System</string>
 </resources>

@@ -265,24 +265,27 @@ private fun ColumnScope.ThemeColourSelector(
 
 @Composable
 private fun LanguageSettingsGroup() {
-
     val localeOptions = mapOf(
+        R.string.system_default to "",
         R.string.en to "en",
         R.string.lt to "lt",
     ).mapKeys { stringResource(it.key) }
 
+    var currentLocale = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+
+    if (currentLocale == LocaleListCompat.getEmptyLocaleList().toLanguageTags()) {
+        currentLocale = localeOptions.keys.first()
+    }
+
     SettingsEntryGroupText(title = stringResource(R.string.localization))
 
-    val currentLocale = AppCompatDelegate.getApplicationLocales().toLanguageTags()
-
     LanguageSelector(
+        selectedLocaleValue = currentLocale,
         localeOptions = localeOptions,
         onLocaleSelect = { selectionLocale ->
-            val locale = localeOptions[selectionLocale]
-
             AppCompatDelegate.setApplicationLocales(
                 LocaleListCompat.forLanguageTags(
-                    "en"
+                    localeOptions[selectionLocale],
                 )
             )
         },
@@ -293,10 +296,15 @@ private fun LanguageSettingsGroup() {
 
 @Composable
 private fun LanguageSelector(
+    selectedLocaleValue: String,
     localeOptions: Map<String, String>,
     onLocaleSelect: (String) -> Unit,
 ) {
-    val selectedIndex = remember { mutableIntStateOf(0) }
+    val selectedIndex = remember {
+        mutableIntStateOf(localeOptions.values.indexOf(selectedLocaleValue).let {
+            if (it == -1) 0 else it
+        })
+    }
 
     Column(
         modifier = Modifier.padding(
@@ -315,7 +323,7 @@ private fun LanguageSelector(
             selectedIndex = selectedIndex.intValue,
             onValueChange = {
                 selectedIndex.intValue = it
-                onLocaleSelect(localeOptions.values.toList()[it])
+                onLocaleSelect(localeOptions.keys.toList()[it])
             },
         )
     }

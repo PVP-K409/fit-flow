@@ -56,6 +56,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
+            android:configChanges="layoutDirection|locale"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.App.AppSplash">
             <intent-filter>
