@@ -20,6 +20,7 @@
     <string name="height_cm">Height (cm)</string>
     <string name="save">Save</string>
     <string name="user">User</string>
+    <string name="user_not_found">User not found</string>
     <string name="settings">Settings</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
@@ -157,4 +158,13 @@
     <string name="updating_aquarium_health_metrics">Updating aquarium health metrics</string>
     <string name="your_reward_for_reaching_level">Your reward for reaching %1$s level</string>
     <string name="send_a_friend_request">Send a friend request</string>
+    <string name="FRIENDSLIST">Friends</string>
+    <string name="FRIENDREQUESTS">Friend Requests</string>
+    <string name="received_friend_requests">Received friend requests</string>
+    <string name="other_users_who_want_to_be_your_friend">Other users who want to be your friend.</string>
+    <string name="found_user">Found User</string>
+    <string name="display_searched_user">If a user is found it will be displayed here</string>
+    <string name="search_for_an_user">Search for an user</string>
+    <string name="people_you_are_friends_with">People you are friends with</string>
+    <string name="no_friends_yet">You don\'t have any friends yet.</string>
 </resources>

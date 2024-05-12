@@ -3,8 +3,10 @@ package com.github.k409.fitflow.ui.screen.friends
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.FriendsRepository
+import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -14,15 +16,16 @@ import javax.inject.Inject
 @HiltViewModel
 class FriendsViewModel @Inject constructor(
     private val friendsRepository: FriendsRepository,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
 
     val friendsUiState: StateFlow<FriendsUiState> = combine(
-        friendsRepository.getFriends(),
         friendsRepository.getFriendRequests(),
-    ) { friends, friendRequests ->
+        friendsRepository.getFriends(),
+    ) { friendRequests, friends ->
         FriendsUiState.Success(
-            friends = friends,
             friendRequests = friendRequests,
+            friends = friends,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -30,32 +33,31 @@ class FriendsViewModel @Inject constructor(
         initialValue = FriendsUiState.Loading,
     )
 
+    suspend fun searchUser(email: String): User {
+        return userRepository.searchUserByEmail(email)
+    }
+
     suspend fun sendFriendRequest(uid: String){
             friendsRepository.sendFriendRequest(uid)
     }
 
-    suspend fun acceptFriendRequest(uid: String) {
+    suspend fun acceptFriendRequest(uid: String){
             friendsRepository.acceptFriendRequest(uid)
     }
 
-    suspend fun declineFriendRequest(uid: String) {
+    suspend fun declineFriendRequest(uid: String){
             friendsRepository.declineFriendRequest(uid)
     }
 
-    suspend fun removeFriend(uid: String) {
+    suspend fun removeFriend(uid: String){
             friendsRepository.removeFriend(uid)
     }
-
-//    fun userEmail(): String {
-//        val user: Flow<User> = userRepository.currentUser
-//        return user
-//    }
 }
 
 sealed interface FriendsUiState {
     data object Loading : FriendsUiState
     data class Success(
-        val friends: List<User>,
-        val friendRequests: List<User>,
+        val friendRequests: List<Flow<User>>,
+        val friends: List<Flow<User>>,
     ) : FriendsUiState
 }

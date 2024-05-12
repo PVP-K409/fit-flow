@@ -15,12 +15,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.PersonAddAlt1
 import androidx.compose.material.icons.outlined.PersonOff
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,12 +37,12 @@ import com.github.k409.fitflow.model.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+//Card to show friend request
 @Composable
-fun FriendCard(
+fun FriendRequestCard(
     user: User,
     coroutineScope: CoroutineScope,
     friendsViewModel: FriendsViewModel,
-    friendRequest: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -113,51 +113,205 @@ fun FriendCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
-                    if(friendRequest) {
-                        Button(
-                            modifier = Modifier
-                                .padding(start = 6.dp),
-                            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-                            onClick = {
-                                coroutineScope.launch {
-                                    friendsViewModel.acceptFriendRequest(user.uid)
-                                }
+                    Button(
+                        modifier = Modifier
+                            .padding(start = 6.dp),
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                        onClick = {
+                            coroutineScope.launch {
+                                friendsViewModel.acceptFriendRequest(user.uid)
                             }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.CheckCircle,
-                                contentDescription = null,
-                            )
                         }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.CheckCircle,
+                            contentDescription = null,
+                        )
                     }
 
                     Button(
                         modifier = Modifier.padding(start = 6.dp),
                         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error),
                         onClick = {
-                            if(friendRequest) {
-                                coroutineScope.launch {
-                                    friendsViewModel.declineFriendRequest(user.uid)
-                                }
-                            } else {
-                                coroutineScope.launch {
-                                    friendsViewModel.removeFriend(user.uid)
-                                }
+                            coroutineScope.launch {
+                                friendsViewModel.declineFriendRequest(user.uid)
                             }
                         }
                     ) {
-                        if(friendRequest) {
-                            Icon(
-                                imageVector = Icons.Outlined.Cancel,
-                                contentDescription = null,
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Outlined.PersonOff,
-                                contentDescription = null,
-                            )
+                        Icon(
+                            imageVector = Icons.Outlined.Cancel,
+                            contentDescription = null,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+//Card to show user that the current user searched for
+@Composable
+fun UserCard(
+    user: User?,
+    friendsViewModel: FriendsViewModel,
+    coroutineScope: CoroutineScope,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .clip(RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(horizontal = 8.dp, vertical = 16.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            SubcomposeAsyncImage(
+                model = ImageRequest.Builder(LocalContext.current).data(user?.photoUrl).crossfade(true)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                error = {
+                    Icon(
+                        modifier = Modifier.padding(3.dp),
+                        imageVector = Icons.Outlined.PersonOutline,
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(50.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        shape = CircleShape,
+                    )
+                    .border(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                        shape = CircleShape,
+                    ),
+            )
+
+            Spacer(modifier = Modifier.width(2.dp))
+
+            Text(
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.medium)
+                    .padding(8.dp),
+                text = user?.name.toString(),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary,
+            )
+
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        friendsViewModel.sendFriendRequest(user?.uid.toString())
+                    }
+                },
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .padding(8.dp),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary),
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.PersonAddAlt1,
+                    contentDescription = null,
+                )
+            }
+        }
+    }
+}
+
+//Card to show a friend
+@Composable
+fun FriendCard(
+    user: User,
+    coroutineScope: CoroutineScope,
+    friendsViewModel: FriendsViewModel,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .clip(RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(horizontal = 8.dp, vertical = 16.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            SubcomposeAsyncImage(
+                model = ImageRequest.Builder(LocalContext.current).data(user.photoUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                error = {
+                    Icon(
+                        modifier = Modifier.padding(3.dp),
+                        imageVector = Icons.Outlined.PersonOutline,
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(100.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        shape = CircleShape,
+                    )
+                    .border(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                        shape = CircleShape,
+                    ),
+            )
+
+            Spacer(modifier = Modifier.width(2.dp))
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                Text(
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .padding(8.dp),
+                    text = user.name,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+
+                Text(
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .padding(8.dp),
+                    text = user.email,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+
+                Button(
+                    modifier = Modifier
+                        .padding(start = 6.dp),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error),
+                    onClick = {
+                        coroutineScope.launch {
+                            friendsViewModel.removeFriend(user.uid)
                         }
                     }
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.PersonOff,
+                        contentDescription = null,
+                    )
                 }
             }
         }

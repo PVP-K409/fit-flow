@@ -17,7 +17,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -55,7 +54,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    private fun getUser(uid: String): Flow<User> =
+    fun getUser(uid: String): Flow<User> =
         getUserDocumentReference(uid)
             .snapshots()
             .map { it.toObject<User>() ?: User() }
@@ -141,19 +140,23 @@ class UserRepository @Inject constructor(
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun searchUserByEmail(email: String): Flow<String?> =
-        db.collection(USERS_COLLECTION)
-            .whereEqualTo("email", email)
-            .snapshots()
-            .flatMapLatest { snapshot ->
-                if (snapshot.documents.isNotEmpty()) {
-                    flowOf(snapshot.documents.first().getString("uid"))
-                } else {
-                    flowOf(null)
-                }
-            }
+    suspend fun searchUserByEmail(email: String): User {
+        return try {
+            db.collection(USERS_COLLECTION)
+                .whereEqualTo("email", email)
+                .get()
+                .await()
+                .documents
+                .firstOrNull()
+                ?.toObject<User>()
+                ?: User()
+        } catch (e: Exception) {
+            Log.e("User Repository", "Error searching user by email")
+            Log.e("User Repository", e.toString())
+            User()
 
+        }
+    }
     private fun getUserDocumentReference(uid: String) =
         db.collection(USERS_COLLECTION)
             .document(uid)

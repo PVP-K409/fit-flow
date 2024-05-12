@@ -2,9 +2,10 @@ package com.github.k409.fitflow.data
 
 import com.github.k409.fitflow.model.User
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.snapshots
-import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 
 private const val FRIENDS_COLLECTION = "friends"
-private const val USERS_COLLECTION = "users"
+private const val PENDING_REQUEST_FIELD = "pendingRequests"
+private const val FRIENDS_LIST_FIELD = "friends"
 
 class FriendsRepository @Inject constructor(
     private val db: FirebaseFirestore,
@@ -21,141 +23,63 @@ class FriendsRepository @Inject constructor(
     private val userRepository: UserRepository,
 ) {
 
-    fun getFriendRequests(): Flow<List<User>> =
+    fun getFriendRequests(): Flow<List<Flow<User>>> =
         getFriendDocumentReference(auth.currentUser!!.uid)
-            .whereEqualTo("accepted", false)
             .snapshots()
-            .map { querySnapshot ->
-                querySnapshot.documents.mapNotNull { document ->
-                    document.toObject<User>()
-                }
+            .map { snapshot ->
+                snapshot.data?.get(PENDING_REQUEST_FIELD) as List<String>
+            }
+            .map { requests ->
+                requests.mapNotNull { userRepository.getUser(it) }
             }
             .catch { e ->
                 e.printStackTrace()
                 emit(emptyList())
             }
 
-    fun getFriends(): Flow<List<User>> =
+    fun getFriends(): Flow<List<Flow<User>>> =
         getFriendDocumentReference(auth.currentUser!!.uid)
-            .whereEqualTo("accepted", true)
             .snapshots()
-            .map { querySnapshot ->
-                querySnapshot.documents.mapNotNull { document ->
-                    document.toObject<User>()
-                }
+            .map { snapshot ->
+                snapshot.data?.get(FRIENDS_LIST_FIELD) as List<String>
+            }
+            .map { friends ->
+                friends.mapNotNull { userRepository.getUser(it) }
             }
             .catch { e ->
                 e.printStackTrace()
                 emit(emptyList())
             }
 
-//    private fun getFriends(): Flow<List<String>> =
-//        getFriendDocumentReference(auth.currentUser!!.uid)
-//            .snapshots()
-//            .map { snapshot ->
-//                snapshot.documents.filter { document ->
-//                    document.getBoolean("accepted") == true
-//                } .map { document ->
-//                    document.id}
-//            }.catch { e ->
-//                e.printStackTrace()
-//                emit(emptyList())
-//            }
-//
-//    private fun getFriendRequests(): Flow<List<String>> =
-//        getFriendDocumentReference(auth.currentUser!!.uid)
-//            .snapshots()
-//            .map { snapshot ->
-//                snapshot.documents.filter { document ->
-//                    document.getBoolean("accepted") == false
-//                } .map { document ->
-//                    document.id}
-//            }.catch { e ->
-//                e.printStackTrace()
-//                emit(emptyList())
-//            }
-//
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    fun getFriendsDetails(): Flow<List<User>> =
-//        getFriends()
-//            .flatMapConcat { friends ->
-//                if (friends.isEmpty()) {
-//                    flowOf(emptyList())
-//                } else {
-//                    db.collection(USERS_COLLECTION)
-//                        .whereIn("uid", friends)
-//                        .snapshots()
-//                        .map { snapshot ->
-//                            snapshot.documents.mapNotNull { it.toObject<User>() }
-//                        }
-//                }
-//            }
-//
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    fun getFriendRequestsDetails(): Flow<List<User>> =
-//        getFriendRequests()
-//            .flatMapConcat { requests ->
-//                if (requests.isEmpty()) {
-//                    flowOf(emptyList())
-//                } else {
-//                    db.collection(USERS_COLLECTION)
-//                        .whereIn("uid", requests)
-//                        .snapshots()
-//                        .map { snapshot ->
-//                            snapshot.documents.mapNotNull { it.toObject<User>() }
-//                        }
-//                }
-//            }
-
-    suspend fun sendFriendRequest(email: String) {
-
+    suspend fun sendFriendRequest(uid:String) {
         val currentUser = auth.currentUser!!.uid
-        val user = db.collection(USERS_COLLECTION)
-            .document(currentUser)
-            .get().await().toObject<User>() ?: User()
 
-        userRepository.searchUserByEmail(email).collect { uid ->
-            uid?.let {
-                try {
-                        getFriendDocumentReference(uid)
-                            .document(currentUser)
-                            .set(mapOf(
-                                "accepted" to false,
-                                "name" to user.name,
-                                "email" to user.email,
-                                "photoUrl" to user.photoUrl,
-                                "uid" to user.uid,
-                                "xp" to user.xp
-                            )).await()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+        try {
+            getFriendDocumentReference(uid)
+                .set(mapOf(PENDING_REQUEST_FIELD to FieldValue.arrayUnion(currentUser)),
+                    SetOptions.merge())
+                .await()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     suspend fun acceptFriendRequest(uid: String) {
 
         val currentUser = auth.currentUser!!.uid
-        val user = db.collection(USERS_COLLECTION)
-            .document(currentUser)
-            .get().await().toObject<User>() ?: User()
 
         try {
             getFriendDocumentReference(currentUser)
-                .document(uid)
-                .update("accepted", true).await()
+                .set(mapOf(FRIENDS_LIST_FIELD to FieldValue.arrayUnion(uid),
+                    PENDING_REQUEST_FIELD to FieldValue.arrayRemove(uid)),
+                    SetOptions.merge())
+                .await()
 
             getFriendDocumentReference(uid)
-                .document(currentUser)
-                .set(mapOf(
-                    "accepted" to true,
-                    "name" to user.name,
-                    "email" to user.email,
-                    "photoUrl" to user.photoUrl,
-                    "uid" to user.uid,
-                    "xp" to user.xp
-                )).await()
+                .set(mapOf(FRIENDS_LIST_FIELD to FieldValue.arrayUnion(currentUser),
+                    PENDING_REQUEST_FIELD to FieldValue.arrayRemove(currentUser)),
+                    SetOptions.merge())
+                .await()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -164,8 +88,8 @@ class FriendsRepository @Inject constructor(
     suspend fun declineFriendRequest(uid: String) {
         try {
             getFriendDocumentReference(auth.currentUser!!.uid)
-                .document(uid)
-                .delete().await()
+                .update(PENDING_REQUEST_FIELD, FieldValue.arrayRemove(uid))
+                .await()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -174,13 +98,12 @@ class FriendsRepository @Inject constructor(
     suspend fun removeFriend(uid: String) {
         try {
             getFriendDocumentReference(auth.currentUser!!.uid)
-                .document(uid)
-                .delete().await()
+                .update(FRIENDS_LIST_FIELD, FieldValue.arrayRemove(uid))
+                .await()
 
             getFriendDocumentReference(uid)
-                .document(auth.currentUser!!.uid)
-                .delete().await()
-
+                .update(FRIENDS_LIST_FIELD, FieldValue.arrayRemove(auth.currentUser!!.uid))
+                .await()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -188,6 +111,5 @@ class FriendsRepository @Inject constructor(
 
     private fun getFriendDocumentReference(uid: String) =
         db.collection(FRIENDS_COLLECTION)
-            .document("Status")
-            .collection(uid)
+            .document(uid)
 }

@@ -9,144 +9,92 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.PersonAddAlt1
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.model.User
+import com.github.k409.fitflow.service.SnackbarManager
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @Composable
-fun FriendsScreen(
-    viewModel: FriendsViewModel = hiltViewModel(),
-) {
-    val uiState by viewModel.friendsUiState.collectAsState()
-    val userEmail = FirebaseAuth.getInstance().currentUser?.email
-
+fun FriendsScreen() {
+    val selectedTabIndex = remember { mutableIntStateOf(0) }
     val scrollState = rememberScrollState()
 
-    if (uiState is FriendsUiState.Loading) {
-            FitFlowCircularProgressIndicator()
-        return
-    }
-
-    val friendRequests = (uiState as FriendsUiState.Success).friendRequests
-    val friends = (uiState as FriendsUiState.Success).friends
-
-    val context = LocalContext.current
-
-    val coroutineScope = rememberCoroutineScope()
-    var searchText by remember { mutableStateOf("") }
-    var isButtonEnabled by remember { mutableStateOf(true) }
-    var nameError by remember { mutableStateOf<String?>(null) }
-
-
-    Column(
-        modifier = Modifier
-            .verticalScroll(scrollState)
-            .padding(vertical = 16.dp)
-            .padding(start = 12.dp, end = 12.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.Start
-    ) {
-
-        Row (
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            TextField(
-                value = searchText,
-                onValueChange = {
-                    searchText = it
-                    isButtonEnabled = it != userEmail
-                    nameError = if (it == userEmail) context.getString(R.string.self_friend) else null
-                },
-                label = { Text("Send a friend request to") },
-                modifier = Modifier
-                    .padding(start = 16.dp, end = 12.dp),
-            )
-            nameError?.let {
-                Text(
-                    text = it,
-                    color = Color.Red,
-                    modifier = Modifier.padding(start = 8.dp),
-                )
-            }
-
-
-            IconButton(
-                modifier = Modifier
-                    .padding(18.dp),
-                onClick = {
-                    coroutineScope.launch {
-                        viewModel.sendFriendRequest(searchText)
-                    }
-                },
-                enabled = isButtonEnabled,
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .size(28.dp),
-                    imageVector = Icons.Outlined.PersonAddAlt1,
-                    contentDescription = null,
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        friendRequests.indices.forEach { index ->
-            val user = friendRequests[index]
-
-            FriendCard(
-                user = user,
-                coroutineScope = coroutineScope,
-                friendsViewModel = viewModel,
-                friendRequest = true
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-        }
-
-        HorizontalDivider(
-            modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-            thickness = 8.dp
+    Column {
+        SecondaryTextTabsRow(
+            titles = listOf(
+                stringResource(R.string.FRIENDSLIST),
+                stringResource(R.string.FRIENDREQUESTS),
+            ),
+            selectedTabIndex = selectedTabIndex,
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(vertical = 16.dp)
+                .padding(bottom = 6.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start,
+        ) {
+            when (selectedTabIndex.intValue) {
+                0 -> {
+                    FriendsListScreen()
+                }
 
-        friends.indices.forEach { index ->
-            val user = friends[index]
+                1 -> {
+                    FriendRequestScreen()
+                }
 
-            FriendCard(
-                user = user,
-                coroutineScope = coroutineScope,
-                friendsViewModel = viewModel,
-                friendRequest = false
+            }
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun SecondaryTextTabsRow(
+    titles: List<String>,
+    selectedTabIndex: MutableIntState = remember {
+        mutableIntStateOf(0)
+    },
+) {
+    SecondaryTabRow(selectedTabIndex = selectedTabIndex.intValue) {
+        titles.forEachIndexed { index, title ->
+            Tab(
+                selected = selectedTabIndex.intValue == index,
+                onClick = { selectedTabIndex.intValue = index },
+                text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) },
             )
-
-            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
