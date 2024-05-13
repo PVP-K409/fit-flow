@@ -1,12 +1,15 @@
 package com.github.k409.fitflow.model.theme
 
+import androidx.annotation.StringRes
+import com.github.k409.fitflow.R
+
 enum class ThemeColour(
-    val title: String,
+    @StringRes val title: Int,
 ) {
-    GREEN("Green"),
-    PINK("Pink"),
-    DYNAMIC("Dynamic"),
-    AMOLED("Amoled"),
+    GREEN(R.string.green),
+    PINK(R.string.pink),
+    DYNAMIC(R.string.dynamic),
+    AMOLED(R.string.amoled),
     ;
 
     companion object {

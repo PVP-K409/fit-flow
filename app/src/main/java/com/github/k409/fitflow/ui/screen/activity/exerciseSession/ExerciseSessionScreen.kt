@@ -139,7 +139,7 @@ fun ExerciseSessionScreen(
         if (showConfirmationDialogStart) {
             ConfirmDialog(
                 dialogTitle = stringResource(R.string.are_you_sure_you_want_start_this_exercise_session),
-                dialogText = "Exercise: $selectedExercise",
+                dialogText = stringResource(R.string.selected_exercise, selectedExercise),
                 onDismiss = { showConfirmationDialogStart = false },
                 onConfirm = {
                     showConfirmationDialogStart = false
@@ -154,12 +154,13 @@ fun ExerciseSessionScreen(
         if (showConfirmationDialogStop) {
             ConfirmDialog(
                 dialogTitle = stringResource(R.string.are_you_sure_you_want_stop_this_exercise_session),
-                dialogText = """
-                    Distance: ${String.format(Locale.US, "%.2f", distance.value)} km
-                    Time: ${formatTimeFromSeconds(timeInSecond.value)}
-                    Calories: ${calories.value} cal
-                    Average Speed: ${String.format(Locale.US, "%.2f", avgSpeed.value)} km/h
-                """.trimIndent(),
+                dialogText = stringResource(
+                    R.string.new_exercise_dialog_text,
+                    String.format(Locale.US, "%.2f", distance.value),
+                    formatTimeFromSeconds(timeInSecond.value),
+                    calories.value,
+                    String.format(Locale.US, "%.2f", avgSpeed.value)
+                ).trimIndent(),
                 onDismiss = { showConfirmationDialogStop = false },
                 onConfirm = {
                     showConfirmationDialogStop = false

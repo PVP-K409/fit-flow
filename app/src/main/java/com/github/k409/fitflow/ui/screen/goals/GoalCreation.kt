@@ -141,7 +141,7 @@ fun GoalCreation(
 
             if (showConfirmationDialog) {
                 ConfirmDialog(
-                    dialogTitle = "Are you sure you want to create this goal?",
+                    dialogTitle = stringResource(R.string.are_you_sure_you_want_to_create_this_goal),
                     dialogText = "$selectedGoal\n$selectedExercise\n$selectedDistance",
                     onDismiss = { showConfirmationDialog = false },
                     onConfirm = {
@@ -159,7 +159,7 @@ fun GoalCreation(
 fun InlineError(show: Boolean) {
     if (show) {
         Text(
-            text = "Please select this field",
+            text = stringResource(R.string.please_select_this_field),
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(start = 16.dp, top = 2.dp),
@@ -170,7 +170,7 @@ fun InlineError(show: Boolean) {
 @Composable
 fun NoValidGoalsMessage() {
     Text(
-        text = "No valid exercises are available for the selected goal period.",
+        text = stringResource(R.string.no_valid_exercises_are_available_for_the_selected_goal_period),
         color = MaterialTheme.colorScheme.error,
         style = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.padding(16.dp),

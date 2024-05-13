@@ -67,7 +67,7 @@ fun MarketScreen(
                     result.data?.let { intent ->
                         PaymentData.getFromIntent(intent)?.let {
                             checkoutViewModel.setPaymentData(it)
-                            SnackbarManager.showMessage("Payment successful")
+                            SnackbarManager.showMessage(context.getString(R.string.payment_successful))
                             marketViewModel.addItemToUserInventory(selectedMarketItem)
                         }
                     }
@@ -183,11 +183,19 @@ fun MarketScreen(
                 if (addClicked) {
                     marketViewModel.updateUserCoinBalance((-selectedMarketItem.price).toLong())
                     marketViewModel.addItemToUserInventory(selectedMarketItem)
-                    SnackbarManager.showMessage("${selectedMarketItem.title} has been added to your inventory")
+                    SnackbarManager.showMessage(
+                        context.getString(
+                            R.string.item_has_been_added_to_your_inventory,
+                            selectedMarketItem.title
+                        ))
                 } else {
                     marketViewModel.updateUserCoinBalance((selectedMarketItem.price / 2).toLong())
                     marketViewModel.removeItemFromUserInventory(selectedMarketItem)
-                    SnackbarManager.showMessage("${selectedMarketItem.title} has been sold")
+                    SnackbarManager.showMessage(
+                        context.getString(
+                            R.string.item_has_been_sold,
+                            selectedMarketItem.title
+                        ))
                 }
                 showDialog = false
             },

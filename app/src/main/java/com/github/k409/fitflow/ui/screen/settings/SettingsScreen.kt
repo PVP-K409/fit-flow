@@ -162,11 +162,11 @@ private fun ThemeModeSelector(
             style = typography.titleMedium,
         )
 
-        val values = ThemeMode.entries.map { it.title }
+        val values = ThemeMode.entries.map { stringResource(it.title) }
 
         FancyIndicatorTabs(
             values = values,
-            selectedIndex = values.indexOf(themePreferences.themeMode.title),
+            selectedIndex = values.indexOf(stringResource(themePreferences.themeMode.title)),
             onValueChange = {
                 val themeMode = ThemeMode.entries[it]
 
@@ -252,7 +252,7 @@ private fun ColumnScope.ThemeColourSelector(
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
-                            text = theme.title,
+                            text = stringResource(theme.title),
                             style = typography.labelMedium,
                             textAlign = TextAlign.Center,
                         )

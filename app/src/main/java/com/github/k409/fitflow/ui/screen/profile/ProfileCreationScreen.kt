@@ -164,7 +164,7 @@ fun ProfileCreationScreen(
                                 }
                             },
                         ) {
-                            Text("Confirm")
+                            Text(stringResource(id = R.string.confirm))
                         }
                     },
                     dismissButton = {
@@ -173,7 +173,7 @@ fun ProfileCreationScreen(
                                 isExpanded = false
                             },
                         ) {
-                            Text("Cancel")
+                            Text(stringResource(id = R.string.cancel))
                         }
                     },
                 ) {

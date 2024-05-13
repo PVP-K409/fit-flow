@@ -139,7 +139,7 @@ fun ProfileScreen(
             }
 
             item {
-                WidgetCard(title = stringResource(R.string.level), value = level.name)
+                WidgetCard(title = stringResource(R.string.level), value = stringResource(level.name))
             }
 
             item {
