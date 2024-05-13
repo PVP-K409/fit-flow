@@ -22,13 +22,12 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.ui.screen.activity.exerciseSession.Parametric
 
 @Composable
 fun DistanceAndCalories(
     calories: Long?,
     distance: Double?,
-    fontSize: TextUnit = 26.sp,
-    color: Color = MaterialTheme.colorScheme.primary,
 ) {
     Row(
         modifier = Modifier
@@ -36,48 +35,17 @@ fun DistanceAndCalories(
             .padding(top = 24.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.mode_heat_24px),
-                contentDescription = stringResource(R.string.heat_icon),
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .size(36.dp),
-            )
-            Text(
-                text = "$calories",
-                textAlign = TextAlign.Center,
-                fontSize = fontSize,
-                fontWeight = FontWeight.Bold,
-            )
-            Text(
-                text = "Cal",
-                color = color.copy(alpha = 0.6f),
-            )
-        }
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.distance_24px),
-                contentDescription = stringResource(R.string.distance_icon),
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .size(36.dp),
-            )
-            Text(
-                text = "$distance",
-                textAlign = TextAlign.Center,
-                fontSize = fontSize,
-                fontWeight = FontWeight.Bold,
-            )
-            Text(
-                text = "km",
-                color = color.copy(alpha = 0.6f),
-            )
-        }
+        Parametric(
+            modifier = Modifier.size(36.dp),
+            title = "Cal",
+            value = calories.toString(),
+            icon = R.drawable.mode_heat_24px,
+        )
+        Parametric(
+            modifier = Modifier.size(36.dp),
+            title = "km",
+            value = distance.toString(),
+            icon = R.drawable.distance_24px,
+        )
     }
 }
