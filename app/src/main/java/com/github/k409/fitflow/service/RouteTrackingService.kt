@@ -172,23 +172,26 @@ class RouteTrackingService : LifecycleService() {
     }
 
     private fun stop() {
-        exerciseSessionToWrite.value.endTime = Instant.now()
-        exerciseSessionToWrite.value.endZoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
-        exerciseSessionToWrite.value.distance = distanceInKm.value
-        exerciseSessionToWrite.value.calories = calories.value
-        exerciseSessionToWrite.value.route = pathPoints.value
-        val exerciseSession = exerciseSessionToWrite.value.copy()
-        CoroutineScope(Dispatchers.Main).launch {
-            healthConnectClient.writeExerciseSession(
-                exerciseSession.exerciseType,
-                exerciseSession.startTime,
-                exerciseSession.startZoneOffset,
-                exerciseSession.endTime,
-                exerciseSession.endZoneOffset,
-                exerciseSession.distance,
-                exerciseSession.calories,
-                exerciseSession.route,
-            )
+        val time = timeRunInSecond.value
+        if (time > 60) {
+            exerciseSessionToWrite.value.endTime = Instant.now()
+            exerciseSessionToWrite.value.endZoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
+            exerciseSessionToWrite.value.distance = distanceInKm.value
+            exerciseSessionToWrite.value.calories = calories.value
+            exerciseSessionToWrite.value.route = pathPoints.value
+            val exerciseSession = exerciseSessionToWrite.value.copy()
+            CoroutineScope(Dispatchers.Main).launch {
+                healthConnectClient.writeExerciseSession(
+                    exerciseSession.exerciseType,
+                    exerciseSession.startTime,
+                    exerciseSession.startZoneOffset,
+                    exerciseSession.endTime,
+                    exerciseSession.endZoneOffset,
+                    exerciseSession.distance,
+                    exerciseSession.calories,
+                    exerciseSession.route,
+                )
+            }
         }
         exerciseSessionToWrite.value = ExerciseSession()
         isTracking.value = false

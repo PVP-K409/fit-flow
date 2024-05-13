@@ -154,12 +154,16 @@ fun ExerciseSessionScreen(
         if (showConfirmationDialogStop) {
             ConfirmDialog(
                 dialogTitle = stringResource(R.string.are_you_sure_you_want_stop_this_exercise_session),
-                dialogText = """
-                    Distance: ${String.format(Locale.US, "%.2f", distance.value)} km
-                    Time: ${formatTimeFromSeconds(timeInSecond.value)}
-                    Calories: ${calories.value} cal
-                    Average Speed: ${String.format(Locale.US, "%.2f", avgSpeed.value)} km/h
-                """.trimIndent(),
+                dialogText = if (timeInSecond.value < 60) {
+                    "This exercise session is shorter than one minute and will not be saved."
+                } else {
+                    """
+                        Distance: ${String.format(Locale.US, "%.2f", distance.value)} km
+                        Time: ${formatTimeFromSeconds(timeInSecond.value)}
+                        Calories: ${calories.value} cal
+                        Average Speed: ${String.format(Locale.US, "%.2f", avgSpeed.value)} km/h
+                    """.trimIndent()
+                },
                 onDismiss = { showConfirmationDialogStop = false },
                 onConfirm = {
                     showConfirmationDialogStop = false
