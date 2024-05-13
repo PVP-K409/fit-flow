@@ -195,9 +195,8 @@ fun ExerciseParametric(
         ) {
         Text(
             text = exercise,
-            style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 10.dp, bottom = 8.dp),
-            fontWeight = FontWeight.W500
+            fontWeight = FontWeight.Light
         )
 
         val formattedTime = formatTimeFromSeconds(timeInSeconds)
