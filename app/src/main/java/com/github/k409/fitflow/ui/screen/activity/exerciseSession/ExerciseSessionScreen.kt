@@ -35,7 +35,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
@@ -46,8 +45,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.service.RouteTrackingService
 import com.github.k409.fitflow.ui.common.ConfirmDialog
-import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
-import com.github.k409.fitflow.ui.screen.activity.DistanceAndCalories
 import com.github.k409.fitflow.ui.screen.goals.ExerciseDropdownMenu
 import com.github.k409.fitflow.ui.screen.goals.ExpandedDropdown
 import com.github.k409.fitflow.ui.screen.goals.InlineError
