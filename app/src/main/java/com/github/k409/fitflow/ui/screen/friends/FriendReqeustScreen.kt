@@ -34,6 +34,8 @@ import com.github.k409.fitflow.service.SnackbarManager
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.screen.you.OutlineCardContainer
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,6 +63,7 @@ fun FriendRequestContent(
     uiState: FriendsUiState.Success,
 ) {
     val friendRequests = uiState.friendRequests
+    val friends = uiState.friends
 
     val context = LocalContext.current
 
@@ -71,7 +74,12 @@ fun FriendRequestContent(
     val userEmail = FirebaseAuth.getInstance().currentUser?.email
     var foundUser by remember { mutableStateOf<User?>(null) }
 
-    Column(
+    val friendEmails = friends.map { it.collectAsState(User()).value.email }
+    val requestEmails =  friendRequests.map { it.collectAsState(User()).value.email }
+
+    val emails = friendEmails + requestEmails + userEmail
+
+            Column(
         modifier = Modifier
             .padding(vertical = 16.dp)
             .padding(start = 2.dp, end = 2.dp),
@@ -87,7 +95,7 @@ fun FriendRequestContent(
                 value = searchText,
                 onValueChange = {
                     searchText = it
-                    isButtonEnabled = it != userEmail
+                    isButtonEnabled = !emails.contains(it.lowercase())
                     nameError = if (it == userEmail) context.getString(R.string.self_friend) else null
                 },
                 label = { Text("Send a friend request to") },
@@ -101,7 +109,6 @@ fun FriendRequestContent(
                     modifier = Modifier.padding(start = 8.dp),
                 )
             }
-
 
             IconButton(
                 modifier = Modifier
