@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.model.ExerciseSessionActivities
 import com.github.k409.fitflow.service.RouteTrackingService
 import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.screen.goals.ExerciseDropdownMenu
@@ -61,7 +62,7 @@ fun ExerciseSessionScreen(
     val avgSpeed = RouteTrackingService.avgSpeed.collectAsState()
     val calories = RouteTrackingService.calories.collectAsState()
 
-    var selectedExercise by remember { mutableStateOf("") }
+    var selectedExercise: ExerciseSessionActivities? by remember { mutableStateOf(null) }
     val expandedDropdown by remember { mutableStateOf(ExpandedDropdown.NONE) }
     var showInlineError by remember { mutableStateOf(false) }
     var showConfirmationDialogStart by remember { mutableStateOf(false) }
@@ -76,9 +77,15 @@ fun ExerciseSessionScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         if (fineLocationPermissionState.allPermissionsGranted) {
             if (sessionActive.value) {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Text(
-                        text = exercise.value,
+                        text = ExerciseSessionActivities.entries.firstOrNull {
+                            it.exerciseSessionActivity.type == exercise.value
+                        }?.exerciseSessionActivity?.title?.let { stringResource(id = it) }
+                            ?: "",
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(16.dp),
                     )
@@ -99,16 +106,23 @@ fun ExerciseSessionScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             } else { // show dropdown
-                val exerciseTypes = exerciseSessionViewModel.getValidExerciseSessionActivitiesTypes()
                 ExerciseDropdownMenu(
-                    options = exerciseTypes,
-                    selectedOption = selectedExercise,
+                    options = ExerciseSessionActivities.entries.map { stringResource(id = it.exerciseSessionActivity.title) },
+                    selectedOption = selectedExercise?.exerciseSessionActivity?.title?.let {
+                        stringResource(
+                            id = it
+                        )
+                    } ?: "",
                     label = stringResource(R.string.exercise),
-                    onOptionSelected = { selectedExercise = it },
+                    onOptionSelected = { value ->
+                        selectedExercise = ExerciseSessionActivities.entries.firstOrNull {
+                            value == context.getString(it.exerciseSessionActivity.title)
+                        }
+                    },
                     expandedState = expandedDropdown == ExpandedDropdown.EXERCISE,
                 )
 
-                InlineError(selectedExercise.isEmpty() && showInlineError)
+                InlineError(selectedExercise == null && showInlineError)
             }
             Spacer(modifier = Modifier.weight(1f))
             Row(
@@ -120,7 +134,7 @@ fun ExerciseSessionScreen(
                 ControlButtons(
                     sessionActive = sessionActive.value,
                     onStart = {
-                        if (selectedExercise.isNotEmpty()) {
+                        if (selectedExercise != null) {
                             showConfirmationDialogStart = true
                         } else {
                             showInlineError = true
@@ -139,11 +153,15 @@ fun ExerciseSessionScreen(
         if (showConfirmationDialogStart) {
             ConfirmDialog(
                 dialogTitle = stringResource(R.string.are_you_sure_you_want_start_this_exercise_session),
-                dialogText = stringResource(R.string.selected_exercise, selectedExercise),
+                dialogText = stringResource(
+                    R.string.selected_exercise,
+                    selectedExercise?.exerciseSessionActivity?.title?.let { stringResource(id = it) }
+                        ?: ""),
                 onDismiss = { showConfirmationDialogStart = false },
                 onConfirm = {
                     showConfirmationDialogStart = false
-                    RouteTrackingService.selectedExercise.value = selectedExercise
+                    RouteTrackingService.selectedExercise.value =
+                        selectedExercise?.exerciseSessionActivity?.type ?: ""
                     Intent(context, RouteTrackingService::class.java).also {
                         it.action = RouteTrackingService.Actions.START.toString()
                         context.startService(it)

@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.model
 
+import androidx.annotation.StringRes
 import com.github.k409.fitflow.R
 
 enum class HealthConnectGoals(
@@ -7,6 +8,7 @@ enum class HealthConnectGoals(
 ) {
     Running(
         healthConnectGoal = HealthConnectGoal(
+            title = R.string.running,
             type = "Running",
             icon = R.drawable.run,
             boost = 20.0,
@@ -15,6 +17,7 @@ enum class HealthConnectGoals(
     ),
     Biking(
         healthConnectGoal = HealthConnectGoal(
+            title = R.string.biking,
             type = "Biking",
             icon = R.drawable.bike,
             boost = 10.0,
@@ -23,6 +26,7 @@ enum class HealthConnectGoals(
     ),
 }
 data class HealthConnectGoal(
+    @StringRes val title : Int,
     val type: String,
     val icon: Int,
     val boost: Double,

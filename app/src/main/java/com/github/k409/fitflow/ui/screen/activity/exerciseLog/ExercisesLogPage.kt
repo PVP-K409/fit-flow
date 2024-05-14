@@ -71,6 +71,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.ExerciseRecord
+import com.github.k409.fitflow.model.HealthConnectExercises
 import com.github.k409.fitflow.ui.common.Dialog
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.navigation.NavRoutes
@@ -438,7 +439,7 @@ fun ExercisesLogPage(
                                 FilterChip(
                                     label = {
                                         Text(
-                                            text = type,
+                                            text = stringResource(id = HealthConnectExercises.valueOf(type).title),
                                             color = MaterialTheme.colorScheme.secondary,
                                         )
                                     },

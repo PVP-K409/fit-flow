@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.model
 
+import androidx.annotation.StringRes
 import com.github.k409.fitflow.R
 
 enum class ExerciseSessionActivities(
@@ -8,6 +9,7 @@ enum class ExerciseSessionActivities(
     Walking(
         exerciseSessionActivity = ExerciseSessionActivity(
             type = "Walking",
+            title = R.string.walking,
             icon = R.drawable.walk,
             validExerciseType = 79,
             locationUpdateInterval = 15000L,
@@ -18,6 +20,7 @@ enum class ExerciseSessionActivities(
     Running(
         exerciseSessionActivity = ExerciseSessionActivity(
             type = "Running",
+            title = R.string.running,
             icon = R.drawable.run,
             validExerciseType = 56,
             locationUpdateInterval = 10000L,
@@ -28,6 +31,7 @@ enum class ExerciseSessionActivities(
     Biking(
         exerciseSessionActivity = ExerciseSessionActivity(
             type = "Biking",
+            title = R.string.biking,
             icon = R.drawable.bike,
             validExerciseType = 8,
             locationUpdateInterval = 8000L,
@@ -39,6 +43,7 @@ enum class ExerciseSessionActivities(
 
 data class ExerciseSessionActivity(
     val type: String,
+    @StringRes val title: Int,
     val icon: Int = R.drawable.walk,
     val validExerciseType: Int,
     val locationUpdateInterval: Long,
