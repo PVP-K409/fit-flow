@@ -480,7 +480,8 @@ fun ExerciseRecordCard(record: ExerciseRecord) {
         modifier = Modifier
             .padding(16.dp),
     ) {
-        val title = record.exerciseType ?: stringResource(id = R.string.exercise)
+        val titleId = record.title ?: R.string.exercise
+        val title = stringResource(id = titleId)
         
         ExerciseCardHeader(title = title, record.startTime)
         ExerciseRecordView(record)
