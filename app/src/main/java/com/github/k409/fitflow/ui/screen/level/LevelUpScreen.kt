@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -56,7 +57,12 @@ fun LevelUpScreen(
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-private fun LevelUpScreenContent(viewModel: LevelViewModel, uiState: LevelUiState.Success) {
+private fun LevelUpScreenContent(
+    viewModel: LevelViewModel,
+    uiState: LevelUiState.Success
+) {
+    val language = LocalContext.current.resources.configuration.locales[0].language
+
     val clicked = remember { mutableStateOf(false) }
     val level = levels.first { it.minXP <= uiState.user.xp && it.maxXP >= uiState.user.xp }
     val coroutineScope = rememberCoroutineScope()
@@ -108,7 +114,8 @@ private fun LevelUpScreenContent(viewModel: LevelViewModel, uiState: LevelUiStat
                             modifier = Modifier,
                             imageDownloadUrl = reward.phases?.get("Regular") ?: reward.image,
                             name = reward.title,
-                            description = reward.description,
+                            description = reward.localizedDescriptions[language]
+                                ?: reward.description,
                         )
                     }
                     Button(

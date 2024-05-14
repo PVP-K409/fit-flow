@@ -31,6 +31,7 @@ fun InventoryScreen(
     inventoryViewModel: InventoryViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val language = context.resources.configuration.locales[0].language
 
     var selectedCategoryIndex by rememberSaveable { mutableIntStateOf(0) }
 
@@ -73,7 +74,7 @@ fun InventoryScreen(
                 modifier = Modifier,
                 imageDownloadUrl = item.phases?.get("Regular") ?: item.image,
                 name = item.title,
-                description = item.description,
+                description =item.localizedDescriptions[language] ?: item.description,
                 removeButtonText = stringResource(R.string.remove),
                 onRemoveClick =
                 {
