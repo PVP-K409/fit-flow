@@ -34,8 +34,6 @@ import com.github.k409.fitflow.service.SnackbarManager
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.screen.you.OutlineCardContainer
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 @Composable
@@ -77,16 +75,14 @@ fun FriendRequestContent(
     val friendEmails = friends.map { it.collectAsState(User()).value.email }
     val requestEmails =  friendRequests.map { it.collectAsState(User()).value.email }
 
-    val emails = friendEmails + requestEmails + userEmail
+    val emails = friendEmails + requestEmails
 
-            Column(
+    Column(
         modifier = Modifier
-            .padding(vertical = 16.dp)
-            .padding(start = 2.dp, end = 2.dp),
+            .padding(start = 4.dp, end = 4.dp, top = 4.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start,
     ) {
-
         Row (
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -95,20 +91,15 @@ fun FriendRequestContent(
                 value = searchText,
                 onValueChange = {
                     searchText = it
-                    isButtonEnabled = !emails.contains(it.lowercase())
-                    nameError = if (it == userEmail) context.getString(R.string.self_friend) else null
+                    isButtonEnabled = !emails.contains(it.lowercase()) && it != userEmail
+                    nameError = if (it == userEmail) context.getString(R.string.self_friend)
+                    else if (emails.contains(it.lowercase())) context.getString(R.string.already_friends)
+                    else null
                 },
                 label = { Text("Send a friend request to") },
                 modifier = Modifier
                     .padding(start = 18.dp, end = 12.dp),
             )
-            nameError?.let {
-                Text(
-                    text = it,
-                    color = Color.Red,
-                    modifier = Modifier.padding(start = 8.dp),
-                )
-            }
 
             IconButton(
                 modifier = Modifier
@@ -131,10 +122,23 @@ fun FriendRequestContent(
                 )
             }
         }
+        nameError?.let {
+            Text(
+                text = it,
+                color = Color.Red,
+                modifier = Modifier.padding(start = 8.dp),
+            )
+        }
+    }
 
+    Column(
+        modifier = Modifier
+            .padding(vertical = 16.dp)
+            .padding(end = 2.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.Start,
+    ) {
         Spacer(modifier = Modifier.height(12.dp))
-
-
 
         OutlineCardContainer(
             title = stringResource(R.string.found_user),
@@ -175,7 +179,6 @@ fun FriendRequestContent(
                     }
                 }
             }
-
         }
     }
 }

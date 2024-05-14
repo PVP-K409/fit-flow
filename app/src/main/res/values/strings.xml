@@ -11,7 +11,8 @@
     <string name="user_name">Name</string>
     <string name="profile_creation">Create profile</string>
     <string name="required_field">*Required field</string>
-    <string name="self_friend">*Can not send it</string>
+    <string name="self_friend">*Can not send to yourself</string>
+    <string name="already_friends">*Already friends or the user has already sent a friend request</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="profile_saved">Profile saved</string>
