@@ -245,7 +245,7 @@ fun Progress(
     color: Color,
 ) {
     val unit =
-        if (goal.type == stringResource(R.string.walking)) stringResource(R.string.steps) else "km"
+        if (goal.type == "Walking") stringResource(R.string.steps) else "km"
     var displayProgress = if (unit == stringResource(R.string.steps)) {
         goal.currentProgress.toLong()
             .toString()
