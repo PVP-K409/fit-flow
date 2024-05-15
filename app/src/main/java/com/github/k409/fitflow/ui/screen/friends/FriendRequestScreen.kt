@@ -37,7 +37,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @Composable
-fun FriendRequestScreen (
+fun FriendRequestScreen(
     viewModel: FriendsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.friendsUiState.collectAsState()
@@ -73,7 +73,7 @@ fun FriendRequestContent(
     var foundUser by remember { mutableStateOf<User?>(null) }
 
     val friendEmails = friends.map { it.collectAsState(User()).value.email }
-    val requestEmails =  friendRequests.map { it.collectAsState(User()).value.email }
+    val requestEmails = friendRequests.map { it.collectAsState(User()).value.email }
 
     val emails = friendEmails + requestEmails
 
@@ -83,7 +83,7 @@ fun FriendRequestContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start,
     ) {
-        Row (
+        Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
@@ -92,11 +92,13 @@ fun FriendRequestContent(
                 onValueChange = {
                     searchText = it
                     isButtonEnabled = !emails.contains(it.lowercase()) && it != userEmail
-                    nameError = if (it == userEmail)
+                    nameError = if (it == userEmail) {
                         context.getString(R.string.Self_friend)
-                    else if (emails.contains(it.lowercase()))
+                    } else if (emails.contains(it.lowercase())) {
                         context.getString(R.string.Already_friends)
-                    else null
+                    } else {
+                        null
+                    }
                 },
                 label = { Text("Send a friend request to") },
                 modifier = Modifier
@@ -146,7 +148,7 @@ fun FriendRequestContent(
             title = stringResource(R.string.Searched_users),
             subtitleText = stringResource(R.string.Searched_user),
         ) {
-            if(foundUser?.uid != null && foundUser?.uid != "") {
+            if (foundUser?.uid != null && foundUser?.uid != "") {
                 UserCard(
                     user = foundUser,
                     friendsViewModel = viewModel,

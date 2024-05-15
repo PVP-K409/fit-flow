@@ -39,7 +39,7 @@ import com.github.k409.fitflow.service.SnackbarManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-//Card to show friend request
+// Card to show friend request
 @Composable
 fun FriendRequestCard(
     user: User,
@@ -62,7 +62,8 @@ fun FriendRequestCard(
         ) {
             SubcomposeAsyncImage(
                 model = ImageRequest.Builder(
-                    LocalContext.current).data(user.photoUrl).crossfade(true)
+                    LocalContext.current,
+                ).data(user.photoUrl).crossfade(true)
                     .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -111,7 +112,7 @@ fun FriendRequestCard(
                     color = MaterialTheme.colorScheme.primary,
                 )
 
-                Row (
+                Row(
                     modifier = Modifier
                         .fillMaxSize(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -126,8 +127,9 @@ fun FriendRequestCard(
                                 friendsViewModel.acceptFriendRequest(user.uid)
                             }
                             SnackbarManager.showMessage(
-                                context.getString(R.string.friend_request_accepted))
-                        }
+                                context.getString(R.string.friend_request_accepted),
+                            )
+                        },
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.CheckCircle,
@@ -143,8 +145,9 @@ fun FriendRequestCard(
                                 friendsViewModel.declineFriendRequest(user.uid)
                             }
                             SnackbarManager.showMessage(
-                                context.getString(R.string.friend_request_declined))
-                        }
+                                context.getString(R.string.friend_request_declined),
+                            )
+                        },
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Cancel,
@@ -157,7 +160,7 @@ fun FriendRequestCard(
     }
 }
 
-//Card to show user that the current user searched for
+// Card to show user that the current user searched for
 @Composable
 fun UserCard(
     user: User?,
@@ -180,7 +183,8 @@ fun UserCard(
         ) {
             SubcomposeAsyncImage(
                 model = ImageRequest.Builder(
-                    LocalContext.current).data(user?.photoUrl).crossfade(true)
+                    LocalContext.current,
+                ).data(user?.photoUrl).crossfade(true)
                     .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -248,7 +252,7 @@ fun UserCard(
     }
 }
 
-//Card to show a friend
+// Card to show a friend
 @Composable
 fun FriendCard(
     user: User,
@@ -329,7 +333,7 @@ fun FriendCard(
                             friendsViewModel.removeFriend(user.uid)
                         }
                         SnackbarManager.showMessage(context.getString(R.string.friend_removed))
-                    }
+                    },
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.PersonOff,

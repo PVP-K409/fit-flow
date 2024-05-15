@@ -38,19 +38,19 @@ class FriendsViewModel @Inject constructor(
     }
 
     suspend fun sendFriendRequest(uid: String) {
-            friendsRepository.sendFriendRequest(uid)
+        friendsRepository.sendFriendRequest(uid)
     }
 
     suspend fun acceptFriendRequest(uid: String) {
-            friendsRepository.acceptFriendRequest(uid)
+        friendsRepository.acceptFriendRequest(uid)
     }
 
     suspend fun declineFriendRequest(uid: String) {
-            friendsRepository.declineFriendRequest(uid)
+        friendsRepository.declineFriendRequest(uid)
     }
 
     suspend fun removeFriend(uid: String) {
-            friendsRepository.removeFriend(uid)
+        friendsRepository.removeFriend(uid)
     }
 }
 

@@ -52,7 +52,6 @@ fun FriendsScreen() {
                 1 -> {
                     FriendRequestScreen()
                 }
-
             }
         }
     }

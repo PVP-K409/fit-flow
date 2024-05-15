@@ -164,7 +164,6 @@ class UserRepository @Inject constructor(
             Log.e("User Repository", "Error searching user by email")
             Log.e("User Repository", e.toString())
             User()
-
         }
     }
 

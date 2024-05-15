@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-
 private const val FRIENDS_COLLECTION = "friends"
 private const val PENDING_REQUEST_FIELD = "pendingRequests"
 private const val FRIENDS_LIST_FIELD = "friends"
@@ -51,13 +50,15 @@ class FriendsRepository @Inject constructor(
                 emit(emptyList())
             }
 
-    suspend fun sendFriendRequest(uid:String) {
+    suspend fun sendFriendRequest(uid: String) {
         val currentUser = auth.currentUser!!.uid
 
         try {
             getFriendDocumentReference(uid)
-                .set(mapOf(PENDING_REQUEST_FIELD to FieldValue.arrayUnion(currentUser)),
-                    SetOptions.merge())
+                .set(
+                    mapOf(PENDING_REQUEST_FIELD to FieldValue.arrayUnion(currentUser)),
+                    SetOptions.merge(),
+                )
                 .await()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -65,20 +66,27 @@ class FriendsRepository @Inject constructor(
     }
 
     suspend fun acceptFriendRequest(uid: String) {
-
         val currentUser = auth.currentUser!!.uid
 
         try {
             getFriendDocumentReference(currentUser)
-                .set(mapOf(FRIENDS_LIST_FIELD to FieldValue.arrayUnion(uid),
-                    PENDING_REQUEST_FIELD to FieldValue.arrayRemove(uid)),
-                    SetOptions.merge())
+                .set(
+                    mapOf(
+                        FRIENDS_LIST_FIELD to FieldValue.arrayUnion(uid),
+                        PENDING_REQUEST_FIELD to FieldValue.arrayRemove(uid),
+                    ),
+                    SetOptions.merge(),
+                )
                 .await()
 
             getFriendDocumentReference(uid)
-                .set(mapOf(FRIENDS_LIST_FIELD to FieldValue.arrayUnion(currentUser),
-                    PENDING_REQUEST_FIELD to FieldValue.arrayRemove(currentUser)),
-                    SetOptions.merge())
+                .set(
+                    mapOf(
+                        FRIENDS_LIST_FIELD to FieldValue.arrayUnion(currentUser),
+                        PENDING_REQUEST_FIELD to FieldValue.arrayRemove(currentUser),
+                    ),
+                    SetOptions.merge(),
+                )
                 .await()
         } catch (e: Exception) {
             e.printStackTrace()
