@@ -26,9 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.k409.fitflow.R
 
 @Composable
 fun FitFlowCircularProgressIndicator(
@@ -122,14 +124,14 @@ fun UnderConstructionContent() {
         Text(
             modifier = Modifier
                 .padding(top = 16.dp),
-            text = "Sorry, this page is under construction!",
+            text = stringResource(R.string.sorry_this_page_is_under_construction),
             style = MaterialTheme.typography.titleMedium,
             fontSize = 20.sp,
         )
         Text(
             modifier = Modifier
                 .padding(top = 8.dp),
-            text = "Be careful, there are some dangerous tools here!",
+            text = stringResource(R.string.be_careful_there_are_some_dangerous_tools_here),
             fontSize = 14.sp,
         )
     }

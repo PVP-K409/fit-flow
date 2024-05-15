@@ -4,6 +4,7 @@ data class MarketItem(
     val id: Int = -1,
     val title: String = "",
     val description: String = "",
+    val localizedDescriptions: Map<String, String> = emptyMap(),
     val price: Int = -1,
     val priceCents: Long = -1,
     val phases: Map<String, String>? = emptyMap(),

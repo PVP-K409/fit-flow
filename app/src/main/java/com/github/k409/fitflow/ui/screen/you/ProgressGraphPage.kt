@@ -44,6 +44,7 @@ import com.github.k409.fitflow.ui.common.TextWithLabel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
@@ -120,7 +121,10 @@ private fun WeeklySection(uiState: ProgressUiState.Success) {
 @Composable
 private fun ThisMonthSection(uiState: ProgressUiState.Success) {
     val now = LocalDate.now()
-    val currentMonth = now.month.toString().lowercase()
+
+    val currentMonth = now.month
+        .getDisplayName(TextStyle.FULL, Locale.getDefault())
+        .lowercase()
         .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
     SectionHeaderCard(

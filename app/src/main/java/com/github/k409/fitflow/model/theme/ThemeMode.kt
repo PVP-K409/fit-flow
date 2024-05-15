@@ -1,7 +1,10 @@
 package com.github.k409.fitflow.model.theme
 
-enum class ThemeMode(val title: String) {
-    DARK("Dark"),
-    LIGHT("Light"),
-    AUTOMATIC("Automatic"),
+import androidx.annotation.StringRes
+import com.github.k409.fitflow.R
+
+enum class ThemeMode(@StringRes val title: Int) {
+    DARK(R.string.dark),
+    LIGHT(R.string.light),
+    AUTOMATIC(R.string.automatic),
 }
