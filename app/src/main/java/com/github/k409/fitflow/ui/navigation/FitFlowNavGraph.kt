@@ -14,6 +14,7 @@ import com.github.k409.fitflow.ui.screen.goals.GoalCreation
 import com.github.k409.fitflow.ui.screen.goals.GoalsScreen
 import com.github.k409.fitflow.ui.screen.hydration.HydrationScreen
 import com.github.k409.fitflow.ui.screen.inventory.InventoryScreen
+import com.github.k409.fitflow.ui.screen.issue.ReportIssueScreen
 import com.github.k409.fitflow.ui.screen.leaderboard.GlobalLeaderboardScreen
 import com.github.k409.fitflow.ui.screen.level.LevelScreen
 import com.github.k409.fitflow.ui.screen.level.LevelUpScreen
@@ -112,6 +113,10 @@ fun FitFlowNavGraph(
                     }
                 },
             )
+        }
+
+        composable(NavRoutes.ReportIssue.route) {
+            ReportIssueScreen(navigateBack = { navController.popBackStack() })
         }
     }
 }

@@ -48,6 +48,7 @@ sealed class NavRoutes(
             LevelUp,
             Profile,
             Friends,
+            ReportIssue,
         )
         val bottomNavBarItems =
             listOf(Aquarium, Activity, Hydration, Goals, Marketplace, You)
@@ -118,4 +119,6 @@ sealed class NavRoutes(
     data object LevelUp : NavRoutes("levelUp", R.string.levels, Icons.Outlined.LocalPlay)
 
     data object Profile : NavRoutes("profile", R.string.profile, Icons.Outlined.PersonOutline)
+
+    data object ReportIssue : NavRoutes("reportIssue", R.string.report_issue, Icons.Outlined.ErrorOutline)
 }

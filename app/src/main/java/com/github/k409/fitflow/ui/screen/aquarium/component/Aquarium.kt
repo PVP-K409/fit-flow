@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -44,7 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.model.FishPhase
 import com.github.k409.fitflow.model.FishPhase.Companion.getPhase
+import com.github.k409.fitflow.model.InventoryItem
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screen.aquarium.AquariumUiState
 import com.github.k409.fitflow.ui.screen.aquarium.component.AquariumTokens.AfternoonBackground
@@ -57,6 +60,7 @@ import kotlinx.coroutines.isActive
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
+import kotlin.random.Random
 
 @Composable
 fun AquariumContent(
@@ -70,7 +74,6 @@ fun AquariumContent(
 
     var aquariumBackground by remember { mutableStateOf(AfternoonBackground) }
 
-    // at the start of each minute check what background to use
     LaunchedEffect(Unit) {
         while (isActive) {
             when (LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))) {
@@ -113,23 +116,32 @@ fun AquariumContent(
         healthLevel = healthLevel,
         fishSize = fishSize,
         uiState = uiState,
-        navController = navController,
-        inventoryViewModel = inventoryViewModel,
+        onInventoryClick = {
+            navController.navigate(NavRoutes.Inventory.route) {
+                launchSingleTop = true
+                restoreState = true
+            }
+        },
+        onDecorationDragEnd = { item, offset ->
+            inventoryViewModel.updateInventoryItem(
+                item.copy(offsetX = offset.x, offsetY = offset.y),
+            )
+        },
     )
 }
 
 @Composable
 private fun AquariumLayout(
     modifier: Modifier,
+    uiState: AquariumUiState.Success,
     aquariumBackground: Brush,
     backgroundAlpha: Float,
     waterLevelAnimation: Float,
     waterLevel: Float,
     healthLevel: Float,
     fishSize: Dp,
-    uiState: AquariumUiState.Success,
-    navController: NavController,
-    inventoryViewModel: InventoryViewModel,
+    onInventoryClick: () -> Unit,
+    onDecorationDragEnd: (InventoryItem, Offset) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -140,7 +152,6 @@ private fun AquariumLayout(
             ),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-
     ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
@@ -163,16 +174,23 @@ private fun AquariumLayout(
             Sand()
 
             InventoryButton(
-                modifier = Modifier
-                    .align(Alignment.TopStart),
-                navController = navController,
+                modifier = Modifier.align(Alignment.TopStart),
+                onInventoryClick = onInventoryClick,
             )
 
             AquariumMetrics(
-                modifier = Modifier
-                    .align(Alignment.TopEnd),
+                modifier = Modifier.align(Alignment.TopEnd),
                 waterLevel = waterLevel,
                 healthLevel = healthLevel,
+            )
+
+            DecorationsBox(
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+                    .height(150.dp)
+                    .align(Alignment.BottomCenter),
+                uiState = uiState,
+                onDecorationDragEnd = onDecorationDragEnd,
             )
 
             Column(
@@ -181,46 +199,99 @@ private fun AquariumLayout(
                     .padding(bottom = 10.dp),
                 verticalArrangement = Arrangement.Bottom,
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight(waterLevelAnimation),
-                ) {
-                    val phase = getPhase(healthLevel)
+                FishBonesContainer(waterLevelAnimation = waterLevelAnimation, uiState = uiState)
 
-                    Box(
-                        modifier = Modifier
-                            .height(150.dp)
-                            .align(Alignment.BottomCenter),
-                    ) {
-                        for (item in uiState.aquariumItems) {
-                            if (item.item.type == "decoration") {
-                                BouncingDraggableFish(
-                                    initialFishSize = 85.dp,
-                                    imageDownloadUrl = item.item.image,
-                                    bounceEnabled = false,
-                                    initialPosition = Offset(item.offsetX, item.offsetY),
-                                    onDragEnd = { offset ->
-                                        inventoryViewModel.updateInventoryItem(
-                                            item.copy(offsetX = offset.x, offsetY = offset.y),
-                                        )
-                                    },
-                                    uniformSize = true,
-                                )
-                            }
-                        }
-                    }
-                    for (item in uiState.aquariumItems) {
-                        if (item.item.type == "fish") {
-                            BouncingDraggableFish(
-                                initialFishSize = fishSize,
-                                fishDrawableId = R.drawable.gold_fish_dead,
-                                imageDownloadUrl = item.item.phases?.get(phase.name)
-                                    ?: item.item.image,
-                            )
-                        }
-                    }
-                }
+                FishContainer(
+                    uiState = uiState,
+                    width = width,
+                    waterLevel = waterLevel,
+                    waterLevelAnimation = waterLevelAnimation,
+                    healthLevel = healthLevel,
+                    fishSize = fishSize,
+                    phase = getPhase(healthLevel),
+                )
             }
+        }
+    }
+}
+
+@Composable
+private fun FishBonesContainer(
+    waterLevelAnimation: Float,
+    uiState: AquariumUiState.Success,
+) {
+    if (waterLevelAnimation <= 0f) {
+        val fishesCount = uiState.fishes.size
+        val bones = listOf(R.drawable.fish_bone_1, R.drawable.fish_bone_2)
+
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.Bottom,
+        ) {
+            for (i in 0 until fishesCount) {
+                val rotation = remember { Random.nextInt(45) }
+
+                FishImage(
+                    modifier = Modifier
+                        .padding(bottom = 20.dp)
+                        .rotate(rotation.toFloat()),
+                    fishSize = 90.dp,
+                    fishDrawableId = bones[i % 2],
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FishContainer(
+    uiState: AquariumUiState.Success,
+    width: Int,
+    waterLevel: Float,
+    waterLevelAnimation: Float,
+    healthLevel: Float,
+    fishSize: Dp,
+    phase: FishPhase,
+) {
+    Box(
+        modifier = Modifier.fillMaxHeight(waterLevelAnimation),
+    ) {
+        for ((index, item) in uiState.fishes.withIndex()) {
+            val xOffset = (width / uiState.fishes.size) * (index).toFloat()
+
+            if (waterLevelAnimation > 0f && healthLevel >= 0f) {
+                BouncingDraggableFish(
+                    initialFishSize = fishSize,
+                    fishDrawableId = R.drawable.primary_fish,
+                    initialPosition = Offset(xOffset, 0f),
+                    bounceEnabled = healthLevel > 0f,
+                    flipped = healthLevel <= 0f,
+                    imageDownloadUrl = item.item.phases?.get(phase.name) ?: item.item.image,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DecorationsBox(
+    modifier: Modifier = Modifier,
+    uiState: AquariumUiState.Success,
+    onDecorationDragEnd: (InventoryItem, Offset) -> Unit,
+) {
+    Box(
+        modifier = modifier,
+    ) {
+        for (item in uiState.decorations) {
+            BouncingDraggableFish(
+                initialFishSize = 85.dp,
+                imageDownloadUrl = item.item.image,
+                bounceEnabled = false,
+                initialPosition = Offset(item.offsetX, item.offsetY),
+                onDragEnd = { onDecorationDragEnd(item, it) },
+                uniformSize = true,
+            )
         }
     }
 }
@@ -236,8 +307,7 @@ private fun AquariumMetrics(
     dividerColor: Color = Color(0xFF434B48),
 ) {
     Card(
-        modifier = modifier
-            .padding(horizontal = 12.dp, vertical = 50.dp),
+        modifier = modifier.padding(horizontal = 12.dp, vertical = 50.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.3f)),
         shape = RoundedCornerShape(100),
     ) {
@@ -297,17 +367,12 @@ private fun AquariumMetrics(
 @Composable
 fun InventoryButton(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    onInventoryClick: () -> Unit = {},
 ) {
     Card(
         modifier = modifier
             .padding(horizontal = 12.dp, vertical = 50.dp)
-            .clickable {
-                navController.navigate(NavRoutes.Inventory.route) {
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            },
+            .clickable(onClick = onInventoryClick),
         colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.3f)),
         shape = RoundedCornerShape(100),
     ) {
@@ -317,8 +382,7 @@ fun InventoryButton(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                modifier = Modifier
-                    .size(16.dp),
+                modifier = Modifier.size(16.dp),
                 tint = Color(0xFF434B48),
                 imageVector = Icons.Outlined.Inventory2,
                 contentDescription = "Inventory",

@@ -24,6 +24,8 @@ class AquariumViewModel @Inject constructor(
         AquariumUiState.Success(
             aquariumStats = stats,
             aquariumItems = items,
+            fishes = items.filter { it.item.type == "fish" },
+            decorations = items.filter { it.item.type == "decoration" },
         )
     }
         .stateIn(

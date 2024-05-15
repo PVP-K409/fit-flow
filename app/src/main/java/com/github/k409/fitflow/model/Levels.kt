@@ -47,3 +47,31 @@ data class Level(
     val minXP: Int = -1,
     val maxXP: Int = -1,
 )
+
+fun getUserLevel(userXp: Int): Level {
+    return levels.firstOrNull { userXp in it.minXP..it.maxXP } ?: levels.first()
+}
+
+fun Level.getProgress(userXp: Int): Float {
+    val progress = if (this.maxXP == Int.MAX_VALUE) {
+        if (userXp >= this.minXP) 1f else 0f
+    } else {
+        (userXp - this.minXP) / (this.maxXP - this.minXP).toFloat()
+    }
+
+    return progress.coerceIn(0f, 1f)
+}
+
+fun Level.getProgressText(userXp: Int): String {
+    val progress = getProgress(userXp)
+
+    val levelProgressText = if (maxXP == Int.MAX_VALUE) {
+        "$minXP +"
+    } else if (progress >= 1) {
+        "$maxXP / $maxXP"
+    } else {
+        "$userXp / $maxXP"
+    }
+
+    return levelProgressText
+}
