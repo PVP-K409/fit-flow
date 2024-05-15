@@ -71,8 +71,8 @@ private fun YesterdayScreenContent(viewModel: YesterdayViewModel, uiState: Yeste
             .padding(top = 16.dp),
     ) {
         OutlineCardContainer(
-            title = "Welcome back!",
-            subtitleText = "Here's a summary of your activity from yesterday",
+            title = stringResource(R.string.welcome_back),
+            subtitleText = stringResource(R.string.here_s_a_summary_of_your_activity_from_yesterday),
         ) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -80,7 +80,7 @@ private fun YesterdayScreenContent(viewModel: YesterdayViewModel, uiState: Yeste
             ) {
                 item {
                     EffortRow(
-                        leftLabel = "Steps taken",
+                        leftLabel = stringResource(R.string.steps_taken),
                         leftValue = uiState.stepRecord?.recordDate ?: LocalDate.now()
                             .minusDays(1).toString(),
                         rightLabel = uiState.stepRecord?.totalSteps.toString(),
@@ -92,7 +92,7 @@ private fun YesterdayScreenContent(viewModel: YesterdayViewModel, uiState: Yeste
 
                 item {
                     EffortRow(
-                        leftLabel = "Water intake",
+                        leftLabel = stringResource(R.string.waterLogging),
                         leftValue = uiState.hydration.collectAsState(initial = null).value?.date
                             ?: LocalDate.now().minusDays(1).toString(),
                         rightLabel = String.format(
@@ -107,7 +107,7 @@ private fun YesterdayScreenContent(viewModel: YesterdayViewModel, uiState: Yeste
                 }
                 item {
                     EffortRow(
-                        leftLabel = "Calories burned",
+                        leftLabel = stringResource(R.string.calories_burned),
                         leftValue = uiState.stepRecord?.recordDate ?: LocalDate.now()
                             .minusDays(1).toString(),
                         rightLabel = uiState.stepRecord?.caloriesBurned.toString(),
@@ -117,11 +117,11 @@ private fun YesterdayScreenContent(viewModel: YesterdayViewModel, uiState: Yeste
                     HorizontalDivider()
                 }
                 if (uiState.dailyGoals?.any { it.value.completed } == true) {
-                    item { GoalsHeader(title = "Completed daily goals") }
+                    item { GoalsHeader(title = stringResource(R.string.completed_daily_goals)) }
                     item { GoalsList(goalsSelected = uiState.dailyGoals.filter { it.value.completed }) }
                 }
                 if (uiState.weeklyGoals?.any { it.value.completed } == true) {
-                    item { GoalsHeader(title = "Completed weekly goals") }
+                    item { GoalsHeader(title = stringResource(R.string.completed_weekly_goals)) }
                     item { GoalsList(goalsSelected = uiState.weeklyGoals.filter { it.value.completed }) }
                 }
                 item {
@@ -137,7 +137,7 @@ private fun YesterdayScreenContent(viewModel: YesterdayViewModel, uiState: Yeste
                     ) {
                         Text(
                             text = stringResource(R.string.close),
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = colors.onPrimary,
                         )
                     }
                 }
