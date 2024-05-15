@@ -20,6 +20,7 @@ import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
 import com.github.k409.fitflow.model.NotificationChannel
+import com.github.k409.fitflow.worker.AquariumMetricsRemindersWorker
 import com.github.k409.fitflow.worker.AquariumMetricsUpdaterWorker
 import com.github.k409.fitflow.worker.DrinkReminderWorker
 import com.github.k409.fitflow.worker.GoalAndStepUpdateWorker
@@ -52,6 +53,7 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
 
         createNotificationChannels()
 
+        scheduleAquariumMetricsReminderWorker()
         scheduleGoalAndStepUpdateWorkers()
         scheduleHydrationReminderWorker()
         scheduleAquariumMetricsUpdaterWorker()
@@ -85,8 +87,10 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
     private fun scheduleGoalAndStepUpdateWorkers() {
         val start = GoalAndStepUpdateWorker.startTimeToSend
         val end = GoalAndStepUpdateWorker.endTimeToSend
+
         val times = (end - start) / 3
         val period = times * 60
+
         scheduleWork<GoalAndStepUpdateWorker>(
             "PeriodicGoalAndStepUpdateWorker",
             period.toLong(),
@@ -104,6 +108,22 @@ class FitFlowApplication : Application(), Configuration.Provider, ImageLoaderFac
             24,
             TimeUnit.HOURS,
             calculateInitialDelayBeforeMidnight(),
+        )
+    }
+
+    private fun scheduleAquariumMetricsReminderWorker() {
+        val initialDelay = calculateInitialDelayUntil(12, 0)
+
+        val workerRequest = PeriodicWorkRequestBuilder<AquariumMetricsRemindersWorker>(
+            repeatInterval = 1,
+            repeatIntervalTimeUnit = TimeUnit.DAYS,
+        ).setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            AquariumMetricsRemindersWorker.WORKER_NAME,
+            ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+            workerRequest,
         )
     }
 
