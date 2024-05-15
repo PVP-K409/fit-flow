@@ -222,7 +222,7 @@ private fun UpdateTopAndBottomBarVisibility(
     topBarState: MutableState<Boolean>,
 ) {
     when (currentScreen) {
-        NavRoutes.Login, NavRoutes.Default, NavRoutes.LevelUp, NavRoutes.Yesterday  -> {
+        NavRoutes.Login, NavRoutes.Default, NavRoutes.LevelUp, NavRoutes.Yesterday -> {
             bottomBarState.value = false
             topBarState.value = false
         }
