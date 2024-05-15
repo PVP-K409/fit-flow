@@ -42,6 +42,7 @@ import com.github.k409.fitflow.util.formatTimeFromSeconds
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.maps.MapView
+import java.util.Locale
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -52,18 +53,24 @@ fun ExerciseSessionScreen(
     val fineLocationPermissionState = rememberMultiplePermissionsState(
         RouteTrackingService.fineLocationPermissions,
     )
-    val sessionPaused = RouteTrackingService.sessionPaused.collectAsState()
-    val sessionActive = RouteTrackingService.sessionActive.collectAsState()
+    val sessionActive = RouteTrackingService.isTracking.collectAsState()
     val exercise = RouteTrackingService.selectedExercise.collectAsState()
+
     val timeInSecond = RouteTrackingService.timeRunInSecond.collectAsState()
+    val distance = RouteTrackingService.distanceInKm.collectAsState()
+    val avgSpeed = RouteTrackingService.avgSpeed.collectAsState()
+    val calories = RouteTrackingService.calories.collectAsState()
 
     var selectedExercise by remember { mutableStateOf("") }
     val expandedDropdown by remember { mutableStateOf(ExpandedDropdown.NONE) }
     var showInlineError by remember { mutableStateOf(false) }
-    var showConfirmationDialog by remember { mutableStateOf(false) }
+    var showConfirmationDialogStart by remember { mutableStateOf(false) }
+    var showConfirmationDialogStop by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit) {
-        fineLocationPermissionState.launchMultiplePermissionRequest()
+        if (!fineLocationPermissionState.allPermissionsGranted) {
+            fineLocationPermissionState.launchMultiplePermissionRequest()
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -79,6 +86,9 @@ fun ExerciseSessionScreen(
                         modifier = Modifier.padding(16.dp),
                         timeInSeconds = timeInSecond.value,
                     )
+                    Text("${String.format(Locale.US, "%.2f", distance.value)} km")
+                    Text("${String.format(Locale.US, "%.2f", avgSpeed.value)} km/h")
+                    Text("${calories.value} cal")
                 }
                 Box(modifier = Modifier.fillMaxHeight(0.8f)) {
                     AndroidView({ MapView(it).apply { onCreate(null) } }) { mapView ->
@@ -109,31 +119,15 @@ fun ExerciseSessionScreen(
             ) {
                 ControlButtons(
                     sessionActive = sessionActive.value,
-                    sessionPaused = sessionPaused.value,
                     onStart = {
                         if (selectedExercise.isNotEmpty()) {
-                            showConfirmationDialog = true
+                            showConfirmationDialogStart = true
                         } else {
                             showInlineError = true
                         }
                     },
                     onStop = {
-                        Intent(context, RouteTrackingService::class.java).also {
-                            it.action = RouteTrackingService.Actions.STOP.toString()
-                            context.startService(it)
-                        }
-                    },
-                    onPause = {
-                        Intent(context, RouteTrackingService::class.java).also {
-                            it.action = RouteTrackingService.Actions.PAUSE.toString()
-                            context.startService(it)
-                        }
-                    },
-                    onResume = {
-                        Intent(context, RouteTrackingService::class.java).also {
-                            it.action = RouteTrackingService.Actions.RESUME.toString()
-                            context.startService(it)
-                        }
+                        showConfirmationDialogStop = true
                     },
                 )
             }
@@ -142,16 +136,35 @@ fun ExerciseSessionScreen(
             Spacer(modifier = Modifier.weight(1f))
             ToSettings()
         }
-        if (showConfirmationDialog) {
+        if (showConfirmationDialogStart) {
             ConfirmDialog(
-                dialogTitle = "Are you sure you want start this exercise session?",
+                dialogTitle = stringResource(R.string.are_you_sure_you_want_start_this_exercise_session),
                 dialogText = "Exercise: $selectedExercise",
-                onDismiss = { showConfirmationDialog = false },
+                onDismiss = { showConfirmationDialogStart = false },
                 onConfirm = {
-                    showConfirmationDialog = false
+                    showConfirmationDialogStart = false
                     RouteTrackingService.selectedExercise.value = selectedExercise
                     Intent(context, RouteTrackingService::class.java).also {
                         it.action = RouteTrackingService.Actions.START.toString()
+                        context.startService(it)
+                    }
+                },
+            )
+        }
+        if (showConfirmationDialogStop) {
+            ConfirmDialog(
+                dialogTitle = stringResource(R.string.are_you_sure_you_want_stop_this_exercise_session),
+                dialogText = """
+                    Distance: ${String.format(Locale.US, "%.2f", distance.value)} km
+                    Time: ${formatTimeFromSeconds(timeInSecond.value)}
+                    Calories: ${calories.value} cal
+                    Average Speed: ${String.format(Locale.US, "%.2f", avgSpeed.value)} km/h
+                """.trimIndent(),
+                onDismiss = { showConfirmationDialogStop = false },
+                onConfirm = {
+                    showConfirmationDialogStop = false
+                    Intent(context, RouteTrackingService::class.java).also {
+                        it.action = RouteTrackingService.Actions.STOP.toString()
                         context.startService(it)
                     }
                 },
@@ -178,11 +191,8 @@ fun TimeDisplay(
 @Composable
 fun ControlButtons(
     sessionActive: Boolean,
-    sessionPaused: Boolean,
     onStart: () -> Unit,
     onStop: () -> Unit,
-    onPause: () -> Unit,
-    onResume: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -192,29 +202,15 @@ fun ControlButtons(
     ) {
         if (!sessionActive) {
             ActionButton(
-                text = "Start",
+                text = stringResource(R.string.start),
                 onClick = onStart,
                 modifier = Modifier.weight(1f),
             )
         }
         if (sessionActive) {
             ActionButton(
-                text = "Stop",
+                text = stringResource(R.string.stop),
                 onClick = onStop,
-                modifier = Modifier.weight(1f),
-            )
-        }
-        if (sessionActive && sessionPaused) {
-            ActionButton(
-                text = "Resume",
-                onClick = onResume,
-                modifier = Modifier.weight(1f),
-            )
-        }
-        if (sessionActive && !sessionPaused) {
-            ActionButton(
-                text = "Pause",
-                onClick = onPause,
                 modifier = Modifier.weight(1f),
             )
         }
@@ -248,7 +244,7 @@ fun ToSettings() {
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
-            "Location permission is needed to start the session and display the map.",
+            stringResource(R.string.location_permission_is_needed_to_start_the_session_and_display_the_map),
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 16.dp),
@@ -262,7 +258,7 @@ fun ToSettings() {
             },
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("Open Settings")
+            Text(stringResource(R.string.open_settings))
         }
     }
 }

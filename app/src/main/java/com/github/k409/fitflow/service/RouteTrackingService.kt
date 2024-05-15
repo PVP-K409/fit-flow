@@ -12,9 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.health.connect.client.records.ExerciseRoute
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.data.UserRepository
+import com.github.k409.fitflow.model.ExerciseSession
 import com.github.k409.fitflow.model.ExerciseSessionActivity
 import com.github.k409.fitflow.model.NotificationChannel
 import com.github.k409.fitflow.model.NotificationId
@@ -38,6 +41,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.ZoneId
 import javax.inject.Inject
 
 private const val DEFAULT_LOCATION_UPDATE_INTERVAL = 4000L
@@ -47,31 +52,38 @@ private const val TIMER_UPDATE_INTERVAL = 1000L
 private val notificationChannelId = NotificationChannel.ExerciseSession.channelId
 private val notificationId = NotificationId.ExerciseSession.notificationId
 
-typealias Polyline = MutableList<LatLng>
-typealias Polylines = MutableList<Polyline>
-
 @AndroidEntryPoint
 class RouteTrackingService : LifecycleService() {
 
     @Inject lateinit var locationClient: FusedLocationProviderClient
+
+    @Inject lateinit var userRepository: UserRepository
+
+    @Inject lateinit var healthConnectClient: HealthConnectService
+
     private lateinit var notificationBuilder: NotificationCompat.Builder
 
     private var exerciseSessionActivity: ExerciseSessionActivity? = null
     private var locationUpdateInterval = DEFAULT_LOCATION_UPDATE_INTERVAL
     private var fastestLocationUpdateInterval = DEFAULT_FASTEST_LOCATION_UPDATE_INTERVAL
     private val timeRunInMillis = MutableStateFlow(0L)
+    private var userWeight: Double = 0.0
 
     companion object {
         val map = MutableStateFlow<GoogleMap?>(null)
         var circle: Circle? = null
+
         val timeRunInSecond = MutableStateFlow(0L)
+        val distanceInKm = MutableStateFlow(0f)
+        val avgSpeed = MutableStateFlow(0f)
+        val calories = MutableStateFlow(0L)
+
+        val exerciseSessionToWrite = MutableStateFlow(ExerciseSession())
+
         val isTracking = MutableStateFlow(false)
-        val sessionActive = MutableStateFlow(false)
-        val sessionPaused = MutableStateFlow(false)
         val selectedExercise = MutableStateFlow("")
-        val pathPoints = MutableStateFlow<Polylines>(mutableListOf())
+        val pathPoints = MutableStateFlow<MutableList<ExerciseRoute.Location>>(mutableListOf())
         val fineLocationPermissions = listOf(
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
         )
@@ -103,8 +115,8 @@ class RouteTrackingService : LifecycleService() {
                     .bearing(currentCameraPosition.bearing)
                     .tilt(currentCameraPosition.tilt)
 
-                val targetLatLng = if (pathPoints.value.isNotEmpty() && pathPoints.value.last().isNotEmpty()) {
-                    val lastPoint = pathPoints.value.last().last()
+                val targetLatLng = if (pathPoints.value.isNotEmpty()) {
+                    val lastPoint = pathPoints.value.last()
                     LatLng(lastPoint.latitude, lastPoint.longitude)
                 } else {
                     currentCameraPosition.target
@@ -125,18 +137,20 @@ class RouteTrackingService : LifecycleService() {
         }
 
         private fun addAllPolylines() {
-            for (polyline in pathPoints.value) {
-                val polylineOptions = PolylineOptions()
-                    .color(Color.Blue.toArgb())
-                    .width(10f)
-                    .addAll(polyline)
-                map.value?.addPolyline(polylineOptions)
+            val polylineOptions = PolylineOptions()
+                .color(Color.Blue.toArgb())
+                .width(10f)
+
+            for (pathPoint in pathPoints.value) {
+                polylineOptions.add(LatLng(pathPoint.latitude, pathPoint.longitude))
             }
+
+            map.value?.addPolyline(polylineOptions)
         }
     }
 
     enum class Actions {
-        START, STOP, PAUSE, RESUME,
+        START, STOP
     }
 
     override fun onCreate() {
@@ -153,19 +167,37 @@ class RouteTrackingService : LifecycleService() {
         when (intent?.action) {
             Actions.START.toString() -> start()
             Actions.STOP.toString() -> stop()
-            Actions.PAUSE.toString() -> pause()
-            Actions.RESUME.toString() -> resume()
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
     private fun stop() {
+        exerciseSessionToWrite.value.endTime = Instant.now()
+        exerciseSessionToWrite.value.endZoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
+        exerciseSessionToWrite.value.distance = distanceInKm.value
+        exerciseSessionToWrite.value.calories = calories.value
+        exerciseSessionToWrite.value.route = pathPoints.value
+        val exerciseSession = exerciseSessionToWrite.value.copy()
+        CoroutineScope(Dispatchers.Main).launch {
+            healthConnectClient.writeExerciseSession(
+                exerciseSession.exerciseType,
+                exerciseSession.startTime,
+                exerciseSession.startZoneOffset,
+                exerciseSession.endTime,
+                exerciseSession.endZoneOffset,
+                exerciseSession.distance,
+                exerciseSession.calories,
+                exerciseSession.route,
+            )
+        }
+        exerciseSessionToWrite.value = ExerciseSession()
         isTracking.value = false
-        sessionActive.value = false
-        sessionPaused.value = false
         selectedExercise.value = ""
         timeRunInMillis.value = 0L
         timeRunInSecond.value = 0L
+        distanceInKm.value = 0f
+        avgSpeed.value = 0f
+        calories.value = 0L
         map.value = null
         pathPoints.value = mutableListOf()
         locationClient.removeLocationUpdates(locationCallback)
@@ -174,29 +206,24 @@ class RouteTrackingService : LifecycleService() {
 
     private fun start() {
         startTimer()
-        addEmptyPolyline()
 
         exerciseSessionActivity = getExerciseSessionActivityByType(selectedExercise.value)
         locationUpdateInterval = exerciseSessionActivity!!.locationUpdateInterval
         fastestLocationUpdateInterval = exerciseSessionActivity!!.fastestLocationUpdateInterval
+
+        exerciseSessionToWrite.value.exerciseType = exerciseSessionActivity!!.validExerciseType
+        exerciseSessionToWrite.value.startTime = Instant.now()
+        exerciseSessionToWrite.value.startZoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
+
         isTracking.value = true
-        sessionActive.value = true
+
+        CoroutineScope(Dispatchers.Main).launch {
+            userWeight = userRepository.getUserWeight()
+        }
 
         notificationBuilder = createNotificationChannelBuilder()
 
         startForeground(notificationId, notificationBuilder.build())
-    }
-    private fun pause() {
-        isTracking.value = false
-        sessionPaused.value = true
-        isTimerEnabled = false
-    }
-
-    private fun resume() {
-        startTimer()
-        addEmptyPolyline()
-        isTracking.value = true
-        sessionPaused.value = false
     }
 
     @SuppressLint("MissingPermission")
@@ -233,24 +260,25 @@ class RouteTrackingService : LifecycleService() {
     }
 
     private fun addLatestPolyline() {
-        if (pathPoints.value.isNotEmpty() && pathPoints.value.last().size > 1) {
-            val preLastLatLng = pathPoints.value.last()[pathPoints.value.last().size - 2]
-            val lastLatLng = pathPoints.value.last().last()
+        if (pathPoints.value.size > 1) {
+            val preLastLocation = pathPoints.value[pathPoints.value.size - 2]
+            val lastLocation = pathPoints.value.last()
             val polylineOptions = PolylineOptions()
                 .color(Color.Blue.toArgb())
                 .width(10f)
-                .add(preLastLatLng)
-                .add(lastLatLng)
+                .add(LatLng(preLastLocation.latitude, preLastLocation.longitude))
+                .add(LatLng(lastLocation.latitude, lastLocation.longitude))
             map.value?.addPolyline(polylineOptions)
         }
     }
 
     private fun moveCameraToUser() {
-        if (pathPoints.value.isNotEmpty() && pathPoints.value.last().isNotEmpty()) {
+        if (pathPoints.value.isNotEmpty()) {
             val currentZoomLevel = map.value?.cameraPosition?.zoom ?: 15f
+            val position = LatLng(pathPoints.value.last().latitude, pathPoints.value.last().longitude)
             map.value?.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
-                    pathPoints.value.last().last(),
+                    position,
                     currentZoomLevel,
                 ),
             )
@@ -259,23 +287,37 @@ class RouteTrackingService : LifecycleService() {
 
     private fun addPathPoint(location: Location?) {
         location?.let {
+            val healthConnectLocation = ExerciseRoute.Location(
+                latitude = location.latitude,
+                longitude = location.longitude,
+                time = Instant.now(),
+            )
             val position = LatLng(location.latitude, location.longitude)
             val updatedPathPoints = pathPoints.value.toMutableList()
-            if (updatedPathPoints.isEmpty()) {
-                updatedPathPoints.add(mutableListOf())
+
+            updatedPathPoints.add(healthConnectLocation)
+            if (updatedPathPoints.size > 1) {
+                val distance = calculateDistance(
+                    updatedPathPoints[updatedPathPoints.size - 2].latitude,
+                    updatedPathPoints[updatedPathPoints.size - 2].longitude,
+                    updatedPathPoints.last().latitude,
+                    updatedPathPoints.last().longitude,
+                )
+
+                distanceInKm.value += distance / 1000
+
+                if (timeRunInSecond.value > 0 && distanceInKm.value > 0.01f) {
+                    avgSpeed.value = distanceInKm.value / (timeRunInSecond.value / 3600.toFloat())
+                } else {
+                    avgSpeed.value = 0f
+                }
+                calories.value = calculateCalories(exerciseSessionActivity!!.met.toFloat(), userWeight, timeRunInSecond.value / 3600.toFloat())
             }
-            updatedPathPoints.last().add(position)
             pathPoints.value = updatedPathPoints
             addLatestPolyline()
             moveCameraToUser()
             circle?.center = position
         }
-    }
-
-    private fun addEmptyPolyline() {
-        val updatedPathPoints = pathPoints.value.toMutableList()
-        updatedPathPoints.add(mutableListOf())
-        pathPoints.value = updatedPathPoints
     }
 
     private fun updateNotification() {
@@ -332,5 +374,20 @@ class RouteTrackingService : LifecycleService() {
             }
             timeRun += lapTime
         }
+    }
+
+    private fun calculateDistance(
+        startLatitude: Double,
+        startLongitude: Double,
+        endLatitude: Double,
+        endLongitude: Double,
+    ): Float {
+        val results = FloatArray(1)
+        Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, results)
+        return results[0]
+    }
+
+    private fun calculateCalories(met: Float, weightInKg: Double, durationInHours: Float): Long {
+        return (met * weightInKg * durationInHours).toLong()
     }
 }

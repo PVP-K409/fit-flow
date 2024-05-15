@@ -27,6 +27,9 @@ sealed class SnackbarMessage(val id: Long = UUID.randomUUID().mostSignificantBit
  */
 object SnackbarManager {
 
+    private val _currentMessage: MutableStateFlow<SnackbarMessage?> = MutableStateFlow(null)
+    val currentMessage: StateFlow<SnackbarMessage?> get() = _currentMessage.asStateFlow()
+
     private val _messages: MutableStateFlow<List<SnackbarMessage>> = MutableStateFlow(emptyList())
     val messages: StateFlow<List<SnackbarMessage>> get() = _messages.asStateFlow()
 
@@ -42,9 +45,29 @@ object SnackbarManager {
         }
     }
 
+    fun showNotDuplicateMessage(message: String) {
+        if (currentMessage.value is SnackbarMessage.StringSnackbar && (currentMessage.value as SnackbarMessage.StringSnackbar).message == message) {
+            return
+        }
+
+        showMessage(message)
+    }
+
+    fun showNotDuplicateMessage(@StringRes message: Int) {
+        if (currentMessage.value is SnackbarMessage.ResourceSnackbar && (currentMessage.value as SnackbarMessage.ResourceSnackbar).message == message) {
+            return
+        }
+
+        showMessage(message)
+    }
+
     fun setMessageShown(messageId: Long) {
         _messages.update { currentMessages ->
             currentMessages.filterNot { it.id == messageId }
         }
+    }
+
+    fun setCurrentMessage(message: SnackbarMessage?) {
+        _currentMessage.value = message
     }
 }
