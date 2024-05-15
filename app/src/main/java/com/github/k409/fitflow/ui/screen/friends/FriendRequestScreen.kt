@@ -149,6 +149,7 @@ fun FriendRequestContent(
                     user = foundUser,
                     friendsViewModel = viewModel,
                     coroutineScope = coroutineScope,
+                    context = context,
                 )
             } else {
                 Text(
@@ -175,6 +176,7 @@ fun FriendRequestContent(
                             user = user,
                             friendsViewModel = viewModel,
                             coroutineScope = coroutineScope,
+                            context = context,
                         )
                     }
                 }

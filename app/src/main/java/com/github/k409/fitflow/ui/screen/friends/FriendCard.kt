@@ -33,7 +33,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
+import com.github.k409.fitflow.service.SnackbarManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -43,13 +45,14 @@ fun FriendRequestCard(
     user: User,
     coroutineScope: CoroutineScope,
     friendsViewModel: FriendsViewModel,
+    context: android.content.Context,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .clip(RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(horizontal = 8.dp, vertical = 16.dp),
+            .padding(horizontal = 8.dp, vertical = 2.dp),
     ) {
         Row(
             modifier = Modifier
@@ -58,7 +61,8 @@ fun FriendRequestCard(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             SubcomposeAsyncImage(
-                model = ImageRequest.Builder(LocalContext.current).data(user.photoUrl).crossfade(true)
+                model = ImageRequest.Builder(
+                    LocalContext.current).data(user.photoUrl).crossfade(true)
                     .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -71,7 +75,7 @@ fun FriendRequestCard(
                 },
                 modifier = Modifier
                     .clip(CircleShape)
-                    .size(100.dp)
+                    .size(80.dp)
                     .background(
                         color = MaterialTheme.colorScheme.secondaryContainer,
                         shape = CircleShape,
@@ -91,7 +95,7 @@ fun FriendRequestCard(
                 Text(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.medium)
-                        .padding(8.dp),
+                        .padding(4.dp),
                     text = user.name,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.bodyLarge,
@@ -101,7 +105,7 @@ fun FriendRequestCard(
                 Text(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.medium)
-                        .padding(8.dp),
+                        .padding(4.dp),
                     text = user.email,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
@@ -121,6 +125,8 @@ fun FriendRequestCard(
                             coroutineScope.launch {
                                 friendsViewModel.acceptFriendRequest(user.uid)
                             }
+                            SnackbarManager.showMessage(
+                                context.getString(R.string.friend_request_accepted))
                         }
                     ) {
                         Icon(
@@ -136,6 +142,8 @@ fun FriendRequestCard(
                             coroutineScope.launch {
                                 friendsViewModel.declineFriendRequest(user.uid)
                             }
+                            SnackbarManager.showMessage(
+                                context.getString(R.string.friend_request_declined))
                         }
                     ) {
                         Icon(
@@ -155,13 +163,14 @@ fun UserCard(
     user: User?,
     friendsViewModel: FriendsViewModel,
     coroutineScope: CoroutineScope,
+    context: android.content.Context,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .clip(RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(horizontal = 8.dp, vertical = 16.dp),
+            .padding(horizontal = 8.dp, vertical = 6.dp),
     ) {
         Row(
             modifier = Modifier
@@ -170,7 +179,8 @@ fun UserCard(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             SubcomposeAsyncImage(
-                model = ImageRequest.Builder(LocalContext.current).data(user?.photoUrl).crossfade(true)
+                model = ImageRequest.Builder(
+                    LocalContext.current).data(user?.photoUrl).crossfade(true)
                     .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -183,7 +193,7 @@ fun UserCard(
                 },
                 modifier = Modifier
                     .clip(CircleShape)
-                    .size(50.dp)
+                    .size(80.dp)
                     .background(
                         color = MaterialTheme.colorScheme.secondaryContainer,
                         shape = CircleShape,
@@ -197,25 +207,36 @@ fun UserCard(
 
             Spacer(modifier = Modifier.width(2.dp))
 
-            Text(
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.medium)
-                    .padding(8.dp),
-                text = user?.name.toString(),
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.primary,
-            )
+            Column {
+                Text(
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .padding(4.dp),
+                    text = user?.name.toString(),
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+
+                Text(
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .padding(4.dp),
+                    text = user?.email.toString(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
 
             Button(
                 onClick = {
                     coroutineScope.launch {
                         friendsViewModel.sendFriendRequest(user?.uid.toString())
                     }
+                    SnackbarManager.showMessage(context.getString(R.string.friend_request_sent))
                 },
                 modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .padding(8.dp),
+                    .clip(RoundedCornerShape(8.dp)),
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary),
             ) {
                 Icon(
@@ -233,13 +254,14 @@ fun FriendCard(
     user: User,
     coroutineScope: CoroutineScope,
     friendsViewModel: FriendsViewModel,
+    context: android.content.Context,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .clip(RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(horizontal = 8.dp, vertical = 16.dp),
+            .padding(horizontal = 8.dp, vertical = 2.dp),
     ) {
         Row(
             modifier = Modifier
@@ -262,7 +284,7 @@ fun FriendCard(
                 },
                 modifier = Modifier
                     .clip(CircleShape)
-                    .size(100.dp)
+                    .size(80.dp)
                     .background(
                         color = MaterialTheme.colorScheme.secondaryContainer,
                         shape = CircleShape,
@@ -282,7 +304,7 @@ fun FriendCard(
                 Text(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.medium)
-                        .padding(8.dp),
+                        .padding(4.dp),
                     text = user.name,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.bodyLarge,
@@ -292,7 +314,7 @@ fun FriendCard(
                 Text(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.medium)
-                        .padding(8.dp),
+                        .padding(4.dp),
                     text = user.email,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
@@ -306,6 +328,7 @@ fun FriendCard(
                         coroutineScope.launch {
                             friendsViewModel.removeFriend(user.uid)
                         }
+                        SnackbarManager.showMessage(context.getString(R.string.friend_removed))
                     }
                 ) {
                     Icon(

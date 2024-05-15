@@ -2,8 +2,6 @@ package com.github.k409.fitflow.ui.screen.friends
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,6 +47,8 @@ fun FriendsListContent(
 
     val coroutineScope = rememberCoroutineScope()
 
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .padding(vertical = 16.dp)
@@ -73,7 +74,8 @@ fun FriendsListContent(
                             FriendCard(
                                 user = user,
                                 coroutineScope = coroutineScope,
-                                friendsViewModel = viewModel
+                                friendsViewModel = viewModel,
+                                context = context,
                             )
                         }
                     }
