@@ -194,7 +194,7 @@
     <string name="searched_users">Searched user</string>
     <string name="user_not_found">User not found</string>
     <string name="already_friends">You are already friends with this user</string>
-    <string name="self_friend">Can\'t send a friend request to yourself!</string>
+    <string name="self_friend">Can\'t send a friend request to yourself</string>
     <string name="send_a_friend_request_to">Send a friend request to</string>
     <string name="localization">Localization</string>
     <string name="en">English</string>
