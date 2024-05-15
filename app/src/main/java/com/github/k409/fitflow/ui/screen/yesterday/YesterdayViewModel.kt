@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.GoalsRepository
 import com.github.k409.fitflow.data.HydrationRepository
 import com.github.k409.fitflow.data.StepsRepository
+import com.github.k409.fitflow.data.preferences.PreferencesRepository
 import com.github.k409.fitflow.model.DailyStepRecord
 import com.github.k409.fitflow.model.GoalRecord
 import com.github.k409.fitflow.model.HydrationRecord
@@ -23,6 +24,7 @@ class YesterdayViewModel @Inject constructor(
     private val stepsRepository: StepsRepository,
     private val goalsRepository: GoalsRepository,
     private val hydrationRepository: HydrationRepository,
+    private val preferencesRepository: PreferencesRepository,
 ) : ViewModel() {
     private val yesterday = LocalDate.now().minusDays(1)
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -53,6 +55,9 @@ class YesterdayViewModel @Inject constructor(
                 hydration = hydration,
             )
         }
+    }
+    suspend fun updateYesterdayPreference() {
+        preferencesRepository.updateYesterdayPreference(LocalDate.now().format(dateFormatter))
     }
 }
 
