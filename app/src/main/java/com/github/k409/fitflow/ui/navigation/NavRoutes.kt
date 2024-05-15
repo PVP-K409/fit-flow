@@ -45,6 +45,7 @@ sealed class NavRoutes(
             LevelUp,
             Profile,
             ReportIssue,
+            Yesterday,
         )
         val bottomNavBarItems =
             listOf(Aquarium, Activity, Hydration, Goals, Marketplace, You)
@@ -111,4 +112,6 @@ sealed class NavRoutes(
     data object Profile : NavRoutes("profile", R.string.profile, Icons.Outlined.PersonOutline)
 
     data object ReportIssue : NavRoutes("reportIssue", R.string.report_issue, Icons.Outlined.ErrorOutline)
+
+    data object Yesterday : NavRoutes("yesterday", R.string.yesterday_statistics, Icons.Outlined.ViewTimeline)
 }

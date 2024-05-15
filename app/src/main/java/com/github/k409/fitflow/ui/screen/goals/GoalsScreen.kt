@@ -99,10 +99,10 @@ fun GoalsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 item { GoalsHeader(title = stringResource(R.string.todays_goals)) }
-                item { GoalsList(goalsSelected = todayGoals) }
+                item { GoalsList(goalsSelected = todayGoals, modifier = Modifier.fillMaxWidth().padding(16.dp)) }
                 item { Spacer(modifier = Modifier.height(16.dp)) }
                 item { GoalsHeader(title = stringResource(R.string.weekly_goals)) }
-                item { GoalsList(goalsSelected = weeklyGoals) }
+                item { GoalsList(goalsSelected = weeklyGoals, modifier = Modifier.fillMaxWidth().padding(16.dp)) }
                 item { Spacer(modifier = Modifier.height(80.dp)) }
             }
             FloatingActionButton(
@@ -139,8 +139,9 @@ fun GoalsHeader(title: String) {
 }
 
 @Composable
-private fun GoalsList(
+fun GoalsList(
     goalsSelected: Map<String, GoalRecord>?,
+    modifier: Modifier = Modifier,
 ) {
     goalsSelected?.values?.forEachIndexed { index, goal ->
         var visible by remember { mutableStateOf(false) }
@@ -152,7 +153,7 @@ private fun GoalsList(
             visible = visible,
             enter = fadeIn(animationSpec = tween(durationMillis = 500)),
         ) {
-            GoalCard(goal = goal)
+            GoalCard(goal = goal, modifier = modifier)
         }
     } ?: Text("")
 }
@@ -160,14 +161,13 @@ private fun GoalsList(
 @Composable
 private fun GoalCard(
     goal: GoalRecord,
+    modifier: Modifier = Modifier,
 ) {
     val endDate = LocalDate.parse(goal.endDate, DateTimeFormatter.ISO_LOCAL_DATE).minusDays(1)
     val adjustedEndDate = endDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
     OutlinedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(6.dp),
     ) {
         Column(

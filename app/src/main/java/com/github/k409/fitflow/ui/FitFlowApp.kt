@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.EventRepeat
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
@@ -212,7 +213,7 @@ private fun UpdateTopAndBottomBarVisibility(
             topBarState.value = false
         }
 
-        NavRoutes.Settings, NavRoutes.ProfileCreation, NavRoutes.Levels, NavRoutes.ExerciseSession -> {
+        NavRoutes.Settings, NavRoutes.ProfileCreation, NavRoutes.Levels, NavRoutes.ExerciseSession, NavRoutes.Yesterday -> {
             bottomBarState.value = false
             topBarState.value = true
         }
@@ -376,6 +377,20 @@ fun TopBarAvatarDropdownMenu(
                 leadingIcon = {
                     Icon(
                         Icons.Outlined.Star,
+                        contentDescription = null,
+                    )
+                },
+            )
+
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.yesterday_statistics)) },
+                onClick = {
+                    navigateScreen(NavRoutes.Yesterday)
+                    expanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Outlined.EventRepeat,
                         contentDescription = null,
                     )
                 },
