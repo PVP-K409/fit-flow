@@ -104,7 +104,7 @@
     <string name="km">km</string>
     <string name="avg_hydration">Average Hydration</string>
     <string name="litres">litres</string>
-    <string name="per_day">per day</string>
+    <string name="per_day">Per day</string>
     <string name="total_hydration">Total Hydration</string>
     <string name="statistics_title">Statistics</string>
     <string name="statistics_subtitle">See how you\'ve been doing this month</string>
