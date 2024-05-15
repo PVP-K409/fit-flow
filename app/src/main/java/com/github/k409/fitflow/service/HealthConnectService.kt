@@ -136,7 +136,8 @@ class HealthConnectService @Inject constructor(
             exerciseSessions.records.forEach { record ->
                 val exerciseTypeInt = record.exerciseType
 
-                val exerciseType = HealthConnectExercises.findTypeByExerciseType(exerciseTypeInt) ?: "Unknown Exercise Type"
+                val exercise = HealthConnectExercises.findExerciseByType(exerciseTypeInt)
+                val exerciseType = exercise?.type ?: "Unknown Exercise Type"
 
                 var exerciseRoute: ExerciseRoute? = null
 
@@ -149,6 +150,7 @@ class HealthConnectService @Inject constructor(
                     startTime = record.startTime,
                     endTime = record.endTime,
                     exerciseType = exerciseType,
+                    title = exercise?.title,
                     calories = aggregateTotalCalories(record.startTime, record.endTime),
                     distance = aggregateTotalDistance(record.startTime, record.endTime),
                     icon = HealthConnectExercises.getIconByType(exerciseType),

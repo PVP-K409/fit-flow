@@ -19,7 +19,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.ConfirmDialog
 
 @Composable
@@ -98,8 +100,8 @@ fun SettingsEntry(
 
     if (showDialog) {
         ConfirmDialog(
-            dialogTitle = "Are you sure?",
-            dialogText = "This action cannot be undone",
+            dialogTitle = stringResource(id = R.string.are_you_sure),
+            dialogText = stringResource(R.string.this_action_cannot_be_undone),
             onConfirm = {
                 showDialog = false
                 onClick()

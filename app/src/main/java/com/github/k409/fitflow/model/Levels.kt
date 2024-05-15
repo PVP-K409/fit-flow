@@ -1,40 +1,42 @@
 package com.github.k409.fitflow.model
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.github.k409.fitflow.R
 
 val levels = listOf(
     Level(
         1,
         R.drawable.beginner,
-        "Beginner",
+        R.string.beginner,
         0,
         499,
     ),
     Level(
         2,
         R.drawable.novice,
-        "Novice",
+        R.string.novice,
         500,
         2499,
     ),
     Level(
         3,
         R.drawable.intermediate,
-        "Intermediate",
+        R.string.intermediate,
         2500,
         4999,
     ),
     Level(
         4,
         R.drawable.professional,
-        "Professional",
+        R.string.professional,
         5000,
         7499,
     ),
     Level(
         5,
         R.drawable.master,
-        "Master",
+        R.string.master,
         7500,
         Int.MAX_VALUE,
     ),
@@ -42,8 +44,8 @@ val levels = listOf(
 
 data class Level(
     val id: Int = -1,
-    val icon: Int = -1,
-    val name: String = "",
+    @DrawableRes val icon: Int = -1,
+    @StringRes val name: Int = -1,
     val minXP: Int = -1,
     val maxXP: Int = -1,
 )

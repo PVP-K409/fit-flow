@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.model.levels
@@ -38,7 +39,7 @@ private fun LevelScreenContent(uiState: LevelUiState.Success) {
             val level = levels[index]
 
             LevelCard(
-                name = level.name,
+                name = stringResource(level.name),
                 level = level,
                 minXp = level.minXP,
                 maxXp = level.maxXP,

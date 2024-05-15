@@ -51,6 +51,8 @@ fun MarketScreen(
     val payUiState: PaymentUiState by checkoutViewModel.paymentUiState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
+    val language = context.resources.configuration.locales[0].language
+
     var selectedCategoryIndex by rememberSaveable { mutableIntStateOf(0) }
 
     var showDialog by remember { mutableStateOf(false) }
@@ -67,7 +69,7 @@ fun MarketScreen(
                     result.data?.let { intent ->
                         PaymentData.getFromIntent(intent)?.let {
                             checkoutViewModel.setPaymentData(it)
-                            SnackbarManager.showMessage("Payment successful")
+                            SnackbarManager.showMessage(context.getString(R.string.payment_successful))
                             marketViewModel.addItemToUserInventory(selectedMarketItem)
                         }
                     }
@@ -125,7 +127,7 @@ fun MarketScreen(
                     modifier = Modifier,
                     imageDownloadUrl = item.phases?.get("Regular") ?: item.image,
                     name = item.title,
-                    description = item.description,
+                    description = item.localizedDescriptions[language] ?: item.description,
                     removeButtonText = "${stringResource(R.string.sell_for)} ${item.price / 2}",
                     onRemoveClick =
                     {
@@ -162,7 +164,7 @@ fun MarketScreen(
                     modifier = Modifier,
                     imageDownloadUrl = item.phases?.get("Regular") ?: item.image,
                     name = item.title,
-                    description = item.description,
+                    description = item.localizedDescriptions[language] ?: item.description,
                     owned = ownedItems.find { it.item.id == item.id } != null,
                     payUiState = payUiState,
                     priceCents = item.priceCents,
@@ -183,11 +185,21 @@ fun MarketScreen(
                 if (addClicked) {
                     marketViewModel.updateUserCoinBalance((-selectedMarketItem.price).toLong())
                     marketViewModel.addItemToUserInventory(selectedMarketItem)
-                    SnackbarManager.showMessage("${selectedMarketItem.title} has been added to your inventory")
+                    SnackbarManager.showMessage(
+                        context.getString(
+                            R.string.item_has_been_added_to_your_inventory,
+                            selectedMarketItem.title,
+                        ),
+                    )
                 } else {
                     marketViewModel.updateUserCoinBalance((selectedMarketItem.price / 2).toLong())
                     marketViewModel.removeItemFromUserInventory(selectedMarketItem)
-                    SnackbarManager.showMessage("${selectedMarketItem.title} has been sold")
+                    SnackbarManager.showMessage(
+                        context.getString(
+                            R.string.item_has_been_sold,
+                            selectedMarketItem.title,
+                        ),
+                    )
                 }
                 showDialog = false
             },
