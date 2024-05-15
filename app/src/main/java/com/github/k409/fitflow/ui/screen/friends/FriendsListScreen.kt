@@ -22,7 +22,7 @@ import com.github.k409.fitflow.ui.screen.you.OutlineCardContainer
 @Composable
 fun FriendsListScreen(
     viewModel: FriendsViewModel = hiltViewModel(),
-){
+) {
     val uiState by viewModel.friendsUiState.collectAsState()
 
     when (uiState) {
