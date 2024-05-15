@@ -17,7 +17,7 @@
     <string name="gender">Lytis</string>
     <string name="weight_kg">Svoris (kg)</string>
     <string name="height_cm">Ūgis (cm)</string>
-    <string name="save">Sutaupyti</string>
+    <string name="save">Išsaugoti</string>
     <string name="user">Vartotojas</string>
     <string name="settings">Nustatymai</string>
     <string name="confirm">Patvirtinti</string>
@@ -154,7 +154,7 @@
     <string name="aquarium_health_update">Akvariumo sveikatos atnaujinimas</string>
     <string name="updating_aquarium_health_metrics">Atnaujinami akvariumo sveikatos matavimai</string>
     <string name="your_reward_for_reaching_level">Jūsų apdovanojimas už pasiektą %1$s lygį</string>
-    <string name="report_issue">Pranešti apie problemą</string>
+    <string name="report_issue">Pranešti</string>
     <string name="please_fill_all_fields">Prašome užpildyti visus laukus</string>
     <string name="title">Pavadinimas</string>
     <string name="detailed_description">Detalus aprašymas</string>
@@ -195,7 +195,7 @@
     <string name="amoled">Amoled</string>
     <string name="dark">Tamsi</string>
     <string name="light">Šviesi</string>
-    <string name="automatic">Automatinė</string>
+    <string name="automatic">Sistemos</string>
     <string name="fishes">Žuvys</string>
     <string name="decorations">Dekoracijos</string>
     <string name="sorry_this_page_is_under_construction">Atsiprašome, šis puslapis šiuo metu yra kuriamas!</string>
@@ -264,4 +264,6 @@
     <string name="weightlifting">Svarmenys</string>
     <string name="wheelchair">Neįgaliojo vežimėlis</string>
     <string name="yoga">Joga</string>
+    <string name="other">Kita</string>
+    <string name="unspecified">Nenurodyta</string>
 </resources>

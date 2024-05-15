@@ -20,10 +20,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PersonOutline
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -114,11 +115,14 @@ fun ProfileScreen(
                             ),
                     )
 
-                    ElevatedButton(
+                    FilledTonalIconButton(
                         modifier = Modifier.align(Alignment.CenterEnd),
                         onClick = { onNavigate(NavRoutes.ProfileCreation) },
                     ) {
-                        Text(text = stringResource(R.string.edit_profile))
+                        Icon(
+                            imageVector = Icons.Outlined.Edit,
+                            contentDescription = null,
+                        )
                     }
                 }
             }
@@ -139,7 +143,10 @@ fun ProfileScreen(
             }
 
             item {
-                WidgetCard(title = stringResource(R.string.level), value = stringResource(level.name))
+                WidgetCard(
+                    title = stringResource(R.string.level),
+                    value = stringResource(level.name)
+                )
             }
 
             item {
@@ -210,7 +217,10 @@ fun ProfileScreen(
             }
 
             item {
-                WidgetCard(title = stringResource(R.string.gender), value = currentUser.gender)
+                WidgetCard(
+                    title = stringResource(R.string.gender),
+                    value = stringResource(id = currentUser.gender.title)
+                )
             }
 
             item {

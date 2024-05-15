@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.model.Gender
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.service.SnackbarManager
 import com.github.k409.fitflow.ui.common.NumberPickerDialog
@@ -67,7 +68,7 @@ fun ProfileCreationScreen(
     var weight by rememberSaveable(currentUser.weight) { mutableIntStateOf(currentUser.weight.toInt()) }
     var height by rememberSaveable(currentUser.height) { mutableIntStateOf(currentUser.height.toInt()) }
 
-    val genders = arrayOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
+//    val genders = arrayOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
 
     // State variables for error messages
     var nameError by remember { mutableStateOf<String?>(null) }
@@ -80,8 +81,8 @@ fun ProfileCreationScreen(
         wasValidated = true
         nameError = if (name.isEmpty()) stringResource(R.string.required_field) else null
         // Return true if all required field are filled
-        return name.isNotEmpty() && dateOfBirth.isNotEmpty() && gender.isNotEmpty() && weight != 0 &&
-            height != 0
+        return name.isNotEmpty() && dateOfBirth.isNotEmpty() && gender != Gender.Unspecified && weight != 0 &&
+                height != 0
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -101,7 +102,10 @@ fun ProfileCreationScreen(
             mutableStateOf(false)
         }
         var error = initialValue.isEmpty() && isRequired
-        val currentValue = if (displayedValues != null && initialValue.isNotEmpty()) displayedValues.indexOf(initialValue).toString() else initialValue
+        val currentValue =
+            if (displayedValues != null && initialValue.isNotEmpty()) displayedValues.indexOf(
+                initialValue
+            ).toString() else initialValue
 
         ExposedDropdownMenuBox(
             expanded = isExpanded,
@@ -146,7 +150,8 @@ fun ProfileCreationScreen(
                     displayedValues = displayedValues,
                 )
             } else {
-                val datePickerState = rememberDatePickerState(yearRange = LocalDate.now().year - 120..<LocalDate.now().year)
+                val datePickerState =
+                    rememberDatePickerState(yearRange = LocalDate.now().year - 120..<LocalDate.now().year)
                 DatePickerDialog(
                     onDismissRequest = {
                         isExpanded = false
@@ -157,7 +162,8 @@ fun ProfileCreationScreen(
                             onClick = {
                                 isExpanded = false
                                 datePickerState.selectedDateMillis?.let {
-                                    Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate().toString()
+                                    Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault())
+                                        .toLocalDate().toString()
                                 }?.let {
                                     Log.d("ProfileScreen", it)
                                     onConfirmation(it)
@@ -259,14 +265,16 @@ fun ProfileCreationScreen(
                     modifier = Modifier.padding(4.dp),
                 )
                 DropdownMenu(
-                    stringResource(R.string.select_your_gender),
-                    stringResource(R.string.select),
-                    { gender = genders[it.toInt()] },
-                    0,
-                    1,
-                    gender,
-                    genders,
-                    true,
+                    dialogTitle = stringResource(R.string.select_your_gender),
+                    placeholderText = stringResource(R.string.select),
+                    onConfirmation = {
+                        gender = Gender.entries[it.toInt()]
+                    },
+                    minValue = 0,
+                    maxValue = 2,
+                    initialValue = stringResource(gender.title),
+                    displayedValues = Gender.entries.map { stringResource(it.title) }.toTypedArray(),
+                    isRequired = true,
                 )
             }
         }
@@ -341,7 +349,7 @@ fun ProfileCreationScreen(
                                 currentUser.uid,
                                 name,
                                 dateOfBirth,
-                                gender,
+                                gender.name,
                                 weight,
                                 height,
                             )

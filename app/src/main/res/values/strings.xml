@@ -264,4 +264,6 @@
     <string name="weightlifting">Weightlifting</string>
     <string name="wheelchair">Wheelchair</string>
     <string name="yoga">Yoga</string>
+    <string name="other">Other</string>
+    <string name="unspecified">Unspecified</string>
 </resources>
