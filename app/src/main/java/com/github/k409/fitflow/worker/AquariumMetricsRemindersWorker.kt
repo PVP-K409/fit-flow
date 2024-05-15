@@ -43,9 +43,8 @@ class AquariumMetricsRemindersWorker @AssistedInject constructor(
                     channel = NotificationChannel.Default,
                     title = context.getString(R.string.aquarium_metrics),
                     text = text,
-                )
+                ),
             )
-
         } catch (e: Exception) {
             Log.e(WORKER_NAME, "Error: ", e)
 
