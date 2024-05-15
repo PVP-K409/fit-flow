@@ -29,7 +29,7 @@
     <string name="select_your_weight">Pasirinkite savo svorį</string>
     <string name="select_your_height">Pasirinkite savo ūgį</string>
     <string name="something_went_wrong_try_again">Kažkas nutiko. Bandyk iš naujo</string>
-    <string name="Yesterday">vakar</string>
+    <string name="Yesterday">Vakar</string>
     <string name="Month">Šį mėnesį</string>
     <string name="Week">Šią savaitę</string>
     <string name="date_of_birth">Gimimo data</string>
@@ -92,7 +92,7 @@
     <string name="you">Tu</string>
     <string name="progress_tab_title">PROGRESAS</string>
     <string name="activities_tab_title">VEIKLA</string>
-    <string name="global_leaderboard_tab_title">LYGŲ LENTELĖ</string>
+    <string name="global_leaderboard_tab_title">LYDERIŲ LENTELĖ</string>
     <string name="current_month_progress">Einamojo mėnesio eiga</string>
     <string name="your_progress_for_this_month">Jūsų šio mėnesio pažanga</string>
     <string name="best_efforts_title">Geriausios pastangos</string>
@@ -142,7 +142,6 @@
     <string name="create_exercise_session">Sukurti treniruotės sesiją</string>
     <string name="exercise_session">Treniruotės sesija</string>
     <string name="exercise_session_in_progress">Vyksta treniruotės sesija</string>
-    <string name="profile_label">Paskyra</string>
     <string name="profile">Paskyra</string>
     <string name="points">Taškai</string>
     <string name="height">Ūgis</string>

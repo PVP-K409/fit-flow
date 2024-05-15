@@ -270,7 +270,6 @@ private fun ColumnScope.ThemeColourSelector(
 @Composable
 private fun LanguageSettingsGroup() {
     val localeOptions = mapOf(
-        R.string.system_default to "",
         R.string.en to "en",
         R.string.lt to "lt",
     ).mapKeys { stringResource(it.key) }

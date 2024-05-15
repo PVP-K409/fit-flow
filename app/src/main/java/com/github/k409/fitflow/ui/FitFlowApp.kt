@@ -355,7 +355,7 @@ fun TopBarAvatarDropdownMenu(
             )
 
             DropdownMenuItem(
-                text = { Text(stringResource(R.string.profile_label)) },
+                text = { Text(stringResource(R.string.profile)) },
                 onClick = {
                     navigateScreen(NavRoutes.Profile)
                     expanded = false
