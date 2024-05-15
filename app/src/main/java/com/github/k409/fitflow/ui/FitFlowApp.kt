@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.PeopleAlt
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
@@ -355,7 +356,7 @@ fun TopBarAvatarDropdownMenu(
             )
 
             DropdownMenuItem(
-                text = { Text(stringResource(R.string.profile_label)) },
+                text = { Text(stringResource(R.string.profile)) },
                 onClick = {
                     navigateScreen(NavRoutes.Profile)
                     expanded = false
@@ -395,7 +396,21 @@ fun TopBarAvatarDropdownMenu(
                     )
                 },
             )
-
+            
+            DropdownMenuItem(
+              text = { Text(stringResource(R.string.info)) },
+                onClick = {
+                    navigateScreen(NavRoutes.Info)
+                    expanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                      Icons.Outlined.Info,
+                      contentDescription = null,
+                    )
+                },
+            )
+                    
             HorizontalDivider()
 
             DropdownMenuItem(

@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.model
 
+import androidx.annotation.StringRes
 import java.time.Instant
 
 class ExerciseRecord(
@@ -9,5 +10,6 @@ class ExerciseRecord(
     var calories: Long,
     var icon: Int,
     var exerciseType: String?,
+    @StringRes var title: Int?,
     var exerciseRoute: androidx.health.connect.client.records.ExerciseRoute?,
 )

@@ -13,6 +13,7 @@ import com.github.k409.fitflow.ui.screen.friends.FriendsScreen
 import com.github.k409.fitflow.ui.screen.goals.GoalCreation
 import com.github.k409.fitflow.ui.screen.goals.GoalsScreen
 import com.github.k409.fitflow.ui.screen.hydration.HydrationScreen
+import com.github.k409.fitflow.ui.screen.info.InfoScreen
 import com.github.k409.fitflow.ui.screen.inventory.InventoryScreen
 import com.github.k409.fitflow.ui.screen.issue.ReportIssueScreen
 import com.github.k409.fitflow.ui.screen.leaderboard.GlobalLeaderboardScreen
@@ -117,6 +118,10 @@ fun FitFlowNavGraph(
 
         composable(NavRoutes.ReportIssue.route) {
             ReportIssueScreen(navigateBack = { navController.popBackStack() })
+        }
+
+        composable(NavRoutes.Info.route) {
+            InfoScreen()
         }
     }
 }
