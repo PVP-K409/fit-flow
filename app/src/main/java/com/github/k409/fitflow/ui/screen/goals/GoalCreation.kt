@@ -114,12 +114,12 @@ fun GoalCreation(
                         options = HealthConnectGoals.entries.filter { exerciseOptions.contains(it.healthConnectGoal.type) }
                             .map {
                                 stringResource(
-                                    id = it.healthConnectGoal.title
+                                    id = it.healthConnectGoal.title,
                                 )
                             },
                         selectedOption = HealthConnectGoals.entries.find { it.healthConnectGoal.type == selectedExercise }?.healthConnectGoal?.title?.let {
                             stringResource(
-                                id = it
+                                id = it,
                             )
                         }
                             ?: "",
@@ -128,11 +128,10 @@ fun GoalCreation(
                         {
                             selectedExercise = HealthConnectGoals.entries.find {
                                 context.getString(it.healthConnectGoal.title) == context.getString(
-                                    it.healthConnectGoal.title
+                                    it.healthConnectGoal.title,
                                 )
                             }?.healthConnectGoal?.type
                                 ?: ""
-
                         },
                         expandedState = expandedDropdown == ExpandedDropdown.EXERCISE,
                     )
@@ -180,7 +179,7 @@ fun GoalCreation(
 
                 val translatedExercise = HealthConnectGoals.entries.find {
                     context.getString(it.healthConnectGoal.title) == context.getString(
-                        it.healthConnectGoal.title
+                        it.healthConnectGoal.title,
                     )
                 }?.healthConnectGoal?.title?.let { stringResource(id = it) } ?: ""
 
@@ -195,7 +194,7 @@ fun GoalCreation(
                             selectedGoal,
                             selectedExercise,
                             selectedDistance.filter { it.isDigit() || it == '.' }.toDoubleOrNull()
-                                ?: 0.0
+                                ?: 0.0,
                         )
                         showConfirmationDialog = false
                         navController.navigate(NavRoutes.Goals.route)

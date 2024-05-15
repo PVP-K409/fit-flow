@@ -32,17 +32,17 @@ fun InfoScreen(
     ) {
         ElevatedCardContainer(
             title = stringResource(R.string.app_name),
-            description = R.string.info_app_description
+            description = R.string.info_app_description,
         )
 
         ElevatedCardContainer(
             title = stringResource(R.string.app_usage),
-            description = R.string.info_app_usage
+            description = R.string.info_app_usage,
         )
 
         ElevatedCardContainer(
             title = stringResource(R.string.health_connect),
-            description = R.string.info_health_connect
+            description = R.string.info_health_connect,
         )
     }
 }
@@ -78,7 +78,7 @@ private fun ElevatedCardContainer(
                     text = annotatedStringResource(id = it),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Light,
-                    textAlign = TextAlign.Justify
+                    textAlign = TextAlign.Justify,
                 )
             }
 

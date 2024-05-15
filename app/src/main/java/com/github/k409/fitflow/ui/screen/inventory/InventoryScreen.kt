@@ -74,7 +74,7 @@ fun InventoryScreen(
                 modifier = Modifier,
                 imageDownloadUrl = item.phases?.get("Regular") ?: item.image,
                 name = item.title,
-                description =item.localizedDescriptions[language] ?: item.description,
+                description = item.localizedDescriptions[language] ?: item.description,
                 removeButtonText = stringResource(R.string.remove),
                 onRemoveClick =
                 {

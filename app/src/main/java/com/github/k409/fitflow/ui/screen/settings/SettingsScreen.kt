@@ -71,7 +71,7 @@ fun SettingsScreen(
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
-            .fillMaxSize()
+            .fillMaxSize(),
     ) {
         AppearanceSettingsGroup(
             themePreferences = themePreferences,
@@ -290,7 +290,7 @@ private fun LanguageSettingsGroup() {
             AppCompatDelegate.setApplicationLocales(
                 LocaleListCompat.forLanguageTags(
                     localeOptions[selectionLocale],
-                )
+                ),
             )
         },
     )
@@ -305,9 +305,11 @@ private fun LanguageSelector(
     onLocaleSelect: (String) -> Unit,
 ) {
     val selectedIndex = remember {
-        mutableIntStateOf(localeOptions.values.indexOf(selectedLocaleValue).let {
-            if (it == -1) 0 else it
-        })
+        mutableIntStateOf(
+            localeOptions.values.indexOf(selectedLocaleValue).let {
+                if (it == -1) 0 else it
+            },
+        )
     }
 
     Column(

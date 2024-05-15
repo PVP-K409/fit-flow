@@ -10,6 +10,6 @@ class ExerciseRecord(
     var calories: Long,
     var icon: Int,
     var exerciseType: String?,
-    @StringRes var title : Int?,
+    @StringRes var title: Int?,
     var exerciseRoute: androidx.health.connect.client.records.ExerciseRoute?,
 )

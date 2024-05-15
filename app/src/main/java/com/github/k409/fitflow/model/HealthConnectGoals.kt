@@ -26,7 +26,7 @@ enum class HealthConnectGoals(
     ),
 }
 data class HealthConnectGoal(
-    @StringRes val title : Int,
+    @StringRes val title: Int,
     val type: String,
     val icon: Int,
     val boost: Double,

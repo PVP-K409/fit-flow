@@ -122,17 +122,30 @@ fun ExercisesLogPage(
             if (exerciseRecords.maxOfOrNull { it.distance } != null) exerciseRecords.maxOf { it.distance.toFloat() } else 0f
         val maxDuration = if (exerciseRecords.maxOfOrNull {
                 Duration.between(it.startTime, it.endTime).toMinutes()
-            } != null) exerciseRecords.maxOf {
-            Duration.between(it.startTime, it.endTime).toMinutes()
-        } else 0f
+            } != null
+        ) {
+            exerciseRecords.maxOf {
+                Duration.between(it.startTime, it.endTime).toMinutes()
+            }
+        } else {
+            0f
+        }
         val exerciseTypes = exerciseRecords.mapNotNull { it.exerciseType }.distinct()
         var startDate by remember {
-            mutableStateOf(if (exerciseRecords.isNotEmpty()) exerciseRecords.minOf { it.startTime }
-                .atZone(ZoneId.systemDefault()) else ZonedDateTime.now() - Duration.ofDays(1))
+            mutableStateOf(
+                if (exerciseRecords.isNotEmpty()) {
+                    exerciseRecords.minOf { it.startTime }
+                        .atZone(ZoneId.systemDefault())
+                } else ZonedDateTime.now() - Duration.ofDays(1),
+            )
         }
         var endDate by remember {
-            mutableStateOf(if (exerciseRecords.isNotEmpty()) exerciseRecords.maxOf { it.endTime }
-                .atZone(ZoneId.systemDefault()) else ZonedDateTime.now())
+            mutableStateOf(
+                if (exerciseRecords.isNotEmpty()) {
+                    exerciseRecords.maxOf { it.endTime }
+                        .atZone(ZoneId.systemDefault())
+                } else ZonedDateTime.now(),
+            )
         }
 
         var distanceSliderPosition by remember { mutableStateOf(0f..maxDistance) }
@@ -151,12 +164,12 @@ fun ExercisesLogPage(
         Box(modifier = Modifier.fillMaxSize()) {
             val filteredRecords = exerciseRecords.filter {
                 it.distance.toFloat() in distanceSliderPosition.start..distanceSliderPosition.endInclusive + 0.001f &&
-                        Duration.between(it.startTime, it.endTime)
-                            .toMinutes() in durationSliderPosition.start.toInt()..durationSliderPosition.endInclusive.toInt() &&
-                        it.startTime.truncatedTo(ChronoUnit.DAYS) >= startDate.toInstant()
-                    .truncatedTo(ChronoUnit.DAYS) && it.endTime.truncatedTo(ChronoUnit.DAYS) <= endDate.toInstant()
-                    .truncatedTo(ChronoUnit.DAYS) &&
-                        selectedExercise[exerciseTypes.indexOf(it.exerciseType)]
+                    Duration.between(it.startTime, it.endTime)
+                        .toMinutes() in durationSliderPosition.start.toInt()..durationSliderPosition.endInclusive.toInt() &&
+                    it.startTime.truncatedTo(ChronoUnit.DAYS) >= startDate.toInstant()
+                        .truncatedTo(ChronoUnit.DAYS) && it.endTime.truncatedTo(ChronoUnit.DAYS) <= endDate.toInstant()
+                        .truncatedTo(ChronoUnit.DAYS) &&
+                    selectedExercise[exerciseTypes.indexOf(it.exerciseType)]
             }
             if (filteredRecords.isEmpty()) {
                 NoExerciseLogsFound()
@@ -237,7 +250,7 @@ fun ExercisesLogPage(
                                 .background(MaterialTheme.colorScheme.secondaryContainer)
                                 .padding(5.dp),
 
-                            ) {
+                        ) {
                             Text(
                                 text = stringResource(R.string.distance_km),
                                 color = MaterialTheme.colorScheme.primary,
@@ -322,7 +335,7 @@ fun ExercisesLogPage(
                             if (startDate != null) {
                                 TextField(
                                     value = startDate.format(formatter) + " - " + endDate.format(
-                                        formatter
+                                        formatter,
                                     ),
                                     onValueChange = {},
                                     label = {
@@ -483,7 +496,7 @@ fun ExerciseRecordCard(record: ExerciseRecord) {
     ) {
         val titleId = record.title ?: R.string.exercise
         val title = stringResource(id = titleId)
-        
+
         ExerciseCardHeader(title = title, record.startTime)
         ExerciseRecordView(record)
     }
@@ -492,7 +505,7 @@ fun ExerciseRecordCard(record: ExerciseRecord) {
 @Composable
 fun ExerciseCardHeader(
     title: String,
-    endDate: Instant
+    endDate: Instant,
 ) {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val startLocalDateTime =
@@ -560,7 +573,7 @@ fun ExerciseRecordView(record: ExerciseRecord) {
                 Text(
                     text = "${timeFormatter.format(startLocalDateTime)} - ${
                         timeFormatter.format(
-                            endLocalDateTime
+                            endLocalDateTime,
                         )
                     }",
                     fontSize = 20.sp,

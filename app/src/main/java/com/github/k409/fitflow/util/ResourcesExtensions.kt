@@ -50,7 +50,7 @@ fun Spanned.toHtmlWithoutParagraphs(): String {
 
 fun Resources.getText(
     @StringRes id: Int,
-    vararg args: Any
+    vararg args: Any,
 ): CharSequence {
     val escapedArgs = args.map {
         if (it is Spanned) it.toHtmlWithoutParagraphs() else it
@@ -65,7 +65,7 @@ fun Resources.getText(
 @Composable
 fun annotatedStringResource(
     @StringRes id: Int,
-    vararg formatArgs: Any
+    vararg formatArgs: Any,
 ): AnnotatedString {
     val resources = resources()
     val density = LocalDensity.current
@@ -89,7 +89,7 @@ fun annotatedStringResource(@StringRes id: Int): AnnotatedString {
 
 private fun spannableStringToAnnotatedString(
     text: CharSequence,
-    density: Density
+    density: Density,
 ): AnnotatedString {
     return if (text is Spanned) {
         with(density) {
@@ -103,37 +103,37 @@ private fun spannableStringToAnnotatedString(
                             Typeface.NORMAL -> addStyle(
                                 SpanStyle(
                                     fontWeight = FontWeight.Normal,
-                                    fontStyle = FontStyle.Normal
+                                    fontStyle = FontStyle.Normal,
                                 ),
                                 start,
-                                end
+                                end,
                             )
 
                             Typeface.BOLD -> addStyle(
                                 SpanStyle(
                                     fontWeight = FontWeight.Bold,
-                                    fontStyle = FontStyle.Normal
+                                    fontStyle = FontStyle.Normal,
                                 ),
                                 start,
-                                end
+                                end,
                             )
 
                             Typeface.ITALIC -> addStyle(
                                 SpanStyle(
                                     fontWeight = FontWeight.Normal,
-                                    fontStyle = FontStyle.Italic
+                                    fontStyle = FontStyle.Italic,
                                 ),
                                 start,
-                                end
+                                end,
                             )
 
                             Typeface.BOLD_ITALIC -> addStyle(
                                 SpanStyle(
                                     fontWeight = FontWeight.Bold,
-                                    fontStyle = FontStyle.Italic
+                                    fontStyle = FontStyle.Italic,
                                 ),
                                 start,
-                                end
+                                end,
                             )
                         }
 
@@ -145,10 +145,10 @@ private fun spannableStringToAnnotatedString(
                                     FontFamily.Monospace.name -> FontFamily.Monospace
                                     FontFamily.Cursive.name -> FontFamily.Cursive
                                     else -> FontFamily.Default
-                                }
+                                },
                             ),
                             start,
-                            end
+                            end,
                         )
 
                         is BulletSpan -> {
@@ -159,43 +159,43 @@ private fun spannableStringToAnnotatedString(
                         is AbsoluteSizeSpan -> addStyle(
                             SpanStyle(fontSize = if (it.dip) it.size.dp.toSp() else it.size.toSp()),
                             start,
-                            end
+                            end,
                         )
 
                         is RelativeSizeSpan -> addStyle(
                             SpanStyle(fontSize = it.sizeChange.em),
                             start,
-                            end
+                            end,
                         )
 
                         is StrikethroughSpan -> addStyle(
                             SpanStyle(textDecoration = TextDecoration.LineThrough),
                             start,
-                            end
+                            end,
                         )
 
                         is UnderlineSpan -> addStyle(
                             SpanStyle(textDecoration = TextDecoration.Underline),
                             start,
-                            end
+                            end,
                         )
 
                         is SuperscriptSpan -> addStyle(
                             SpanStyle(baselineShift = BaselineShift.Superscript),
                             start,
-                            end
+                            end,
                         )
 
                         is SubscriptSpan -> addStyle(
                             SpanStyle(baselineShift = BaselineShift.Subscript),
                             start,
-                            end
+                            end,
                         )
 
                         is ForegroundColorSpan -> addStyle(
                             SpanStyle(color = Color(it.foregroundColor)),
                             start,
-                            end
+                            end,
                         )
 
                         else -> addStyle(SpanStyle(), start, end)

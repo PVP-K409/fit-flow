@@ -21,10 +21,10 @@ data class User(
     var hasLeveledUp: Boolean = false,
 )
 
-enum class Gender(@StringRes val title: Int){
+enum class Gender(@StringRes val title: Int) {
     Male(R.string.male),
     Female(R.string.female),
-    Unspecified(R.string.unspecified)
+    Unspecified(R.string.unspecified),
 }
 
 fun FirebaseUser.toUser(): User {

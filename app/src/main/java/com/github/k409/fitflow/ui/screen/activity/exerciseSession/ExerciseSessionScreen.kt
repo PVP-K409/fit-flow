@@ -79,7 +79,7 @@ fun ExerciseSessionScreen(
             if (sessionActive.value) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         text = ExerciseSessionActivities.entries.firstOrNull {
@@ -110,7 +110,7 @@ fun ExerciseSessionScreen(
                     options = ExerciseSessionActivities.entries.map { stringResource(id = it.exerciseSessionActivity.title) },
                     selectedOption = selectedExercise?.exerciseSessionActivity?.title?.let {
                         stringResource(
-                            id = it
+                            id = it,
                         )
                     } ?: "",
                     label = stringResource(R.string.exercise),
@@ -156,7 +156,8 @@ fun ExerciseSessionScreen(
                 dialogText = stringResource(
                     R.string.selected_exercise,
                     selectedExercise?.exerciseSessionActivity?.title?.let { stringResource(id = it) }
-                        ?: ""),
+                        ?: "",
+                ),
                 onDismiss = { showConfirmationDialogStart = false },
                 onConfirm = {
                     showConfirmationDialogStart = false
@@ -177,7 +178,7 @@ fun ExerciseSessionScreen(
                     String.format(Locale.US, "%.2f", distance.value),
                     formatTimeFromSeconds(timeInSecond.value),
                     calories.value,
-                    String.format(Locale.US, "%.2f", avgSpeed.value)
+                    String.format(Locale.US, "%.2f", avgSpeed.value),
                 ).trimIndent(),
                 onDismiss = { showConfirmationDialogStop = false },
                 onConfirm = {

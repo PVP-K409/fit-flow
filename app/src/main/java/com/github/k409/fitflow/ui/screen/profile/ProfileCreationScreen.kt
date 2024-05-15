@@ -82,7 +82,7 @@ fun ProfileCreationScreen(
         nameError = if (name.isEmpty()) stringResource(R.string.required_field) else null
         // Return true if all required field are filled
         return name.isNotEmpty() && dateOfBirth.isNotEmpty() && gender != Gender.Unspecified && weight != 0 &&
-                height != 0
+            height != 0
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -103,9 +103,13 @@ fun ProfileCreationScreen(
         }
         var error = initialValue.isEmpty() && isRequired
         val currentValue =
-            if (displayedValues != null && initialValue.isNotEmpty()) displayedValues.indexOf(
+            if (displayedValues != null && initialValue.isNotEmpty()) {
+                displayedValues.indexOf(
+                    initialValue,
+                ).toString()
+            } else {
                 initialValue
-            ).toString() else initialValue
+            }
 
         ExposedDropdownMenuBox(
             expanded = isExpanded,

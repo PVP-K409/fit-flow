@@ -59,7 +59,7 @@ fun LevelUpScreen(
 @Composable
 private fun LevelUpScreenContent(
     viewModel: LevelViewModel,
-    uiState: LevelUiState.Success
+    uiState: LevelUiState.Success,
 ) {
     val language = LocalContext.current.resources.configuration.locales[0].language
 

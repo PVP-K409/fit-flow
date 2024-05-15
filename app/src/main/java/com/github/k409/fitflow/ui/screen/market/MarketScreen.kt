@@ -188,8 +188,8 @@ fun MarketScreen(
                     SnackbarManager.showMessage(
                         context.getString(
                             R.string.item_has_been_added_to_your_inventory,
-                            selectedMarketItem.title
-                        )
+                            selectedMarketItem.title,
+                        ),
                     )
                 } else {
                     marketViewModel.updateUserCoinBalance((selectedMarketItem.price / 2).toLong())
@@ -197,8 +197,8 @@ fun MarketScreen(
                     SnackbarManager.showMessage(
                         context.getString(
                             R.string.item_has_been_sold,
-                            selectedMarketItem.title
-                        )
+                            selectedMarketItem.title,
+                        ),
                     )
                 }
                 showDialog = false
