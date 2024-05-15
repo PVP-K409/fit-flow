@@ -53,7 +53,7 @@ fun FriendsListContent(
         modifier = Modifier
             .padding(vertical = 16.dp)
             .padding(start = 2.dp, end = 2.dp),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
     ) {
         OutlineCardContainer(

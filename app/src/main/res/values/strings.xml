@@ -191,9 +191,10 @@
     <string name="received_friend_requests">Received friend requests</string>
     <string name="other_users_who_have_sent_you_friend_requests">Other users who have sent you friend requests</string>
     <string name="search_for_a_user_to_display_them_here">Search for a user to display them here.</string>
-    <string name="Searched_user">User found by searching for their email address</string>
-    <string name="Searched_users">Searched user</string>
+    <string name="searched_user">User found by searching for their email address</string>
+    <string name="searched_users">Searched user</string>
     <string name="user_not_found">User not found</string>
-    <string name="Already_friends">You are already friends with this user</string>
-    <string name="Self_friend">Can\'t send a friend request to yourself!</string>
+    <string name="already_friends">You are already friends with this user</string>
+    <string name="self_friend">Can\'t send a friend request to yourself!</string>
+    <string name="send_a_friend_request_to">Send a friend request to</string>
 </resources>

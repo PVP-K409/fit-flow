@@ -41,7 +41,7 @@ fun FriendsScreen() {
                 .verticalScroll(scrollState)
                 .padding(vertical = 16.dp)
                 .padding(bottom = 6.dp),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start,
         ) {
             when (selectedTabIndex.intValue) {

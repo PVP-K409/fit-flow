@@ -80,7 +80,7 @@ fun FriendRequestContent(
     Column(
         modifier = Modifier
             .padding(start = 4.dp, end = 4.dp, top = 4.dp),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
     ) {
         Row(
@@ -93,14 +93,14 @@ fun FriendRequestContent(
                     searchText = it
                     isButtonEnabled = !emails.contains(it.lowercase()) && it != userEmail
                     nameError = if (it == userEmail) {
-                        context.getString(R.string.Self_friend)
+                        context.getString(R.string.self_friend)
                     } else if (emails.contains(it.lowercase())) {
-                        context.getString(R.string.Already_friends)
+                        context.getString(R.string.already_friends)
                     } else {
                         null
                     }
                 },
-                label = { Text("Send a friend request to") },
+                label = { Text(stringResource(R.string.send_a_friend_request_to)) },
                 modifier = Modifier
                     .padding(start = 18.dp, end = 12.dp),
             )
@@ -139,14 +139,14 @@ fun FriendRequestContent(
         modifier = Modifier
             .padding(vertical = 16.dp)
             .padding(end = 2.dp),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
     ) {
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlineCardContainer(
-            title = stringResource(R.string.Searched_users),
-            subtitleText = stringResource(R.string.Searched_user),
+            title = stringResource(R.string.searched_users),
+            subtitleText = stringResource(R.string.searched_user),
         ) {
             if (foundUser?.uid != null && foundUser?.uid != "") {
                 UserCard(
