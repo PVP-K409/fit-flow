@@ -266,4 +266,10 @@
     <string name="yoga">Yoga</string>
     <string name="other">Other</string>
     <string name="unspecified">Unspecified</string>
+    <string name="info">Info</string>
+    <string name="info_app_description"><b>FitFlow</b> is a mobile application where users will have the ability to track their health progress. This app will be centered around an <b>interactive fish</b> character, designed to encourage users to enhance their physical activity and hydration habits.</string>
+    <string name="app_usage">App Usage</string>
+    <string name="info_app_usage">To ensure your goals are achieved and your health is optimized, it\'s vital to <b>sync Health Connect</b> with other apps like Google Fit or Samsung Health. Without synchronization, your goals may not be met, and your overall health could be at risk. \n\nMake sure to <b>install Health Connect</b> and <b>sync it</b> with your preferred health apps for seamless tracking and goal attainment.</string>
+    <string name="health_connect">Health Connect</string>
+    <string name="info_health_connect">As for <b>Health Connect</b>, it\'s an app designed to centralize and streamline health data from various sources, allowing users to monitor and manage their health metrics more effectively. It serves as a hub for integrating data from different health and fitness apps, providing users with a comprehensive view of their health and fitness journey.</string>
 </resources>

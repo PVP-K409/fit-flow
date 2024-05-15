@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
@@ -376,6 +377,20 @@ fun TopBarAvatarDropdownMenu(
                 leadingIcon = {
                     Icon(
                         Icons.Outlined.Star,
+                        contentDescription = null,
+                    )
+                },
+            )
+
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.info)) },
+                onClick = {
+                    navigateScreen(NavRoutes.Info)
+                    expanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Outlined.Info,
                         contentDescription = null,
                     )
                 },
