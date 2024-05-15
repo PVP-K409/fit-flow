@@ -54,7 +54,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    private fun getUser(uid: String): Flow<User> =
+    fun getUser(uid: String): Flow<User> =
         getUserDocumentReference(uid)
             .snapshots()
             .map { it.toObject<User>() ?: User() }
@@ -149,6 +149,25 @@ class UserRepository @Inject constructor(
             Log.e("User Repository", e.toString())
         }
     }
+
+    suspend fun searchUserByEmail(email: String): User {
+        return try {
+            db.collection(USERS_COLLECTION)
+                .whereEqualTo("email", email)
+                .get()
+                .await()
+                .documents
+                .firstOrNull()
+                ?.toObject<User>()
+                ?: User()
+        } catch (e: Exception) {
+            Log.e("User Repository", "Error searching user by email")
+            Log.e("User Repository", e.toString())
+            User()
+
+        }
+    }
+
     private fun getUserDocumentReference(uid: String) =
         db.collection(USERS_COLLECTION)
             .document(uid)
