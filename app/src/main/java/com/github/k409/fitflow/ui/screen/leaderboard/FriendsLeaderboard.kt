@@ -8,7 +8,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,7 +34,8 @@ fun FriendsLeaderboard(
         is FriendsUiState.Success -> {
             FriendsLeaderboardContent(
                 viewModel = viewModel,
-                uiState = uiState as FriendsUiState.Success)
+                uiState = uiState as FriendsUiState.Success,
+            )
         }
     }
 }
@@ -43,8 +43,8 @@ fun FriendsLeaderboard(
 @Composable
 fun FriendsLeaderboardContent(
     viewModel: FriendsViewModel,
-    uiState: FriendsUiState.Success) {
-
+    uiState: FriendsUiState.Success,
+) {
     val currentUser = viewModel.getCurrentUser().collectAsState(User()).value
     val friends = sortLeaderboard(uiState.friends, currentUser)
 
@@ -77,6 +77,7 @@ fun FriendsLeaderboardContent(
         }
     }
 }
+
 @Composable
 private fun sortLeaderboard(
     friends: List<Flow<User>>,

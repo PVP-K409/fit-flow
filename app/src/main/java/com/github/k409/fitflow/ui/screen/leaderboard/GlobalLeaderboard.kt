@@ -16,7 +16,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.screen.you.OutlineCardContainer
-import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun GlobalLeaderboardScreen(
