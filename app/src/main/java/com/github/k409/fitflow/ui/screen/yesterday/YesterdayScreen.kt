@@ -76,7 +76,7 @@ private fun YesterdayScreenContent(viewModel: YesterdayViewModel, uiState: Yeste
             modifier = Modifier.fillMaxSize(),
         ) {
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 item {
@@ -88,9 +88,8 @@ private fun YesterdayScreenContent(viewModel: YesterdayViewModel, uiState: Yeste
                         rightValue = stringResource(R.string.steps).lowercase(),
                         iconImageVector = Icons.AutoMirrored.Filled.DirectionsWalk,
                     )
-                    HorizontalDivider()
                 }
-
+                item { HorizontalDivider() }
                 item {
                     EffortRow(
                         leftLabel = stringResource(R.string.waterLogging),
@@ -104,8 +103,8 @@ private fun YesterdayScreenContent(viewModel: YesterdayViewModel, uiState: Yeste
                         rightValue = stringResource(R.string.litres),
                         iconImageVector = Icons.Default.WaterDrop,
                     )
-                    HorizontalDivider()
                 }
+                item { HorizontalDivider() }
                 item {
                     EffortRow(
                         leftLabel = stringResource(R.string.calories_burned),
@@ -115,8 +114,8 @@ private fun YesterdayScreenContent(viewModel: YesterdayViewModel, uiState: Yeste
                         rightValue = stringResource(R.string.kcal),
                         iconImageVector = Icons.Default.LocalFireDepartment,
                     )
-                    HorizontalDivider()
                 }
+                item { HorizontalDivider() }
                 if (uiState.dailyGoals?.any { it.value.completed } == true) {
                     item { GoalsHeader(title = stringResource(R.string.completed_daily_goals)) }
                     item { GoalsList(goalsSelected = uiState.dailyGoals.filter { it.value.completed }) }
