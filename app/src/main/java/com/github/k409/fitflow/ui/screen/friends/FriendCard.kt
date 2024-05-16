@@ -259,7 +259,7 @@ fun FriendCard(
     coroutineScope: CoroutineScope,
     friendsViewModel: FriendsViewModel,
     context: android.content.Context,
-    onRemoveClick: () -> Unit = {}
+    onRemoveClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
