@@ -30,15 +30,22 @@ fun GlobalLeaderboardScreen(
         }
 
         is LeaderboardUiState.Success -> {
-            GlobalLeaderboardScreenContent(uiState = uiState as LeaderboardUiState.Success)
+            GlobalLeaderboardScreenContent(
+                viewModel = viewModel,
+                uiState = uiState as LeaderboardUiState.Success,
+            )
         }
     }
 }
 
 @Composable
-fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
+fun GlobalLeaderboardScreenContent(
+    viewModel: LeaderboardViewModel,
+    uiState: LeaderboardUiState.Success,
+) {
     val topFive = uiState.users.take(5)
     val otherUsers = uiState.users.drop(5)
+    val currentUser = viewModel.getCurrentUser().collectAsState(null).value?.uid
 
     Column(
         modifier = Modifier
@@ -58,8 +65,7 @@ fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
                     LeaderboardCard(
                         user = user,
                         rank = user.rank,
-                        // TODO: remove this later
-                        currentUser = FirebaseAuth.getInstance().currentUser!!.uid == user.uid,
+                        currentUser = currentUser == user.uid,
                     )
 
                     if (index != topFive.size - 1) {
@@ -85,7 +91,7 @@ fun GlobalLeaderboardScreenContent(uiState: LeaderboardUiState.Success) {
                         user = user,
                         rank = user.rank,
                         // TODO: remove this later
-                        currentUser = FirebaseAuth.getInstance().currentUser!!.uid == user.uid,
+                        currentUser = currentUser == user.uid,
                     )
 
                     if (index != otherUsers.size - 1) {

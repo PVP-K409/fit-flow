@@ -290,4 +290,7 @@
     <string name="health_connect">Health Connect</string>
     <string name="info_health_connect"><b>Health Connect</b> yra programėlė, skirta centralizuoti ir racionalizuoti sveikatos duomenis iš įvairių šaltinių, leidžianti vartotojams efektyviau stebėti ir valdyti savo sveikatos rodiklius. Ji veikia kaip mazgas, integruojantis duomenis iš skirtingų sveikatos ir fitneso programėlių, suteikiantis vartotojams išsamų savo sveikatos ir fitneso kelionės vaizdą.</string>
     <string name="sure_to_remove_friend">Ar jūs tikrai norite pašalinti draugą </string>
+    <string name="friends_leaderboard">Draugų lyderių sąrašas</string>
+    <string name="your_placings_among_your_friends">Tavo vieta lyderių sąraše tarp draugų</string>
+    <string name="friends_leaderboard_tab_title">DRAUGŲ LENTELĖ</string>
 </resources>

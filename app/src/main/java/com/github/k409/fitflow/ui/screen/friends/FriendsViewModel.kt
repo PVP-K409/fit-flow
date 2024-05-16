@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.screen.friends
 
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.FriendsRepository
@@ -51,6 +52,10 @@ class FriendsViewModel @Inject constructor(
 
     suspend fun removeFriend(uid: String) {
         friendsRepository.removeFriend(uid)
+    }
+
+    fun getCurrentUser(): Flow<User> {
+        return userRepository.currentUser
     }
 }
 

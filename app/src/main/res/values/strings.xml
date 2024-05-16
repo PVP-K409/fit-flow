@@ -290,4 +290,7 @@
     <string name="health_connect">Health Connect</string>
     <string name="info_health_connect">As for <b>Health Connect</b>, it\'s an app designed to centralize and streamline health data from various sources, allowing users to monitor and manage their health metrics more effectively. It serves as a hub for integrating data from different health and fitness apps, providing users with a comprehensive view of their health and fitness journey.</string>
     <string name="sure_to_remove_friend">Are you sure you want to unfriend </string>
+    <string name="friends_leaderboard">Friends leaderboard</string>
+    <string name="your_placings_among_your_friends">Your placings among your friends</string>
+    <string name="friends_leaderboard_tab_title">FRIENDS LEADERBOARD</string>
 </resources>

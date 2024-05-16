@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material.icons.outlined.Leaderboard
 import androidx.compose.material.icons.outlined.LocalPlay
 import androidx.compose.material.icons.outlined.PeopleAlt
+import androidx.compose.material.icons.outlined.PeopleOutline
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.StackedLineChart
@@ -49,6 +50,7 @@ sealed class NavRoutes(
             Friends,
             ReportIssue,
             Info,
+            FriendsLeaderboard,
         )
         val bottomNavBarItems =
             listOf(Aquarium, Activity, Hydration, Goals, Marketplace, You)
@@ -123,4 +125,10 @@ sealed class NavRoutes(
     data object ReportIssue : NavRoutes("reportIssue", R.string.report_issue, Icons.Outlined.ErrorOutline)
 
     data object Info : NavRoutes("info", R.string.info, Icons.Outlined.Info)
+
+    data object FriendsLeaderboard : NavRoutes(
+        "friendsLeaderboard",
+        R.string.friends_leaderboard,
+        Icons.Outlined.PeopleOutline,
+        )
 }
