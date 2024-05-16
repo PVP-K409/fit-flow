@@ -28,6 +28,7 @@ class MainActivityViewModel @Inject constructor(
         SharedUiState.Success(
             user = currentUser,
             themePreferences = themePreferences,
+            sharedPreferences = preferencesRepository,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -67,5 +68,6 @@ sealed interface SharedUiState {
     data class Success(
         val user: User,
         val themePreferences: ThemePreferences,
+        val sharedPreferences: PreferencesRepository,
     ) : SharedUiState
 }

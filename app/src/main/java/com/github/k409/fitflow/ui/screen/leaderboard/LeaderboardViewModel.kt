@@ -6,6 +6,7 @@ import com.github.k409.fitflow.data.UserRepository
 import com.github.k409.fitflow.model.User
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LeaderboardViewModel @Inject constructor(
-    userRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val auth: FirebaseAuth,
 ) : ViewModel() {
     val leaderboardUiState: StateFlow<LeaderboardUiState> =
@@ -51,6 +52,10 @@ class LeaderboardViewModel @Inject constructor(
 
             finalList
         }
+    }
+
+    fun getCurrentUser(): Flow<User> {
+        return userRepository.currentUser
     }
 }
 

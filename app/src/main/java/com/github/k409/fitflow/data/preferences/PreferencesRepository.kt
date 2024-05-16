@@ -46,6 +46,12 @@ class PreferencesRepository @Inject constructor(@ApplicationContext private val 
         }
     }
 
+    suspend fun updateYesterdayPreference(date: String) {
+        dataStore.edit { preferences ->
+            preferences[PreferenceKeys.YESTERDAY] = date
+        }
+    }
+
     val themeColourPreferences: Flow<ThemePreferences> =
         dataStore.data.map { preferences ->
             ThemePreferences(

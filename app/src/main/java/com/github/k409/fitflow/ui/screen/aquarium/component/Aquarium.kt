@@ -175,6 +175,8 @@ private fun AquariumLayout(
 
             InventoryButton(
                 modifier = Modifier.align(Alignment.TopStart),
+                iconColor = if (aquariumBackground == NightBackground || aquariumBackground == EveningBackground) Color.White else Color.DarkGray,
+                containerColor = if (aquariumBackground == MorningBackground) Color.Black.copy(alpha = 0.2f) else Color.White.copy(alpha = 0.3f),
                 onInventoryClick = onInventoryClick,
             )
 
@@ -182,6 +184,20 @@ private fun AquariumLayout(
                 modifier = Modifier.align(Alignment.TopEnd),
                 waterLevel = waterLevel,
                 healthLevel = healthLevel,
+                waterTextColor = when {
+                    waterLevel >= 0.75f -> Color(0xFF85FF33)
+                    waterLevel >= 0.5f -> Color(0xfffffe00)
+                    waterLevel >= 0.25f -> Color(0xffffac00)
+                    else -> Color(0xFFFF3333)
+                },
+                healthTextColor = when {
+                    healthLevel >= 0.75f -> Color(0xFF85FF33)
+                    healthLevel >= 0.5f -> Color(0xfffffe00)
+                    healthLevel >= 0.25f -> Color(0xffffac00)
+                    else -> Color(0xFFFF3333)
+                },
+                dividerColor = if (aquariumBackground == NightBackground || aquariumBackground == EveningBackground) Color.White else Color(0xff6f6f6f),
+                containerColor = if (aquariumBackground == MorningBackground) Color.Black.copy(alpha = 0.2f) else Color.White.copy(alpha = 0.3f),
             )
 
             DecorationsBox(
@@ -204,7 +220,6 @@ private fun AquariumLayout(
                 FishContainer(
                     uiState = uiState,
                     width = width,
-                    waterLevel = waterLevel,
                     waterLevelAnimation = waterLevelAnimation,
                     healthLevel = healthLevel,
                     fishSize = fishSize,
@@ -248,7 +263,6 @@ private fun FishBonesContainer(
 private fun FishContainer(
     uiState: AquariumUiState.Success,
     width: Int,
-    waterLevel: Float,
     waterLevelAnimation: Float,
     healthLevel: Float,
     fishSize: Dp,
@@ -301,18 +315,20 @@ private fun AquariumMetrics(
     modifier: Modifier = Modifier,
     waterLevel: Float,
     healthLevel: Float,
-    textColor: Color = Color(0xffffffff),
+    waterTextColor: Color = Color(0xffffffff),
+    healthTextColor: Color = Color(0xffffffff),
     waterLevelIconTint: Color = Color(0xFF03A9F4),
     healthLevelIconTint: Color = Color(0xFFF44336),
     dividerColor: Color = Color(0xFF434B48),
+    containerColor: Color = Color.White.copy(alpha = 0.3f),
 ) {
     Card(
         modifier = modifier.padding(horizontal = 12.dp, vertical = 50.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.3f)),
+        colors = CardDefaults.cardColors(containerColor = containerColor),
         shape = RoundedCornerShape(100),
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -324,7 +340,7 @@ private fun AquariumMetrics(
                     text = "${(waterLevel * 100).roundToInt()}%",
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
-                    color = textColor,
+                    color = waterTextColor,
                 )
 
                 Spacer(modifier = Modifier.width(6.dp))
@@ -348,7 +364,7 @@ private fun AquariumMetrics(
                     text = "${(healthLevel * 100).roundToInt()}%",
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
-                    color = textColor,
+                    color = healthTextColor,
                 )
 
                 Spacer(modifier = Modifier.width(6.dp))
@@ -367,13 +383,15 @@ private fun AquariumMetrics(
 @Composable
 fun InventoryButton(
     modifier: Modifier = Modifier,
+    iconColor: Color = Color(0xFF434B48),
+    containerColor: Color = Color.White.copy(alpha = 0.3f),
     onInventoryClick: () -> Unit = {},
 ) {
     Card(
         modifier = modifier
             .padding(horizontal = 12.dp, vertical = 50.dp)
             .clickable(onClick = onInventoryClick),
-        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.3f)),
+        colors = CardDefaults.cardColors(containerColor = containerColor),
         shape = RoundedCornerShape(100),
     ) {
         Column(
@@ -382,8 +400,8 @@ fun InventoryButton(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                modifier = Modifier.size(16.dp),
-                tint = Color(0xFF434B48),
+                modifier = Modifier.size(22.dp),
+                tint = iconColor,
                 imageVector = Icons.Outlined.Inventory2,
                 contentDescription = "Inventory",
             )
