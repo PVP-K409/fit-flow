@@ -1,6 +1,7 @@
 package com.github.k409.fitflow.ui.screen.settings
 
 import android.os.Build
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,12 +18,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -63,7 +69,9 @@ fun SettingsScreen(
     val themePreferences = (settingsUiState as SettingsUiState.Success).themePreferences
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .fillMaxSize(),
     ) {
         AppearanceSettingsGroup(
             themePreferences = themePreferences,
@@ -77,6 +85,8 @@ fun SettingsScreen(
             coroutineScope = coroutineScope,
             settingsViewModel = settingsViewModel,
         )
+
+        LanguageSettingsGroup()
     }
 }
 
@@ -156,11 +166,11 @@ private fun ThemeModeSelector(
             style = typography.titleMedium,
         )
 
-        val values = ThemeMode.entries.map { it.title }
+        val values = ThemeMode.entries.map { stringResource(it.title) }
 
         FancyIndicatorTabs(
             values = values,
-            selectedIndex = values.indexOf(themePreferences.themeMode.title),
+            selectedIndex = values.indexOf(stringResource(themePreferences.themeMode.title)),
             onValueChange = {
                 val themeMode = ThemeMode.entries[it]
 
@@ -246,7 +256,7 @@ private fun ColumnScope.ThemeColourSelector(
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
-                            text = theme.title,
+                            text = stringResource(theme.title),
                             style = typography.labelMedium,
                             textAlign = TextAlign.Center,
                         )
@@ -254,5 +264,72 @@ private fun ColumnScope.ThemeColourSelector(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun LanguageSettingsGroup() {
+    val localeOptions = mapOf(
+        R.string.en to "en",
+        R.string.lt to "lt",
+    ).mapKeys { stringResource(it.key) }
+
+    var currentLocale = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+
+    if (currentLocale == LocaleListCompat.getEmptyLocaleList().toLanguageTags()) {
+        currentLocale = localeOptions.keys.first()
+    }
+
+    SettingsEntryGroupText(title = stringResource(R.string.localization))
+
+    LanguageSelector(
+        selectedLocaleValue = currentLocale,
+        localeOptions = localeOptions,
+        onLocaleSelect = { selectionLocale ->
+            AppCompatDelegate.setApplicationLocales(
+                LocaleListCompat.forLanguageTags(
+                    localeOptions[selectionLocale],
+                ),
+            )
+        },
+    )
+
+    SettingsGroupSpacer()
+}
+
+@Composable
+private fun LanguageSelector(
+    selectedLocaleValue: String,
+    localeOptions: Map<String, String>,
+    onLocaleSelect: (String) -> Unit,
+) {
+    val selectedIndex = remember {
+        mutableIntStateOf(
+            localeOptions.values.indexOf(selectedLocaleValue).let {
+                if (it == -1) 0 else it
+            },
+        )
+    }
+
+    Column(
+        modifier = Modifier.padding(
+            horizontal = 32.dp,
+            vertical = 16.dp,
+        ),
+    ) {
+        Text(
+            modifier = Modifier.padding(bottom = 8.dp),
+            text = stringResource(R.string.language),
+            style = typography.titleMedium,
+        )
+
+        FancyIndicatorTabs(
+            values = localeOptions.keys.toList(),
+            selectedIndex = selectedIndex.intValue,
+            onValueChange = {
+                selectedIndex.intValue = it
+                onLocaleSelect(localeOptions.keys.toList()[it])
+            },
+        )
     }
 }

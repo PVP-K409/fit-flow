@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.model.HealthConnectGoals
 import com.github.k409.fitflow.model.getIconByType
 import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.navigation.NavRoutes
@@ -47,7 +49,10 @@ fun GoalCreation(
     goalsViewModel: GoalsViewModel = hiltViewModel(),
     navController: NavHostController,
 ) {
-    val goalOptions = listOf(stringResource(id = R.string.daily), stringResource(id = R.string.weekly))
+    val context = LocalContext.current
+
+    val goalOptions =
+        listOf(stringResource(id = R.string.daily), stringResource(id = R.string.weekly))
     val distanceOptionsDay = List(50) { i -> "${0.5 * (i + 1)} km" }
     val distanceOptionsWeek = List(50) { i -> "${2 * (i + 1)} km" }
 
@@ -81,10 +86,18 @@ fun GoalCreation(
 
             GoalDropdownMenu(
                 options = goalOptions,
-                selectedOption = selectedGoal,
+                selectedOption = when (selectedGoal) {
+                    "Daily" -> stringResource(id = R.string.daily)
+                    "Weekly" -> stringResource(id = R.string.weekly)
+                    else -> ""
+                },
                 label = stringResource(R.string.period),
                 onOptionSelected = {
-                    selectedGoal = it
+                    selectedGoal = when (it) {
+                        context.getString(R.string.daily) -> "Daily"
+                        context.getString(R.string.weekly) -> "Weekly"
+                        else -> ""
+                    }
                     selectedDistance = ""
                     selectedExercise = ""
                 },
@@ -98,10 +111,28 @@ fun GoalCreation(
 
                 if (exerciseOptions.isNotEmpty()) {
                     ExerciseDropdownMenu(
-                        options = exerciseOptions,
-                        selectedOption = selectedExercise,
+                        options = HealthConnectGoals.entries.filter { exerciseOptions.contains(it.healthConnectGoal.type) }
+                            .map {
+                                stringResource(
+                                    id = it.healthConnectGoal.title,
+                                )
+                            },
+                        selectedOption = HealthConnectGoals.entries.find { it.healthConnectGoal.type == selectedExercise }?.healthConnectGoal?.title?.let {
+                            stringResource(
+                                id = it,
+                            )
+                        }
+                            ?: "",
                         label = stringResource(R.string.exercise),
-                        onOptionSelected = { selectedExercise = it },
+                        onOptionSelected =
+                        {
+                            selectedExercise = HealthConnectGoals.entries.find {
+                                context.getString(it.healthConnectGoal.title) == context.getString(
+                                    it.healthConnectGoal.title,
+                                )
+                            }?.healthConnectGoal?.type
+                                ?: ""
+                        },
                         expandedState = expandedDropdown == ExpandedDropdown.EXERCISE,
                     )
 
@@ -140,12 +171,31 @@ fun GoalCreation(
             }
 
             if (showConfirmationDialog) {
+                val translatedGoal = when (selectedGoal) {
+                    "Daily" -> stringResource(id = R.string.daily)
+                    "Weekly" -> stringResource(id = R.string.weekly)
+                    else -> ""
+                }
+
+                val translatedExercise = HealthConnectGoals.entries.find {
+                    context.getString(it.healthConnectGoal.title) == context.getString(
+                        it.healthConnectGoal.title,
+                    )
+                }?.healthConnectGoal?.title?.let { stringResource(id = it) } ?: ""
+
+                val dialogText = "$translatedGoal\n$translatedExercise\n$selectedDistance"
+
                 ConfirmDialog(
-                    dialogTitle = "Are you sure you want to create this goal?",
-                    dialogText = "$selectedGoal\n$selectedExercise\n$selectedDistance",
+                    dialogTitle = stringResource(R.string.are_you_sure_you_want_to_create_this_goal),
+                    dialogText = dialogText,
                     onDismiss = { showConfirmationDialog = false },
                     onConfirm = {
-                        goalsViewModel.submitGoalAsync(selectedGoal, selectedExercise, selectedDistance.filter { it.isDigit() || it == '.' }.toDoubleOrNull() ?: 0.0)
+                        goalsViewModel.submitGoalAsync(
+                            selectedGoal,
+                            selectedExercise,
+                            selectedDistance.filter { it.isDigit() || it == '.' }.toDoubleOrNull()
+                                ?: 0.0,
+                        )
                         showConfirmationDialog = false
                         navController.navigate(NavRoutes.Goals.route)
                     },
@@ -159,7 +209,7 @@ fun GoalCreation(
 fun InlineError(show: Boolean) {
     if (show) {
         Text(
-            text = "Please select this field",
+            text = stringResource(R.string.please_select_this_field),
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(start = 16.dp, top = 2.dp),
@@ -170,7 +220,7 @@ fun InlineError(show: Boolean) {
 @Composable
 fun NoValidGoalsMessage() {
     Text(
-        text = "No valid exercises are available for the selected goal period.",
+        text = stringResource(R.string.no_valid_exercises_are_available_for_the_selected_goal_period),
         color = MaterialTheme.colorScheme.error,
         style = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.padding(16.dp),

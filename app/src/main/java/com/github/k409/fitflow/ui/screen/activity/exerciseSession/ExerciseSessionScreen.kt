@@ -43,6 +43,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.model.ExerciseSessionActivities
+import com.github.k409.fitflow.model.getExerciseSessionActivityByType
 import com.github.k409.fitflow.service.RouteTrackingService
 import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.screen.goals.ExerciseDropdownMenu
@@ -71,7 +73,7 @@ fun ExerciseSessionScreen(
     val avgSpeed = RouteTrackingService.avgSpeed.collectAsState()
     val calories = RouteTrackingService.calories.collectAsState()
 
-    var selectedExercise by remember { mutableStateOf("") }
+    var selectedExercise: ExerciseSessionActivities? by remember { mutableStateOf(null) }
     val expandedDropdown by remember { mutableStateOf(ExpandedDropdown.NONE) }
     var showInlineError by remember { mutableStateOf(false) }
     var showConfirmationDialogStart by remember { mutableStateOf(false) }
@@ -94,21 +96,28 @@ fun ExerciseSessionScreen(
                     }
                 }
             } else { // show dropdown
-                val exerciseTypes = exerciseSessionViewModel.getValidExerciseSessionActivitiesTypes()
                 Spacer(modifier = Modifier.height(24.dp))
                 ExerciseDropdownMenu(
-                    options = exerciseTypes,
-                    selectedOption = selectedExercise,
+                    options = ExerciseSessionActivities.entries.map { stringResource(id = it.exerciseSessionActivity.title) },
+                    selectedOption = selectedExercise?.exerciseSessionActivity?.title?.let {
+                        stringResource(
+                            id = it,
+                        )
+                    } ?: "",
                     label = stringResource(R.string.exercise),
-                    onOptionSelected = { selectedExercise = it },
+                    onOptionSelected = { value ->
+                        selectedExercise = ExerciseSessionActivities.entries.firstOrNull {
+                            value == context.getString(it.exerciseSessionActivity.title)
+                        }
+                    },
                     expandedState = expandedDropdown == ExpandedDropdown.EXERCISE,
                 )
 
-                InlineError(selectedExercise.isEmpty() && showInlineError)
+                InlineError(selectedExercise == null && showInlineError)
             }
             if (sessionActive.value) {
                 ExerciseParametric(
-                    exercise = exercise.value,
+                    exercise = stringResource(id = getExerciseSessionActivityByType(exercise.value).title),
                     timeInSeconds = timeInSecond.value,
                     distance = distance.value,
                     avgSpeed = avgSpeed.value,
@@ -119,7 +128,7 @@ fun ExerciseSessionScreen(
             ControlButtons(
                 sessionActive = sessionActive.value,
                 onStart = {
-                    if (selectedExercise.isNotEmpty()) {
+                    if (selectedExercise != null) {
                         showConfirmationDialogStart = true
                     } else {
                         showInlineError = true
@@ -137,11 +146,11 @@ fun ExerciseSessionScreen(
         if (showConfirmationDialogStart) {
             ConfirmDialog(
                 dialogTitle = stringResource(R.string.are_you_sure_you_want_start_this_exercise_session),
-                dialogText = stringResource(id = R.string.exercise) + " : $selectedExercise",
+                dialogText = stringResource(id = R.string.exercise) + " : ${selectedExercise?.exerciseSessionActivity?.title?.let { stringResource(id = it) }}",
                 onDismiss = { showConfirmationDialogStart = false },
                 onConfirm = {
                     showConfirmationDialogStart = false
-                    RouteTrackingService.selectedExercise.value = selectedExercise
+                    RouteTrackingService.selectedExercise.value = selectedExercise?.exerciseSessionActivity?.type ?: ""
                     Intent(context, RouteTrackingService::class.java).also {
                         it.action = RouteTrackingService.Actions.START.toString()
                         context.startService(it)

@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.common.item
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,22 +21,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.k409.fitflow.R
 
 data class ItemCategory(
-    val title: String,
+    @StringRes val title: Int,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
 )
 
 val categories = listOf(
     ItemCategory(
-        title = "Fishes",
+        title = R.string.fishes,
         selectedIcon = Icons.Filled.Phishing,
         unselectedIcon = Icons.Outlined.Phishing,
     ),
     ItemCategory(
-        title = "Decorations",
+        title = R.string.decorations,
         selectedIcon = Icons.Filled.Grass,
         unselectedIcon = Icons.Outlined.Grass,
     ),
@@ -69,10 +72,10 @@ fun CategorySelectHeader(
                         imageVector = if (index == selectedItemIndex) {
                             item.selectedIcon
                         } else item.unselectedIcon,
-                        contentDescription = item.title,
+                        contentDescription = stringResource(id = item.title),
                     )
                     Text(
-                        text = item.title,
+                        text = stringResource(id = item.title),
                         modifier = Modifier.padding(start = 8.dp),
                     )
                 }

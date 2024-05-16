@@ -45,6 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.GoalRecord
+import com.github.k409.fitflow.model.HealthConnectExercises
 import com.github.k409.fitflow.model.getIconByType
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.navigation.NavRoutes
@@ -164,6 +165,22 @@ private fun GoalCard(
     val endDate = LocalDate.parse(goal.endDate, DateTimeFormatter.ISO_LOCAL_DATE).minusDays(1)
     val adjustedEndDate = endDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
+    val values = goal.description.split(" ")
+    val duration = values.getOrNull(0) ?: ""
+    val exercise = values.getOrNull(1) ?: ""
+
+    // Sketchy way to get the translated exercise and duration
+    val translatedExercise =
+        HealthConnectExercises.entries.find { it.type == exercise }?.title?.let { stringResource(id = it) }
+    val translatedDuration =
+        when (duration) {
+            "Daily" -> stringResource(R.string.daily)
+            "Weekly" -> stringResource(R.string.weekly)
+            else -> ""
+        }
+
+    val description = "$translatedDuration $translatedExercise"
+
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -173,7 +190,7 @@ private fun GoalCard(
         Column(
             modifier = Modifier.padding(bottom = 8.dp),
         ) {
-            GoalHeader(goal.description, getIconByType(goal.type), adjustedEndDate)
+            GoalHeader(description, getIconByType(goal.type), adjustedEndDate)
             Spacer(Modifier.height(18.dp))
             Progress(
                 goal = goal,
@@ -228,7 +245,7 @@ fun Progress(
     color: Color,
 ) {
     val unit =
-        if (goal.type == stringResource(R.string.walking)) stringResource(R.string.steps) else "km"
+        if (goal.type == "Walking") stringResource(R.string.steps) else "km"
     var displayProgress = if (unit == stringResource(R.string.steps)) {
         goal.currentProgress.toLong()
             .toString()
