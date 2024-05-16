@@ -137,7 +137,7 @@ fun ExerciseSessionScreen(
         if (showConfirmationDialogStart) {
             ConfirmDialog(
                 dialogTitle = stringResource(R.string.are_you_sure_you_want_start_this_exercise_session),
-                dialogText = "Exercise: $selectedExercise",
+                dialogText = stringResource(id = R.string.exercise) + " : $selectedExercise",
                 onDismiss = { showConfirmationDialogStart = false },
                 onConfirm = {
                     showConfirmationDialogStart = false
@@ -153,13 +153,13 @@ fun ExerciseSessionScreen(
             ConfirmDialog(
                 dialogTitle = stringResource(R.string.are_you_sure_you_want_stop_this_exercise_session),
                 dialogText = if (timeInSecond.value < 60) {
-                    "This exercise session is shorter than one minute and will not be saved."
+                    stringResource(R.string.this_exercise_session_is_shorter_than_one_minute_and_will_not_be_saved)
                 } else {
                     """
-                        Distance: ${String.format(Locale.US, "%.2f", distance.value)} km
-                        Time: ${formatTimeFromSeconds(timeInSecond.value)}
-                        Calories: ${calories.value} cal
-                        Average Speed: ${String.format(Locale.US, "%.2f", avgSpeed.value)} km/h
+                        ${stringResource(id = R.string.distance)}: ${String.format(Locale.US, "%.2f", distance.value)} km
+                        ${stringResource(id = R.string.time)}: ${formatTimeFromSeconds(timeInSecond.value)}
+                        ${stringResource(id = R.string.calories)}: ${calories.value} cal
+                        ${stringResource(id = R.string.average_speed)}: ${String.format(Locale.US, "%.2f", avgSpeed.value)} km/h
                     """.trimIndent()
                 },
                 onDismiss = { showConfirmationDialogStop = false },
