@@ -22,6 +22,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.PeopleAlt
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
@@ -208,12 +210,12 @@ private fun UpdateTopAndBottomBarVisibility(
     topBarState: MutableState<Boolean>,
 ) {
     when (currentScreen) {
-        NavRoutes.Login, NavRoutes.Default, NavRoutes.LevelUp, NavRoutes.ExerciseSession -> {
+        NavRoutes.Login, NavRoutes.Default, NavRoutes.LevelUp -> {
             bottomBarState.value = false
             topBarState.value = false
         }
 
-        NavRoutes.Settings, NavRoutes.ProfileCreation, NavRoutes.Levels -> {
+        NavRoutes.Settings, NavRoutes.ProfileCreation, NavRoutes.Levels, NavRoutes.ExerciseSession -> {
             bottomBarState.value = false
             topBarState.value = true
         }
@@ -355,7 +357,7 @@ fun TopBarAvatarDropdownMenu(
             )
 
             DropdownMenuItem(
-                text = { Text(stringResource(R.string.profile)) },
+                text = { Text(stringResource(R.string.profile_label)) },
                 onClick = {
                     navigateScreen(NavRoutes.Profile)
                     expanded = false
@@ -377,6 +379,34 @@ fun TopBarAvatarDropdownMenu(
                 leadingIcon = {
                     Icon(
                         Icons.Outlined.Star,
+                        contentDescription = null,
+                    )
+                },
+            )
+
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.info)) },
+                onClick = {
+                    navigateScreen(NavRoutes.Info)
+                    expanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Outlined.Info,
+                        contentDescription = null,
+                    )
+                },
+            )
+
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.friends)) },
+                onClick = {
+                    navigateScreen(NavRoutes.Friends)
+                    expanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Outlined.PeopleAlt,
                         contentDescription = null,
                     )
                 },

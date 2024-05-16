@@ -143,6 +143,7 @@
     <string name="create_exercise_session">Create Exercise Session</string>
     <string name="exercise_session">Exercise Session</string>
     <string name="exercise_session_in_progress">Exercise Session in Progress</string>
+    <string name="profile_label">Profile</string>
     <string name="profile">Profile</string>
     <string name="points">Points</string>
     <string name="height">Height</string>
@@ -179,6 +180,24 @@
     <string name="reset_filters">Reset filters</string>
     <string name="close">Close</string>
     <string name="filter">Filter</string>
+    <string name="friends">Friends</string>
+    <string name="friend_request_accepted">Friend request accepted</string>
+    <string name="friend_request_declined">Friend request declined</string>
+    <string name="friend_request_sent">Friend request sent</string>
+    <string name="friend_removed">Friend removed</string>
+    <string name="friends_list">FRIENDS LIST</string>
+    <string name="friend_requests">FRIEND REQUESTS</string>
+    <string name="people_you_are_friends_with">People you are friends with</string>
+    <string name="you_don_t_have_any_friends_yet">You don\'t have any friends yet</string>
+    <string name="received_friend_requests">Received friend requests</string>
+    <string name="other_users_who_have_sent_you_friend_requests">Other users who have sent you friend requests</string>
+    <string name="search_for_a_user_to_display_them_here">Search for a user to display them here.</string>
+    <string name="searched_user">User found by searching for their email address</string>
+    <string name="searched_users">Searched user</string>
+    <string name="user_not_found">User not found</string>
+    <string name="already_friends">You are already friends with this user</string>
+    <string name="self_friend">Can\'t send a friend request to yourself</string>
+    <string name="send_a_friend_request_to">Send a friend request to</string>
     <string name="localization">Localization</string>
     <string name="en">English</string>
     <string name="lt">Lithuanian</string>
@@ -194,7 +213,6 @@
     <string name="dynamic">Dynamic</string>
     <string name="amoled">Amoled</string>
     <string name="dark">Dark</string>
-    <string name="time">Time</string>
     <string name="light">Light</string>
     <string name="automatic">Automatic</string>
     <string name="fishes">Fishes</string>
@@ -273,5 +291,7 @@
     <string name="info_app_usage">To ensure your goals are achieved and your health is optimized, it\'s vital to <b>sync Health Connect</b> with other apps like Google Fit or Samsung Health. Without synchronization, your goals may not be met, and your overall health could be at risk. \n\nMake sure to <b>install Health Connect</b> and <b>sync it</b> with your preferred health apps for seamless tracking and goal attainment.</string>
     <string name="health_connect">Health Connect</string>
     <string name="info_health_connect">As for <b>Health Connect</b>, it\'s an app designed to centralize and streamline health data from various sources, allowing users to monitor and manage their health metrics more effectively. It serves as a hub for integrating data from different health and fitness apps, providing users with a comprehensive view of their health and fitness journey.</string>
+    <string name="sure_to_remove_friend">Are you sure you want to unfriend </string>
     <string name="this_exercise_session_is_shorter_than_one_minute_and_will_not_be_saved">This exercise session is shorter than one minute and will not be saved.</string>
+    <string name="time">Time</string>
 </resources>
