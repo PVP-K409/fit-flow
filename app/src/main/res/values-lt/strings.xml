@@ -45,6 +45,8 @@
     <string name="account_settings_group_title">Paskyra</string>
     <string name="not_logged_in">Neprisijungęs</string>
     <string name="log_out">Atsijungti</string>
+    <string name="time">Laikas</string>
+    <string name="average_speed">Vidutinis greitis</string>
     <string name="you_are_logged_in_as">Esate prisijungę kaip %1$s</string>
     <string name="profile_settings_group_title">Paskyra</string>
     <string name="edit_profile">Redaguoti paskyrą</string>
@@ -290,6 +292,7 @@
     <string name="info_app_usage">Norint užtikrinti, kad jūsų tikslai būtų pasiekti ir jūsų sveikata būtų optimizuota, būtina <b>susieti Health Connect</b> su kitomis programėlėmis, tokiomis kaip Google Fit ar Samsung Health. Be sinchronizacijos, jūsų tikslai gali būti nepasiekti, o bendra jūsų sveikata gali būti pavojinga. \n\nĮsitikinkite, kad <b>įdiegėte Health Connect</b> ir <b>susiejote ją</b> su jūsų mėgstamomis sveikatos programėlėmis, kad galėtumėte be sutrikimų stebėti savo tikslų įgyvendinimą.</string>
     <string name="health_connect">Health Connect</string>
     <string name="info_health_connect"><b>Health Connect</b> yra programėlė, skirta centralizuoti ir racionalizuoti sveikatos duomenis iš įvairių šaltinių, leidžianti vartotojams efektyviau stebėti ir valdyti savo sveikatos rodiklius. Ji veikia kaip mazgas, integruojantis duomenis iš skirtingų sveikatos ir fitneso programėlių, suteikiantis vartotojams išsamų savo sveikatos ir fitneso kelionės vaizdą.</string>
+    <string name="this_exercise_session_is_shorter_than_one_minute_and_will_not_be_saved">Sesija yra trumpesnė nei viena minutė, todėl ji nebus išsaugoma.</string>
     <string name="welcome_back">Sveiki sugrįžę!</string>
     <string name="here_s_a_summary_of_your_activity_from_yesterday">Štai vakarykštės jūsų veiklos santrauka</string>
     <string name="steps_taken">Nueita žingsnių</string>

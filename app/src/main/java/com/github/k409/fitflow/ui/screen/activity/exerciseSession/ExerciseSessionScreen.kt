@@ -3,6 +3,8 @@ package com.github.k409.fitflow.ui.screen.activity.exerciseSession
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +15,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,15 +30,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.ExerciseSessionActivities
+import com.github.k409.fitflow.model.getExerciseSessionActivityByType
 import com.github.k409.fitflow.service.RouteTrackingService
 import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.screen.goals.ExerciseDropdownMenu
@@ -47,9 +57,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun ExerciseSessionScreen(
-    exerciseSessionViewModel: ExerciseSessionViewModel = hiltViewModel(),
-) {
+fun ExerciseSessionScreen() {
     val context = LocalContext.current
     val fineLocationPermissionState = rememberMultiplePermissionsState(
         RouteTrackingService.fineLocationPermissions,
@@ -77,35 +85,15 @@ fun ExerciseSessionScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         if (fineLocationPermissionState.allPermissionsGranted) {
             if (sessionActive.value) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        text = ExerciseSessionActivities.entries.firstOrNull {
-                            it.exerciseSessionActivity.type == exercise.value
-                        }?.exerciseSessionActivity?.title?.let { stringResource(id = it) }
-                            ?: "",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(16.dp),
-                    )
-                    TimeDisplay(
-                        modifier = Modifier.padding(16.dp),
-                        timeInSeconds = timeInSecond.value,
-                    )
-                    Text("${String.format(Locale.US, "%.2f", distance.value)} km")
-                    Text("${String.format(Locale.US, "%.2f", avgSpeed.value)} km/h")
-                    Text("${calories.value} cal")
-                }
-                Box(modifier = Modifier.fillMaxHeight(0.8f)) {
+                Box(modifier = Modifier.fillMaxHeight(0.65f)) {
                     AndroidView({ MapView(it).apply { onCreate(null) } }) { mapView ->
                         mapView.getMapAsync { googleMap ->
                             RouteTrackingService.setGoogleMap(googleMap)
                         }
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
             } else { // show dropdown
+                Spacer(modifier = Modifier.height(24.dp))
                 ExerciseDropdownMenu(
                     options = ExerciseSessionActivities.entries.map { stringResource(id = it.exerciseSessionActivity.title) },
                     selectedOption = selectedExercise?.exerciseSessionActivity?.title?.let {
@@ -124,27 +112,29 @@ fun ExerciseSessionScreen(
 
                 InlineError(selectedExercise == null && showInlineError)
             }
-            Spacer(modifier = Modifier.weight(1f))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                ControlButtons(
-                    sessionActive = sessionActive.value,
-                    onStart = {
-                        if (selectedExercise != null) {
-                            showConfirmationDialogStart = true
-                        } else {
-                            showInlineError = true
-                        }
-                    },
-                    onStop = {
-                        showConfirmationDialogStop = true
-                    },
+            if (sessionActive.value) {
+                ExerciseParametric(
+                    exercise = stringResource(id = getExerciseSessionActivityByType(exercise.value).title),
+                    timeInSeconds = timeInSecond.value,
+                    distance = distance.value,
+                    avgSpeed = avgSpeed.value,
+                    calories = calories.value,
                 )
             }
+            Spacer(modifier = Modifier.weight(1f))
+            ControlButtons(
+                sessionActive = sessionActive.value,
+                onStart = {
+                    if (selectedExercise != null) {
+                        showConfirmationDialogStart = true
+                    } else {
+                        showInlineError = true
+                    }
+                },
+                onStop = {
+                    showConfirmationDialogStop = true
+                },
+            )
         }
         if (!fineLocationPermissionState.allPermissionsGranted) {
             Spacer(modifier = Modifier.weight(1f))
@@ -153,16 +143,11 @@ fun ExerciseSessionScreen(
         if (showConfirmationDialogStart) {
             ConfirmDialog(
                 dialogTitle = stringResource(R.string.are_you_sure_you_want_start_this_exercise_session),
-                dialogText = stringResource(
-                    R.string.selected_exercise,
-                    selectedExercise?.exerciseSessionActivity?.title?.let { stringResource(id = it) }
-                        ?: "",
-                ),
+                dialogText = stringResource(id = R.string.exercise) + " : ${selectedExercise?.exerciseSessionActivity?.title?.let { stringResource(id = it) }}",
                 onDismiss = { showConfirmationDialogStart = false },
                 onConfirm = {
                     showConfirmationDialogStart = false
-                    RouteTrackingService.selectedExercise.value =
-                        selectedExercise?.exerciseSessionActivity?.type ?: ""
+                    RouteTrackingService.selectedExercise.value = selectedExercise?.exerciseSessionActivity?.type ?: ""
                     Intent(context, RouteTrackingService::class.java).also {
                         it.action = RouteTrackingService.Actions.START.toString()
                         context.startService(it)
@@ -173,13 +158,16 @@ fun ExerciseSessionScreen(
         if (showConfirmationDialogStop) {
             ConfirmDialog(
                 dialogTitle = stringResource(R.string.are_you_sure_you_want_stop_this_exercise_session),
-                dialogText = stringResource(
-                    R.string.new_exercise_dialog_text,
-                    String.format(Locale.US, "%.2f", distance.value),
-                    formatTimeFromSeconds(timeInSecond.value),
-                    calories.value,
-                    String.format(Locale.US, "%.2f", avgSpeed.value),
-                ).trimIndent(),
+                dialogText = if (timeInSecond.value < 60) {
+                    stringResource(R.string.this_exercise_session_is_shorter_than_one_minute_and_will_not_be_saved)
+                } else {
+                    """
+                        ${stringResource(id = R.string.distance)}: ${String.format(Locale.US, "%.2f", distance.value)} km
+                        ${stringResource(id = R.string.time)}: ${formatTimeFromSeconds(timeInSecond.value)}
+                        ${stringResource(id = R.string.calories)}: ${calories.value} cal
+                        ${stringResource(id = R.string.average_speed)}: ${String.format(Locale.US, "%.2f", avgSpeed.value)} km/h
+                    """.trimIndent()
+                },
                 onDismiss = { showConfirmationDialogStop = false },
                 onConfirm = {
                     showConfirmationDialogStop = false
@@ -194,18 +182,88 @@ fun ExerciseSessionScreen(
 }
 
 @Composable
-fun TimeDisplay(
-    modifier: Modifier,
+fun ExerciseParametric(
+    exercise: String,
     timeInSeconds: Long,
-    textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
+    distance: Float,
+    avgSpeed: Float,
+    calories: Long,
 ) {
-    val formattedTime = formatTimeFromSeconds(timeInSeconds)
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
 
-    Text(
-        text = formattedTime,
-        style = textStyle,
-        modifier = modifier,
-    )
+    ) {
+        Text(
+            text = exercise,
+            modifier = Modifier.padding(top = 10.dp, bottom = 8.dp),
+            fontWeight = FontWeight.Light,
+        )
+
+        val formattedTime = formatTimeFromSeconds(timeInSeconds)
+        Text(
+            text = formattedTime,
+            style = MaterialTheme.typography.displayLarge,
+        )
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 5.dp, bottom = 15.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+    ) {
+        val modifier = Modifier.size(36.dp)
+        Parametric(
+            modifier = modifier,
+            title = "km",
+            value = String.format(Locale.US, "%.2f", distance),
+            icon = R.drawable.distance_24px,
+        )
+        Parametric(
+            modifier = modifier,
+            title = "km/h",
+            value = String.format(Locale.US, "%.2f", avgSpeed),
+            icon = R.drawable.speed_24,
+        )
+        Parametric(
+            modifier = modifier,
+            title = "cal",
+            value = "$calories",
+            icon = R.drawable.mode_heat_24px,
+        )
+    }
+}
+
+@Composable
+fun Parametric(
+    modifier: Modifier = Modifier,
+    title: String,
+    value: String,
+    icon: Int,
+    fontSize: TextUnit = 26.sp,
+    fontWeight: FontWeight = FontWeight.Bold,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(id = icon),
+            contentDescription = title,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = modifier,
+        )
+        Text(
+            text = value,
+            textAlign = TextAlign.Center,
+            fontSize = fontSize,
+            fontWeight = fontWeight,
+        )
+        Text(
+            text = title,
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+        )
+    }
 }
 
 @Composable
@@ -214,42 +272,37 @@ fun ControlButtons(
     onStart: () -> Unit,
     onStop: () -> Unit,
 ) {
+    val backgroundColor = MaterialTheme.colorScheme.primary
+
+    val actionText = if (!sessionActive) {
+        stringResource(R.string.start)
+    } else {
+        stringResource(R.string.stop)
+    }
+
+    val onClickAction = if (!sessionActive) {
+        { onStart() }
+    } else {
+        { onStop() }
+    }
+
     Row(
         modifier = Modifier
+            .padding(start = 8.dp, end = 8.dp, bottom = 16.dp)
             .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
+            .clip(shape = RoundedCornerShape(20.dp))
+            .background(backgroundColor)
+            .clickable(onClick = onClickAction)
+            .height(52.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (!sessionActive) {
-            ActionButton(
-                text = stringResource(R.string.start),
-                onClick = onStart,
-                modifier = Modifier.weight(1f),
-            )
-        }
-        if (sessionActive) {
-            ActionButton(
-                text = stringResource(R.string.stop),
-                onClick = onStop,
-                modifier = Modifier.weight(1f),
-            )
-        }
-    }
-}
-
-@Composable
-fun ActionButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-    ) {
-        Text(text)
+        Text(
+            text = actionText,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onPrimary,
+            fontSize = 18.sp,
+        )
     }
 }
 
