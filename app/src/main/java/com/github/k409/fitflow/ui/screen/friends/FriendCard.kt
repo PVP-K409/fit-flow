@@ -259,6 +259,7 @@ fun FriendCard(
     coroutineScope: CoroutineScope,
     friendsViewModel: FriendsViewModel,
     context: android.content.Context,
+    onRemoveClick: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -328,12 +329,7 @@ fun FriendCard(
                     modifier = Modifier
                         .padding(start = 6.dp),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error),
-                    onClick = {
-                        coroutineScope.launch {
-                            friendsViewModel.removeFriend(user.uid)
-                        }
-                        SnackbarManager.showMessage(context.getString(R.string.friend_removed))
-                    },
+                    onClick = onRemoveClick,
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.PersonOff,

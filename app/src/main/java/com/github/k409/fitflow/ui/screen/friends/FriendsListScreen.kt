@@ -7,7 +7,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -16,8 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.User
+import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.screen.you.OutlineCardContainer
+import kotlinx.coroutines.launch
 
 @Composable
 fun FriendsListScreen(
@@ -46,8 +51,12 @@ fun FriendsListContent(
     val friends = uiState.friends
 
     val coroutineScope = rememberCoroutineScope()
-
     val context = LocalContext.current
+
+    var showDialog by remember { mutableStateOf(false) }
+    var dialogText by remember { mutableStateOf("") }
+    var addClicked by remember { mutableStateOf(false) }
+    var selectedFriend by remember { mutableStateOf(String()) }
 
     Column(
         modifier = Modifier
@@ -76,11 +85,33 @@ fun FriendsListContent(
                                 coroutineScope = coroutineScope,
                                 friendsViewModel = viewModel,
                                 context = context,
+                                onRemoveClick = {
+                                    showDialog = true
+                                    addClicked = false
+                                    dialogText =
+                                        context.getString(R.string.sure_to_remove_friend) +
+                                                " ${user.name}?"
+                                    selectedFriend = user.uid
+                                },
                             )
                         }
                     }
                 }
             }
         }
+    }
+
+    if(showDialog) {
+        ConfirmDialog(
+            dialogTitle = stringResource(R.string.are_you_sure),
+            dialogText = dialogText,
+            onConfirm = {
+                coroutineScope.launch {
+                    viewModel.removeFriend(selectedFriend)
+                }
+                showDialog = false
+            },
+            onDismiss = { showDialog = false },
+        )
     }
 }
