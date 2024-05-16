@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.screen.friends
 
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.FriendsRepository

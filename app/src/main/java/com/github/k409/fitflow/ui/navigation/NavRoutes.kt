@@ -130,5 +130,5 @@ sealed class NavRoutes(
         "friendsLeaderboard",
         R.string.friends_leaderboard,
         Icons.Outlined.PeopleOutline,
-        )
+    )
 }
