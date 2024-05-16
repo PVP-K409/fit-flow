@@ -90,7 +90,7 @@ fun FriendsListContent(
                                     addClicked = false
                                     dialogText =
                                         context.getString(R.string.sure_to_remove_friend) +
-                                                " ${user.name}?"
+                                        " ${user.name}?"
                                     selectedFriend = user.uid
                                 },
                             )
@@ -101,7 +101,7 @@ fun FriendsListContent(
         }
     }
 
-    if(showDialog) {
+    if (showDialog) {
         ConfirmDialog(
             dialogTitle = stringResource(R.string.are_you_sure),
             dialogText = dialogText,
