@@ -369,7 +369,7 @@ fun TopBarAvatarDropdownMenu(
             )
 
             DropdownMenuItem(
-                text = { Text(stringResource(R.string.profile_label)) },
+                text = { Text(stringResource(R.string.profile)) },
                 onClick = {
                     navigateScreen(NavRoutes.Profile)
                     expanded = false
@@ -391,20 +391,6 @@ fun TopBarAvatarDropdownMenu(
                 leadingIcon = {
                     Icon(
                         Icons.Outlined.Star,
-                        contentDescription = null,
-                    )
-                },
-            )
-
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.info)) },
-                onClick = {
-                    navigateScreen(NavRoutes.Info)
-                    expanded = false
-                },
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.Info,
                         contentDescription = null,
                     )
                 },
