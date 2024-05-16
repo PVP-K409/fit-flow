@@ -24,6 +24,7 @@ import com.github.k409.fitflow.ui.screen.market.MarketScreen
 import com.github.k409.fitflow.ui.screen.profile.ProfileCreationScreen
 import com.github.k409.fitflow.ui.screen.profile.ProfileScreen
 import com.github.k409.fitflow.ui.screen.settings.SettingsScreen
+import com.github.k409.fitflow.ui.screen.yesterday.YesterdayScreen
 import com.github.k409.fitflow.ui.screen.you.YouScreen
 
 @Composable
@@ -118,6 +119,10 @@ fun FitFlowNavGraph(
 
         composable(NavRoutes.ReportIssue.route) {
             ReportIssueScreen(navigateBack = { navController.popBackStack() })
+        }
+
+        composable(NavRoutes.Yesterday.route) {
+            YesterdayScreen()
         }
 
         composable(NavRoutes.Info.route) {

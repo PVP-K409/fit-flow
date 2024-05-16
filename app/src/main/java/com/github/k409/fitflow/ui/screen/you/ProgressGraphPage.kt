@@ -334,7 +334,7 @@ private fun StatisticsCard(uiState: ProgressUiState.Success) {
 }
 
 @Composable
-private fun EffortRow(
+fun EffortRow(
     leftLabel: String,
     leftValue: String,
     rightLabel: String,

@@ -77,6 +77,7 @@ import com.exyte.animatednavbar.AnimatedNavigationBar
 import com.exyte.animatednavbar.animation.balltrajectory.Teleport
 import com.exyte.animatednavbar.items.dropletbutton.DropletButton
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.data.preferences.PreferenceKeys
 import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.isProfileComplete
 import com.github.k409.fitflow.service.RouteTrackingService
@@ -86,6 +87,8 @@ import com.github.k409.fitflow.ui.common.LocalSnackbarHostState
 import com.github.k409.fitflow.ui.common.SwipeableSnackbar
 import com.github.k409.fitflow.ui.navigation.FitFlowNavGraph
 import com.github.k409.fitflow.ui.navigation.NavRoutes
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,11 +105,21 @@ fun FitFlowApp(
 
     val trackingActive = RouteTrackingService.isTracking.collectAsState().value
 
+    val yesterdayCheckState = rememberSaveable { mutableStateOf(false) }
+
+    // Check (only once) if the user has already seen their stats of yesterday
+    LaunchedEffect(Unit) {
+        sharedUiState.sharedPreferences.getPreference(PreferenceKeys.YESTERDAY, "")
+            .collect { token ->
+                yesterdayCheckState.value = token != LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            }
+    }
     val startDestination = when {
         user.uid.isEmpty() -> NavRoutes.Login.route
         !user.isProfileComplete() -> NavRoutes.ProfileCreation.route
-        user.hasLeveledUp -> NavRoutes.LevelUp.route
         trackingActive -> NavRoutes.ExerciseSession.route
+        yesterdayCheckState.value -> NavRoutes.Yesterday.route
+        user.hasLeveledUp -> NavRoutes.LevelUp.route
         else -> NavRoutes.Aquarium.route
     }
 
@@ -209,7 +222,7 @@ private fun UpdateTopAndBottomBarVisibility(
     topBarState: MutableState<Boolean>,
 ) {
     when (currentScreen) {
-        NavRoutes.Login, NavRoutes.Default, NavRoutes.LevelUp -> {
+        NavRoutes.Login, NavRoutes.Default, NavRoutes.LevelUp, NavRoutes.Yesterday -> {
             bottomBarState.value = false
             topBarState.value = false
         }
