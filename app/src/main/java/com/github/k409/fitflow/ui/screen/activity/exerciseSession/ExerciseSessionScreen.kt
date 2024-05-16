@@ -58,7 +58,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun ExerciseSessionScreen(){
+fun ExerciseSessionScreen() {
     val context = LocalContext.current
     val fineLocationPermissionState = rememberMultiplePermissionsState(
         RouteTrackingService.fineLocationPermissions,
