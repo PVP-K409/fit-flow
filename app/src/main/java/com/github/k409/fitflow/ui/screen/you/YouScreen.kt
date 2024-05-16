@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
+import com.github.k409.fitflow.ui.screen.leaderboard.FriendsLeaderboard
 import com.github.k409.fitflow.ui.screen.leaderboard.GlobalLeaderboardScreen
 
 @Composable
@@ -45,6 +46,7 @@ fun YouScreen(
             titles = listOf(
                 stringResource(R.string.progress_tab_title),
                 stringResource(R.string.global_leaderboard_tab_title),
+                stringResource(R.string.friends_leaderboard_tab_title),
             ),
             selectedTabIndex = selectedTabIndex,
         )
@@ -55,7 +57,7 @@ fun YouScreen(
                 .verticalScroll(scrollState)
                 .padding(vertical = 16.dp)
                 .padding(bottom = 6.dp),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start,
         ) {
             when (selectedTabIndex.intValue) {
@@ -65,6 +67,10 @@ fun YouScreen(
 
                 1 -> {
                     GlobalLeaderboardScreen()
+                }
+
+                2 -> {
+                    FriendsLeaderboard()
                 }
             }
         }
@@ -79,7 +85,10 @@ private fun SecondaryTextTabsRow(
         mutableIntStateOf(0)
     },
 ) {
-    SecondaryTabRow(selectedTabIndex = selectedTabIndex.intValue) {
+    SecondaryScrollableTabRow(
+        selectedTabIndex = selectedTabIndex.intValue,
+        edgePadding = 0.dp,
+    ) {
         titles.forEachIndexed { index, title ->
             Tab(
                 selected = selectedTabIndex.intValue == index,

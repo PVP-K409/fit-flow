@@ -297,4 +297,7 @@
     <string name="completed_daily_goals">Completed daily goals</string>
     <string name="completed_weekly_goals">Completed weekly goals</string>
     <string name="sure_to_remove_friend">Are you sure you want to unfriend </string>
+    <string name="friends_leaderboard">Friends leaderboard</string>
+    <string name="your_placings_among_your_friends">Your placings among your friends</string>
+    <string name="friends_leaderboard_tab_title">FRIENDS LEADERBOARD</string>
 </resources>

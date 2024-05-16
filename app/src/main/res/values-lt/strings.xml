@@ -297,4 +297,7 @@
     <string name="completed_daily_goals">Įvykdyti dienos tikslai</string>
     <string name="completed_weekly_goals">Įvykdyti savaitiniai tikslai</string>
     <string name="sure_to_remove_friend">Ar jūs tikrai norite pašalinti draugą </string>
+    <string name="friends_leaderboard">Draugų lyderių sąrašas</string>
+    <string name="your_placings_among_your_friends">Tavo vieta lyderių sąraše tarp draugų</string>
+    <string name="friends_leaderboard_tab_title">DRAUGŲ LENTELĖ</string>
 </resources>
