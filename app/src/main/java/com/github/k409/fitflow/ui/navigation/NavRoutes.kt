@@ -11,6 +11,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material.icons.outlined.Leaderboard
 import androidx.compose.material.icons.outlined.LocalPlay
+import androidx.compose.material.icons.outlined.PeopleAlt
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.StackedLineChart
@@ -45,6 +46,7 @@ sealed class NavRoutes(
             ExerciseSession,
             LevelUp,
             Profile,
+            Friends,
             ReportIssue,
             Yesterday,
             Info,
@@ -102,6 +104,12 @@ sealed class NavRoutes(
         R.string.global,
         Icons.Outlined.Leaderboard,
         R.drawable.leaderboard_48,
+    )
+
+    data object Friends : NavRoutes(
+        "friends",
+        R.string.friends,
+        Icons.Outlined.PeopleAlt,
     )
 
     data object GoalCreation : NavRoutes("goalCreation", R.string.goal_creation, Icons.Outlined.Add)

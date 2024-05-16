@@ -178,6 +178,24 @@
     <string name="reset_filters">Atstatyti filtrus</string>
     <string name="close">Uždaryti</string>
     <string name="filter">Filtruoti</string>
+    <string name="friends">Draugai</string>
+    <string name="friend_request_accepted">Pakvietimas draugauti priimtas</string>
+    <string name="friend_request_declined">Pakvietimas draugauti atsisakytas</string>
+    <string name="friend_request_sent">Pakvietimas draugauti išsiųstas</string>
+    <string name="friend_removed">Draugas pašalintas</string>
+    <string name="friends_list">DRAUGŲ SĄRAŠAS</string>
+    <string name="friend_requests">DRAUGŲ PAKVIETIMAI</string>
+    <string name="people_you_are_friends_with">Žmonės su kuriais jau esate draugai</string>
+    <string name="you_don_t_have_any_friends_yet">Dar neturite jokių draugų</string>
+    <string name="received_friend_requests">Gauti draugų pakvietimai</string>
+    <string name="other_users_who_have_sent_you_friend_requests">Kiti naudotojai, kurie jums atsiuntė pakvietimus draugauti</string>
+    <string name="search_for_a_user_to_display_them_here">Ieškokomas asmuo bus rodomas čia</string>
+    <string name="searched_user">Rastas naudotojas ieškant jo su jo elektroniniu paštu</string>
+    <string name="searched_users">Ieškomas naudotojas</string>
+    <string name="user_not_found">Naudotojas nerastas</string>
+    <string name="already_friends">Jūs jau esate draugai su šiuo naudotoju</string>
+    <string name="self_friend">Negalite siųsti sau draugo pakvietimo</string>
+    <string name="send_a_friend_request_to">Siųsti pakvietimą draugauti</string>
     <string name="localization">Lokalizacija</string>
     <string name="en">Anglų</string>
     <string name="lt">Lietuvių</string>
@@ -278,4 +296,5 @@
     <string name="calories_burned">Sudeginta kalorijų</string>
     <string name="completed_daily_goals">Įvykdyti dienos tikslai</string>
     <string name="completed_weekly_goals">Įvykdyti savaitiniai tikslai</string>
+    <string name="sure_to_remove_friend">Ar jūs tikrai norite pašalinti draugą </string>
 </resources>

@@ -179,6 +179,24 @@
     <string name="close">Close</string>
     <string name="filter">Filter</string>
     <string name="yesterday_statistics">Yesterday statistics</string>
+    <string name="friends">Friends</string>
+    <string name="friend_request_accepted">Friend request accepted</string>
+    <string name="friend_request_declined">Friend request declined</string>
+    <string name="friend_request_sent">Friend request sent</string>
+    <string name="friend_removed">Friend removed</string>
+    <string name="friends_list">FRIENDS LIST</string>
+    <string name="friend_requests">FRIEND REQUESTS</string>
+    <string name="people_you_are_friends_with">People you are friends with</string>
+    <string name="you_don_t_have_any_friends_yet">You don\'t have any friends yet</string>
+    <string name="received_friend_requests">Received friend requests</string>
+    <string name="other_users_who_have_sent_you_friend_requests">Other users who have sent you friend requests</string>
+    <string name="search_for_a_user_to_display_them_here">Search for a user to display them here.</string>
+    <string name="searched_user">User found by searching for their email address</string>
+    <string name="searched_users">Searched user</string>
+    <string name="user_not_found">User not found</string>
+    <string name="already_friends">You are already friends with this user</string>
+    <string name="self_friend">Can\'t send a friend request to yourself</string>
+    <string name="send_a_friend_request_to">Send a friend request to</string>
     <string name="localization">Localization</string>
     <string name="en">English</string>
     <string name="lt">Lithuanian</string>
@@ -278,4 +296,5 @@
     <string name="calories_burned">Calories burned</string>
     <string name="completed_daily_goals">Completed daily goals</string>
     <string name="completed_weekly_goals">Completed weekly goals</string>
+    <string name="sure_to_remove_friend">Are you sure you want to unfriend </string>
 </resources>
