@@ -65,12 +65,11 @@ class AquariumRepository @Inject constructor(
         val ref = getDocumentReference(uid)
         val fieldName = AquariumStats::waterLevel.name
 
-        db.runTransaction { transaction ->
-            val snapshot = transaction.get(ref)
-            val newWaterLevel = snapshot.getDouble(fieldName)!! + changeValue
-
-            transaction.update(ref, fieldName, newWaterLevel.coerceIn(0.0, 1.0))
-        }
+        ref.get()
+            .addOnSuccessListener { snapshot ->
+                val newWaterLevel = snapshot.getDouble(fieldName)!! + changeValue
+                ref.update(fieldName, newWaterLevel.coerceIn(0.0, 1.0))
+            }
     }
 
     fun changeHealthLevel(changeValue: Float) {
@@ -79,12 +78,11 @@ class AquariumRepository @Inject constructor(
         val ref = getDocumentReference(uid)
         val fieldName = AquariumStats::healthLevel.name
 
-        db.runTransaction { transaction ->
-            val snapshot = transaction.get(ref)
-            val newHealthLevel = snapshot.getDouble(fieldName)!! + changeValue
-
-            transaction.update(ref, fieldName, newHealthLevel.coerceIn(0.0, 1.0))
-        }
+        ref.get()
+            .addOnSuccessListener { snapshot ->
+                val newHealthLevel = snapshot.getDouble(fieldName)!! + changeValue
+                ref.update(fieldName, newHealthLevel.coerceIn(0.0, 1.0))
+            }
     }
 
     private fun getDocumentReference(

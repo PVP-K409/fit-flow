@@ -300,4 +300,6 @@
     <string name="friends_leaderboard">Draugų lyderių sąrašas</string>
     <string name="your_placings_among_your_friends">Tavo vieta lyderių sąraše tarp draugų</string>
     <string name="friends_leaderboard_tab_title">DRAUGŲ LENTELĖ</string>
+    <string name="aquarium_metrics">Akvariumo rodikliai</string>
+    <string name="aquarium_metrics_notification_text">Jūsų akvariumo sveikata yra %s ir vandens lygis yra %s. Nepamirškite pasirūpinti savo žuvimis!</string>
 </resources>
