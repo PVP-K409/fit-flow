@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.model
 
+import android.content.Context
 import androidx.annotation.StringRes
 import com.github.k409.fitflow.R
 
@@ -48,3 +49,4 @@ fun getValidExerciseTypesByType(type: String): Set<Int> {
 fun getIconByType(type: String): Int {
     return HealthConnectGoals.entries.find { it.healthConnectGoal.type == type }?.healthConnectGoal?.icon ?: R.drawable.walk
 }
+

@@ -1,5 +1,7 @@
 package com.github.k409.fitflow.ui.screen.goals
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,7 +42,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.HealthConnectGoals
-import com.github.k409.fitflow.model.getIconByType
 import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 
@@ -371,7 +372,7 @@ fun ExerciseDropdownMenu(
                                     .padding(16.dp),
                             ) {
                                 Icon(
-                                    painter = painterResource(id = getIconByType(option)),
+                                    painter = painterResource(id = getIconByTitle(option)),
                                     contentDescription = "Exercise icon",
                                     tint = MaterialTheme.colorScheme.primary,
                                 )
@@ -387,6 +388,12 @@ fun ExerciseDropdownMenu(
             }
         }
     }
+}
+
+@Composable
+fun getIconByTitle(title: String): Int {
+    val context = LocalContext.current
+    return HealthConnectGoals.entries.find { context.getString(it.healthConnectGoal.title) == title }?.healthConnectGoal?.icon ?: R.drawable.walk
 }
 
 @Composable
