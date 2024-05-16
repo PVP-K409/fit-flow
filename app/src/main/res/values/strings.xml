@@ -180,6 +180,7 @@
     <string name="reset_filters">Reset filters</string>
     <string name="close">Close</string>
     <string name="filter">Filter</string>
+    <string name="yesterday_statistics">Yesterday statistics</string>
     <string name="friends">Friends</string>
     <string name="friend_request_accepted">Friend request accepted</string>
     <string name="friend_request_declined">Friend request declined</string>
@@ -291,7 +292,18 @@
     <string name="info_app_usage">To ensure your goals are achieved and your health is optimized, it\'s vital to <b>sync Health Connect</b> with other apps like Google Fit or Samsung Health. Without synchronization, your goals may not be met, and your overall health could be at risk. \n\nMake sure to <b>install Health Connect</b> and <b>sync it</b> with your preferred health apps for seamless tracking and goal attainment.</string>
     <string name="health_connect">Health Connect</string>
     <string name="info_health_connect">As for <b>Health Connect</b>, it\'s an app designed to centralize and streamline health data from various sources, allowing users to monitor and manage their health metrics more effectively. It serves as a hub for integrating data from different health and fitness apps, providing users with a comprehensive view of their health and fitness journey.</string>
+    <string name="aquarium_metrics">Aquarium Metrics</string>
+    <string name="aquarium_metrics_notification_text">Your aquarium health is at %s and water level is at %s. Don\'t forget to check on your fish!</string>
+    <string name="welcome_back">Welcome back!</string>
+    <string name="here_s_a_summary_of_your_activity_from_yesterday">Here\'s a summary of your activity from yesterday</string>
+    <string name="steps_taken">Steps taken</string>
+    <string name="calories_burned">Calories burned</string>
+    <string name="completed_daily_goals">Completed daily goals</string>
+    <string name="completed_weekly_goals">Completed weekly goals</string>
     <string name="sure_to_remove_friend">Are you sure you want to unfriend </string>
     <string name="this_exercise_session_is_shorter_than_one_minute_and_will_not_be_saved">This exercise session is shorter than one minute and will not be saved.</string>
     <string name="time">Time</string>
+    <string name="friends_leaderboard">Friends leaderboard</string>
+    <string name="your_placings_among_your_friends">Your placings among your friends</string>
+    <string name="friends_leaderboard_tab_title">FRIENDS LEADERBOARD</string>
 </resources>

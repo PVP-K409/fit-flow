@@ -52,6 +52,10 @@ class FriendsViewModel @Inject constructor(
     suspend fun removeFriend(uid: String) {
         friendsRepository.removeFriend(uid)
     }
+
+    fun getCurrentUser(): Flow<User> {
+        return userRepository.currentUser
+    }
 }
 
 sealed interface FriendsUiState {

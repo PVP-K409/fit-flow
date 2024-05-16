@@ -16,6 +16,7 @@ import com.github.k409.fitflow.ui.screen.hydration.HydrationScreen
 import com.github.k409.fitflow.ui.screen.info.InfoScreen
 import com.github.k409.fitflow.ui.screen.inventory.InventoryScreen
 import com.github.k409.fitflow.ui.screen.issue.ReportIssueScreen
+import com.github.k409.fitflow.ui.screen.leaderboard.FriendsLeaderboard
 import com.github.k409.fitflow.ui.screen.leaderboard.GlobalLeaderboardScreen
 import com.github.k409.fitflow.ui.screen.level.LevelScreen
 import com.github.k409.fitflow.ui.screen.level.LevelUpScreen
@@ -24,6 +25,7 @@ import com.github.k409.fitflow.ui.screen.market.MarketScreen
 import com.github.k409.fitflow.ui.screen.profile.ProfileCreationScreen
 import com.github.k409.fitflow.ui.screen.profile.ProfileScreen
 import com.github.k409.fitflow.ui.screen.settings.SettingsScreen
+import com.github.k409.fitflow.ui.screen.yesterday.YesterdayScreen
 import com.github.k409.fitflow.ui.screen.you.YouScreen
 
 @Composable
@@ -77,6 +79,10 @@ fun FitFlowNavGraph(
             GlobalLeaderboardScreen()
         }
 
+        composable(NavRoutes.FriendsLeaderboard.route) {
+            FriendsLeaderboard()
+        }
+
         composable(NavRoutes.Friends.route) {
             FriendsScreen()
         }
@@ -118,6 +124,10 @@ fun FitFlowNavGraph(
 
         composable(NavRoutes.ReportIssue.route) {
             ReportIssueScreen(navigateBack = { navController.popBackStack() })
+        }
+
+        composable(NavRoutes.Yesterday.route) {
+            YesterdayScreen()
         }
 
         composable(NavRoutes.Info.route) {
