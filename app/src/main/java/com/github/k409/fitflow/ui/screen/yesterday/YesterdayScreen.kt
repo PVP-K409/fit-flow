@@ -68,11 +68,12 @@ private fun YesterdayScreenContent(viewModel: YesterdayViewModel, uiState: Yeste
         modifier = Modifier
             .fillMaxSize()
             .background(background)
-            .padding(top = 16.dp),
+            .padding(top = 16.dp, bottom = 26.dp),
     ) {
         OutlineCardContainer(
             title = stringResource(R.string.welcome_back),
             subtitleText = stringResource(R.string.here_s_a_summary_of_your_activity_from_yesterday),
+            modifier = Modifier.fillMaxSize(),
         ) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),

@@ -104,22 +104,21 @@ fun FitFlowApp(
 
     val trackingActive = RouteTrackingService.isTracking.collectAsState().value
 
-    val yesterdayCheckState = remember { mutableStateOf("") }
+    val yesterdayCheckState = rememberSaveable { mutableStateOf(false) }
 
     // Check (only once) if the user has already seen their stats of yesterday
     LaunchedEffect(Unit) {
         sharedUiState.sharedPreferences.getPreference(PreferenceKeys.YESTERDAY, "")
             .collect { token ->
-                yesterdayCheckState.value = token
+                yesterdayCheckState.value = token != LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
             }
     }
-
     val startDestination = when {
         user.uid.isEmpty() -> NavRoutes.Login.route
         !user.isProfileComplete() -> NavRoutes.ProfileCreation.route
-        yesterdayCheckState.value != LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) -> NavRoutes.Yesterday.route
-        user.hasLeveledUp -> NavRoutes.LevelUp.route
         trackingActive -> NavRoutes.ExerciseSession.route
+        yesterdayCheckState.value -> NavRoutes.Yesterday.route
+        user.hasLeveledUp -> NavRoutes.LevelUp.route
         else -> NavRoutes.Aquarium.route
     }
 
