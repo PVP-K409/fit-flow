@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.ExerciseSessionActivities
 import com.github.k409.fitflow.model.getExerciseSessionActivityByType
