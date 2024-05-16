@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.model
 
-import android.content.Context
 import androidx.annotation.StringRes
 import com.github.k409.fitflow.R
 
