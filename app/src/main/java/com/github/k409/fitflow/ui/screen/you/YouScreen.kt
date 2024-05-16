@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -85,7 +85,10 @@ private fun SecondaryTextTabsRow(
         mutableIntStateOf(0)
     },
 ) {
-    SecondaryTabRow(selectedTabIndex = selectedTabIndex.intValue) {
+    SecondaryScrollableTabRow(
+        selectedTabIndex = selectedTabIndex.intValue,
+        edgePadding = 0.dp,
+    ) {
         titles.forEachIndexed { index, title ->
             Tab(
                 selected = selectedTabIndex.intValue == index,
