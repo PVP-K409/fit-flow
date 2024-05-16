@@ -289,5 +289,5 @@
     <string name="info_app_usage">Norint užtikrinti, kad jūsų tikslai būtų pasiekti ir jūsų sveikata būtų optimizuota, būtina <b>susieti Health Connect</b> su kitomis programėlėmis, tokiomis kaip Google Fit ar Samsung Health. Be sinchronizacijos, jūsų tikslai gali būti nepasiekti, o bendra jūsų sveikata gali būti pavojinga. \n\nĮsitikinkite, kad <b>įdiegėte Health Connect</b> ir <b>susiejote ją</b> su jūsų mėgstamomis sveikatos programėlėmis, kad galėtumėte be sutrikimų stebėti savo tikslų įgyvendinimą.</string>
     <string name="health_connect">Health Connect</string>
     <string name="info_health_connect"><b>Health Connect</b> yra programėlė, skirta centralizuoti ir racionalizuoti sveikatos duomenis iš įvairių šaltinių, leidžianti vartotojams efektyviau stebėti ir valdyti savo sveikatos rodiklius. Ji veikia kaip mazgas, integruojantis duomenis iš skirtingų sveikatos ir fitneso programėlių, suteikiantis vartotojams išsamų savo sveikatos ir fitneso kelionės vaizdą.</string>
-    <string name="sure_to_remove_friend">Ar jūs tikrai norite pašilinti draugą </string>
+    <string name="sure_to_remove_friend">Ar jūs tikrai norite pašalinti draugą </string>
 </resources>
