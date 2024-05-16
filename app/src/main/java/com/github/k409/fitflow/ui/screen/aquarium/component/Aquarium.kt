@@ -196,7 +196,7 @@ private fun AquariumLayout(
                     healthLevel >= 0.25f -> Color(0xffffac00)
                     else -> Color(0xFFFF3333)
                 },
-                dividerColor = if (aquariumBackground == MorningBackground || aquariumBackground == NightBackground) Color.White else Color(0xff6f6f6f),
+                dividerColor = if (aquariumBackground == NightBackground || aquariumBackground == EveningBackground) Color.White else Color(0xff6f6f6f),
                 containerColor = if (aquariumBackground == MorningBackground) Color.Black.copy(alpha = 0.2f) else Color.White.copy(alpha = 0.3f),
             )
 
