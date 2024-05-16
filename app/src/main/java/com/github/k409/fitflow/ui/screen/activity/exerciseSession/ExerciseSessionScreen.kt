@@ -179,11 +179,6 @@ fun ExerciseSessionScreen() {
             )
         }
     }
-
-
-
-
-
 }
 
 @Composable
@@ -198,11 +193,11 @@ fun ExerciseParametric(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
 
-        ) {
+    ) {
         Text(
             text = exercise,
             modifier = Modifier.padding(top = 10.dp, bottom = 8.dp),
-            fontWeight = FontWeight.Light
+            fontWeight = FontWeight.Light,
         )
 
         val formattedTime = formatTimeFromSeconds(timeInSeconds)
@@ -223,19 +218,19 @@ fun ExerciseParametric(
             modifier = modifier,
             title = "km",
             value = String.format(Locale.US, "%.2f", distance),
-            icon = R.drawable.distance_24px
+            icon = R.drawable.distance_24px,
         )
         Parametric(
             modifier = modifier,
             title = "km/h",
             value = String.format(Locale.US, "%.2f", avgSpeed),
-            icon = R.drawable.speed_24
+            icon = R.drawable.speed_24,
         )
         Parametric(
             modifier = modifier,
             title = "cal",
             value = "$calories",
-            icon = R.drawable.mode_heat_24px
+            icon = R.drawable.mode_heat_24px,
         )
     }
 }
@@ -246,7 +241,7 @@ fun Parametric(
     title: String,
     value: String,
     icon: Int,
-    fontSize : TextUnit = 26.sp,
+    fontSize: TextUnit = 26.sp,
     fontWeight: FontWeight = FontWeight.Bold,
 ) {
     Column(
@@ -300,7 +295,7 @@ fun ControlButtons(
             .clickable(onClick = onClickAction)
             .height(52.dp),
         horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = actionText,

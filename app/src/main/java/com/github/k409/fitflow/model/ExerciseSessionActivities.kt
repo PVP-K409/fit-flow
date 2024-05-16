@@ -58,4 +58,3 @@ fun getAllExerciseSessionActivitiesTypes(): List<String> {
 fun getExerciseSessionActivityByType(type: String): ExerciseSessionActivity {
     return ExerciseSessionActivities.valueOf(type).exerciseSessionActivity
 }
-

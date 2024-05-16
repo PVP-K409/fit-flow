@@ -48,4 +48,3 @@ fun getValidExerciseTypesByType(type: String): Set<Int> {
 fun getIconByType(type: String): Int {
     return HealthConnectGoals.entries.find { it.healthConnectGoal.type == type }?.healthConnectGoal?.icon ?: R.drawable.walk
 }
-
