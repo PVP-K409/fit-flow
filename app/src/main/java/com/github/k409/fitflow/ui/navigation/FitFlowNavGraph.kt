@@ -142,6 +142,5 @@ fun FitFlowNavGraph(
         composable(NavRoutes.Info.route) {
             InfoScreen()
         }
-
     }
 }

@@ -70,7 +70,8 @@ sealed class NavRoutes(
     data object Aquarium :
         NavRoutes("aquarium", R.string.home, Icons.Outlined.Home, R.drawable.home_24px)
     data object ExerciseMap :
-        NavRoutes("${this.ExerciseMapRoute}/{recordId}",
+        NavRoutes(
+            "${this.ExerciseMapRoute}/{recordId}",
             R.string.exercise_map,
             Icons.Outlined.ViewTimeline,
             R.drawable.map,

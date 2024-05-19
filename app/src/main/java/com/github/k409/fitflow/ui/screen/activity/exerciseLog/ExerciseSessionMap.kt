@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun ExerciseSessionMap(
-    exerciseSessionMapViewModel: ExerciseSessionMapViewModel = hiltViewModel()
+    exerciseSessionMapViewModel: ExerciseSessionMapViewModel = hiltViewModel(),
 ) {
     val loading = exerciseSessionMapViewModel.loading.collectAsState()
     val exerciseRecord = exerciseSessionMapViewModel.exerciseRecord.collectAsState()
@@ -42,11 +42,13 @@ fun ExerciseSessionMap(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
-            Box(modifier = Modifier
-                .fillMaxHeight(0.65f)
-                .fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(0.65f)
+                    .fillMaxWidth(),
+            ) {
                 AndroidView({ MapView(it).apply { onCreate(null) } }) { mapView ->
                     mapView.getMapAsync { googleMap ->
                         exerciseSessionMapViewModel.setGoogleMap(googleMap)
