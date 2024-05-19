@@ -28,6 +28,7 @@ sealed class NavRoutes(
     val icon: ImageVector = Icons.Outlined.ErrorOutline,
     @DrawableRes val iconRes: Int = R.drawable.error_24px,
 ) {
+
     companion object {
         private val navRoutes = listOf(
             Aquarium,
@@ -52,6 +53,7 @@ sealed class NavRoutes(
             Yesterday,
             Info,
             FriendsLeaderboard,
+            ExerciseMap,
         )
         val bottomNavBarItems =
             listOf(Aquarium, Activity, Hydration, Goals, Marketplace, You)
@@ -59,13 +61,20 @@ sealed class NavRoutes(
         fun getRoute(route: String?): NavRoutes {
             return navRoutes.find { it.route == route } ?: Default
         }
+
+        const val ExerciseMapRoute = "exerciseMap"
     }
 
     data object Default : NavRoutes("default", R.string.app_name)
 
     data object Aquarium :
         NavRoutes("aquarium", R.string.home, Icons.Outlined.Home, R.drawable.home_24px)
-
+    data object ExerciseMap :
+        NavRoutes("${this.ExerciseMapRoute}/{recordId}",
+            R.string.exercise_map,
+            Icons.Outlined.ViewTimeline,
+            R.drawable.map,
+        )
     data object Activity : NavRoutes(
         "activity",
         R.string.activity,

@@ -3,6 +3,7 @@ package com.github.k409.fitflow.ui.screen.activity.exerciseLog
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
@@ -179,7 +180,7 @@ fun ExercisesLogPage(
                         items(
                             filteredRecords,
                         ) { record ->
-                            ExerciseRecordCard(record)
+                            ExerciseRecordCard(record, navController)
                         }
                     }
                 }
@@ -489,27 +490,27 @@ fun ExercisesLogPage(
 }
 
 @Composable
-fun ExerciseRecordCard(record: ExerciseRecord) {
+fun ExerciseRecordCard(record: ExerciseRecord, navController: NavHostController) {
     OutlinedCard(
         modifier = Modifier
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickable(enabled = record.exerciseRoute != null,
+                onClick = {
+                    navController.navigate("${NavRoutes.ExerciseMapRoute}/${record.id}")
+                }),
     ) {
-        val titleId = record.title ?: R.string.exercise
-        val title = stringResource(id = titleId)
-
-        ExerciseCardHeader(title = title, record.startTime)
+        ExerciseCardHeader(record)
         ExerciseRecordView(record)
     }
 }
 
 @Composable
 fun ExerciseCardHeader(
-    title: String,
-    endDate: Instant,
+    record: ExerciseRecord,
 ) {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val startLocalDateTime =
-        formatter.format(endDate.atZone(ZoneId.systemDefault()).toLocalDateTime()).toString()
+        formatter.format(record.endTime.atZone(ZoneId.systemDefault()).toLocalDateTime()).toString()
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
@@ -519,11 +520,20 @@ fun ExerciseCardHeader(
             .padding(start = 16.dp, bottom = 12.dp, top = 12.dp, end = 12.dp),
     ) {
         Text(
-            text = title,
+            text = stringResource(id = record.title?: R.string.exercise),
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.weight(1f),
             style = MaterialTheme.typography.titleLarge,
         )
+        if(record.exerciseRoute != null) {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.map),
+                contentDescription = "map",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(start = 6.dp),
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
         Text(
             text = startLocalDateTime,
             color = MaterialTheme.colorScheme.primary,
