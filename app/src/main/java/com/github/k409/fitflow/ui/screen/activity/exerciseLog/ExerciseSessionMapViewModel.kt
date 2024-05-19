@@ -30,12 +30,12 @@ class ExerciseSessionMapViewModel @Inject constructor(
     private val _loading = MutableStateFlow(true)
     val loading: StateFlow<Boolean> = _loading
 
-    fun setGoogleMap(googleMap: GoogleMap){
+    fun setGoogleMap(googleMap: GoogleMap) {
         map.value = googleMap
         initializeMap()
     }
 
-    private fun initializeMap(){
+    private fun initializeMap() {
         map.value?.let { map ->
             map.mapType = GoogleMap.MAP_TYPE_NORMAL
             map.uiSettings.isZoomControlsEnabled = true
@@ -51,7 +51,7 @@ class ExerciseSessionMapViewModel @Inject constructor(
         }
     }
 
-    private fun addRoute(){
+    private fun addRoute() {
         val polylineOptions = PolylineOptions()
             .color(Color.Blue.toArgb())
             .width(10f)
