@@ -7,7 +7,8 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.SetOptions
-import kotlinx.coroutines.tasks.await
+import com.google.firebase.firestore.snapshots
+import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -27,8 +28,8 @@ class GoalsRepository @Inject constructor(
         val uid = currentUser!!.uid
 
         val goalsDocumentSnapshot = getGoalsDocumentReference(uid, DAILY_COLLECTION, date)
-            .get()
-            .await()
+            .snapshots()
+            .first()
 
         if (!goalsDocumentSnapshot.exists()) {
             return null
@@ -70,8 +71,8 @@ class GoalsRepository @Inject constructor(
                 .document(uid)
                 .collection(WEEKLY_COLLECTION)
                 .document(dateString)
-                .get()
-                .await()
+                .snapshots()
+                .first()
 
             val goalsData = documentSnapshot.data ?: continue
 
@@ -110,7 +111,7 @@ class GoalsRepository @Inject constructor(
                 goalsDocumentReference.set(
                     filteredGoals,
                     SetOptions.merge(),
-                ).await()
+                )
             } catch (e: FirebaseFirestoreException) {
                 Log.e("Goals Repository", "Error updating goals", e)
             }

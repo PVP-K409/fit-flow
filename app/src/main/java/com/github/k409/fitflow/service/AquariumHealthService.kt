@@ -100,19 +100,39 @@ class AquariumHealthService : Service() {
                 hydrationRepository.getWaterIntake(yesterday.toString()).first()
             val hydrationGoal = hydrationRepository.getWaterIntakeGoal().first()
 
+            Log.d(
+                AquariumUpdate,
+                "Yesterday's hydration record: $yesterdayHydrationRecord",
+            )
+
             if (yesterdayHydrationRecord.waterIntake < hydrationGoal) {
                 aquariumRepository.changeWaterLevel(-WATER_LEVEL_CHANGE_DAILY)
             }
 
+            Log.d(
+                AquariumUpdate,
+                "Hydration goal: $hydrationGoal",
+            )
+
             // activity goals
             val dailyActivityGoals =
                 goalsRepository.getDailyGoals(yesterday.toString()) ?: emptyMap()
+
+            Log.d(
+                AquariumUpdate,
+                "Daily activity goals: $dailyActivityGoals",
+            )
 
             for (goal in dailyActivityGoals) {
                 if (!goal.value.completed && goal.value.mandatory) {
                     aquariumRepository.changeHealthLevel(-HEALTH_LEVEL_CHANGE_DAILY)
                 }
             }
+
+            Log.d(
+                AquariumUpdate,
+                "Aquarium health metrics updated",
+            )
         } catch (e: Exception) {
             Log.e(
                 AquariumUpdate,
