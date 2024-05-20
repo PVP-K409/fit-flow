@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.gms)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 val keystorePropertiesFile: File = rootProject.file("keystore.properties")
@@ -33,7 +34,11 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField("String", "GOOGLE_SERVER_CLIENT_ID", "\"${keystoreProperties["google.serverClientId"]}\"")
+        buildConfigField(
+            "String",
+            "GOOGLE_SERVER_CLIENT_ID",
+            "\"${keystoreProperties["google.serverClientId"]}\""
+        )
 
         resValue("string", "google_maps_key", "\"${keystoreProperties["google.mapsApiKey"]}\"")
     }
@@ -126,11 +131,11 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.google.firebase.analytics)
 
-    implementation (libs.androidx.credentials)
-    implementation (libs.androidx.credentials.play.services.auth)
-    implementation (libs.googleid)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 
-    implementation (libs.compose.pay.button)
+    implementation(libs.compose.pay.button)
     implementation(libs.play.services.wallet)
 
     implementation(libs.androidx.runtime.livedata)
@@ -170,4 +175,7 @@ dependencies {
 
     implementation(libs.animated.navigation.bar)
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
 }

@@ -305,4 +305,9 @@
     <string name="friends_leaderboard">Friends leaderboard</string>
     <string name="your_placings_among_your_friends">Your placings among your friends</string>
     <string name="friends_leaderboard_tab_title">FRIENDS LEADERBOARD</string>
+    <string name="data_not_available">Data not available</string>
+    <string name="refresh">Refresh</string>
+    <string name="water_level">Water Level</string>
+    <string name="health_level">Health Level</string>
+    <string name="fitflow_widget_description">FitFlow widget</string>
 </resources>
