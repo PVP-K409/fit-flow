@@ -494,10 +494,12 @@ fun ExerciseRecordCard(record: ExerciseRecord, navController: NavHostController)
     OutlinedCard(
         modifier = Modifier
             .padding(16.dp)
-            .clickable(enabled = record.exerciseRoute != null,
+            .clickable(
+                enabled = record.exerciseRoute != null,
                 onClick = {
                     navController.navigate("${NavRoutes.ExerciseMapRoute}/${record.id}")
-                }),
+                },
+            ),
     ) {
         ExerciseCardHeader(record)
         ExerciseRecordView(record)
@@ -520,11 +522,11 @@ fun ExerciseCardHeader(
             .padding(start = 16.dp, bottom = 12.dp, top = 12.dp, end = 12.dp),
     ) {
         Text(
-            text = stringResource(id = record.title?: R.string.exercise),
+            text = stringResource(id = record.title ?: R.string.exercise),
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.titleLarge,
         )
-        if(record.exerciseRoute != null) {
+        if (record.exerciseRoute != null) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.map),
                 contentDescription = "map",

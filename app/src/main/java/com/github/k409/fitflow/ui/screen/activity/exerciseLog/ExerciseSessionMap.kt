@@ -44,9 +44,11 @@ fun ExerciseSessionMap(
                 .fillMaxSize()
                 .padding(top= 16.dp, bottom = 16.dp)
         ) {
-            Box(modifier = Modifier
-                .fillMaxHeight(0.65f)
-                .fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(0.65f)
+                    .fillMaxWidth(),
+            ) {
                 AndroidView({ MapView(it).apply { onCreate(null) } }) { mapView ->
                     mapView.getMapAsync { googleMap ->
                         exerciseSessionMapViewModel.setGoogleMap(googleMap)

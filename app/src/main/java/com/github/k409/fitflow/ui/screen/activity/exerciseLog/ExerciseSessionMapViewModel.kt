@@ -58,18 +58,22 @@ class ExerciseSessionMapViewModel @Inject constructor(
         val routePoints = _exerciseRecord.value.exerciseRoute?.route ?: emptyList()
         val startLatLng = LatLng(routePoints.first().latitude, routePoints.first().longitude)
         val endLatLng = LatLng(routePoints.last().latitude, routePoints.last().longitude)
-        map.value?.addCircle(CircleOptions()
-            .center(startLatLng)
-            .radius(5.0)
-            .strokeColor(Color.Green.toArgb())
-            .fillColor(Color.Green.toArgb())
-            .strokeWidth(20f))
-        map.value?.addCircle(CircleOptions()
-            .center(endLatLng)
-            .radius(5.0)
-            .strokeColor(Color.Red.toArgb())
-            .fillColor(Color.Red.toArgb())
-            .strokeWidth(20f))
+        map.value?.addCircle(
+            CircleOptions()
+                .center(startLatLng)
+                .radius(5.0)
+                .strokeColor(Color.Green.toArgb())
+                .fillColor(Color.Green.toArgb())
+                .strokeWidth(20f),
+        )
+        map.value?.addCircle(
+            CircleOptions()
+                .center(endLatLng)
+                .radius(5.0)
+                .strokeColor(Color.Red.toArgb())
+                .fillColor(Color.Red.toArgb())
+                .strokeWidth(20f),
+        )
 
         if (routePoints.isNotEmpty()) {
             val boundsBuilder = LatLngBounds.Builder()
@@ -85,7 +89,6 @@ class ExerciseSessionMapViewModel @Inject constructor(
             map.value?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
         }
     }
-
 
     fun setExerciseRecordId(recordId: String?) {
         val id = recordId?.toInt()
