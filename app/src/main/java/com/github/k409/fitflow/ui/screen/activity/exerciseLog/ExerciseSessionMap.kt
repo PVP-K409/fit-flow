@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun ExerciseSessionMap(
-    exerciseSessionMapViewModel: ExerciseSessionMapViewModel = hiltViewModel()
+    exerciseSessionMapViewModel: ExerciseSessionMapViewModel = hiltViewModel(),
 ) {
     val loading = exerciseSessionMapViewModel.loading.collectAsState()
     val exerciseRecord = exerciseSessionMapViewModel.exerciseRecord.collectAsState()
@@ -42,7 +42,7 @@ fun ExerciseSessionMap(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top= 16.dp, bottom = 16.dp)
+                .padding(top = 16.dp, bottom = 16.dp),
         ) {
             Box(
                 modifier = Modifier
