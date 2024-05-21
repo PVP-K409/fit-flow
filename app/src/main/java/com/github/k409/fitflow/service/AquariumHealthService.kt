@@ -50,7 +50,7 @@ class AquariumHealthService : Service() {
     override fun onStartCommand(
         intent: Intent?,
         flags: Int,
-        startId: Int
+        startId: Int,
     ): Int {
         when (intent?.action) {
             GoalUpdateService.Actions.START.toString() -> start()
