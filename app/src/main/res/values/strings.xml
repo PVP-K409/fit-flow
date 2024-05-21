@@ -310,4 +310,5 @@
     <string name="water_level">Water Level</string>
     <string name="health_level">Health Level</string>
     <string name="fitflow_widget_description">FitFlow widget</string>
+    <string name="last_updated">Last updated</string>
 </resources>

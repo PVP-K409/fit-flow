@@ -310,4 +310,5 @@
     <string name="water_level">Vanduo</string>
     <string name="health_level">Sveikata</string>
     <string name="fitflow_widget_description">FitFlow valdiklis</string>
+    <string name="last_updated">Atnaujinta</string>
 </resources>

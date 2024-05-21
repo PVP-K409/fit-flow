@@ -14,11 +14,9 @@ import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
-import androidx.glance.action.ActionParameters
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
-import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.components.CircleIconButton
 import androidx.glance.appwidget.components.Scaffold
@@ -27,13 +25,17 @@ import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.provideContent
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.size
 import androidx.glance.layout.width
+import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
+import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.github.k409.fitflow.R
@@ -89,7 +91,7 @@ class FitFlowWidget : GlanceAppWidget() {
                 when (widgetInfo) {
                     WidgetInfo.Loading -> {
                         AppWidgetBox(contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator()
+                            CircularProgressIndicator(color = GlanceTheme.colors.primary)
                         }
                     }
 
@@ -121,14 +123,14 @@ fun WidgetAvailableContainer(
 
     LazyColumn(
         modifier = GlanceModifier
-            .appWidgetInnerCornerRadius()
             .then(modifier)
     ) {
         item {
             Column {
                 MetricRow(
                     iconId = R.drawable.water_drop_24px,
-                    text = stringResource(R.string.water_level) + ": $waterPercent%",
+                    startText = stringResource(R.string.water_level),
+                    endText = "$waterPercent%",
                     colorFilter = ColorFilter.tint(ColorProvider(Color(0xFF2196F3)))
                 )
 
@@ -136,7 +138,8 @@ fun WidgetAvailableContainer(
 
                 MetricRow(
                     iconId = R.drawable.ecg_heart_24px,
-                    text = stringResource(R.string.health_level) + ": $healthPercent%",
+                    startText = stringResource(R.string.health_level),
+                    endText = "$healthPercent%",
                     colorFilter = ColorFilter.tint(ColorProvider(Color(0xFFF44336)))
                 )
 
@@ -148,7 +151,8 @@ fun WidgetAvailableContainer(
             Column {
                 MetricRow(
                     iconId = R.drawable.walk,
-                    text = stringResource(R.string.steps) + ": ${widgetInfo.steps}",
+                    startText = stringResource(R.string.steps),
+                    endText = "${widgetInfo.steps}",
                     colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
                 )
 
@@ -156,7 +160,8 @@ fun WidgetAvailableContainer(
 
                 MetricRow(
                     iconId = R.drawable.walk,
-                    text = stringResource(R.string.calories) + ": ${widgetInfo.calories}",
+                    startText = stringResource(R.string.calories),
+                    endText = "${widgetInfo.calories}",
                     colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
                 )
 
@@ -164,7 +169,8 @@ fun WidgetAvailableContainer(
 
                 MetricRow(
                     iconId = R.drawable.walk,
-                    text = stringResource(R.string.distance) + ": ${widgetInfo.distance} km",
+                    startText = stringResource(R.string.distance),
+                    endText = "${widgetInfo.distance} km",
                     colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
                 )
 
@@ -172,12 +178,25 @@ fun WidgetAvailableContainer(
 
                 MetricRow(
                     iconId = R.drawable.water_drop_24px,
-                    text = stringResource(R.string.total_hydration) + ": ${widgetInfo.hydration} ml",
+                    startText = stringResource(R.string.total_hydration),
+                    endText = "${widgetInfo.hydration} ml",
                     colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
                 )
 
                 Spacer(modifier = GlanceModifier.height(8.dp))
             }
+        }
+
+        item {
+            Text(
+                modifier = GlanceModifier.fillMaxWidth(),
+                text = stringResource(R.string.last_updated) + ": ${widgetInfo.lastUpdated}",
+                style = TextStyle(
+                    textAlign = TextAlign.Center,
+                    color = GlanceTheme.colors.onBackground,
+                    fontSize = 12.sp,
+                )
+            )
         }
     }
 }
@@ -185,10 +204,11 @@ fun WidgetAvailableContainer(
 @Composable
 private fun MetricRow(
     @DrawableRes iconId: Int,
-    text: String,
+    startText: String,
+    endText: String,
     colorFilter: ColorFilter? = null,
 ) {
-    Row {
+    Row(modifier = GlanceModifier.fillMaxWidth()) {
         Image(
             provider = ImageProvider(iconId),
             contentDescription = null,
@@ -199,22 +219,28 @@ private fun MetricRow(
         Spacer(modifier = GlanceModifier.width(8.dp))
 
         Text(
-            text = text,
+            text = startText,
+            maxLines = 1,
             style = TextStyle(
                 color = GlanceTheme.colors.onSurface,
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
             )
         )
-    }
-}
 
-
-class RefreshAction : ActionCallback {
-    override suspend fun onAction(
-        context: Context,
-        glanceId: GlanceId,
-        parameters: ActionParameters
-    ) {
-        WidgetWorker.enqueue(context = context, force = true)
+        Box(
+            modifier = GlanceModifier.fillMaxWidth(),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            Text(
+                text = endText,
+                maxLines = 1,
+                style = TextStyle(
+                    color = GlanceTheme.colors.onSurface,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
     }
 }

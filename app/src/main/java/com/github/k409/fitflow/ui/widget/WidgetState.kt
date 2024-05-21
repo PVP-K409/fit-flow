@@ -10,12 +10,13 @@ sealed interface WidgetInfo {
 
     @Serializable
     data class Available(
-        val waterLevel: Float,
-        val healthLevel: Float,
-        val steps: Long,
-        val calories: Long,
-        val distance: Double,
-        val hydration: Int,
+        val waterLevel: Float = 0f,
+        val healthLevel: Float = 0f,
+        val steps: Long = 0,
+        val calories: Long = 0,
+        val distance: Double = 0.0,
+        val hydration: Int = 0,
+        val lastUpdated: String = ""
     ) : WidgetInfo
 
     @Serializable

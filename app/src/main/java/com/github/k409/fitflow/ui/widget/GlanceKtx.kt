@@ -7,11 +7,8 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceModifier
-import androidx.glance.GlanceTheme
 import androidx.glance.LocalContext
-import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.cornerRadius
-import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
@@ -59,9 +56,9 @@ fun AppWidgetColumn(
 fun appWidgetBackgroundModifier() = GlanceModifier
     .fillMaxSize()
     .padding(16.dp)
-    .appWidgetBackground()
-    .background(GlanceTheme.colors.background)
-    .appWidgetBackgroundCornerRadius()
+//    .appWidgetBackground()
+//    .background(GlanceTheme.colors.background)
+//    .appWidgetBackgroundCornerRadius()
 
 fun GlanceModifier.appWidgetBackgroundCornerRadius(): GlanceModifier {
     if (Build.VERSION.SDK_INT >= 31) {

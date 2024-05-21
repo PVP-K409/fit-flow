@@ -19,6 +19,8 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.first
 import java.time.Duration
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @HiltWorker
 class WidgetWorker @AssistedInject constructor(
@@ -35,14 +37,6 @@ class WidgetWorker @AssistedInject constructor(
 
         private val uniqueWorkName = WidgetWorker::class.java.simpleName
 
-        /**
-         * Enqueues a new worker to refresh weather data only if not enqueued already
-         *
-         * Note: if you would like to have different workers per widget instance you could provide
-         * the unique name based on some criteria (e.g selected weather location).
-         *
-         * @param force set to true to replace any ongoing work and expedite the request
-         */
         fun enqueue(
             context: Context,
             force: Boolean = false
@@ -53,9 +47,8 @@ class WidgetWorker @AssistedInject constructor(
             )
             var workPolicy = ExistingPeriodicWorkPolicy.KEEP
 
-            // Replace any enqueued work and expedite the request
             if (force) {
-                workPolicy = ExistingPeriodicWorkPolicy.UPDATE
+                workPolicy = ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
             }
 
             manager.enqueueUniquePeriodicWork(
@@ -65,9 +58,6 @@ class WidgetWorker @AssistedInject constructor(
             )
         }
 
-        /**
-         * Cancel any ongoing worker
-         */
         fun cancel(context: Context) {
             WorkManager.getInstance(context).cancelUniqueWork(uniqueWorkName)
         }
@@ -76,6 +66,7 @@ class WidgetWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         val manager = GlanceAppWidgetManager(context)
         val glanceIds = manager.getGlanceIds(FitFlowWidget::class.java)
+
         return try {
             // Update state to indicate loading
             setWidgetState(glanceIds, WidgetInfo.Loading)
@@ -91,7 +82,9 @@ class WidgetWorker @AssistedInject constructor(
                 steps = stepsRecord?.totalSteps ?: 0,
                 calories = stepsRecord?.caloriesBurned ?: 0,
                 distance = stepsRecord?.totalDistance ?: 0.0,
-                hydration = hydrationRecord.waterIntake
+                hydration = hydrationRecord.waterIntake,
+                lastUpdated = LocalDateTime.now()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
             )
 
             setWidgetState(glanceIds, widgetState)
@@ -99,9 +92,8 @@ class WidgetWorker @AssistedInject constructor(
             Result.success()
         } catch (e: Exception) {
             setWidgetState(glanceIds, WidgetInfo.Unavailable(e.message.orEmpty()))
+
             if (runAttemptCount < 10) {
-                // Exponential backoff strategy will avoid the request to repeat
-                // too fast in case of failures.
                 Result.retry()
             } else {
                 Result.failure()
