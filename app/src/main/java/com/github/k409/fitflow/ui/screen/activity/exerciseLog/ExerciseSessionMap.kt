@@ -42,7 +42,7 @@ fun ExerciseSessionMap(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(top= 16.dp, bottom = 16.dp)
         ) {
             Box(modifier = Modifier
                 .fillMaxHeight(0.65f)
