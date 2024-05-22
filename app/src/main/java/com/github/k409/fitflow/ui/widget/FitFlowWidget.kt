@@ -29,8 +29,10 @@ import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
+import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
@@ -128,75 +130,85 @@ fun WidgetAvailableContainer(
     val waterPercent = (widgetInfo.waterLevel * 100).toInt()
     val healthPercent = (widgetInfo.healthLevel * 100).toInt()
 
-    LazyColumn(
-        modifier = GlanceModifier
-            .then(modifier)
-    ) {
-        item {
-            Column {
-                MetricRow(
-                    iconId = R.drawable.water_drop_24px,
-                    startText = stringResource(R.string.water_level),
-                    endText = "$waterPercent%",
-                    colorFilter = ColorFilter.tint(ColorProvider(Color(0xFF2196F3)))
-                )
+    Column(modifier = GlanceModifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = GlanceModifier
+                .then(modifier)
+        ) {
+            item {
+                Column {
+                    MetricRow(
+                        iconId = R.drawable.water_drop_24px,
+                        startText = stringResource(R.string.water_level),
+                        endText = "$waterPercent%",
+                        colorFilter = ColorFilter.tint(ColorProvider(Color(0xFF2196F3)))
+                    )
 
-                Spacer(modifier = GlanceModifier.height(8.dp))
+                    Spacer(modifier = GlanceModifier.height(8.dp))
 
-                MetricRow(
-                    iconId = R.drawable.ecg_heart_24px,
-                    startText = stringResource(R.string.health_level),
-                    endText = "$healthPercent%",
-                    colorFilter = ColorFilter.tint(ColorProvider(Color(0xFFF44336)))
-                )
+                    MetricRow(
+                        iconId = R.drawable.ecg_heart_24px,
+                        startText = stringResource(R.string.health_level),
+                        endText = "$healthPercent%",
+                        colorFilter = ColorFilter.tint(ColorProvider(Color(0xFFF44336)))
+                    )
 
-                Spacer(modifier = GlanceModifier.height(8.dp))
+                    Spacer(modifier = GlanceModifier.height(8.dp))
+                }
+            }
+
+            item {
+                Column {
+                    MetricRow(
+                        iconId = R.drawable.walk,
+                        startText = stringResource(R.string.steps),
+                        endText = "${widgetInfo.steps}",
+                        colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
+                    )
+
+                    Spacer(modifier = GlanceModifier.height(8.dp))
+
+                    MetricRow(
+                        iconId = R.drawable.walk,
+                        startText = stringResource(R.string.calories),
+                        endText = "${widgetInfo.calories}",
+                        colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
+                    )
+
+                    Spacer(modifier = GlanceModifier.height(8.dp))
+
+                    MetricRow(
+                        iconId = R.drawable.walk,
+                        startText = stringResource(R.string.distance),
+                        endText = "${widgetInfo.distance} km",
+                        colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
+                    )
+
+                    Spacer(modifier = GlanceModifier.height(8.dp))
+
+                    MetricRow(
+                        iconId = R.drawable.water_drop_24px,
+                        startText = stringResource(R.string.total_hydration),
+                        endText = "${widgetInfo.hydration} ml",
+                        colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
+                    )
+
+                    Spacer(modifier = GlanceModifier.height(8.dp))
+                }
+            }
+
+            item {
+
             }
         }
 
-        item {
-            Column {
-                MetricRow(
-                    iconId = R.drawable.walk,
-                    startText = stringResource(R.string.steps),
-                    endText = "${widgetInfo.steps}",
-                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
-                )
-
-                Spacer(modifier = GlanceModifier.height(8.dp))
-
-                MetricRow(
-                    iconId = R.drawable.walk,
-                    startText = stringResource(R.string.calories),
-                    endText = "${widgetInfo.calories}",
-                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
-                )
-
-                Spacer(modifier = GlanceModifier.height(8.dp))
-
-                MetricRow(
-                    iconId = R.drawable.walk,
-                    startText = stringResource(R.string.distance),
-                    endText = "${widgetInfo.distance} km",
-                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
-                )
-
-                Spacer(modifier = GlanceModifier.height(8.dp))
-
-                MetricRow(
-                    iconId = R.drawable.water_drop_24px,
-                    startText = stringResource(R.string.total_hydration),
-                    endText = "${widgetInfo.hydration} ml",
-                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
-                )
-
-                Spacer(modifier = GlanceModifier.height(8.dp))
-            }
-        }
-
-        item {
+        Box(
+            modifier = GlanceModifier.fillMaxWidth()
+                .defaultWeight(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
             Text(
-                modifier = GlanceModifier.fillMaxWidth(),
+                modifier = GlanceModifier.padding(bottom = 16.dp),
                 text = stringResource(R.string.last_updated) + ": ${widgetInfo.lastUpdated}",
                 style = TextStyle(
                     textAlign = TextAlign.Center,
@@ -205,6 +217,7 @@ fun WidgetAvailableContainer(
                 )
             )
         }
+
     }
 }
 
