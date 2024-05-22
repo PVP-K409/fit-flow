@@ -3,6 +3,7 @@ package com.github.k409.fitflow.service
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -22,6 +23,7 @@ import com.github.k409.fitflow.model.ExerciseSessionActivity
 import com.github.k409.fitflow.model.NotificationChannel
 import com.github.k409.fitflow.model.NotificationId
 import com.github.k409.fitflow.model.getExerciseSessionActivityByType
+import com.github.k409.fitflow.ui.MainActivity
 import com.github.k409.fitflow.util.formatTimeFromSeconds
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -336,7 +338,20 @@ class RouteTrackingService : LifecycleService() {
     private fun createNotificationChannelBuilder(): NotificationCompat.Builder {
         val notificationTitle = getString(R.string.exercise_session_in_progress)
         val notificationText = "${selectedExercise.value}: ${formatTimeFromSeconds(timeRunInSecond.value)} "
+
         val icon = exerciseSessionActivity?.icon ?: R.drawable.ic_launcher_foreground
+
+        val intent =
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
 
         notificationBuilder = NotificationCompat.Builder(this, notificationChannelId)
             .setContentTitle(notificationTitle)
@@ -346,6 +361,7 @@ class RouteTrackingService : LifecycleService() {
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setStyle(NotificationCompat.BigTextStyle().bigText(notificationText))
+            .setContentIntent(pendingIntent)
         return notificationBuilder
     }
 
