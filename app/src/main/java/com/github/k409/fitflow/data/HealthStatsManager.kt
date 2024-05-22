@@ -93,4 +93,10 @@ class HealthStatsManager @Inject constructor(
 
         return healthConnectService.getExerciseRecords(startDate, endDate)
     }
+
+    suspend fun getExerciseRecordById(recordId: Int): ExerciseRecord {
+        val today = LocalDate.now().plusMonths(1)
+        val monthAgo = today.minusMonths(2)
+        return getExerciseRecords(monthAgo.toString(), today.toString()).find { it.id == recordId } ?: ExerciseRecord()
+    }
 }

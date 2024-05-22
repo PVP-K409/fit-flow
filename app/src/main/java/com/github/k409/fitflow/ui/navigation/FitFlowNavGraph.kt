@@ -2,11 +2,14 @@ package com.github.k409.fitflow.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.k409.fitflow.ui.screen.activity.ActivityScreen
+import com.github.k409.fitflow.ui.screen.activity.exerciseLog.ExerciseSessionMap
+import com.github.k409.fitflow.ui.screen.activity.exerciseLog.ExerciseSessionMapViewModel
 import com.github.k409.fitflow.ui.screen.activity.exerciseSession.ExerciseSessionScreen
 import com.github.k409.fitflow.ui.screen.aquarium.AquariumScreen
 import com.github.k409.fitflow.ui.screen.friends.FriendsScreen
@@ -61,6 +64,12 @@ fun FitFlowNavGraph(
 
         composable(NavRoutes.ExerciseSession.route) {
             ExerciseSessionScreen()
+        }
+        composable(NavRoutes.ExerciseMap.route) { backStackEntry ->
+            val recordId = backStackEntry.arguments?.getString("recordId")
+            val viewModel: ExerciseSessionMapViewModel = hiltViewModel()
+            viewModel.setExerciseRecordId(recordId)
+            ExerciseSessionMap(viewModel)
         }
 
         composable(NavRoutes.Hydration.route) {
