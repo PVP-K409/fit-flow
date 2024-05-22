@@ -191,7 +191,7 @@
     <string name="you_don_t_have_any_friends_yet">Dar neturite jokių draugų</string>
     <string name="received_friend_requests">Gauti draugų pakvietimai</string>
     <string name="other_users_who_have_sent_you_friend_requests">Kiti naudotojai, kurie jums atsiuntė pakvietimus draugauti</string>
-    <string name="search_for_a_user_to_display_them_here">Ieškokomas asmuo bus rodomas čia</string>
+    <string name="search_for_a_user_to_display_them_here">Ieškomas asmuo bus rodomas čia</string>
     <string name="searched_user">Rastas naudotojas ieškant jo su jo elektroniniu paštu</string>
     <string name="searched_users">Ieškomas naudotojas</string>
     <string name="user_not_found">Naudotojas nerastas</string>
@@ -305,4 +305,7 @@
     <string name="friends_leaderboard_tab_title">DRAUGŲ LENTELĖ</string>
     <string name="aquarium_metrics">Akvariumo rodikliai</string>
     <string name="aquarium_metrics_notification_text">Jūsų akvariumo sveikata yra %s ir vandens lygis yra %s. Nepamirškite pasirūpinti savo žuvimis!</string>
+    <string name="exercise_map">Treniruotės žemėlapis</string>
+    <string name="please_try_again_later">Pabandykite vėliau.</string>
+    <string name="unable_to_load_map">Nepavyko užkrauti žemėlapio</string>
 </resources>
