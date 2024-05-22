@@ -40,11 +40,11 @@ class WidgetWorker @AssistedInject constructor(
 
         fun enqueue(
             context: Context,
-            force: Boolean = false
+            force: Boolean = false,
         ) {
             val manager = WorkManager.getInstance(context)
             val requestBuilder = PeriodicWorkRequestBuilder<WidgetWorker>(
-                Duration.ofMinutes(30)
+                Duration.ofMinutes(30),
             )
             var workPolicy = ExistingPeriodicWorkPolicy.KEEP
 
@@ -55,7 +55,7 @@ class WidgetWorker @AssistedInject constructor(
             manager.enqueueUniquePeriodicWork(
                 uniqueWorkName,
                 workPolicy,
-                requestBuilder.build()
+                requestBuilder.build(),
             )
         }
 
@@ -85,7 +85,7 @@ class WidgetWorker @AssistedInject constructor(
                 distance = stepsRecord?.totalDistance ?: 0.0,
                 hydration = hydrationRecord.waterIntake,
                 lastUpdated = LocalDateTime.now()
-                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
             )
 
             setWidgetState(glanceIds, widgetState)
@@ -108,14 +108,14 @@ class WidgetWorker @AssistedInject constructor(
      */
     private suspend fun setWidgetState(
         glanceIds: List<GlanceId>,
-        newState: WidgetInfo
+        newState: WidgetInfo,
     ) {
         glanceIds.forEach { glanceId ->
             updateAppWidgetState(
                 context = context,
                 definition = WidgetInfoDefinition,
                 glanceId = glanceId,
-                updateState = { newState }
+                updateState = { newState },
             )
         }
         FitFlowWidget().updateAll(context)

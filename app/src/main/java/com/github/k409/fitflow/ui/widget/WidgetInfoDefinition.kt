@@ -20,14 +20,14 @@ object WidgetInfoDefinition : GlanceStateDefinition<WidgetInfo> {
     private val Context.datastore by dataStore(DATA_STORE_FILENAME, WidgetInfoSerializer)
     override suspend fun getDataStore(
         context: Context,
-        fileKey: String
+        fileKey: String,
     ): DataStore<WidgetInfo> {
         return context.datastore
     }
 
     override fun getLocation(
         context: Context,
-        fileKey: String
+        fileKey: String,
     ): File {
         return context.dataStoreFile(DATA_STORE_FILENAME)
     }
@@ -38,7 +38,7 @@ object WidgetInfoDefinition : GlanceStateDefinition<WidgetInfo> {
         override suspend fun readFrom(input: InputStream): WidgetInfo = try {
             Json.decodeFromString(
                 WidgetInfo.serializer(),
-                input.readBytes().decodeToString()
+                input.readBytes().decodeToString(),
             )
         } catch (exception: SerializationException) {
             throw CorruptionException("Could not read data: ${exception.message}")
@@ -46,11 +46,11 @@ object WidgetInfoDefinition : GlanceStateDefinition<WidgetInfo> {
 
         override suspend fun writeTo(
             t: WidgetInfo,
-            output: OutputStream
+            output: OutputStream,
         ) {
             output.use {
                 it.write(
-                    Json.encodeToString(WidgetInfo.serializer(), t).encodeToByteArray()
+                    Json.encodeToString(WidgetInfo.serializer(), t).encodeToByteArray(),
                 )
             }
         }

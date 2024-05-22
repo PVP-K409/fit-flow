@@ -1,6 +1,5 @@
 package com.github.k409.fitflow.ui.widget
 
-
 import android.content.res.Resources
 import android.os.Build
 import androidx.annotation.StringRes
@@ -24,12 +23,12 @@ import androidx.glance.layout.padding
 fun AppWidgetBox(
     modifier: GlanceModifier = GlanceModifier,
     contentAlignment: Alignment = Alignment.TopStart,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Box(
         modifier = appWidgetBackgroundModifier().then(modifier),
         contentAlignment = contentAlignment,
-        content = content
+        content = content,
     )
 }
 
@@ -42,7 +41,7 @@ fun AppWidgetColumn(
     modifier: GlanceModifier = GlanceModifier,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
         modifier = appWidgetBackgroundModifier().then(modifier),

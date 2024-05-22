@@ -9,7 +9,7 @@ class RefreshAction : ActionCallback {
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
-        parameters: ActionParameters
+        parameters: ActionParameters,
     ) {
         FitFlowWidget().update(context, glanceId)
 

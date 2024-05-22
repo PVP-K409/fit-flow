@@ -2,7 +2,6 @@ package com.github.k409.fitflow.ui.widget
 
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 sealed interface WidgetInfo {
     @Serializable
@@ -16,7 +15,7 @@ sealed interface WidgetInfo {
         val calories: Long = 0,
         val distance: Double = 0.0,
         val hydration: Int = 0,
-        val lastUpdated: String = ""
+        val lastUpdated: String = "",
     ) : WidgetInfo
 
     @Serializable

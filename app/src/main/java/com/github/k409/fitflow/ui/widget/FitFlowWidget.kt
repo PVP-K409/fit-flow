@@ -54,23 +54,23 @@ class FitFlowWidget : GlanceAppWidget() {
     override val stateDefinition = WidgetInfoDefinition
 
     override val sizeMode: SizeMode = SizeMode.Responsive(
-        setOf(thinMode, smallMode, mediumMode, largeMode)
+        setOf(thinMode, smallMode, mediumMode, largeMode),
     )
 
     override suspend fun provideGlance(
         context: Context,
-        id: GlanceId
+        id: GlanceId,
     ) {
         provideContent {
             Content(
-                widgetInfo = currentState<WidgetInfo>()
+                widgetInfo = currentState<WidgetInfo>(),
             )
         }
     }
 
     @Composable
     private fun Content(
-        widgetInfo: WidgetInfo
+        widgetInfo: WidgetInfo,
     ) {
         GlanceTheme {
             Scaffold(
@@ -86,9 +86,9 @@ class FitFlowWidget : GlanceAppWidget() {
                                 onClick = actionRunCallback(RefreshAction::class.java),
                                 backgroundColor = null,
                             )
-                        }
+                        },
                     )
-                }
+                },
             ) {
                 when (widgetInfo) {
                     WidgetInfo.Loading -> {
@@ -104,15 +104,15 @@ class FitFlowWidget : GlanceAppWidget() {
                     is WidgetInfo.Unavailable -> {
                         AppWidgetColumn(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(
                                 stringResource(id = R.string.data_not_available),
                                 style = TextStyle(
                                     color = GlanceTheme.colors.onSurface,
                                     fontSize = 16.sp,
-                                    textAlign = TextAlign.Center
-                                )
+                                    textAlign = TextAlign.Center,
+                                ),
                             )
                         }
                     }
@@ -125,7 +125,7 @@ class FitFlowWidget : GlanceAppWidget() {
 @Composable
 fun WidgetAvailableContainer(
     modifier: GlanceModifier = GlanceModifier,
-    widgetInfo: WidgetInfo.Available
+    widgetInfo: WidgetInfo.Available,
 ) {
     val waterPercent = (widgetInfo.waterLevel * 100).toInt()
     val healthPercent = (widgetInfo.healthLevel * 100).toInt()
@@ -133,7 +133,7 @@ fun WidgetAvailableContainer(
     Column(modifier = GlanceModifier.fillMaxSize()) {
         LazyColumn(
             modifier = GlanceModifier
-                .then(modifier)
+                .then(modifier),
         ) {
             item {
                 Column {
@@ -141,7 +141,7 @@ fun WidgetAvailableContainer(
                         iconId = R.drawable.water_drop_24px,
                         startText = stringResource(R.string.water_level),
                         endText = "$waterPercent%",
-                        colorFilter = ColorFilter.tint(ColorProvider(Color(0xFF2196F3)))
+                        colorFilter = ColorFilter.tint(ColorProvider(Color(0xFF2196F3))),
                     )
 
                     Spacer(modifier = GlanceModifier.height(8.dp))
@@ -150,7 +150,7 @@ fun WidgetAvailableContainer(
                         iconId = R.drawable.ecg_heart_24px,
                         startText = stringResource(R.string.health_level),
                         endText = "$healthPercent%",
-                        colorFilter = ColorFilter.tint(ColorProvider(Color(0xFFF44336)))
+                        colorFilter = ColorFilter.tint(ColorProvider(Color(0xFFF44336))),
                     )
 
                     Spacer(modifier = GlanceModifier.height(8.dp))
@@ -163,7 +163,7 @@ fun WidgetAvailableContainer(
                         iconId = R.drawable.walk,
                         startText = stringResource(R.string.steps),
                         endText = "${widgetInfo.steps}",
-                        colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
+                        colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground),
                     )
 
                     Spacer(modifier = GlanceModifier.height(8.dp))
@@ -172,7 +172,7 @@ fun WidgetAvailableContainer(
                         iconId = R.drawable.walk,
                         startText = stringResource(R.string.calories),
                         endText = "${widgetInfo.calories}",
-                        colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
+                        colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground),
                     )
 
                     Spacer(modifier = GlanceModifier.height(8.dp))
@@ -181,7 +181,7 @@ fun WidgetAvailableContainer(
                         iconId = R.drawable.walk,
                         startText = stringResource(R.string.distance),
                         endText = "${widgetInfo.distance} km",
-                        colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
+                        colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground),
                     )
 
                     Spacer(modifier = GlanceModifier.height(8.dp))
@@ -190,7 +190,7 @@ fun WidgetAvailableContainer(
                         iconId = R.drawable.water_drop_24px,
                         startText = stringResource(R.string.total_hydration),
                         endText = "${widgetInfo.hydration} ml",
-                        colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
+                        colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground),
                     )
 
                     Spacer(modifier = GlanceModifier.height(8.dp))
@@ -198,14 +198,13 @@ fun WidgetAvailableContainer(
             }
 
             item {
-
             }
         }
 
         Box(
             modifier = GlanceModifier.fillMaxWidth()
                 .defaultWeight(),
-            contentAlignment = Alignment.BottomCenter
+            contentAlignment = Alignment.BottomCenter,
         ) {
             Text(
                 modifier = GlanceModifier.padding(bottom = 16.dp),
@@ -214,10 +213,9 @@ fun WidgetAvailableContainer(
                     textAlign = TextAlign.Center,
                     color = GlanceTheme.colors.onBackground,
                     fontSize = 12.sp,
-                )
+                ),
             )
         }
-
     }
 }
 
@@ -233,7 +231,7 @@ private fun MetricRow(
             provider = ImageProvider(iconId),
             contentDescription = null,
             modifier = GlanceModifier.size(24.dp),
-            colorFilter = colorFilter
+            colorFilter = colorFilter,
         )
 
         Spacer(modifier = GlanceModifier.width(8.dp))
@@ -244,13 +242,13 @@ private fun MetricRow(
             style = TextStyle(
                 color = GlanceTheme.colors.onSurface,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
-            )
+                fontWeight = FontWeight.Medium,
+            ),
         )
 
         Box(
             modifier = GlanceModifier.fillMaxWidth(),
-            contentAlignment = Alignment.CenterEnd
+            contentAlignment = Alignment.CenterEnd,
         ) {
             Text(
                 text = endText,
@@ -258,8 +256,8 @@ private fun MetricRow(
                 style = TextStyle(
                     color = GlanceTheme.colors.onSurface,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                    fontWeight = FontWeight.Bold,
+                ),
             )
         }
     }
