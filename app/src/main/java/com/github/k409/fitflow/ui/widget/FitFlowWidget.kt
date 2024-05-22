@@ -104,7 +104,14 @@ class FitFlowWidget : GlanceAppWidget() {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(stringResource(R.string.data_not_available))
+                            Text(
+                                stringResource(id = R.string.data_not_available),
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.onSurface,
+                                    fontSize = 16.sp,
+                                    textAlign = TextAlign.Center
+                                )
+                            )
                         }
                     }
                 }

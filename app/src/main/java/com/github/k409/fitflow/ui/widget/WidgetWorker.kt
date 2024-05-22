@@ -1,6 +1,7 @@
 package com.github.k409.fitflow.ui.widget
 
 import android.content.Context
+import android.util.Log
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
@@ -91,6 +92,7 @@ class WidgetWorker @AssistedInject constructor(
 
             Result.success()
         } catch (e: Exception) {
+            Log.e(WidgetWorker::class.java.simpleName, e.message.orEmpty())
             setWidgetState(glanceIds, WidgetInfo.Unavailable(e.message.orEmpty()))
 
             if (runAttemptCount < 10) {

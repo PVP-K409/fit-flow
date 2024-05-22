@@ -305,7 +305,7 @@
     <string name="friends_leaderboard_tab_title">DRAUGŲ LENTELĖ</string>
     <string name="aquarium_metrics">Akvariumo rodikliai</string>
     <string name="aquarium_metrics_notification_text">Jūsų akvariumo sveikata yra %s ir vandens lygis yra %s. Nepamirškite pasirūpinti savo žuvimis!</string>
-    <string name="data_not_available">Duomenys neprieinami</string>
+    <string name="data_not_available">Duomenys neprieinami. Prašome patikrinti savo interneto ryšį ir bandyti dar kartą.</string>
     <string name="refresh">Atnaujinti</string>
     <string name="water_level">Vanduo</string>
     <string name="health_level">Sveikata</string>
