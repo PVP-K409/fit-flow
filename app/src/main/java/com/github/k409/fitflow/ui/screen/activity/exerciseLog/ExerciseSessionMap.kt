@@ -36,8 +36,10 @@ fun ExerciseSessionMap(
     val loading = exerciseSessionMapViewModel.loading.collectAsState()
     val exerciseRecord = exerciseSessionMapViewModel.exerciseRecord.collectAsState()
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-    val startLocalDateTime = exerciseRecord.value.startTime.atZone(ZoneId.systemDefault()).toLocalDateTime()
-    val endLocalDateTime = exerciseRecord.value.endTime.atZone(ZoneId.systemDefault()).toLocalDateTime()
+    val startLocalDateTime =
+        exerciseRecord.value.startTime.atZone(ZoneId.systemDefault()).toLocalDateTime()
+    val endLocalDateTime =
+        exerciseRecord.value.endTime.atZone(ZoneId.systemDefault()).toLocalDateTime()
 
     if (loading.value || exerciseRecord.value.exerciseRoute == null) {
         FitFlowCircularProgressIndicator()
@@ -53,9 +55,11 @@ fun ExerciseSessionMap(
                     .fillMaxWidth(),
             ) {
                 GoogleMap(
-                    properties = RouteTrackingService.mapProperties,
+                    properties = RouteTrackingService.mapProperties.copy(
+                        isMyLocationEnabled = false
+                    ),
                     uiSettings = RouteTrackingService.mapUiSettings,
-                ){
+                ) {
                     MapEffect { map ->
                         exerciseSessionMapViewModel.setGoogleMap(map)
                     }
@@ -67,7 +71,9 @@ fun ExerciseSessionMap(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = stringResource(id = exerciseRecord.value.title ?: R.string.exercise_session),
+                    text = stringResource(
+                        id = exerciseRecord.value.title ?: R.string.exercise_session
+                    ),
                     modifier = Modifier.padding(top = 10.dp, bottom = 8.dp),
                     fontWeight = FontWeight.Light,
                 )
@@ -86,7 +92,8 @@ fun ExerciseSessionMap(
                     .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                val duration = Duration.between(exerciseRecord.value.startTime, exerciseRecord.value.endTime)
+                val duration =
+                    Duration.between(exerciseRecord.value.startTime, exerciseRecord.value.endTime)
                 val hours = duration.toHours().toString()
                 val minutes = (duration.toMinutes() % 60).toString()
                 val calories = "${exerciseRecord.value.calories}"
