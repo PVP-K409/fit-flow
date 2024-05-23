@@ -17,15 +17,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.service.RouteTrackingService
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
-import com.google.android.gms.maps.MapView
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapEffect
+import com.google.maps.android.compose.MapsComposeExperimentalApi
 import java.time.Duration
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+@OptIn(MapsComposeExperimentalApi::class)
 @Composable
 fun ExerciseSessionMap(
     exerciseSessionMapViewModel: ExerciseSessionMapViewModel = hiltViewModel(),
@@ -49,9 +52,12 @@ fun ExerciseSessionMap(
                     .fillMaxHeight(0.65f)
                     .fillMaxWidth(),
             ) {
-                AndroidView({ MapView(it).apply { onCreate(null) } }) { mapView ->
-                    mapView.getMapAsync { googleMap ->
-                        exerciseSessionMapViewModel.setGoogleMap(googleMap)
+                GoogleMap(
+                    properties = RouteTrackingService.mapProperties,
+                    uiSettings = RouteTrackingService.mapUiSettings,
+                ){
+                    MapEffect { map ->
+                        exerciseSessionMapViewModel.setGoogleMap(map)
                     }
                 }
             }
