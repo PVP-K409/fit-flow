@@ -1,9 +1,11 @@
 package com.github.k409.fitflow.ui.screen.friends
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,7 +35,6 @@ import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.service.SnackbarManager
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.screen.you.OutlineCardContainer
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @Composable
@@ -67,15 +68,25 @@ fun FriendRequestContent(
 
     val coroutineScope = rememberCoroutineScope()
     var searchText by remember { mutableStateOf("") }
+    var searchTextByName by remember { mutableStateOf("") }
     var isButtonEnabled by remember { mutableStateOf(true) }
     var nameError by remember { mutableStateOf<String?>(null) }
-    val userEmail = FirebaseAuth.getInstance().currentUser?.email
+    val userEmail = viewModel.getCurrentUser().collectAsState(User()).value.email
+    val userName = viewModel.getCurrentUser().collectAsState(User()).value.name
     var foundUser by remember { mutableStateOf<User?>(null) }
 
     val friendEmails = friends.map { it.collectAsState(User()).value.email }
     val requestEmails = friendRequests.map { it.collectAsState(User()).value.email }
 
     val emails = friendEmails + requestEmails
+
+    val friendNames = friends.map { it.collectAsState(User()).value.name }
+    val requestNames = friendRequests.map { it.collectAsState(User()).value.name }
+
+    val names = friendNames + requestNames
+
+    val searchResultsByEmail by viewModel.searchResultsByEmail.collectAsState()
+    val searchResultsByName by viewModel.searchResultsByName.collectAsState()
 
     Column(
         modifier = Modifier
@@ -91,6 +102,7 @@ fun FriendRequestContent(
                 value = searchText,
                 onValueChange = {
                     searchText = it
+                    viewModel.onSearchTextChanged(it.lowercase())
                     isButtonEnabled = !emails.contains(it.lowercase()) && it != userEmail
                     nameError = if (it == userEmail) {
                         context.getString(R.string.self_friend)
@@ -100,7 +112,7 @@ fun FriendRequestContent(
                         null
                     }
                 },
-                label = { Text(stringResource(R.string.send_a_friend_request_to)) },
+                label = { Text(stringResource(R.string.search_by_email)) },
                 modifier = Modifier
                     .padding(start = 18.dp, end = 12.dp),
             )
@@ -110,7 +122,81 @@ fun FriendRequestContent(
                     .padding(18.dp),
                 onClick = {
                     coroutineScope.launch {
-                        foundUser = viewModel.searchUser(searchText.lowercase())
+                        foundUser = viewModel.searchUserByEmail(searchText.lowercase())
+                        if (foundUser?.uid == "") {
+                            SnackbarManager.showMessage(context.getString(R.string.user_not_found))
+                        }
+                    }
+                },
+                enabled = isButtonEnabled,
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(28.dp),
+                    imageVector = Icons.Outlined.Search,
+                    contentDescription = null,
+                )
+            }
+        }
+
+        if (searchText.length >= 3 && searchResultsByEmail.isNotEmpty()) {
+            Column(
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .padding(start = 18.dp, end = 12.dp),
+            ) {
+                searchResultsByEmail.forEach { user ->
+                    if (user.email != userEmail) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    if (!emails.contains(user.email)) {
+                                        searchText = user.email
+                                        viewModel.onSearchTextChanged(user.email)
+                                    } else {
+                                        isButtonEnabled = false
+                                        nameError = context.getString(R.string.already_friends)
+                                    }
+                                }
+                                .padding(vertical = 4.dp),
+                        ) {
+                            Text(text = user.email)
+                        }
+                    }
+                }
+            }
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            TextField(
+                value = searchTextByName,
+                onValueChange = {
+                    searchTextByName = it
+                    viewModel.onSearchTextByNameChanged(it)
+                    isButtonEnabled = !names.contains(it) && it != userName
+                    nameError = if (it == userName) {
+                        context.getString(R.string.self_friend)
+                    } else if (names.contains(it)) {
+                        context.getString(R.string.already_friends)
+                    } else {
+                        null
+                    }
+                },
+                label = { Text(stringResource(R.string.search_by_name)) },
+                modifier = Modifier
+                    .padding(start = 18.dp, end = 12.dp),
+            )
+
+            IconButton(
+                modifier = Modifier
+                    .padding(18.dp),
+                onClick = {
+                    coroutineScope.launch {
+                        foundUser = viewModel.searchUserByName(searchTextByName)
                         if (foundUser?.uid == "") {
                             SnackbarManager.showMessage(context.getString(R.string.user_not_found))
                         }
@@ -132,6 +218,35 @@ fun FriendRequestContent(
                 color = Color.Red,
                 modifier = Modifier.padding(start = 8.dp),
             )
+        }
+
+        if (searchTextByName.length >= 3 && searchResultsByName.isNotEmpty()) {
+            Column(
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .padding(start = 18.dp, end = 12.dp),
+            ) {
+                searchResultsByName.forEach { user ->
+                    if (user.name != userName) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    if (!names.contains(user.name)) {
+                                        searchTextByName = user.name
+                                        viewModel.onSearchTextByNameChanged(user.name)
+                                    } else {
+                                        isButtonEnabled = false
+                                        nameError = context.getString(R.string.already_friends)
+                                    }
+                                }
+                                .padding(vertical = 4.dp),
+                        ) {
+                            Text(text = user.name)
+                        }
+                    }
+                }
+            }
         }
     }
 
