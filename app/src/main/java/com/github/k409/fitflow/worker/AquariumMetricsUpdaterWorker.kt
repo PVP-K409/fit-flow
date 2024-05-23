@@ -69,7 +69,7 @@ class AquariumMetricsUpdaterWorker @AssistedInject constructor(
             Log.d(WORKER_NAME, "Daily activity goals: $dailyActivityGoals")
 
             for (goal in dailyActivityGoals) {
-                Log.d(WORKER_NAME, "Goal: ${goal}")
+                Log.d(WORKER_NAME, "Goal: $goal")
                 if (!goal.value.completed && goal.value.mandatory) {
                     aquariumRepository.changeHealthLevel(-HEALTH_LEVEL_CHANGE_DAILY)
                 }
