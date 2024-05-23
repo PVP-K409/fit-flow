@@ -8,6 +8,7 @@ import com.github.k409.fitflow.model.DrinkReminderState
 import com.github.k409.fitflow.model.Notification
 import com.github.k409.fitflow.model.NotificationChannel
 import com.github.k409.fitflow.model.NotificationId
+import com.github.k409.fitflow.receiver.HydrationNotificationReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -24,6 +25,27 @@ class HydrationNotificationService @Inject constructor(
     private val notificationService: NotificationService,
     private val sharedPreferences: SharedPreferences,
 ) {
+    companion object {
+        const val LAST_HYDRATION_REMINDER_TIME_KEY = "lastHydrationReminderTime"
+        val NOTIFICATION_INTERVAL = Duration.ofMinutes(1).toMillis()
+
+        fun getNotificationTitle(context: Context): String {
+            return context.getString(R.string.hydration_notification_title)
+        }
+
+        fun getNotificationText(
+            context: Context,
+            todayWaterIntake: Int,
+            intakeGoal: Int,
+        ): String {
+            return context.getString(
+                R.string.today__progress_liters,
+                "%.1f".format(todayWaterIntake / 1000.0),
+                "%.1f".format(intakeGoal / 1000.0),
+            )
+        }
+    }
+
     fun scheduleNotifications(state: DrinkReminderState) {
         if (state.intakeGoal != 0 && state.cupSize != 0) {
             cancelScheduledNotifications()
@@ -88,23 +110,19 @@ class HydrationNotificationService @Inject constructor(
             }
         }
 
-        val startIndex = NotificationId.entries.last().notificationId + 1 // TODO hydration notification id's
+        val startIndex =
+            NotificationId.entries.last().notificationId + 1
 
         val scheduledNotificationIds = notificationDateTimes.mapIndexed { index, dateTime ->
             val notification = Notification(
                 id = index + startIndex,
                 channel = NotificationChannel.HydrationReminder,
-                title = context.getString(R.string.hydration_notification_title),
-                text = context.getString(
-                    R.string.today__progress_liters,
-                    "%.1f".format(todayWaterIntake / 1000.0),
-                    "%.1f".format(intakeGoal / 1000.0),
-                ),
             )
 
             notificationService.post(
                 notification = notification,
                 dateTime = dateTime,
+                broadcastReceiver = HydrationNotificationReceiver::class.java,
             )
 
             Log.d(TAG, "Scheduled notification at $dateTime")

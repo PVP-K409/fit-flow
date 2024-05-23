@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -33,38 +34,45 @@ class NotificationService @Inject constructor(
     fun post(
         notification: Notification,
         delay: Duration,
+        broadcastReceiver: Class<out BroadcastReceiver> = NotificationReceiver::class.java,
     ) {
         postNotification(
             notification,
             System.currentTimeMillis() + delay.toMillis(),
+            broadcastReceiver,
         )
     }
 
     fun post(
         notification: Notification,
         dateTime: LocalDateTime,
+        broadcastReceiver: Class<out BroadcastReceiver> = NotificationReceiver::class.java,
     ) {
         postNotification(
             notification,
             dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+            broadcastReceiver,
         )
     }
 
     fun post(
         notification: Notification,
         time: LocalTime,
+        broadcastReceiver: Class<out BroadcastReceiver> = NotificationReceiver::class.java,
     ) {
         val dateTime = time.atDate(LocalDate.now())
 
         postNotification(
             notification,
             dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+            broadcastReceiver,
         )
     }
 
     private fun postNotification(
         notification: Notification,
         triggerAtMillis: Long,
+        broadcastReceiver: Class<out BroadcastReceiver> = NotificationReceiver::class.java,
     ) {
         if (triggerAtMillis <= System.currentTimeMillis()) {
             return
@@ -72,7 +80,7 @@ class NotificationService @Inject constructor(
 
         val intent = Intent(
             context,
-            NotificationReceiver::class.java,
+            broadcastReceiver,
         ).apply {
             putExtra(NOTIFICATION_INTENT_ID, notification.id)
             putExtra(NOTIFICATION_INTENT_CHANNEL_ID, notification.channel.channelId)

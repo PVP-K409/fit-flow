@@ -90,6 +90,8 @@
 
         <receiver android:name=".receiver.NotificationReceiver" />
 
+        <receiver android:name=".receiver.HydrationNotificationReceiver" />
+
         <service
             android:name=".service.FirebaseCloudMessagingService"
             android:exported="false">
