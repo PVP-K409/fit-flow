@@ -308,4 +308,10 @@
     <string name="exercise_map">Treniruotės žemėlapis</string>
     <string name="please_try_again_later">Pabandykite vėliau.</string>
     <string name="unable_to_load_map">Nepavyko užkrauti žemėlapio</string>
+    <string name="data_not_available">Duomenys neprieinami. Prašome patikrinti savo interneto ryšį ir bandyti dar kartą.</string>
+    <string name="refresh">Atnaujinti</string>
+    <string name="water_level">Vanduo</string>
+    <string name="health_level">Sveikata</string>
+    <string name="fitflow_widget_description">FitFlow valdiklis</string>
+    <string name="last_updated">Atnaujinta</string>
 </resources>
