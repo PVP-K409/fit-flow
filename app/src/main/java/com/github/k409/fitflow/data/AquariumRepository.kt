@@ -32,6 +32,15 @@ class AquariumRepository @Inject constructor(
             }
     }
 
+    fun createAquariumStats() {
+        val uid = auth.currentUser?.uid ?: return
+
+        val ref = getDocumentReference(uid)
+        val stats = AquariumStats()
+
+        ref.set(stats)
+    }
+
     fun changeWaterLevel(changeValue: Float) {
         val uid = auth.currentUser?.uid ?: return
 
