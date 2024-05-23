@@ -55,9 +55,6 @@ fun AppWidgetColumn(
 fun appWidgetBackgroundModifier() = GlanceModifier
     .fillMaxSize()
     .padding(16.dp)
-//    .appWidgetBackground()
-//    .background(GlanceTheme.colors.background)
-//    .appWidgetBackgroundCornerRadius()
 
 fun GlanceModifier.appWidgetBackgroundCornerRadius(): GlanceModifier {
     if (Build.VERSION.SDK_INT >= 31) {

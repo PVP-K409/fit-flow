@@ -169,7 +169,7 @@ fun WidgetAvailableContainer(
                     Spacer(modifier = GlanceModifier.height(8.dp))
 
                     MetricRow(
-                        iconId = R.drawable.walk,
+                        iconId = R.drawable.mode_heat_24px,
                         startText = stringResource(R.string.calories),
                         endText = "${widgetInfo.calories}",
                         colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground),
@@ -178,7 +178,7 @@ fun WidgetAvailableContainer(
                     Spacer(modifier = GlanceModifier.height(8.dp))
 
                     MetricRow(
-                        iconId = R.drawable.walk,
+                        iconId = R.drawable.distance_24px,
                         startText = stringResource(R.string.distance),
                         endText = "${widgetInfo.distance} km",
                         colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground),
@@ -195,9 +195,6 @@ fun WidgetAvailableContainer(
 
                     Spacer(modifier = GlanceModifier.height(8.dp))
                 }
-            }
-
-            item {
             }
         }
 
