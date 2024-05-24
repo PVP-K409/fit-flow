@@ -1,7 +1,6 @@
 package com.github.k409.fitflow.service
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.PendingIntent
@@ -14,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.Notification
 import com.github.k409.fitflow.receiver.NotificationReceiver
+import com.github.k409.fitflow.ui.MainActivity
 import com.github.k409.fitflow.util.NotificationConstants.NOTIFICATION_INTENT_CHANNEL_ID
 import com.github.k409.fitflow.util.NotificationConstants.NOTIFICATION_INTENT_ID
 import com.github.k409.fitflow.util.NotificationConstants.NOTIFICATION_INTENT_TEXT
@@ -109,9 +109,9 @@ class NotificationService @Inject constructor(
 
         val intent = Intent(
             context,
-            Activity::class.java,
+            MainActivity::class.java,
         ).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 
         val pendingIntent = PendingIntent.getActivity(
@@ -165,8 +165,8 @@ class NotificationService @Inject constructor(
             builder.setProgress(maxProgress, progress, false)
         }
 
-        val intent = Intent(context, Activity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 
         val pendingIntent = PendingIntent.getActivity(
