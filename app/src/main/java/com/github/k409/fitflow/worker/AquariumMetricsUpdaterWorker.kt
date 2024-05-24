@@ -80,6 +80,7 @@ class AquariumMetricsUpdaterWorker @AssistedInject constructor(
                 "Failed to update aquarium metrics",
                 e,
             )
+            throw e
         }
     }
 }
