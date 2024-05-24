@@ -145,7 +145,8 @@ fun FriendRequestContent(
                     .padding(vertical = 8.dp)
                     .padding(start = 18.dp, end = 12.dp),
             ) {
-                searchResultsByEmail.forEach { user ->
+                val emailResults = searchResultsByEmail.take(5)
+                emailResults.forEach { user ->
                     if (user.email != userEmail) {
                         Row(
                             modifier = Modifier
@@ -226,7 +227,8 @@ fun FriendRequestContent(
                     .padding(vertical = 8.dp)
                     .padding(start = 18.dp, end = 12.dp),
             ) {
-                searchResultsByName.forEach { user ->
+                val nameResults = searchResultsByName.take(5)
+                nameResults.forEach { user ->
                     if (user.name != userName) {
                         Row(
                             modifier = Modifier

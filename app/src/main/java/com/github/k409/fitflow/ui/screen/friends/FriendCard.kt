@@ -211,14 +211,16 @@ fun UserCard(
 
             Spacer(modifier = Modifier.width(2.dp))
 
-            Column {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+            ) {
                 Text(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.medium)
                         .padding(4.dp),
                     text = user?.name.toString(),
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary,
                 )
 
@@ -227,26 +229,26 @@ fun UserCard(
                         .clip(MaterialTheme.shapes.medium)
                         .padding(4.dp),
                     text = user?.email.toString(),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
-            }
 
-            Button(
-                onClick = {
-                    coroutineScope.launch {
-                        friendsViewModel.sendFriendRequest(user?.uid.toString())
-                    }
-                    SnackbarManager.showMessage(context.getString(R.string.friend_request_sent))
-                },
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp)),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary),
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.PersonAddAlt1,
-                    contentDescription = null,
-                )
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            friendsViewModel.sendFriendRequest(user?.uid.toString())
+                        }
+                        SnackbarManager.showMessage(context.getString(R.string.friend_request_sent))
+                    },
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp)),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary),
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.PersonAddAlt1,
+                        contentDescription = null,
+                    )
+                }
             }
         }
     }
@@ -256,9 +258,6 @@ fun UserCard(
 @Composable
 fun FriendCard(
     user: User,
-    coroutineScope: CoroutineScope,
-    friendsViewModel: FriendsViewModel,
-    context: android.content.Context,
     onRemoveClick: () -> Unit = {},
 ) {
     Column(

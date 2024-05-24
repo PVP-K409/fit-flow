@@ -36,7 +36,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FitFlow"
         tools:targetApi="31"
-        android:localeConfig="@xml/locales_config">
+        android:localeConfig="@xml/locales_config"
+        android:windowSoftInputMode="adjustResize">
 
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
