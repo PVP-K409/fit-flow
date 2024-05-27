@@ -56,7 +56,7 @@ fun ExerciseSessionMap(
             ) {
                 GoogleMap(
                     properties = RouteTrackingService.mapProperties.copy(
-                        isMyLocationEnabled = false
+                        isMyLocationEnabled = false,
                     ),
                     uiSettings = RouteTrackingService.mapUiSettings,
                 ) {
@@ -72,7 +72,7 @@ fun ExerciseSessionMap(
             ) {
                 Text(
                     text = stringResource(
-                        id = exerciseRecord.value.title ?: R.string.exercise_session
+                        id = exerciseRecord.value.title ?: R.string.exercise_session,
                     ),
                     modifier = Modifier.padding(top = 10.dp, bottom = 8.dp),
                     fontWeight = FontWeight.Light,

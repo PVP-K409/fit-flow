@@ -95,7 +95,6 @@ fun ExerciseSessionScreen() {
                             RouteTrackingService.setGoogleMap(it)
                         }
                     }
-
                 }
             } else { // show dropdown
                 Spacer(modifier = Modifier.height(24.dp))
@@ -151,7 +150,7 @@ fun ExerciseSessionScreen() {
                 dialogText = stringResource(id = R.string.exercise) + " : ${
                     selectedExercise?.exerciseSessionActivity?.title?.let {
                         stringResource(
-                            id = it
+                            id = it,
                         )
                     }
                 }",
@@ -178,7 +177,7 @@ fun ExerciseSessionScreen() {
                         String.format(
                             Locale.US,
                             "%.2f",
-                            distance.value
+                            distance.value,
                         )
                     } km
                         ${stringResource(id = R.string.time)}: ${formatTimeFromSeconds(timeInSecond.value)}
@@ -187,7 +186,7 @@ fun ExerciseSessionScreen() {
                         String.format(
                             Locale.US,
                             "%.2f",
-                            avgSpeed.value
+                            avgSpeed.value,
                         )
                     } km/h
                     """.trimIndent()
@@ -217,7 +216,7 @@ fun ExerciseParametric(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
 
-        ) {
+    ) {
         Text(
             text = exercise,
             modifier = Modifier.padding(top = 10.dp, bottom = 8.dp),

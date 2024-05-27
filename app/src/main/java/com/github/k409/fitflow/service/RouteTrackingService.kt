@@ -99,7 +99,7 @@ class RouteTrackingService : LifecycleService() {
         }
 
         val mapProperties = MapProperties(
-            isMyLocationEnabled = true
+            isMyLocationEnabled = true,
         )
 
         val mapUiSettings = MapUiSettings()
@@ -157,7 +157,7 @@ class RouteTrackingService : LifecycleService() {
     override fun onStartCommand(
         intent: Intent?,
         flags: Int,
-        startId: Int
+        startId: Int,
     ): Int {
         when (intent?.action) {
             Actions.START.toString() -> start()
@@ -314,7 +314,7 @@ class RouteTrackingService : LifecycleService() {
                 calories.value = calculateCalories(
                     exerciseSessionActivity!!.met.toFloat(),
                     userWeight,
-                    timeRunInSecond.value / 3600.toFloat()
+                    timeRunInSecond.value / 3600.toFloat(),
                 )
             }
             pathPoints.value = updatedPathPoints
@@ -410,7 +410,7 @@ class RouteTrackingService : LifecycleService() {
     private fun calculateCalories(
         met: Float,
         weightInKg: Double,
-        durationInHours: Float
+        durationInHours: Float,
     ): Long {
         return (met * weightInKg * durationInHours).toLong()
     }
