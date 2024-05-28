@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    userRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val preferencesRepository: PreferencesRepository,
 ) : ViewModel() {
 
@@ -47,6 +47,12 @@ class SettingsViewModel @Inject constructor(
     fun updateThemePreferences(themePreferences: ThemePreferences) {
         viewModelScope.launch {
             preferencesRepository.updateThemePreferences(themePreferences)
+        }
+    }
+
+    fun deleteUserData() {
+        viewModelScope.launch {
+            userRepository.logoutAndDeleteUSer()
         }
     }
 }

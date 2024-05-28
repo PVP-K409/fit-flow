@@ -13,6 +13,7 @@ import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private const val USERS_COLLECTION = "users"
@@ -164,6 +166,54 @@ class UserRepository @Inject constructor(
             Log.e("User Repository", "Error searching user by email")
             Log.e("User Repository", e.toString())
             User()
+        }
+    }
+
+    private suspend fun deleteUserAndData() {
+        val userId = auth.currentUser?.uid ?: return
+        val user = auth.currentUser ?: return
+        try {
+            val collections = listOf("aquarium", "friends", "goals", "inventory", "journal", "users")
+
+            collections.forEach { collection ->
+                val docRef = db.collection(collection).document(userId)
+                docRef.delete().await()
+            }
+
+            val friendsCollection = db.collection("friends")
+            val friendsDocs = friendsCollection.get().await()
+            for (doc in friendsDocs.documents) {
+                val docRef = doc.reference
+                val data = doc.data ?: continue
+
+                val friendsList = data["friends"] as? MutableList<*> ?: continue
+                val pendingRequestsList = data["pendingRequests"] as? MutableList<*> ?: continue
+
+                if (friendsList.contains(userId)) {
+                    friendsList.remove(userId)
+                    docRef.update("friends", friendsList).await()
+                }
+
+                if(pendingRequestsList.contains(userId)) {
+                    pendingRequestsList.remove(userId)
+                    docRef.update("pendingRequests", pendingRequestsList).await()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("User Repository", "Error deleting user data")
+            Log.e("User Repository", e.toString())
+        }
+        try {
+            user.delete().await()
+        } catch (e: Exception) {
+            Log.e("User Repository", "Error deleting user")
+            Log.e("User Repository", e.toString())
+        }
+    }
+
+    fun logoutAndDeleteUSer() {
+        CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
+            deleteUserAndData()
         }
     }
 
