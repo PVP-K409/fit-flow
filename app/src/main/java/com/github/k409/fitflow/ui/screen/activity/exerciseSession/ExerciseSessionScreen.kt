@@ -40,7 +40,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import com.github.k409.fitflow.R
 import com.github.k409.fitflow.model.ExerciseSessionActivities
 import com.github.k409.fitflow.model.getExerciseSessionActivityByType
@@ -52,10 +51,12 @@ import com.github.k409.fitflow.ui.screen.goals.InlineError
 import com.github.k409.fitflow.util.formatTimeFromSeconds
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.android.gms.maps.MapView
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapEffect
+import com.google.maps.android.compose.MapsComposeExperimentalApi
 import java.util.Locale
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class)
 @Composable
 fun ExerciseSessionScreen() {
     val context = LocalContext.current
@@ -86,9 +87,12 @@ fun ExerciseSessionScreen() {
         if (fineLocationPermissionState.allPermissionsGranted) {
             if (sessionActive.value) {
                 Box(modifier = Modifier.fillMaxHeight(0.65f)) {
-                    AndroidView({ MapView(it).apply { onCreate(null) } }) { mapView ->
-                        mapView.getMapAsync { googleMap ->
-                            RouteTrackingService.setGoogleMap(googleMap)
+                    GoogleMap(
+                        properties = RouteTrackingService.mapProperties,
+                        uiSettings = RouteTrackingService.mapUiSettings,
+                    ) {
+                        MapEffect {
+                            RouteTrackingService.setGoogleMap(it)
                         }
                     }
                 }
@@ -143,11 +147,18 @@ fun ExerciseSessionScreen() {
         if (showConfirmationDialogStart) {
             ConfirmDialog(
                 dialogTitle = stringResource(R.string.are_you_sure_you_want_start_this_exercise_session),
-                dialogText = stringResource(id = R.string.exercise) + " : ${selectedExercise?.exerciseSessionActivity?.title?.let { stringResource(id = it) }}",
+                dialogText = stringResource(id = R.string.exercise) + " : ${
+                    selectedExercise?.exerciseSessionActivity?.title?.let {
+                        stringResource(
+                            id = it,
+                        )
+                    }
+                }",
                 onDismiss = { showConfirmationDialogStart = false },
                 onConfirm = {
                     showConfirmationDialogStart = false
-                    RouteTrackingService.selectedExercise.value = selectedExercise?.exerciseSessionActivity?.type ?: ""
+                    RouteTrackingService.selectedExercise.value =
+                        selectedExercise?.exerciseSessionActivity?.type ?: ""
                     Intent(context, RouteTrackingService::class.java).also {
                         it.action = RouteTrackingService.Actions.START.toString()
                         context.startService(it)
@@ -162,10 +173,22 @@ fun ExerciseSessionScreen() {
                     stringResource(R.string.this_exercise_session_is_shorter_than_one_minute_and_will_not_be_saved)
                 } else {
                     """
-                        ${stringResource(id = R.string.distance)}: ${String.format(Locale.US, "%.2f", distance.value)} km
+                        ${stringResource(id = R.string.distance)}: ${
+                        String.format(
+                            Locale.US,
+                            "%.2f",
+                            distance.value,
+                        )
+                    } km
                         ${stringResource(id = R.string.time)}: ${formatTimeFromSeconds(timeInSecond.value)}
                         ${stringResource(id = R.string.calories)}: ${calories.value} cal
-                        ${stringResource(id = R.string.average_speed)}: ${String.format(Locale.US, "%.2f", avgSpeed.value)} km/h
+                        ${stringResource(id = R.string.average_speed)}: ${
+                        String.format(
+                            Locale.US,
+                            "%.2f",
+                            avgSpeed.value,
+                        )
+                    } km/h
                     """.trimIndent()
                 },
                 onDismiss = { showConfirmationDialogStop = false },
