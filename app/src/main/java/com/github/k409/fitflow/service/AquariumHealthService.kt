@@ -29,20 +29,29 @@ private val notificationId = NotificationId.AquariumHealth.notificationId
 @AndroidEntryPoint
 class AquariumHealthService : Service() {
 
-    @Inject lateinit var aquariumRepository: AquariumRepository
+    @Inject
+    lateinit var aquariumRepository: AquariumRepository
 
-    @Inject lateinit var hydrationRepository: HydrationRepository
+    @Inject
+    lateinit var hydrationRepository: HydrationRepository
 
-    @Inject lateinit var goalsRepository: GoalsRepository
+    @Inject
+    lateinit var goalsRepository: GoalsRepository
 
-    @Inject lateinit var notificationService: NotificationService
+    @Inject
+    lateinit var notificationService: NotificationService
 
-    @Inject lateinit var notificationManager: NotificationManager
+    @Inject
+    lateinit var notificationManager: NotificationManager
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
         when (intent?.action) {
             GoalUpdateService.Actions.START.toString() -> start()
             GoalUpdateService.Actions.STOP.toString() -> stopSelf()
