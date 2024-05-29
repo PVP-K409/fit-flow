@@ -253,7 +253,7 @@ class UserRepository @Inject constructor(
                     docRef.update("friends", friendsList).await()
                 }
 
-                if(pendingRequestsList.contains(userId)) {
+                if (pendingRequestsList.contains(userId)) {
                     pendingRequestsList.remove(userId)
                     docRef.update("pendingRequests", pendingRequestsList).await()
                 }

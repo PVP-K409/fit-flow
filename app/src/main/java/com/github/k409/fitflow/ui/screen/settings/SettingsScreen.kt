@@ -100,7 +100,6 @@ private fun AccountSettingsGroup(
     coroutineScope: CoroutineScope,
     settingsViewModel: SettingsViewModel,
 ) {
-
     var showDialog by remember { mutableStateOf(false) }
     var dialogText by remember { mutableStateOf("") }
     var removeClicked by remember { mutableStateOf(false) }
@@ -126,7 +125,7 @@ private fun AccountSettingsGroup(
             showDialog = true
             removeClicked = true
             dialogText = context.getString(R.string.do_you_want_to_delete_account)
-        }
+        },
     )
 
     if (showDialog) {
