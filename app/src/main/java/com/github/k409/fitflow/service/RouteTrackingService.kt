@@ -3,6 +3,7 @@ package com.github.k409.fitflow.service
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -22,6 +23,7 @@ import com.github.k409.fitflow.model.ExerciseSessionActivity
 import com.github.k409.fitflow.model.NotificationChannel
 import com.github.k409.fitflow.model.NotificationId
 import com.github.k409.fitflow.model.getExerciseSessionActivityByType
+import com.github.k409.fitflow.ui.MainActivity
 import com.github.k409.fitflow.util.formatTimeFromSeconds
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -31,10 +33,10 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.Circle
-import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,11 +57,14 @@ private val notificationId = NotificationId.ExerciseSession.notificationId
 @AndroidEntryPoint
 class RouteTrackingService : LifecycleService() {
 
-    @Inject lateinit var locationClient: FusedLocationProviderClient
+    @Inject
+    lateinit var locationClient: FusedLocationProviderClient
 
-    @Inject lateinit var userRepository: UserRepository
+    @Inject
+    lateinit var userRepository: UserRepository
 
-    @Inject lateinit var healthConnectClient: HealthConnectService
+    @Inject
+    lateinit var healthConnectClient: HealthConnectService
 
     private lateinit var notificationBuilder: NotificationCompat.Builder
 
@@ -71,7 +76,6 @@ class RouteTrackingService : LifecycleService() {
 
     companion object {
         val map = MutableStateFlow<GoogleMap?>(null)
-        var circle: Circle? = null
 
         val timeRunInSecond = MutableStateFlow(0L)
         val distanceInKm = MutableStateFlow(0f)
@@ -94,20 +98,15 @@ class RouteTrackingService : LifecycleService() {
             addAllPolylines()
         }
 
+        val mapProperties = MapProperties(
+            isMyLocationEnabled = true,
+        )
+
+        val mapUiSettings = MapUiSettings()
+
+        @SuppressLint("MissingPermission")
         private fun initializeMap() {
             map.value?.let { map ->
-                map.mapType = GoogleMap.MAP_TYPE_NORMAL
-                map.uiSettings.isZoomControlsEnabled = true
-                map.uiSettings.isZoomGesturesEnabled = true
-                map.uiSettings.isScrollGesturesEnabled = true
-                map.uiSettings.isRotateGesturesEnabled = true
-                map.uiSettings.isTiltGesturesEnabled = true
-                map.uiSettings.isCompassEnabled = true
-                map.uiSettings.isMyLocationButtonEnabled = true
-                map.uiSettings.isIndoorLevelPickerEnabled = true
-                map.uiSettings.isMapToolbarEnabled = true
-                map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
-
                 val currentCameraPosition = map.cameraPosition
 
                 val newCameraPosition = CameraPosition.Builder()
@@ -121,14 +120,6 @@ class RouteTrackingService : LifecycleService() {
                 } else {
                     currentCameraPosition.target
                 }
-
-                val circleOptions = CircleOptions()
-                    .center(targetLatLng)
-                    .radius(5.0)
-                    .strokeColor(0x500000FF)
-                    .fillColor(Color.Blue.toArgb())
-                    .strokeWidth(20f)
-                circle = map.addCircle(circleOptions)
 
                 newCameraPosition.target(targetLatLng)
 
@@ -163,7 +154,11 @@ class RouteTrackingService : LifecycleService() {
         }
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
         when (intent?.action) {
             Actions.START.toString() -> start()
             Actions.STOP.toString() -> stop()
@@ -175,7 +170,8 @@ class RouteTrackingService : LifecycleService() {
         val time = timeRunInSecond.value
         if (time > 60) {
             exerciseSessionToWrite.value.endTime = Instant.now()
-            exerciseSessionToWrite.value.endZoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
+            exerciseSessionToWrite.value.endZoneOffset =
+                ZoneId.systemDefault().rules.getOffset(Instant.now())
             exerciseSessionToWrite.value.distance = distanceInKm.value
             exerciseSessionToWrite.value.calories = calories.value
             exerciseSessionToWrite.value.route = pathPoints.value
@@ -216,7 +212,8 @@ class RouteTrackingService : LifecycleService() {
 
         exerciseSessionToWrite.value.exerciseType = exerciseSessionActivity!!.validExerciseType
         exerciseSessionToWrite.value.startTime = Instant.now()
-        exerciseSessionToWrite.value.startZoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
+        exerciseSessionToWrite.value.startZoneOffset =
+            ZoneId.systemDefault().rules.getOffset(Instant.now())
 
         isTracking.value = true
 
@@ -278,7 +275,8 @@ class RouteTrackingService : LifecycleService() {
     private fun moveCameraToUser() {
         if (pathPoints.value.isNotEmpty()) {
             val currentZoomLevel = map.value?.cameraPosition?.zoom ?: 15f
-            val position = LatLng(pathPoints.value.last().latitude, pathPoints.value.last().longitude)
+            val position =
+                LatLng(pathPoints.value.last().latitude, pathPoints.value.last().longitude)
             map.value?.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     position,
@@ -295,7 +293,6 @@ class RouteTrackingService : LifecycleService() {
                 longitude = location.longitude,
                 time = Instant.now(),
             )
-            val position = LatLng(location.latitude, location.longitude)
             val updatedPathPoints = pathPoints.value.toMutableList()
 
             updatedPathPoints.add(healthConnectLocation)
@@ -314,29 +311,48 @@ class RouteTrackingService : LifecycleService() {
                 } else {
                     avgSpeed.value = 0f
                 }
-                calories.value = calculateCalories(exerciseSessionActivity!!.met.toFloat(), userWeight, timeRunInSecond.value / 3600.toFloat())
+                calories.value = calculateCalories(
+                    exerciseSessionActivity!!.met.toFloat(),
+                    userWeight,
+                    timeRunInSecond.value / 3600.toFloat(),
+                )
             }
             pathPoints.value = updatedPathPoints
             addLatestPolyline()
             moveCameraToUser()
-            circle?.center = position
         }
     }
 
     private fun updateNotification() {
-        val notificationText = "${selectedExercise.value}: ${formatTimeFromSeconds(timeRunInSecond.value)} "
+        val notificationText =
+            "${selectedExercise.value}: ${formatTimeFromSeconds(timeRunInSecond.value)} "
         val notification = notificationBuilder
             .setContentText(notificationText)
             .setStyle(NotificationCompat.BigTextStyle().bigText(notificationText))
             .build()
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(notificationId, notification)
     }
 
     private fun createNotificationChannelBuilder(): NotificationCompat.Builder {
         val notificationTitle = getString(R.string.exercise_session_in_progress)
-        val notificationText = "${selectedExercise.value}: ${formatTimeFromSeconds(timeRunInSecond.value)} "
+        val notificationText =
+            "${selectedExercise.value}: ${formatTimeFromSeconds(timeRunInSecond.value)} "
+
         val icon = exerciseSessionActivity?.icon ?: R.drawable.ic_launcher_foreground
+
+        val intent =
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
 
         notificationBuilder = NotificationCompat.Builder(this, notificationChannelId)
             .setContentTitle(notificationTitle)
@@ -346,6 +362,7 @@ class RouteTrackingService : LifecycleService() {
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setStyle(NotificationCompat.BigTextStyle().bigText(notificationText))
+            .setContentIntent(pendingIntent)
         return notificationBuilder
     }
 
@@ -390,7 +407,11 @@ class RouteTrackingService : LifecycleService() {
         return results[0]
     }
 
-    private fun calculateCalories(met: Float, weightInKg: Double, durationInHours: Float): Long {
+    private fun calculateCalories(
+        met: Float,
+        weightInKg: Double,
+        durationInHours: Float,
+    ): Long {
         return (met * weightInKg * durationInHours).toLong()
     }
 }

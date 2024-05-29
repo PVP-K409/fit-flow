@@ -220,7 +220,7 @@ class HydrationRepository @Inject constructor(
         return preferencesRepository.getPreference(PreferenceKeys.CUP_SIZE, 250)
     }
 
-    private fun getDrinkReminderState(): Flow<DrinkReminderState> {
+    fun getDrinkReminderState(): Flow<DrinkReminderState> {
         return combine(
             getWaterIntakeGoal(),
             getCupSize(),

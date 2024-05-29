@@ -2,6 +2,7 @@ package com.github.k409.fitflow.ui.screen.aquarium.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,15 +23,22 @@ import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +47,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -57,6 +66,7 @@ import com.github.k409.fitflow.ui.screen.aquarium.component.AquariumTokens.Night
 import com.github.k409.fitflow.ui.screen.inventory.InventoryViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
@@ -175,7 +185,7 @@ private fun AquariumLayout(
 
             InventoryButton(
                 modifier = Modifier.align(Alignment.TopStart),
-                iconColor = if (aquariumBackground == NightBackground || aquariumBackground == EveningBackground) Color.White else Color.DarkGray,
+                iconColor = Color.White,
                 containerColor = if (aquariumBackground == MorningBackground) Color.Black.copy(alpha = 0.2f) else Color.White.copy(alpha = 0.3f),
                 onInventoryClick = onInventoryClick,
             )
@@ -185,18 +195,20 @@ private fun AquariumLayout(
                 waterLevel = waterLevel,
                 healthLevel = healthLevel,
                 waterTextColor = when {
-                    waterLevel >= 0.75f -> Color(0xFF85FF33)
+                    waterLevel == 1f -> Color(0xff4cff00)
+                    waterLevel >= 0.75f -> Color(0xffb0ff8f)
                     waterLevel >= 0.5f -> Color(0xfffffe00)
                     waterLevel >= 0.25f -> Color(0xffffac00)
                     else -> Color(0xFFFF3333)
                 },
                 healthTextColor = when {
-                    healthLevel >= 0.75f -> Color(0xFF85FF33)
+                    healthLevel == 1f -> Color(0xff4cff00)
+                    healthLevel >= 0.75f -> Color(0xffb0ff8f)
                     healthLevel >= 0.5f -> Color(0xfffffe00)
                     healthLevel >= 0.25f -> Color(0xffffac00)
                     else -> Color(0xFFFF3333)
                 },
-                dividerColor = if (aquariumBackground == NightBackground || aquariumBackground == EveningBackground) Color.White else Color(0xff6f6f6f),
+                dividerColor = Color.White,
                 containerColor = if (aquariumBackground == MorningBackground) Color.Black.copy(alpha = 0.2f) else Color.White.copy(alpha = 0.3f),
             )
 
@@ -310,6 +322,7 @@ private fun DecorationsBox(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AquariumMetrics(
     modifier: Modifier = Modifier,
@@ -322,59 +335,110 @@ private fun AquariumMetrics(
     dividerColor: Color = Color(0xFF434B48),
     containerColor: Color = Color.White.copy(alpha = 0.3f),
 ) {
+    val state = rememberTooltipState(isPersistent = true)
+    val scope = rememberCoroutineScope()
+
     Card(
-        modifier = modifier.padding(horizontal = 12.dp, vertical = 50.dp),
-        colors = CardDefaults.cardColors(containerColor = containerColor),
         shape = RoundedCornerShape(100),
+        modifier = modifier
+            .padding(horizontal = 12.dp, vertical = 43.dp),
+        colors = CardDefaults.cardColors(containerColor = containerColor),
+        onClick = {
+            scope.launch {
+                state.show(MutatePriority.UserInput)
+            }
+        },
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
-            ) {
-                Text(
-                    text = "${(waterLevel * 100).roundToInt()}%",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = waterTextColor,
-                )
+            TooltipBox(positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(10.dp), tooltip = {
+                RichTooltip(modifier = Modifier.padding(end = 7.dp), colors = TooltipDefaults.richTooltipColors(containerColor = containerColor), shape = RoundedCornerShape(50)) {
+                    Column {
+                        Row {
+                            Text(
+                                "${stringResource(R.string.water_level)}: ${(waterLevel * 100).roundToInt()}%",
+                                modifier = Modifier.padding(start = 25.dp, end = 25.dp),
+                                style = MaterialTheme.typography.titleSmall,
+                                color = waterTextColor,
+                            )
+                        }
+                        Text(
+                            text = when {
+                                waterLevel == 1f -> stringResource(R.string.excellent_your_hydration_level_is_perfect_and_the_aquarium_is_full_of_water)
+                                waterLevel >= 0.75f -> stringResource(R.string.nicely_done_your_fishes_are_well_hydrated)
+                                waterLevel >= 0.5f -> stringResource(R.string.your_fishes_are_hydrated_keep_up_the_good_work)
+                                waterLevel >= 0.25f -> stringResource(R.string.your_fishes_are_getting_thirsty_increase_aquarium_water_level_by_drinking_more_water)
+                                else -> stringResource(R.string.your_aquarium_has_dried_out_you_should_really_consider_drinking_more_water)
+                            },
+                            modifier = Modifier.padding(start = 25.dp, end = 25.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = dividerColor,
+                        )
 
-                Spacer(modifier = Modifier.width(6.dp))
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), color = dividerColor, thickness = 1.dp)
 
-                Icon(
-                    modifier = Modifier.size(16.dp),
-                    imageVector = Icons.Filled.WaterDrop,
-                    contentDescription = "Water Level",
-                    tint = waterLevelIconTint,
-                )
+                        Text("${stringResource(R.string.health_level)}: ${(healthLevel * 100).roundToInt()}%", modifier = Modifier.padding(start = 25.dp, end = 25.dp), style = MaterialTheme.typography.titleSmall, color = healthTextColor)
+                        Text(
+                            text = when {
+                                healthLevel == 1f -> stringResource(R.string.excellent_your_health_level_is_perfect_and_the_fishes_are_as_strong_as_ever)
+                                healthLevel >= 0.75f -> stringResource(R.string.well_done_your_fishes_are_strong_and_in_good_health)
+                                healthLevel >= 0.5f -> stringResource(R.string.your_fishes_are_healthy_keep_up_the_good_work)
+                                healthLevel >= 0.25f -> stringResource(R.string.your_fishes_are_getting_sick_exercise_more_to_keep_them_healthy)
+                                else -> stringResource(R.string.your_fishes_are_dying_you_should_start_working_out_to_help_them_and_yourself) },
+                            modifier = Modifier.padding(start = 25.dp, end = 25.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = dividerColor,
+                        )
+                    }
+                }
+            }, state = state) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
+                ) {
+                    Text(
+                        text = "${(waterLevel * 100).roundToInt()}%",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = waterTextColor,
+                    )
 
-                VerticalDivider(
-                    modifier = Modifier
-                        .height(12.dp)
-                        .padding(horizontal = 12.dp),
-                    thickness = 1.dp,
-                    color = dividerColor,
-                )
+                    Spacer(modifier = Modifier.width(6.dp))
 
-                Text(
-                    text = "${(healthLevel * 100).roundToInt()}%",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = healthTextColor,
-                )
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        imageVector = Icons.Filled.WaterDrop,
+                        contentDescription = "Water Level",
+                        tint = waterLevelIconTint,
+                    )
 
-                Spacer(modifier = Modifier.width(6.dp))
+                    VerticalDivider(
+                        modifier = Modifier
+                            .height(12.dp)
+                            .padding(horizontal = 12.dp),
+                        thickness = 1.dp,
+                        color = dividerColor,
+                    )
 
-                Icon(
-                    modifier = Modifier.size(16.dp),
-                    painter = painterResource(id = R.drawable.ecg_heart_24px),
-                    contentDescription = "Health",
-                    tint = healthLevelIconTint,
-                )
+                    Text(
+                        text = "${(healthLevel * 100).roundToInt()}%",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = healthTextColor,
+                    )
+
+                    Spacer(modifier = Modifier.width(6.dp))
+
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        painter = painterResource(id = R.drawable.ecg_heart_24px),
+                        contentDescription = "Health",
+                        tint = healthLevelIconTint,
+                    )
+                }
             }
         }
     }

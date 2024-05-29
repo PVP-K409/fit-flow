@@ -32,11 +32,12 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="${appName}"
+        android:localeConfig="@xml/locales_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FitFlow"
         tools:targetApi="31"
-        android:localeConfig="@xml/locales_config">
+        android:windowSoftInputMode="adjustResize">
 
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
@@ -68,6 +69,17 @@
             </intent-filter>
         </activity>
 
+        <receiver
+            android:name=".ui.widget.FitFlowWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/fitflow_widget_info" />
+        </receiver>
+
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"
@@ -78,6 +90,8 @@
         </service>
 
         <receiver android:name=".receiver.NotificationReceiver" />
+
+        <receiver android:name=".receiver.HydrationNotificationReceiver" />
 
         <service
             android:name=".service.FirebaseCloudMessagingService"

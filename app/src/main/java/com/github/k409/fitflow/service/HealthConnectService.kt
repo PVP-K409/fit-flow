@@ -133,6 +133,8 @@ class HealthConnectService @Inject constructor(
                 ),
             )
 
+            var i = -1
+
             exerciseSessions.records.forEach { record ->
                 val exerciseTypeInt = record.exerciseType
 
@@ -147,6 +149,7 @@ class HealthConnectService @Inject constructor(
                 }
 
                 val exerciseRecord = ExerciseRecord(
+                    id = i++,
                     startTime = record.startTime,
                     endTime = record.endTime,
                     exerciseType = exerciseType,

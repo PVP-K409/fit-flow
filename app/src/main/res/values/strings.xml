@@ -197,7 +197,8 @@
     <string name="user_not_found">User not found</string>
     <string name="already_friends">You are already friends with this user</string>
     <string name="self_friend">Can\'t send a friend request to yourself</string>
-    <string name="send_a_friend_request_to">Send a friend request to</string>
+    <string name="search_by_email">Search by email</string>
+    <string name="search_by_name">Search by first and last name</string>
     <string name="localization">Localization</string>
     <string name="en">English</string>
     <string name="lt">Lithuanian</string>
@@ -305,4 +306,23 @@
     <string name="friends_leaderboard">Friends leaderboard</string>
     <string name="your_placings_among_your_friends">Your placings among your friends</string>
     <string name="friends_leaderboard_tab_title">FRIENDS LEADERBOARD</string>
+    <string name="exercise_map">Exercise Map</string>
+    <string name="please_try_again_later">Please try again later.</string>
+    <string name="unable_to_load_map">Unable to load map</string>
+    <string name="data_not_available">Data not available. Please check your internet connection.</string>
+    <string name="refresh">Refresh</string>
+    <string name="water_level">Water Level</string>
+    <string name="health_level">Health Level</string>
+    <string name="fitflow_widget_description">FitFlow widget</string>
+    <string name="last_updated">Last updated</string>
+    <string name="your_aquarium_has_dried_out_you_should_really_consider_drinking_more_water">Your Aquarium has dried out! You should really consider drinking more water</string>
+    <string name="your_fishes_are_getting_thirsty_increase_aquarium_water_level_by_drinking_more_water">Your fishes are getting thirsty! Increase Aquarium water level by drinking more water</string>
+    <string name="your_fishes_are_hydrated_keep_up_the_good_work">Your fishes are hydrated. Do not forget to regularly drink water</string>
+    <string name="nicely_done_your_fishes_are_well_hydrated">Nicely done! Your fishes are well hydrated</string>
+    <string name="your_fishes_are_dying_you_should_start_working_out_to_help_them_and_yourself">Your fishes are dying! You should start working out to help them and yourself!</string>
+    <string name="your_fishes_are_getting_sick_exercise_more_to_keep_them_healthy">Your fishes are getting sick! Exercise more to keep them healthy</string>
+    <string name="your_fishes_are_healthy_keep_up_the_good_work">Your fishes are healthy. Stay active and strong</string>
+    <string name="well_done_your_fishes_are_strong_and_in_good_health">Well done! Your fishes are strong and in good health</string>
+    <string name="excellent_your_health_level_is_perfect_and_the_fishes_are_as_strong_as_ever">Excellent! Your health level is perfect and the fishes are as strong as ever</string>
+    <string name="excellent_your_hydration_level_is_perfect_and_the_aquarium_is_full_of_water">Excellent! Your hydration level is perfect and the Aquarium is full of water</string>
 </resources>
