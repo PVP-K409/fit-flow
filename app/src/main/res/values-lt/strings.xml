@@ -197,7 +197,8 @@
     <string name="user_not_found">Naudotojas nerastas</string>
     <string name="already_friends">Jūs jau esate draugai su šiuo naudotoju</string>
     <string name="self_friend">Negalite siųsti sau draugo pakvietimo</string>
-    <string name="send_a_friend_request_to">Siųsti pakvietimą draugauti</string>
+    <string name="search_by_email">Ieškoti pagal email</string>
+    <string name="search_by_name">Ieškoti pagal vardą ir pavardę</string>
     <string name="localization">Lokalizacija</string>
     <string name="en">Anglų</string>
     <string name="lt">Lietuvių</string>

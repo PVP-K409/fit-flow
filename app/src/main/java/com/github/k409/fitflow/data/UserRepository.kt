@@ -167,6 +167,54 @@ class UserRepository @Inject constructor(
         }
     }
 
+    suspend fun searchUsersByEmail(email: String): List<User> {
+        return try {
+            db.collection(USERS_COLLECTION)
+                .whereGreaterThanOrEqualTo("email", email)
+                .whereLessThanOrEqualTo("email", email + "\uf8ff")
+                .get()
+                .await()
+                .documents
+                .mapNotNull { it.toObject<User>() }
+        } catch (e: Exception) {
+            Log.e("User Repository", "Error searching users by email")
+            Log.e("User Repository", e.toString())
+            emptyList()
+        }
+    }
+
+    suspend fun searchUserByName(name: String): User {
+        return try {
+            db.collection(USERS_COLLECTION)
+                .whereEqualTo("name", name)
+                .get()
+                .await()
+                .documents
+                .firstOrNull()
+                ?.toObject<User>() ?: User()
+        } catch (e: Exception) {
+            Log.e("User Repository", "Error searching user by name")
+            Log.e("User Repository", e.toString())
+            User()
+        }
+    }
+
+    suspend fun searchUsersByName(name: String): List<User> {
+        return try {
+            db.collection(USERS_COLLECTION)
+                .whereGreaterThanOrEqualTo("name", name)
+                .whereLessThanOrEqualTo("name", name + "\uf8ff")
+                .get()
+                .await()
+                .documents
+                .mapNotNull { it.toObject<User>() }
+        } catch (e: Exception) {
+            Log.e("User Repository", "Error searching users by name")
+            Log.e("User Repository", e.toString())
+            emptyList()
+        }
+    }
+
     private fun getUserDocumentReference(uid: String) =
         db.collection(USERS_COLLECTION)
             .document(uid)
