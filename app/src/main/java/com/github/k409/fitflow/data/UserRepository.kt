@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private const val USERS_COLLECTION = "users"
@@ -173,11 +172,71 @@ class UserRepository @Inject constructor(
         val userId = auth.currentUser?.uid ?: return
         val user = auth.currentUser ?: return
         try {
-            val collections = listOf("aquarium", "friends", "goals", "inventory", "journal", "users")
+            val collections = listOf("aquarium", "friends", "users")
 
             collections.forEach { collection ->
                 val docRef = db.collection(collection).document(userId)
                 docRef.delete().await()
+            }
+
+            val inventoryDocs = db.collection("inventory")
+                .document(userId)
+                .collection("items").get().await()
+
+            for (doc in inventoryDocs.documents) {
+                try {
+                    doc.reference.delete().await()
+                } catch (e: Exception) {
+                    Log.e("User Repository", "Error deleting inventory item")
+                }
+            }
+
+            val goalsDailyDocs = db.collection("goals")
+                .document(userId)
+                .collection("Daily").get().await()
+
+            for (doc in goalsDailyDocs.documents) {
+                try {
+                    doc.reference.delete().await()
+                } catch (e: Exception) {
+                    Log.e("User Repository", "Error deleting daily goals")
+                }
+            }
+
+            val goalsWeeklyDocs = db.collection("goals")
+                .document(userId)
+                .collection("Weekly").get().await()
+
+            for (doc in goalsWeeklyDocs.documents) {
+                try {
+                    doc.reference.delete().await()
+                } catch (e: Exception) {
+                    Log.e("User Repository", "Error deleting weekly goals")
+                }
+            }
+
+            val journalHydrationDocs = db.collection("journal")
+                .document(userId)
+                .collection("hydration").get().await()
+
+            for (doc in journalHydrationDocs.documents) {
+                try {
+                    doc.reference.delete().await()
+                } catch (e: Exception) {
+                    Log.e("User Repository", "Error deleting hydration journal")
+                }
+            }
+
+            val journalStepsDocs = db.collection("journal")
+                .document(userId)
+                .collection("steps").get().await()
+
+            for (doc in journalStepsDocs.documents) {
+                try {
+                    doc.reference.delete().await()
+                } catch (e: Exception) {
+                    Log.e("User Repository", "Error deleting steps journal")
+                }
             }
 
             val friendsCollection = db.collection("friends")
