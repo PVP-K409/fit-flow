@@ -328,4 +328,6 @@
     <string name="delete_account">Delete %1$s account</string>
     <string name="delete_profile">Delete account</string>
     <string name="do_you_want_to_delete_account">Are you sure you want to delete your account? This action cannot be undone.</string>
+    <string name="invalid_credentials">Invalid credentials</string>
+    <string name="recent_login_required_please_sign_in_again">Recent login required. Please sign in again.</string>
 </resources>

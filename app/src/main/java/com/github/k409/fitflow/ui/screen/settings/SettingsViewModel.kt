@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.screen.settings
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.AuthRepository
@@ -18,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val userRepository: UserRepository,
+    userRepository: UserRepository,
     private val preferencesRepository: PreferencesRepository,
 ) : ViewModel() {
 
@@ -50,9 +51,9 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun deleteUserData() {
+    fun deleteUserData(context: Context) {
         viewModelScope.launch {
-            userRepository.logoutAndDeleteUSer()
+            authRepository.logoutAndDeleteUSer(context)
         }
     }
 }

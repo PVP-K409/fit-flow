@@ -328,4 +328,6 @@
     <string name="delete_account">Ištrinti %1$s profilį</string>
     <string name="delete_profile">Ištrinti profilį</string>
     <string name="do_you_want_to_delete_account">Ar jūs tikrai norite ištrinti šį profilį? Atlikus šį veiksmą nebebus galima atgauti duomenų.</string>
+    <string name="invalid_credentials">Neteisingi prisijungimo duomenys</string>
+    <string name="recent_login_required_please_sign_in_again">Norint atlikti šią operaciją reikalinga prisijungti išnaujo</string>
 </resources>

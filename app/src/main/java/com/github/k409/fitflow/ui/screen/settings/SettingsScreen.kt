@@ -134,7 +134,7 @@ private fun AccountSettingsGroup(
             dialogText = dialogText,
             onConfirm = {
                 if (removeClicked) {
-                    settingsViewModel.deleteUserData()
+                    settingsViewModel.deleteUserData(context)
                 }
                 showDialog = false
             },

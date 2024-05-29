@@ -52,6 +52,7 @@ object RepositoryModule {
     @Singleton
     fun provideAuthRepository(
         auth: FirebaseAuth,
+        db: FirebaseFirestore,
         userRepository: UserRepository,
         itemRepository: ItemRepository,
         aquariumRepository: AquariumRepository,
@@ -61,6 +62,7 @@ object RepositoryModule {
     ): AuthRepository {
         return AuthRepository(
             auth,
+            db,
             userRepository,
             itemRepository,
             aquariumRepository,

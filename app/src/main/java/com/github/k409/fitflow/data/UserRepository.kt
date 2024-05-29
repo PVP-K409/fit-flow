@@ -13,7 +13,6 @@ import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -165,114 +164,6 @@ class UserRepository @Inject constructor(
             Log.e("User Repository", "Error searching user by email")
             Log.e("User Repository", e.toString())
             User()
-        }
-    }
-
-    private suspend fun deleteUserAndData() {
-        val userId = auth.currentUser?.uid ?: return
-        val user = auth.currentUser ?: return
-        try {
-            val collections = listOf("aquarium", "friends", "users")
-
-            collections.forEach { collection ->
-                val docRef = db.collection(collection).document(userId)
-                docRef.delete().await()
-            }
-
-            val inventoryDocs = db.collection("inventory")
-                .document(userId)
-                .collection("items").get().await()
-
-            for (doc in inventoryDocs.documents) {
-                try {
-                    doc.reference.delete().await()
-                } catch (e: Exception) {
-                    Log.e("User Repository", "Error deleting inventory item")
-                }
-            }
-
-            val goalsDailyDocs = db.collection("goals")
-                .document(userId)
-                .collection("Daily").get().await()
-
-            for (doc in goalsDailyDocs.documents) {
-                try {
-                    doc.reference.delete().await()
-                } catch (e: Exception) {
-                    Log.e("User Repository", "Error deleting daily goals")
-                }
-            }
-
-            val goalsWeeklyDocs = db.collection("goals")
-                .document(userId)
-                .collection("Weekly").get().await()
-
-            for (doc in goalsWeeklyDocs.documents) {
-                try {
-                    doc.reference.delete().await()
-                } catch (e: Exception) {
-                    Log.e("User Repository", "Error deleting weekly goals")
-                }
-            }
-
-            val journalHydrationDocs = db.collection("journal")
-                .document(userId)
-                .collection("hydration").get().await()
-
-            for (doc in journalHydrationDocs.documents) {
-                try {
-                    doc.reference.delete().await()
-                } catch (e: Exception) {
-                    Log.e("User Repository", "Error deleting hydration journal")
-                }
-            }
-
-            val journalStepsDocs = db.collection("journal")
-                .document(userId)
-                .collection("steps").get().await()
-
-            for (doc in journalStepsDocs.documents) {
-                try {
-                    doc.reference.delete().await()
-                } catch (e: Exception) {
-                    Log.e("User Repository", "Error deleting steps journal")
-                }
-            }
-
-            val friendsCollection = db.collection("friends")
-            val friendsDocs = friendsCollection.get().await()
-            for (doc in friendsDocs.documents) {
-                val docRef = doc.reference
-                val data = doc.data ?: continue
-
-                val friendsList = data["friends"] as? MutableList<*> ?: continue
-                val pendingRequestsList = data["pendingRequests"] as? MutableList<*> ?: continue
-
-                if (friendsList.contains(userId)) {
-                    friendsList.remove(userId)
-                    docRef.update("friends", friendsList).await()
-                }
-
-                if (pendingRequestsList.contains(userId)) {
-                    pendingRequestsList.remove(userId)
-                    docRef.update("pendingRequests", pendingRequestsList).await()
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("User Repository", "Error deleting user data")
-            Log.e("User Repository", e.toString())
-        }
-        try {
-            user.delete().await()
-        } catch (e: Exception) {
-            Log.e("User Repository", "Error deleting user")
-            Log.e("User Repository", e.toString())
-        }
-    }
-
-    fun logoutAndDeleteUSer() {
-        CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
-            deleteUserAndData()
         }
     }
 
