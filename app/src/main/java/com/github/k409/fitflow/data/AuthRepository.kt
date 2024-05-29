@@ -115,7 +115,7 @@ class AuthRepository @Inject constructor(
     }
 
     private suspend fun deleteUserAndData(activityContext: Context) {
-        try{
+        try {
             val result = credentialManager.getCredential(activityContext, getCredentialRequest)
             val credential = result.credential
             if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
@@ -224,17 +224,18 @@ class AuthRepository @Inject constructor(
                 Log.e("Auth Repository", "Error deleting user")
                 Log.e("Auth Repository", e.toString())
             }
-
         } catch (e: FirebaseAuthInvalidCredentialsException) {
             Log.e("Auth Repository", "Error reauthenticating user: Invalid credentials")
             Log.e("Auth Repository", e.toString())
             SnackbarManager.showMessage(
-                activityContext.getString(R.string.invalid_credentials))
+                activityContext.getString(R.string.invalid_credentials),
+            )
         } catch (e: FirebaseAuthRecentLoginRequiredException) {
             Log.e("Auth Repository", "Error reauthenticating user: Recent login required")
             Log.e("Auth Repository", e.toString())
             SnackbarManager.showMessage(
-                activityContext.getString(R.string.recent_login_required_please_sign_in_again))
+                activityContext.getString(R.string.recent_login_required_please_sign_in_again),
+            )
         } catch (e: Exception) {
             Log.e("Auth Repository", "Error reauthenticating user")
             Log.e("Auth Repository", e.toString())
