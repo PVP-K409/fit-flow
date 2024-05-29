@@ -17,15 +17,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.k409.fitflow.R
+import com.github.k409.fitflow.service.RouteTrackingService
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
-import com.google.android.gms.maps.MapView
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapEffect
+import com.google.maps.android.compose.MapsComposeExperimentalApi
 import java.time.Duration
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+@OptIn(MapsComposeExperimentalApi::class)
 @Composable
 fun ExerciseSessionMap(
     exerciseSessionMapViewModel: ExerciseSessionMapViewModel = hiltViewModel(),
@@ -33,8 +36,10 @@ fun ExerciseSessionMap(
     val loading = exerciseSessionMapViewModel.loading.collectAsState()
     val exerciseRecord = exerciseSessionMapViewModel.exerciseRecord.collectAsState()
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-    val startLocalDateTime = exerciseRecord.value.startTime.atZone(ZoneId.systemDefault()).toLocalDateTime()
-    val endLocalDateTime = exerciseRecord.value.endTime.atZone(ZoneId.systemDefault()).toLocalDateTime()
+    val startLocalDateTime =
+        exerciseRecord.value.startTime.atZone(ZoneId.systemDefault()).toLocalDateTime()
+    val endLocalDateTime =
+        exerciseRecord.value.endTime.atZone(ZoneId.systemDefault()).toLocalDateTime()
 
     if (loading.value || exerciseRecord.value.exerciseRoute == null) {
         FitFlowCircularProgressIndicator()
@@ -49,9 +54,14 @@ fun ExerciseSessionMap(
                     .fillMaxHeight(0.65f)
                     .fillMaxWidth(),
             ) {
-                AndroidView({ MapView(it).apply { onCreate(null) } }) { mapView ->
-                    mapView.getMapAsync { googleMap ->
-                        exerciseSessionMapViewModel.setGoogleMap(googleMap)
+                GoogleMap(
+                    properties = RouteTrackingService.mapProperties.copy(
+                        isMyLocationEnabled = false,
+                    ),
+                    uiSettings = RouteTrackingService.mapUiSettings,
+                ) {
+                    MapEffect { map ->
+                        exerciseSessionMapViewModel.setGoogleMap(map)
                     }
                 }
             }
@@ -61,7 +71,9 @@ fun ExerciseSessionMap(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = stringResource(id = exerciseRecord.value.title ?: R.string.exercise_session),
+                    text = stringResource(
+                        id = exerciseRecord.value.title ?: R.string.exercise_session,
+                    ),
                     modifier = Modifier.padding(top = 10.dp, bottom = 8.dp),
                     fontWeight = FontWeight.Light,
                 )
@@ -80,7 +92,8 @@ fun ExerciseSessionMap(
                     .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                val duration = Duration.between(exerciseRecord.value.startTime, exerciseRecord.value.endTime)
+                val duration =
+                    Duration.between(exerciseRecord.value.startTime, exerciseRecord.value.endTime)
                 val hours = duration.toHours().toString()
                 val minutes = (duration.toMinutes() % 60).toString()
                 val calories = "${exerciseRecord.value.calories}"

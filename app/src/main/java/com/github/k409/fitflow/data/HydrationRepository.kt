@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.tasks.await
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
@@ -58,7 +57,6 @@ class HydrationRepository @Inject constructor(
                 ),
                 SetOptions.merge(),
             )
-            .await()
 
         scheduleHydrationNotifications()
 
@@ -222,7 +220,7 @@ class HydrationRepository @Inject constructor(
         return preferencesRepository.getPreference(PreferenceKeys.CUP_SIZE, 250)
     }
 
-    private fun getDrinkReminderState(): Flow<DrinkReminderState> {
+    fun getDrinkReminderState(): Flow<DrinkReminderState> {
         return combine(
             getWaterIntakeGoal(),
             getCupSize(),

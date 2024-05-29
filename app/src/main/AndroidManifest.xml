@@ -36,7 +36,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FitFlow"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        android:windowSoftInputMode="adjustResize">
 
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
@@ -89,6 +90,8 @@
         </service>
 
         <receiver android:name=".receiver.NotificationReceiver" />
+
+        <receiver android:name=".receiver.HydrationNotificationReceiver" />
 
         <service
             android:name=".service.FirebaseCloudMessagingService"
