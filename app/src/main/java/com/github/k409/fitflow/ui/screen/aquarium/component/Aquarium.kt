@@ -36,6 +36,7 @@ import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -59,6 +60,7 @@ import com.github.k409.fitflow.model.FishPhase.Companion.getPhase
 import com.github.k409.fitflow.model.InventoryItem
 import com.github.k409.fitflow.ui.navigation.NavRoutes
 import com.github.k409.fitflow.ui.screen.aquarium.AquariumUiState
+import com.github.k409.fitflow.ui.screen.aquarium.AquariumViewModel
 import com.github.k409.fitflow.ui.screen.aquarium.component.AquariumTokens.AfternoonBackground
 import com.github.k409.fitflow.ui.screen.aquarium.component.AquariumTokens.EveningBackground
 import com.github.k409.fitflow.ui.screen.aquarium.component.AquariumTokens.MorningBackground
@@ -78,13 +80,20 @@ fun AquariumContent(
     uiState: AquariumUiState.Success,
     navController: NavController,
     inventoryViewModel: InventoryViewModel = hiltViewModel(),
+    aquariumViewModel: AquariumViewModel = hiltViewModel(),
 ) {
-    val waterLevel = uiState.aquariumStats.waterLevel
-    val healthLevel = uiState.aquariumStats.healthLevel
+    var waterLevel by remember { mutableFloatStateOf(uiState.localAquariumStats.waterLevel) }
+    var healthLevel by remember { mutableFloatStateOf(uiState.localAquariumStats.healthLevel) }
 
     var aquariumBackground by remember { mutableStateOf(AfternoonBackground) }
 
     LaunchedEffect(Unit) {
+        if (waterLevel != uiState.aquariumStats.waterLevel || healthLevel != uiState.aquariumStats.healthLevel) {
+            // Log.d("AquariumContent", "aquarium stats changed: ${uiState.aquariumStats}")
+            waterLevel = uiState.aquariumStats.waterLevel
+            healthLevel = uiState.aquariumStats.healthLevel
+            aquariumViewModel.updateLocalAquariumStats(uiState.aquariumStats)
+        }
         while (isActive) {
             when (LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))) {
                 in "00:00".."06:59" -> aquariumBackground = NightBackground

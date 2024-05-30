@@ -33,7 +33,7 @@ internal object AquariumTokens {
     )
     val MinFishSize = 100.dp
     val MaxFishSize = 150.dp
-    const val WaterLevelAnimationDuration = 1500
+    const val WaterLevelAnimationDuration = 3000
     val WaterLevelAnimationEasing = FastOutLinearInEasing
     const val MinAquariumBackgroundAlpha = 0.5f
     const val MaxAquariumBackgroundAlpha = 1.0f

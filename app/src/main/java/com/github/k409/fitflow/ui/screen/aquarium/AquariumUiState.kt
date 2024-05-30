@@ -7,6 +7,7 @@ sealed interface AquariumUiState {
     data object Loading : AquariumUiState
     data class Success(
         val aquariumStats: AquariumStats,
+        val localAquariumStats: AquariumStats,
         val aquariumItems: List<InventoryItem>,
         val fishes: List<InventoryItem>,
         val decorations: List<InventoryItem>,
