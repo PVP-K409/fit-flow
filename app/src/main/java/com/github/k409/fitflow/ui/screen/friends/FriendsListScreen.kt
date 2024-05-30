@@ -82,9 +82,6 @@ fun FriendsListContent(
                         friend.collectAsState(User()).value.let { user ->
                             FriendCard(
                                 user = user,
-                                coroutineScope = coroutineScope,
-                                friendsViewModel = viewModel,
-                                context = context,
                                 onRemoveClick = {
                                     showDialog = true
                                     addClicked = false
