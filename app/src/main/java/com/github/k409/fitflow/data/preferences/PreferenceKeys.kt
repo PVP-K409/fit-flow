@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.data.preferences
 
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 
@@ -16,4 +17,7 @@ object PreferenceKeys {
     val FCM_TOKEN = stringPreferencesKey("fcm_token")
 
     val YESTERDAY = stringPreferencesKey("yesterday")
+
+    val WATER_LEVEL = floatPreferencesKey("water_level")
+    val HEALTH_LEVEL = floatPreferencesKey("health_level")
 }
