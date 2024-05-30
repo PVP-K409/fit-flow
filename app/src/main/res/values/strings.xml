@@ -325,4 +325,9 @@
     <string name="well_done_your_fishes_are_strong_and_in_good_health">Well done! Your fishes are strong and in good health</string>
     <string name="excellent_your_health_level_is_perfect_and_the_fishes_are_as_strong_as_ever">Excellent! Your health level is perfect and the fishes are as strong as ever</string>
     <string name="excellent_your_hydration_level_is_perfect_and_the_aquarium_is_full_of_water">Excellent! Your hydration level is perfect and the Aquarium is full of water</string>
+    <string name="delete_account">Delete %1$s account</string>
+    <string name="delete_profile">Delete account</string>
+    <string name="do_you_want_to_delete_account">Are you sure you want to delete your account? This action cannot be undone.</string>
+    <string name="invalid_credentials">Invalid credentials</string>
+    <string name="recent_login_required_please_sign_in_again">Recent login required. Please sign in again.</string>
 </resources>

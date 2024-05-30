@@ -81,7 +81,7 @@
     <string name="hydration_logs">Hidratacijos žurnalai</string>
     <string name="hold_drink_button_message">Norėdami gerti, paspauskite ir palaikykite mygtuką</string>
     <string name="dismiss_snackbar">Atsisakyti užkandžių juostos</string>
-    <string name="are_you_sure">Ar tu tuo tikras\?</string>
+    <string name="are_you_sure">Ar tikrai norite ištrinti profilį\?</string>
     <string name="sell_for">Parduoti</string>
     <string name="are_you_sure_you_want_to_sell">Ar tikrai norite parduoti</string>
     <string name="buy_for">Pirkti</string>
@@ -325,4 +325,9 @@
     <string name="well_done_your_fishes_are_strong_and_in_good_health">Gerai padirbėta! Jūsų žuvys sveikos ir stiprios</string>
     <string name="excellent_your_health_level_is_perfect_and_the_fishes_are_as_strong_as_ever">Puikiai padirbėta! Jūsų sveikatos lygis idealus, o žuvys kaip niekada stiprios</string>
     <string name="excellent_your_hydration_level_is_perfect_and_the_aquarium_is_full_of_water">Puikiai padirbėta! Jūsų hidratacijos lygis yra idealus, o akvariumas pilnas vandens</string>
+    <string name="delete_account">Ištrinti %1$s profilį</string>
+    <string name="delete_profile">Ištrinti profilį</string>
+    <string name="do_you_want_to_delete_account">Ar jūs tikrai norite ištrinti šį profilį? Atlikus šį veiksmą nebebus galima atgauti duomenų.</string>
+    <string name="invalid_credentials">Neteisingi prisijungimo duomenys</string>
+    <string name="recent_login_required_please_sign_in_again">Norint atlikti šią operaciją reikalinga prisijungti išnaujo</string>
 </resources>

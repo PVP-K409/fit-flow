@@ -1,5 +1,6 @@
 package com.github.k409.fitflow.ui.screen.settings
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.k409.fitflow.data.AuthRepository
@@ -47,6 +48,12 @@ class SettingsViewModel @Inject constructor(
     fun updateThemePreferences(themePreferences: ThemePreferences) {
         viewModelScope.launch {
             preferencesRepository.updateThemePreferences(themePreferences)
+        }
+    }
+
+    fun deleteUserData(context: Context) {
+        viewModelScope.launch {
+            authRepository.logoutAndDeleteUSer(context)
         }
     }
 }

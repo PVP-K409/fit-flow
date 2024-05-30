@@ -27,12 +27,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,6 +49,7 @@ import com.github.k409.fitflow.model.User
 import com.github.k409.fitflow.model.theme.ThemeColour
 import com.github.k409.fitflow.model.theme.ThemeMode
 import com.github.k409.fitflow.model.theme.ThemePreferences
+import com.github.k409.fitflow.ui.common.ConfirmDialog
 import com.github.k409.fitflow.ui.common.FancyIndicatorTabs
 import com.github.k409.fitflow.ui.common.FitFlowCircularProgressIndicator
 import com.github.k409.fitflow.ui.navigation.NavRoutes
@@ -96,6 +100,11 @@ private fun AccountSettingsGroup(
     coroutineScope: CoroutineScope,
     settingsViewModel: SettingsViewModel,
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+    var dialogText by remember { mutableStateOf("") }
+    var removeClicked by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
     SettingsEntryGroupText(title = stringResource(R.string.account_settings_group_title))
 
     SettingsEntry(
@@ -108,6 +117,30 @@ private fun AccountSettingsGroup(
         text = stringResource(R.string.you_are_logged_in_as, currentUser.name),
         onClick = settingsViewModel::signOut,
     )
+
+    SettingsEntry(
+        title = stringResource(R.string.delete_profile),
+        text = stringResource(R.string.delete_account, currentUser.name),
+        onClick = {
+            showDialog = true
+            removeClicked = true
+            dialogText = context.getString(R.string.do_you_want_to_delete_account)
+        },
+    )
+
+    if (showDialog) {
+        ConfirmDialog(
+            dialogTitle = stringResource(R.string.are_you_sure),
+            dialogText = dialogText,
+            onConfirm = {
+                if (removeClicked) {
+                    settingsViewModel.deleteUserData(context)
+                }
+                showDialog = false
+            },
+            onDismiss = { showDialog = false },
+        )
+    }
 
     SettingsGroupSpacer()
 }
